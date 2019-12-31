@@ -1,0 +1,127 @@
+# mem6_game/mem6/Makefile.toml
+# https://github.com/sagiegurari/cargo-make/blob/master/src/lib/Makefile.stable.toml
+
+# Building on windows is just cumbersome. The result is only good for windows.
+# The web server will always be on linux. Wasm/Webassembly is OS agnostic.
+# It has much more sense to build always in Linux. 
+# OS for code editing does not change anything.
+# Building for both OS means I would need to call every utils exe and 
+# every copy command in 2 different ways. So complicated.
+# Not good.
+# Decision: I will always build only for for Linux inside Linux subsystem for Windows !
+
+[config]
+skip_core_tasks = true
+
+#region: public callable tasks/flows
+
+    [tasks.default]
+    description = "show list of public callable tasks"
+    clear = true
+    command = "cargo"
+    args = ["make","--list-all-steps"]
+
+    [tasks.dev]
+    description = "cargo build development"
+    clear = true
+    dependencies = [
+        "lmake_version_from_date",
+        "build_dev",
+        "delete_old_js_snippets",
+        "copy_pkg_to_webfolder",
+    ]
+
+    [tasks.release]
+    description = "cargo build release"
+    clear = true
+    dependencies = [
+        "lmake_version_from_date",
+        "build_release",
+        "delete_old_js_snippets",
+        "copy_pkg_to_webfolder",
+    ]
+
+    [tasks.audit]
+    description = "cargo audit - for warning dependencies"
+    clear = true
+    dependencies = [
+        "cargo_audit",
+    ]
+
+    [tasks.fmt]
+    description = "cargo fmt - format code"
+    clear = true
+    dependencies = [
+        "cargo_fmt",
+    ]
+
+    [tasks.doc]
+    description = "call cargo doc"
+    clear=true
+    dependencies = [
+        "insert_readme",
+        "cargo_doc"
+    ]
+
+# endregion
+
+[tasks.build_dev]
+description = "build for debug / dev"
+clear = true
+private = true
+command = "wasm-pack"
+args = ["build", "--target", "web","--dev", "--no-typescript"]
+
+[tasks.build_release]
+description = "build for release"
+clear = true
+private = true
+command = "wasm-pack"
+args = ["build","--target", "web","--release", "--no-typescript"]
+
+[tasks.copy_pkg_to_webfolder]
+description = "copy wasm pkg to webfolder"
+clear = true
+private = true
+script = [
+    "\\rsync -avz --delete-after ~/rustprojects/mem6_game/mem6/pkg/  ~/rustprojects/mem6_game/webfolder/mem6/pkg/",
+]
+
+[tasks.cargo_audit]
+description = "cargo audit"
+clear = true
+private = true
+command = "cargo"
+args = ["audit"]
+
+[tasks.cargo_fmt]
+description = "cargo fmt"
+clear = true
+private = true
+command = "cargo"
+args = ["fmt"]
+
+[tasks.insert_readme]
+description = "copy the content of readme.md into *.rs comments (for the docs)"
+clear = true
+private = true
+script= ["../../utils_linux/lmake_readme"]
+
+[tasks.cargo_doc]
+description = "generate docs from source code"
+clear = true
+private = true
+command="cargo"
+args=["doc","--no-deps","--document-private-items"]
+
+[tasks.lmake_version_from_date]
+description = "in cargo.toml change version to today date"
+clear = true
+private = true
+script= ["../../utils_linux/lmake_version_from_date ../webfolder/mem6/service_worker.js"]
+
+[tasks.delete_old_js_snippets]
+description = "delete old snippets"
+clear = true
+private = true
+script= ["../../utils_linux/lmake_delete_old_js_snippets"]

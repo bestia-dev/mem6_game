@@ -1,0 +1,21 @@
+{
+    "card_moniker": [
+        "", "alligator", "bear", "cow", "dog", "elephant", "fish", "giraffe", "horse", "iguana",
+        "jellyfish", "koala", "lion", "mouse", "newt", "octopus", "penguin", "quail", "rabbit", "snake",
+        "tiger", "unicorn", "vulture", "whale", "x-ray fish", "yak", "zebra"
+    ],
+    "img_filename": [
+        "", "alligator.png", "bear.png", "cow.png", "dog.png", "elephant.png", "fish.png", "giraffe.png", "horse.png", "iguana.png",
+        "jellyfish.png", "koala.png", "lion.png", "mouse.png", "newt.png", "octopus.png", "penguin.png", "quail.png", "rabbit.png", "snake.png",
+        "tiger.png", "unicorn.png", "vulture.png", "whale.png", "x-ray fish.png", "yak.png", "zebra.png"
+    ],
+    "sound_filename": [
+        "", "alligator.mp3", "bear.mp3", "cow.mp3", "dog.mp3", "elephant.mp3", "fish.mp3", "giraffe.mp3", "horse.mp3", "iguana.mp3",
+        "jellyfish.mp3", "koala.mp3", "lion.mp3", "mouse.mp3", "newt.mp3", "octopus.mp3", "penguin.mp3", "quail.mp3", "rabbit.mp3", "snake.mp3",
+        "tiger.mp3", "unicorn.mp3", "vulture.mp3", "whale.mp3", "x-ray fish.mp3", "yak.mp3", "zebra.mp3"
+    ],
+    "card_width": 116,
+    "card_height": 116,
+    "grid_items_hor": 3,
+    "grid_items_ver": 3
+}

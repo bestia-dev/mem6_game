@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["div_game_title","the header shows the game title"]]});

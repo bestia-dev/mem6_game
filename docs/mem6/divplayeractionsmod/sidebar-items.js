@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["div_player_actions_from_game_status","render html element to inform player what to do and get a click action from user"],["div_unpredicted","render unpredicted"]]});

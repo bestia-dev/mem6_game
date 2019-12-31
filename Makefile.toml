@@ -1,0 +1,145 @@
+# mem6_game/Makefile.toml
+# Workspace with members
+
+[config]
+skip_core_tasks = true
+
+#region: public callable tasks/flows
+    [tasks.default]
+    description = "show list of callable public tasks"
+    workspace = false
+    clear = true
+    command = "cargo"
+    args = ["make","--list-all-steps"]
+
+    [tasks.dev]
+    description = "cargo make dev for every workspace member"
+    workspace = true
+    clear = true
+    command = "cargo"
+    args = ["make","dev"]
+
+    [tasks.release]
+    description = "cargo make release for every workspace member"
+    workspace = true
+    clear=true
+    command = "cargo"
+    args = ["make","release"]
+
+    [tasks.audit]
+    description = "cargo audit warnings about dependencies"
+    workspace = true
+    clear = true
+    dependencies = [
+        "cargo_audit",
+        "workspace_audit",
+    ]
+
+    [tasks.fmt]
+    description = "format source code"
+    workspace = true
+    clear=true
+    command = "cargo"
+    args = ["make","fmt"]
+
+    [tasks.doc]
+    description = "build the `/target/docs` folder and copy to the `/docs` folder"
+    workspace = false
+    clear=true
+    dependencies = [
+        "cargo_doc",
+        "cargo_docs_copy",
+    ]
+
+    [tasks.sshadd]
+    description = "adds identity to ssh-agent for git and publish operations"
+    workspace = false
+    clear = true
+    script = [
+        "ssh-add /home/luciano/.ssh/luciano_googlecloud",
+        "ssh-add /home/luciano/.ssh/lucianobestia_mac",
+        "ssh-add -l",
+    ]
+
+    [tasks.gitpush]
+    description = "push the commits to github, uses ssh agent"
+    workspace = false
+    clear = true
+    script = [
+        "git push",
+    ]
+
+    [tasks.publish]
+    description = "publish the webfolder to google vm"
+    # Firt copies the content of /mem6_game/webfolder to //googlecloud/ folder and then to google vm with use of sshagent."
+    workspace = false
+    clear = true
+    # backslash is the escape character for all other special characters.
+    # and then another time I have to escape the backslash. So 4 backslash for one backslash.
+    script = [
+        "rsync -avz --delete-after /home/luciano/rustprojects/mem6_game/webfolder/ /home/luciano/rustprojects/googlecloud/var/www/webapps/mem6_game/",
+        "ssh -tt -i /home/luciano/.ssh/luciano_googlecloud luciano_bestia@34.87.17.103 screen -dr mem6-8086 -X stuff $'\\\\003'",
+        "ssh -tt -i /home/luciano/.ssh/luciano_googlecloud luciano_bestia@34.87.17.103 screen -dr mem6-8086 -X stuff 'cd\\ \\/var\\/www\\/webapps\\/mem6_game\\\\n'",
+        "rsync -e ssh -avz --delete-after /home/luciano/rustprojects/googlecloud/var/www/webapps/mem6_game/ luciano_bestia@34.87.17.103:/var/www/webapps/mem6_game/",
+        "ssh -tt -i /home/luciano/.ssh/luciano_googlecloud luciano_bestia@34.87.17.103 screen -dr mem6-8086 -X stuff 'chmod\\ \\+x\\ mem6_server\\\\n'",
+        "ssh -tt -i /home/luciano/.ssh/luciano_googlecloud luciano_bestia@34.87.17.103 screen -dr mem6-8086 -X stuff 'sudo\\ \\.\\/mem6_server\\\\n'",
+    ]
+
+    [tasks.udeps]
+    description = "lists unused dependencies"
+    workspace = false
+    clear = true
+    script = [
+        "cargo +nightly udeps",
+    ]
+
+    [tasks.loc]
+    description = "Lines Of Rust Code with tokei"
+    workspace = false
+    clear = true
+    script = [
+        "tokei  -t 'Rust'",
+    ]
+
+    [tasks.depver]
+    description = "list of not latest dependencies"
+    workspace = false
+    clear = true
+    script = [
+        "cargo update --dry-run",
+    ]
+
+#endregion
+
+[tasks.cargo_audit]
+description = "cargo audit"
+workspace=false
+clear = true
+private = true
+command = "cargo"
+args = ["audit"]
+
+[tasks.workspace_audit]
+description = "cargo audit for every workspace member"
+workspace = true
+clear=true
+private=true
+command = "cargo"
+args = ["make","audit"]
+
+[tasks.cargo_doc]
+description = "cargo make doc for every workspace member"
+workspace = true
+clear=true
+private=false
+command = "cargo"
+args = ["make","doc"]
+
+[tasks.cargo_docs_copy]
+description = "copy folder `/target/doc` to /docs folder (github standard)"
+workspace=false
+clear = true
+private = false
+script = [
+    "\\rsync -avz --delete-after ~/rustprojects/mem6_game/target/doc/*  ~/rustprojects/mem6_game/docs/",
+]

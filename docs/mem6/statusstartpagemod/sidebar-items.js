@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["div_start_page","render invite ask begin, ask to play for multiple contents/folders"],["on_click_invite","on click updates some data and sends msgs msgs will be asynchronously received and processed"],["on_msg_invite","msg invite"]]});

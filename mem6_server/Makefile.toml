@@ -1,0 +1,133 @@
+# mem6_game/mem6_server/Makefile.toml
+# https://github.com/sagiegurari/cargo-make/blob/master/src/lib/Makefile.stable.toml
+
+[config]
+skip_core_tasks = true
+
+#region: public callable tasks/flows
+
+    [tasks.default]
+    description = "show list of public callable tasks"
+    clear = true
+    command = "cargo"
+    args = ["make","--list-all-steps"]
+
+    [tasks.dev]
+    description = "cargo build development"
+    clear=true
+    dependencies = [
+        "lmake_version_from_date",
+        "build_dev",
+        "post_build_dev",
+    ]
+
+    [tasks.release]
+    description = "cargo build release"
+    clear=true
+    dependencies = [
+        "lmake_version_from_date",
+        "build_release",
+        "post_build_release",
+    ]
+
+    [tasks.audit]
+    description = "cargo audit - for warning dependencies"
+    clear = true
+    dependencies = [
+        "cargo_audit",
+    ]
+    
+    [tasks.fmt]
+    description = "cargo fmt - format code"
+    clear = true
+    dependencies = [
+        "cargo_fmt",
+    ]
+
+    [tasks.doc]
+    description = "call cargo doc"
+    clear=true
+    dependencies = [
+        "insert_readme",
+        "cargo_doc"
+    ]
+
+#endregion
+
+#why is task "empty" in the list of public tasks?
+
+[tasks.build_dev]
+clear=true
+private=true
+command = "cargo"
+args = ["build"]
+
+[tasks.build_release]
+clear=true
+private=true
+command = "cargo"
+args = ["build","--release"]
+
+[tasks.post_build_dev]
+clear=true
+private=true
+script = [
+    "\\cp ~/rustprojects/mem6_game/target/debug/mem6_server -rf -v ~/rustprojects/mem6_game/webfolder",
+    # I cannot script the exact IP here.  
+    # It must be copied from the mem6_server.exe output.
+    "alias chrome=\"/mnt/c/Program\\ Files\\ \\(x86\\)/Google/Chrome/Application/chrome.exe\"",
+    "chrome http://127.0.0.1:8086", 
+    "chrome http://127.0.0.1:8086", 
+    "chrome http://127.0.0.1:8086", 
+    "cd ../webfolder",
+    "sudo ./mem6_server"
+]
+
+[tasks.post_build_release]
+clear=true
+private=true
+script = [
+    "\\cp ~/rustprojects/mem6_game/target/release/mem6_server -rf -v ~/rustprojects/mem6_game/webfolder",
+    # I cannot script the exact IP here.  
+    # It must be copied from the mem6_server.exe output.
+    "alias chrome=\"/mnt/c/Program\\ Files\\ \\(x86\\)/Google/Chrome/Application/chrome.exe\"",
+    "chrome http://127.0.0.1:8086", 
+    "chrome http://127.0.0.1:8086", 
+    "chrome http://127.0.0.1:8086", 
+    "cd ../webfolder",
+    "sudo ./mem6_server"
+]
+
+[tasks.cargo_audit]
+description = "cargo audit"
+clear = true
+private = true
+command = "cargo"
+args = ["audit"]
+
+[tasks.cargo_fmt]
+description = "cargo fmt"
+clear = true
+private = true
+command = "cargo"
+args = ["fmt"]
+
+[tasks.insert_readme]
+description = "copy the content of readme.md into *.rs comments (for the docs)"
+clear = true
+private = true
+script= ["../../utils_linux/lmake_readme"]
+
+[tasks.cargo_doc]
+description = "call cargo doc"
+clear = true
+private = true
+command="cargo"
+args=["doc","--no-deps","--document-private-items"]
+
+[tasks.lmake_version_from_date]
+description = "in cargo.toml change version to today date"
+clear = true
+private = true
+script= ["../../utils_linux/lmake_version_from_date"]
+

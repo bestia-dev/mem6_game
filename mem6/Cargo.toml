@@ -1,0 +1,79 @@
+[package]
+name = "mem6"
+version = "2019.1231.1217"
+authors = ["Luciano Furlan <Luciano.Bestia@gmail.com>"]
+edition = "2018"
+description = "Learning Rust Wasm/WebAssembly with Virtual Dom Dodrio"
+repository = "https://github.com/LucianoBestia/mem6_game"
+readme = "README.md"
+license = "MIT"
+keywords = ["wasm","dodrio","virtual dom"]
+categories = ["game","learning"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+unwrap = "1.2.1"
+mem6_common = { path = "../mem6_common" }
+dodrio = "0.1.0"
+wasm-bindgen = { version = "0.2.51", features = ["serde-serialize"] }
+console_error_panic_hook = "0.1.6"
+#newer version of rand dont have smallring
+rand = { version = "0.6", features = ["wasm-bindgen"] }
+js-sys = "0.3"
+serde = "1.0.101"
+serde_derive = "1.0.101"
+serde_json = "1.0"
+futures = "0.1.29"
+# newer futures have unstable .await
+wasm-bindgen-futures = "0.3.20"
+#log = "0.4.8"
+strum = "0.16.0"
+strum_macros = "0.16.0"
+typed-html = {version="0.2.1", features = ["dodrio_macro"]}
+conv = "0.3.3"
+gloo-timers = "0.1.0"
+
+[dependencies.web-sys]
+version = "0.3.28"
+features = [
+  "AbortController",
+  "console",
+  "CssStyleDeclaration",
+  "Document",
+  "Element",
+  "ErrorEvent",
+  "Event",
+  "EventListener",
+  "EventTarget",
+  "FormData",
+  "Headers",
+  "HtmlElement",
+  "HtmlFormElement",
+  "HtmlInputElement",
+  "HtmlImageElement",
+  "HtmlAudioElement",
+  "HtmlMediaElement",
+  "KeyboardEvent",
+  "Location",
+  "MediaQueryList",
+  "MouseEvent",
+  "Navigator",
+  "Node",
+  "ReferrerPolicy",
+  "Request",
+  "RequestCache",
+  "RequestCredentials",
+  "RequestInit",
+  "RequestMode",
+  "RequestRedirect",
+  "Response",
+  "Screen",
+  "Storage",
+  "WebSocket",
+  "Window",
+]
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3.1"

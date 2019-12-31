@@ -1,0 +1,21 @@
+{
+    "short_name": "mem6",
+    "name": "bestia mem6",
+    "icons": [
+        {
+            "src": "images/icons-192.png",
+            "type": "image/png",
+            "sizes": "192x192"
+        },
+        {
+            "src": "images/icons-512.png",
+            "type": "image/png",
+            "sizes": "512x512"
+        }
+    ],
+    "start_url": "/mem6/index.html",
+    "background_color": "#FFFF00",
+    "display": "fullscreen",
+    "orientation": "portrait",
+    "theme_color": "#FFFF00"
+}

@@ -1,0 +1,27 @@
+{
+    "card_moniker": [
+        "",
+        "♣1", "♣2", "♣3", "♣4", "♣5", "♣6", "♣7", "♣8", "♣9", "♣10", "♣11", "♣12", "♣13",
+        "♦1", "♦2", "♦3", "♦4", "♦5", "♦6", "♦7", "♦8", "♦9", "♦10", "♦11", "♦12", "♦13",
+        "♥1", "♥2", "♥3", "♥4", "♥5", "♥6", "♥7", "♥8", "♥9", "♥10", "♥11", "♥12", "♥13",
+        "♠1", "♠2", "♠3", "♠4", "♠5", "♠6", "♠7", "♠8", "♠9", "♠10", "♠11", "♠12", "♠13"
+    ],
+    "img_filename": [
+        "",
+        "tref01.png", "tref02.png", "tref03.png", "tref04.png", "tref05.png", "tref06.png", "tref07.png", "tref08.png", "tref09.png", "tref10.png", "tref11.png", "tref12.png", "tref13.png",
+        "diamond01.png", "diamond02.png", "diamond03.png", "diamond04.png", "diamond05.png", "diamond06.png", "diamond07.png", "diamond08.png", "diamond09.png", "diamond10.png", "diamond11.png", "diamond12.png", "diamond13.png",
+        "heart01.png", "heart02.png", "heart03.png", "heart04.png", "heart05.png", "heart06.png", "heart07.png", "heart08.png", "heart09.png", "heart10.png", "heart11.png", "heart12.png", "heart13.png",
+        "spade01.png", "spade02.png", "spade03.png", "spade04.png", "spade05.png", "spade06.png", "spade07.png", "spade08.png", "spade09.png", "spade10.png", "spade11.png", "spade12.png", "spade13.png"
+    ],
+    "sound_filename": [
+        "",
+        "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3",
+        "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3",
+        "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3",
+        "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3", "card_shuffle.mp3"
+    ],
+    "card_width": 74,
+    "card_height": 115,
+    "grid_items_hor": 3,
+    "grid_items_ver": 2
+}

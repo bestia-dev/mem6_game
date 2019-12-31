@@ -1,0 +1,29 @@
+{
+	"vec_game_metadata":[
+		{
+			"folder": "alphabet",
+			"name": "alphabet",
+			"description":"alphabet"
+		},
+		{
+			"folder": "animals",
+			"name": "animals",
+			"description":"animals"
+		},
+		{
+			"folder": "numbers",
+			"name": "numbers",
+			"description":"numbers"
+		},
+		{
+			"folder": "playingcards",
+			"name": "playingcards",
+			"description":"playingcards"
+		},
+		{
+			"folder": "triestine",
+			"name": "triestine",
+			"description":"triestine"
+		}
+	]
+}

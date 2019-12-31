@@ -1,0 +1,749 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `mem6/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="https://github.com/LucianoBestia/mem6_game/raw/master/webfolder/mem6/images/icons-16.png"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../mem6/index.html'><div class='logo-container'><img src='https://github.com/LucianoBestia/mem6_game/raw/master/webfolder/mem6/images/icons-192.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<span id="2">  2</span>
+<span id="3">  3</span>
+<span id="4">  4</span>
+<span id="5">  5</span>
+<span id="6">  6</span>
+<span id="7">  7</span>
+<span id="8">  8</span>
+<span id="9">  9</span>
+<span id="10"> 10</span>
+<span id="11"> 11</span>
+<span id="12"> 12</span>
+<span id="13"> 13</span>
+<span id="14"> 14</span>
+<span id="15"> 15</span>
+<span id="16"> 16</span>
+<span id="17"> 17</span>
+<span id="18"> 18</span>
+<span id="19"> 19</span>
+<span id="20"> 20</span>
+<span id="21"> 21</span>
+<span id="22"> 22</span>
+<span id="23"> 23</span>
+<span id="24"> 24</span>
+<span id="25"> 25</span>
+<span id="26"> 26</span>
+<span id="27"> 27</span>
+<span id="28"> 28</span>
+<span id="29"> 29</span>
+<span id="30"> 30</span>
+<span id="31"> 31</span>
+<span id="32"> 32</span>
+<span id="33"> 33</span>
+<span id="34"> 34</span>
+<span id="35"> 35</span>
+<span id="36"> 36</span>
+<span id="37"> 37</span>
+<span id="38"> 38</span>
+<span id="39"> 39</span>
+<span id="40"> 40</span>
+<span id="41"> 41</span>
+<span id="42"> 42</span>
+<span id="43"> 43</span>
+<span id="44"> 44</span>
+<span id="45"> 45</span>
+<span id="46"> 46</span>
+<span id="47"> 47</span>
+<span id="48"> 48</span>
+<span id="49"> 49</span>
+<span id="50"> 50</span>
+<span id="51"> 51</span>
+<span id="52"> 52</span>
+<span id="53"> 53</span>
+<span id="54"> 54</span>
+<span id="55"> 55</span>
+<span id="56"> 56</span>
+<span id="57"> 57</span>
+<span id="58"> 58</span>
+<span id="59"> 59</span>
+<span id="60"> 60</span>
+<span id="61"> 61</span>
+<span id="62"> 62</span>
+<span id="63"> 63</span>
+<span id="64"> 64</span>
+<span id="65"> 65</span>
+<span id="66"> 66</span>
+<span id="67"> 67</span>
+<span id="68"> 68</span>
+<span id="69"> 69</span>
+<span id="70"> 70</span>
+<span id="71"> 71</span>
+<span id="72"> 72</span>
+<span id="73"> 73</span>
+<span id="74"> 74</span>
+<span id="75"> 75</span>
+<span id="76"> 76</span>
+<span id="77"> 77</span>
+<span id="78"> 78</span>
+<span id="79"> 79</span>
+<span id="80"> 80</span>
+<span id="81"> 81</span>
+<span id="82"> 82</span>
+<span id="83"> 83</span>
+<span id="84"> 84</span>
+<span id="85"> 85</span>
+<span id="86"> 86</span>
+<span id="87"> 87</span>
+<span id="88"> 88</span>
+<span id="89"> 89</span>
+<span id="90"> 90</span>
+<span id="91"> 91</span>
+<span id="92"> 92</span>
+<span id="93"> 93</span>
+<span id="94"> 94</span>
+<span id="95"> 95</span>
+<span id="96"> 96</span>
+<span id="97"> 97</span>
+<span id="98"> 98</span>
+<span id="99"> 99</span>
+<span id="100">100</span>
+<span id="101">101</span>
+<span id="102">102</span>
+<span id="103">103</span>
+<span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
+<span id="304">304</span>
+<span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
+<span id="308">308</span>
+<span id="309">309</span>
+<span id="310">310</span>
+<span id="311">311</span>
+<span id="312">312</span>
+<span id="313">313</span>
+<span id="314">314</span>
+<span id="315">315</span>
+<span id="316">316</span>
+<span id="317">317</span>
+<span id="318">318</span>
+<span id="319">319</span>
+<span id="320">320</span>
+<span id="321">321</span>
+<span id="322">322</span>
+<span id="323">323</span>
+<span id="324">324</span>
+<span id="325">325</span>
+<span id="326">326</span>
+<span id="327">327</span>
+<span id="328">328</span>
+<span id="329">329</span>
+<span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
+<span id="356">356</span>
+<span id="357">357</span>
+<span id="358">358</span>
+<span id="359">359</span>
+<span id="360">360</span>
+<span id="361">361</span>
+<span id="362">362</span>
+<span id="363">363</span>
+<span id="364">364</span>
+<span id="365">365</span>
+<span id="366">366</span>
+<span id="367">367</span>
+<span id="368">368</span>
+<span id="369">369</span>
+<span id="370">370</span>
+<span id="371">371</span>
+<span id="372">372</span>
+<span id="373">373</span>
+</pre><div class="example-wrap"><pre class="rust ">
+<span class="attribute">#![<span class="ident">doc</span>(
+    <span class="ident">html_favicon_url</span> <span class="op">=</span> <span class="string">&quot;https://github.com/LucianoBestia/mem6_game/raw/master/webfolder/mem6/images/icons-16.png&quot;</span>
+)]</span>
+<span class="attribute">#![<span class="ident">doc</span>(
+    <span class="ident">html_logo_url</span> <span class="op">=</span> <span class="string">&quot;https://github.com/LucianoBestia/mem6_game/raw/master/webfolder/mem6/images/icons-192.png&quot;</span>
+)]</span>
+<span class="comment">//region: lmake_readme insert &quot;readme.md&quot;</span>
+<span class="doccomment">//! # mem6</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! version: 19.10.22-18.40  </span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! mem6 is a simple memory game made primarily for learning the Rust programming language and Wasm/WebAssembly with Virtual Dom Dodrio, WebSocket communication and PWA (Progressive Web App).  </span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ## Idea</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! Playing the memory game alone is boring.  </span>
+<span class="doccomment">//! Playing it with friends is better.  </span>
+<span class="doccomment">//! But if all friends just stare in their smartphones, it is still boring.  </span>
+<span class="doccomment">//! What makes memory games (and other board games) entertaining is the company of friends.  </span>
+<span class="doccomment">//! There must be many friends around the table watching one another and stealing moves and laughing and screaming at each other.  </span>
+<span class="doccomment">//! Today I assume everybody has a decent smartphone. If all friends open the mem6 game and put their smartphones on the center of the table one near the other so that everybody can see them and touch them, this is the closest it gets to a **classic board game**.  </span>
+<span class="doccomment">//! All the phones will have a small card grid (ex. 3x3). But the combined card grid from all these phones together is not so small anymore. It is now much more interesting to play for many players.  </span>
+<span class="doccomment">//! It can be played with as many friends as there are: 3,4,5,...  </span>
+<span class="doccomment">//! More friends - more fun.  </span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ## Rust and Wasm/WebAssembly</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! Rust is a pretty new language created by Mozilla for really low level programming.  </span>
+<span class="doccomment">//! It is a step forward from the C language with functionality and features that are best practice today.  </span>
+<span class="doccomment">//! It is pretty hard to learn. Some concepts are so different from other languages it makes it</span>
+<span class="doccomment">//! hard for beginners. Lifetimes are the strangest and most confusing concept.  </span>
+<span class="doccomment">//! The Rust language has been made from the ground up with an ecosystem that makes it productive.  </span>
+<span class="doccomment">//! The language and most of the libraries are Open Source. That is good and bad, but mostly good.  </span>
+<span class="doccomment">//! Rust is the best language today to compile into Wasm/WebAssembly.  </span>
+<span class="doccomment">//! That compiled code works inside a browser directly with the JavaScript engine.  </span>
+<span class="doccomment">//! So finally no need for JavaScript to make cross-platform applications inside browsers.  </span>
+<span class="doccomment">//! I have a lot of hope here.  </span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ## Virtual DOM</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! Constructing a HTML page with Virtual DOM (vdom) is easier because it is rendered completely on every tick (animation frame).  </span>
+<span class="doccomment">//! Sometimes is very complex what should change in the UI when some data changes.  </span>
+<span class="doccomment">//! The data can change from many different events and very chaotically (asynchronously).  </span>
+<span class="doccomment">//! It is easier to think how to render the complete DOM for a given state of data.  </span>
+<span class="doccomment">//! The Rust Dodrio library has ticks, time intervals when it does something. If a rendering is scheduled, it will be done on the next tick. If a rendering is not scheduled I believe nothing happens.  </span>
+<span class="doccomment">//! This enables asynchronous changing of data and rendering. They cannot happen theoretically in the</span>
+<span class="doccomment">//! same exact moment. So, no data race here.  </span>
+<span class="doccomment">//! When GameData change and we know it will affect the DOM, then rendering must be scheduled.  </span>
+<span class="doccomment">//! The main component of the Dodrio Virtual Dom is the Root Rendering Component (rrc).  </span>
+<span class="doccomment">//! It is the component that renders the complete user interface (HTML).  </span>
+<span class="doccomment">//! The root rendering component is easily splitted  into sub-components.  </span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ![subcomponents](https://github.com/LucianoBestia/mem6_game/raw/master/webfolder/mem6/images/subcomponents.png)  </span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! Some subcomponents don&#39;t need any extra data and can be coded as simple functions.  </span>
+<span class="doccomment">//! The subcomponent &quot;players and scores&quot; has its own data. This data is cached from the GameData.  </span>
+<span class="doccomment">//! When this data does not match, invalidation is called to cache them.</span>
+<span class="doccomment">//! That also schedules the rendering of the subcomponent.  </span>
+<span class="doccomment">//! If no data has changed, the cached subcomponent Node is used. This is more efficient and performant.  </span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ## GameData</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! All the game data are in this simple struct.  </span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ## WebSocket communication</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! HTML5 has finally bring a true stateful bidirectional communication.  </span>
+<span class="doccomment">//! Most of the programming problems are more easily and effectively solved this way.  </span>
+<span class="doccomment">//! The old unidirectional stateless communication is very good for static html pages, but is terrible for any dynamic page. The WebSocket is very rudimental and often the communication breaks for many different reasons. The programmer must deal with it inside the application.  </span>
+<span class="doccomment">//! I send simple structs text messages in json format between the players. They are all in the WsMsg enum and therefore easy to use by the server and client.  </span>
+<span class="doccomment">//! The WebSocket server is coded especially for this game and recognizes 2 types of msg:</span>
+<span class="doccomment">//! TODO: decide on the client what the server will do with the msg.</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! - msg to broadcast to every other player</span>
+<span class="doccomment">//! - msg to send only to the actual game players</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ## WebSockets is not reliable</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! Simple messaging is not reliable. On mobiles it is even worse. There is a lot of possibilities that something goes wrong and the message doesn&#39;t reach the destination. The protocol has nothing that can be used to deal with reconnections or lost messages.  </span>
+<span class="doccomment">//! That means that I need additional work on the application level - always reply one acknowledgement &quot;ack&quot; message.  </span>
+<span class="doccomment">//! Workflow:  </span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! - sender sends one message to more players (more ws_uid) with one random number msg_id</span>
+<span class="doccomment">//!     push to a vector (msg queue) more items with ws_uid and msg_id</span>
+<span class="doccomment">//!     blocks the continuation of the workflow untill receives all ACK from all players</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! - receiver on receive send the ACK aknowledge msg with his ws_uid and msg_id</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! - the sender receives the ACK and removes one item from the vector</span>
+<span class="doccomment">//!     if there is no more items for that msg_id, the workflow can continue.</span>
+<span class="doccomment">//!     TODO: if after 3 seconds the ACK is not received and error message is shown to the player.</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! This is very similar to a message queue...  </span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ## gRPC, WebRTC datachannel</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! The new shiny protocol gRPC for web communication is great for server-to-server communication. But it is still very limited inside the browser. When it eventually becomes stable I would like to change Websockets for gRPC.  </span>
+<span class="doccomment">//! The WebRTC datachannel sounds great for peer-to-peer commnication. Very probably the players will be all on the same wifi network, this solves all latency issues. TODO: in version 6.  </span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ## The game flow</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! In a few words:  </span>
+<span class="doccomment">//! Playing player : Status1 - user action - send msg - await for ack msgs - update game data - Status2  </span>
+<span class="doccomment">//! Other players: Status1 - receive WsMessage - send ack msg - update game data - Status2  </span>
+<span class="doccomment">//!   </span>
+<span class="doccomment">//! Before the actual game there is the `invitation and accepting` flow.  </span>
+<span class="doccomment">//! It is a little bit different from the game flow. The first player broadcast an invitation msg.  </span>
+<span class="doccomment">//! All other players that are in the first status receive that and are asked if they accept.  </span>
+<span class="doccomment">//! When the user Accepts it sends a msg to the first player.  </span>
+<span class="doccomment">//! The first player waits to receive msgs from all other users.  </span>
+<span class="doccomment">//! After that he starts the game. This calculates the game_data and send this init data to all other players.  </span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! | Game Status1         | Render               | User action           | GameStatus2 p.p. | Sends Msg       | On rcv Msg o.p.       | GameStatus2 o.p. |</span>
+<span class="doccomment">//! | -------------------- | -------------------- | --------------------- | ---------------- | --------------  | -------------------   | --------------   |</span>
+<span class="doccomment">//! | p.p. StatusStartPage | div_start_page       | on_click_invite       | StatusInviting   | MsgInvite       | on_msg_invite         | StatusInvited    |</span>
+<span class="doccomment">//! | o.p. StatusInvited   | div_invited          | on_click_accept       | StatusAccepted   | MsgAccept       | on_msg_accept         | -                |</span>
+<span class="doccomment">//! | o.p. StatusAccepted  | div_invite_accepted  |                       |                  |                 |                       | -                |</span>
+<span class="doccomment">//! | p.p. StatusInviting  | div_inviting         | on_click_start_game   | Status1stCard    | MsgStartGame    | on_msg_start_game     | Status1stCard    |</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! This starts the game flow, that repeats until the game is over.  </span>
+<span class="doccomment">//!   </span>
+<span class="doccomment">//! In one moment the game is in a one Game Status for all players.  </span>
+<span class="doccomment">//! One player is the playing player and all others are awaiting.  </span>
+<span class="doccomment">//! The active user then makes an action on the GUI.</span>
+<span class="doccomment">//! This action will eventually change the GameData and the GameStatus. But before that there is communication.  </span>
+<span class="doccomment">//! A message is sent to other players so they can also change their local GameData and GameStatus.  </span>
+<span class="doccomment">//! Because of unreliable networks ther must be an acknowledge ack msg to confirm, that the msg is received to continue the game.  </span>
+<span class="doccomment">//! The rendering is scheduled and it will happen shortly (async).  </span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! | Game Status1      | Render                     | User action                    | Condition                     | GameStatus2 p.p.    | Sends Msg            | On rcv Msg o.p.             | GameStatus2 o.p.               |</span>
+<span class="doccomment">//! | ----------------  | -------------------------- | ------------------------------ | ----------------------------- | ----------------    | ----------------     | --------------------------  | ----------------------------   |</span>
+<span class="doccomment">//! | Status1stCard     | div_grid_container         | on_click_1st_card()            | -                             | Status2ndCard       | MsgClick1stCard      | on_msg_click_1st_card       | Status2ndCard                  |</span>
+<span class="doccomment">//! | Status2ndCard     | div_grid_container         | on_click_2nd_card()            | If cards match                | Status1stCard       | MsgClick2ndCardPoint | on_msg_click_2nd_card_point | Status1stCard                  |</span>
+<span class="doccomment">//! | -                 | -                          | continues on ack msgs received | if all cards permanently up   | StatusGameOver      | MsgGameOver          | on_msg_game_over            | StatusGameOver                 |</span>
+<span class="doccomment">//! | Status2ndCard     | div_grid_container         | on_click_take_turn_begin       | else cards don&#39;t match        | StatusTakeTurnBegin | MsgTakeTurnBegin     | on_msg_take_turn_begin      | MsgTakeTurnBegin               |</span>
+<span class="doccomment">//! | MsgTakeTurnBegin  | div_take_turn_begin        | on_click_take_turn_end         | -                             | Status1stCard       | MsgTakeTurnEnd       | on_msg_take_turn_end        | Status1stCard, the next player |</span>
+<span class="doccomment">//! | StatusGameOver    | div_game_over              | window.location().reload()     | -                             | -                   | -                    | -                           | -                              |</span>
+<span class="doccomment">//! |  |  |  |  |  |  |  |  |</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! p.p. = playing player,   o.p. = other players,  rrc = rrc, rcv = receive</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! 1. Some actions can have different results. For example the condition if card match or if card don’t match.  </span>
+<span class="doccomment">//! 2. one action must be only for one status1. This action changes Status for this player and sends Msg to other players.  </span>
+<span class="doccomment">//! 3. on receive msg can produce only one status2.  </span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ## Futures and Promises, Rust and JavaScript</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! JavaScript is all asynchronous. Wasm is nothing else then a shortcut to the JavaScript engine.  </span>
+<span class="doccomment">//! So everything is asynchronous too. This is pretty hard to grasp. Everything is Promises and Futures.  </span>
+<span class="doccomment">//! There is a constant jumping from thinking in Rust to thinking is JavaScript and back. That is pretty confusing.  </span>
+<span class="doccomment">//! JavaScript does not have a good idea of Rust datatypes. All there is is a generic JSValue type.  </span>
+<span class="doccomment">//! The library `wasm-bindgen` has made a fantastic job of giving Rust the ability to call</span>
+<span class="doccomment">//! anything JavaScript can call, but the way of doing it is sometimes cumbersome.  </span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ## Typed html</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! Writing html inside Rust code is much easier with the macro `html!` from the `crate typed-html`  </span>
+<span class="doccomment">//! &lt;https://github.com/bodil/typed-html&gt;  </span>
+<span class="doccomment">//! It has also a macro `dodrio!` created exclusively for the dodrio vdom.  </span>
+<span class="doccomment">//! Everything is done in compile time, so the runtime is nothing slower.  </span>
+<span class="doccomment">//! TODO: what if an attribute is not covered by the macro. Can I add it later?</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ## Browser console</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! At least in modern browsers (Firefox and Chrome) we have the developer tools F12 and there is a</span>
+<span class="doccomment">//! console we can output to. So we can debug what is going on with our Wasm program.</span>
+<span class="doccomment">//! But not on smartphones !! I save the eroor and log messages in sessionStorage and this is displayed on the screen.  </span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ## Safari on iOS and FullScreen</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! Apple is very restrictive and does not allow fullscreen Safari on iPhones.  </span>
+<span class="doccomment">//! The workaround is to `Add to Homescreen` the webapp.  </span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ## PWA (Progressive Web App)</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! On both android and iPhone is possible to use PWA.  </span>
+<span class="doccomment">//! To be 100% PWA it must be secured with TLS and must have a service worker.  </span>
+<span class="doccomment">//! I added also the PWA manifest and png images for icons and now the game is a full PWA.  </span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! **Very important :**</span>
+<span class="doccomment">//! On Android Chrome to `Clear &amp; reset` the cached data of the website you must click on the icon of the URL address (the lock) and choose `Site Settings`.  </span>
+<span class="doccomment">//! Sometimes even that does not work. Than I go in the Menu to Settings - Privacy - Clear browser data and delete all. Very aggressive, but the only thing that works.  </span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ## Modules</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! Rust code is splitted into modules. They are not exactly like classes, but can be similar.  </span>
+<span class="doccomment">//! Rust has much more freedom to group code in different ways. So that is best suits the problem.  </span>
+<span class="doccomment">//! I splitted the rendering into sub-components.  </span>
+<span class="doccomment">//! And then I splitted the User Actions by the Status1 to easy follow the flow of the game.  </span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ## Clippy</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! Clippy is very useful to teach us how to program Rust in a better way.  </span>
+<span class="doccomment">//! These are not syntax errors, but hints how to do it in a more Rusty way (idiomatic).  </span>
+<span class="doccomment">//! Some lints are problematic and they are explicitly allowed here.</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ## font-size</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! Browsers have 2 types of zoom:</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! - zoom everything proportionally (I like it)</span>
+<span class="doccomment">//! - zoom only the text (this breaks the layout completely)</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! When the font-size in android is increased (accessibility) it applies somehow also to the browser rendering.  </span>
+<span class="doccomment">//! I have tried many different things, but it looks this cannot be overridden from the css or javascript. Only the user can change this setting in his phone.  </span>
+
+
+<span class="comment">//endregion: lmake_readme insert &quot;readme.md&quot;</span>
+
+<span class="comment">//needed for dodrio! macro (typed-html)</span>
+<span class="attribute">#![<span class="ident">recursion_limit</span> <span class="op">=</span> <span class="string">&quot;512&quot;</span>]</span>
+<span class="comment">//region: Clippy</span>
+<span class="attribute">#![<span class="ident">warn</span>(
+    <span class="ident">clippy</span>::<span class="ident">all</span>,
+    <span class="ident">clippy</span>::<span class="ident">restriction</span>,
+    <span class="ident">clippy</span>::<span class="ident">pedantic</span>,
+    <span class="ident">clippy</span>::<span class="ident">nursery</span>,
+    <span class="ident">clippy</span>::<span class="ident">cargo</span>,
+    <span class="comment">//variable shadowing is idiomatic to Rust, but unnatural to me.</span>
+    <span class="ident">clippy</span>::<span class="ident">shadow_reuse</span>,
+    <span class="ident">clippy</span>::<span class="ident">shadow_same</span>,
+    <span class="ident">clippy</span>::<span class="ident">shadow_unrelated</span>,
+
+)]</span>
+<span class="attribute">#![<span class="ident">allow</span>(
+    <span class="comment">//library from dependencies have this clippy warnings. Not my code.</span>
+    <span class="comment">//Why is this bad: It will be more difficult for users to discover the purpose of the crate, </span>
+    <span class="comment">//and key information related to it.</span>
+    <span class="ident">clippy</span>::<span class="ident">cargo_common_metadata</span>,
+    <span class="comment">//Why is this bad : This bloats the size of targets, and can lead to confusing error messages when </span>
+    <span class="comment">//structs or traits are used interchangeably between different versions of a crate.</span>
+    <span class="ident">clippy</span>::<span class="ident">multiple_crate_versions</span>,
+    <span class="comment">//Why is this bad : As the edition guide says, it is highly unlikely that you work with any possible </span>
+    <span class="comment">//version of your dependency, and wildcard dependencies would cause unnecessary </span>
+    <span class="comment">//breakage in the ecosystem.</span>
+    <span class="ident">clippy</span>::<span class="ident">wildcard_dependencies</span>,
+    <span class="comment">//Rust is more idiomatic without return statement</span>
+    <span class="comment">//Why is this bad : Actually omitting the return keyword is idiomatic Rust code. </span>
+    <span class="comment">//Programmers coming from other languages might prefer the expressiveness of return. </span>
+    <span class="comment">//It’s possible to miss the last returning statement because the only difference </span>
+    <span class="comment">//is a missing ;. Especially in bigger code with multiple return paths having a </span>
+    <span class="comment">//return keyword makes it easier to find the corresponding statements.</span>
+    <span class="ident">clippy</span>::<span class="ident">implicit_return</span>,
+    <span class="comment">//I have private function inside a function. Self does not work there.</span>
+    <span class="comment">//Why is this bad: Unnecessary repetition. Mixed use of Self and struct name feels inconsistent.</span>
+    <span class="ident">clippy</span>::<span class="ident">use_self</span>,
+    <span class="comment">//Cannot add #[inline] to the start function with #[wasm_bindgen(start)]</span>
+    <span class="comment">//because then wasm-pack build --target web returns an error: export run not found </span>
+    <span class="comment">//Why is this bad: In general, it is not. Functions can be inlined across crates when that’s profitable </span>
+    <span class="comment">//as long as any form of LTO is used. When LTO is disabled, functions that are not #[inline] </span>
+    <span class="comment">//cannot be inlined across crates. Certain types of crates might intend for most of the </span>
+    <span class="comment">//methods in their public API to be able to be inlined across crates even when LTO is disabled. </span>
+    <span class="comment">//For these types of crates, enabling this lint might make sense. It allows the crate to </span>
+    <span class="comment">//require all exported methods to be #[inline] by default, and then opt out for specific </span>
+    <span class="comment">//methods where this might not make sense.</span>
+    <span class="ident">clippy</span>::<span class="ident">missing_inline_in_public_items</span>,
+    <span class="comment">//Why is this bad: This is only checked against overflow in debug builds. In some applications one wants explicitly checked, wrapping or saturating arithmetic.</span>
+    <span class="comment">//clippy::integer_arithmetic,</span>
+    <span class="comment">//Why is this bad: For some embedded systems or kernel development, it can be useful to rule out floating-point numbers.</span>
+    <span class="ident">clippy</span>::<span class="ident">float_arithmetic</span>,
+    <span class="comment">//Why is this bad : Doc is good. rustc has a MISSING_DOCS allowed-by-default lint for public members, but has no way to enforce documentation of private items. This lint fixes that.</span>
+    <span class="ident">clippy</span>::<span class="ident">doc_markdown</span>,
+    <span class="comment">//Why is this bad : Splitting the implementation of a type makes the code harder to navigate.</span>
+    <span class="ident">clippy</span>::<span class="ident">multiple_inherent_impl</span>,
+)]</span>
+<span class="comment">//endregion</span>
+
+<span class="comment">//region: mod is used only in lib file. All the rest use use crate</span>
+<span class="kw">mod</span> <span class="ident">ackmsgmod</span>;
+<span class="kw">mod</span> <span class="ident">divcardmonikermod</span>;
+<span class="kw">mod</span> <span class="ident">divfordebuggingmod</span>;
+<span class="kw">mod</span> <span class="ident">divfullscreenmod</span>;
+<span class="kw">mod</span> <span class="ident">divgametitlemod</span>;
+<span class="kw">mod</span> <span class="ident">divgridcontainermod</span>;
+<span class="kw">mod</span> <span class="ident">divplayeractionsmod</span>;
+<span class="kw">mod</span> <span class="ident">divplayersandscoresmod</span>;
+<span class="kw">mod</span> <span class="ident">divrulesanddescriptionmod</span>;
+<span class="kw">mod</span> <span class="ident">fetchmod</span>;
+<span class="kw">mod</span> <span class="ident">fetchgamesmetadatamod</span>;
+<span class="kw">mod</span> <span class="ident">fetchgameconfigmod</span>;
+<span class="kw">mod</span> <span class="ident">fetchallimgsforcachemod</span>;
+<span class="kw">mod</span> <span class="ident">gamedatamod</span>;
+<span class="kw">mod</span> <span class="ident">javascriptimportmod</span>;
+<span class="kw">mod</span> <span class="ident">divnicknamemod</span>;
+<span class="kw">mod</span> <span class="ident">logmod</span>;
+<span class="kw">mod</span> <span class="ident">rootrenderingcomponentmod</span>;
+<span class="kw">mod</span> <span class="ident">sessionstoragemod</span>;
+<span class="kw">mod</span> <span class="ident">statusgamedatainitmod</span>;
+<span class="kw">mod</span> <span class="ident">statusstartpagemod</span>;
+<span class="kw">mod</span> <span class="ident">statusinvitedmod</span>;
+<span class="kw">mod</span> <span class="ident">statusinvitingmod</span>;
+<span class="kw">mod</span> <span class="ident">statusgameovermod</span>;
+<span class="kw">mod</span> <span class="ident">status1stcardmod</span>;
+<span class="kw">mod</span> <span class="ident">status2ndcardmod</span>;
+<span class="kw">mod</span> <span class="ident">statustaketurnbeginmod</span>;
+<span class="kw">mod</span> <span class="ident">statustaketurnendmod</span>;
+<span class="kw">mod</span> <span class="ident">statuswaitingackmsgmod</span>;
+<span class="kw">mod</span> <span class="ident">utilsmod</span>;
+<span class="kw">mod</span> <span class="ident">websocketcommunicationmod</span>;
+<span class="kw">mod</span> <span class="ident">websocketreconnectmod</span>;
+<span class="comment">//endregion</span>
+
+<span class="comment">//region: use statements</span>
+<span class="kw">use</span> <span class="ident">unwrap</span>::<span class="ident">unwrap</span>;
+<span class="kw">use</span> <span class="ident">rand</span>::<span class="ident">rngs</span>::<span class="ident">SmallRng</span>;
+<span class="kw">use</span> <span class="ident">rand</span>::<span class="ident">FromEntropy</span>;
+<span class="kw">use</span> <span class="ident">rand</span>::<span class="ident">Rng</span>;
+<span class="kw">use</span> <span class="ident">wasm_bindgen</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
+<span class="comment">//endregion</span>
+
+<span class="attribute">#[<span class="ident">wasm_bindgen</span>(<span class="ident">start</span>)]</span>
+<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">shadow_same</span>)]</span>
+<span class="doccomment">///To start the Wasm application, wasm_bindgen runs this functions</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">run</span>() <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">JsValue</span><span class="op">&gt;</span> {
+    <span class="comment">// Initialize debugging for when/if something goes wrong.</span>
+    <span class="ident">console_error_panic_hook</span>::<span class="ident">set_once</span>();
+
+    <span class="comment">// Get the document&#39;s container to render the virtual Dom component.</span>
+    <span class="kw">let</span> <span class="ident">window</span> <span class="op">=</span> <span class="macro">unwrap</span><span class="macro">!</span>(<span class="ident">web_sys</span>::<span class="ident">window</span>(), <span class="string">&quot;error: web_sys::window&quot;</span>);
+    <span class="kw">let</span> <span class="ident">document</span> <span class="op">=</span> <span class="macro">unwrap</span><span class="macro">!</span>(<span class="ident">window</span>.<span class="ident">document</span>(), <span class="string">&quot;error: window.document&quot;</span>);
+    <span class="kw">let</span> <span class="ident">div_for_virtual_dom</span> <span class="op">=</span> <span class="macro">unwrap</span><span class="macro">!</span>(
+        <span class="ident">document</span>.<span class="ident">get_element_by_id</span>(<span class="string">&quot;div_for_virtual_dom&quot;</span>),
+        <span class="string">&quot;No #div_for_virtual_dom&quot;</span>
+    );
+
+    <span class="comment">//my_ws_uid is random generated on the client and sent to</span>
+    <span class="comment">//WebSocket server with an url param. It is saved locally to allow reconnection</span>
+    <span class="comment">//if there are connection problems.</span>
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">my_ws_uid</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="ident">sessionstoragemod</span>::<span class="ident">load_my_ws_uid</span>();
+    <span class="kw">if</span> <span class="ident">my_ws_uid</span> <span class="op">==</span> <span class="number">0</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rng</span> <span class="op">=</span> <span class="ident">SmallRng</span>::<span class="ident">from_entropy</span>();
+        <span class="ident">my_ws_uid</span> <span class="op">=</span> <span class="ident">rng</span>.<span class="ident">gen_range</span>(<span class="number">1</span>, <span class="number">9999</span>);
+        <span class="ident">sessionstoragemod</span>::<span class="ident">save_my_ws_uid</span>(<span class="ident">my_ws_uid</span>);
+    }
+    <span class="comment">//from now on, I don&#39;t want it mutable (variable shadowing).</span>
+    <span class="kw">let</span> <span class="ident">my_ws_uid</span> <span class="op">=</span> <span class="ident">my_ws_uid</span>;
+
+    <span class="comment">//find out URL</span>
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">location_href</span> <span class="op">=</span> <span class="macro">unwrap</span><span class="macro">!</span>(<span class="ident">window</span>.<span class="ident">location</span>().<span class="ident">href</span>(), <span class="string">&quot;href not known&quot;</span>);
+    <span class="comment">//without /index.html</span>
+    <span class="ident">location_href</span> <span class="op">=</span> <span class="ident">location_href</span>.<span class="ident">to_lowercase</span>().<span class="ident">replace</span>(<span class="string">&quot;index.html&quot;</span>, <span class="string">&quot;&quot;</span>);
+    <span class="comment">//logmod::debug_write(&amp;format!(&quot;location_href: {}&quot;, &amp;location_href));</span>
+
+    <span class="comment">//WebSocket connection</span>
+    <span class="kw">let</span> <span class="ident">players_ws_uid</span> <span class="op">=</span> <span class="string">&quot;[]&quot;</span>.<span class="ident">to_string</span>(); <span class="comment">//empty vector in json</span>
+    <span class="kw">let</span> <span class="ident">ws</span> <span class="op">=</span> <span class="ident">websocketcommunicationmod</span>::<span class="ident">setup_ws_connection</span>(
+        <span class="ident">location_href</span>.<span class="ident">clone</span>(),
+        <span class="ident">my_ws_uid</span>,
+        <span class="ident">players_ws_uid</span>,
+    );
+    <span class="comment">//I don&#39;t know why is needed to clone the WebSocket connection</span>
+    <span class="kw">let</span> <span class="ident">ws_c</span> <span class="op">=</span> <span class="ident">ws</span>.<span class="ident">clone</span>();
+
+    <span class="comment">// Construct a new RootRenderingComponent.</span>
+    <span class="comment">//I added ws_c so that I can send messages on WebSocket</span>
+
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rrc</span> <span class="op">=</span> <span class="ident">rootrenderingcomponentmod</span>::<span class="ident">RootRenderingComponent</span>::<span class="ident">new</span>(<span class="ident">ws_c</span>, <span class="ident">my_ws_uid</span>);
+    <span class="ident">rrc</span>.<span class="ident">game_data</span>.<span class="ident">href</span> <span class="op">=</span> <span class="ident">location_href</span>.<span class="ident">to_string</span>();
+    <span class="ident">rrc</span>.<span class="ident">game_data</span>.<span class="ident">is_fullscreen</span> <span class="op">=</span> <span class="ident">divfullscreenmod</span>::<span class="ident">is_fullscreen</span>(<span class="kw-2">&amp;</span><span class="ident">rrc</span>);
+    <span class="comment">// Mount the component to the `&lt;div id=&quot;div_for_virtual_dom&quot;&gt;`.</span>
+    <span class="kw">let</span> <span class="ident">vdom</span> <span class="op">=</span> <span class="ident">dodrio</span>::<span class="ident">Vdom</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">div_for_virtual_dom</span>, <span class="ident">rrc</span>);
+
+    <span class="ident">websocketcommunicationmod</span>::<span class="ident">setup_all_ws_events</span>(<span class="kw-2">&amp;</span><span class="ident">ws</span>, <span class="ident">vdom</span>.<span class="ident">weak</span>());
+
+    <span class="comment">//async fetch_response() for gamesmetadata.json</span>
+    <span class="kw">let</span> <span class="ident">v2</span> <span class="op">=</span> <span class="ident">vdom</span>.<span class="ident">weak</span>();
+    <span class="ident">fetchgamesmetadatamod</span>::<span class="ident">fetch_games_metadata_request</span>(<span class="ident">location_href</span>, <span class="ident">v2</span>);
+
+    <span class="comment">// Run the component forever. Forget to drop the memory.</span>
+    <span class="ident">vdom</span>.<span class="ident">forget</span>();
+
+    <span class="prelude-val">Ok</span>(())
+}
+</pre></div>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g., <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g., <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g., <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "mem6";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>

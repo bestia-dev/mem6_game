@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["calc_font_size","when the lenght is bigger, the fontsize get smaller if the len is 10 the fontsize is 3.0rem, if the len is 20 the fontsize is 1.5rem this means that the 80 is constant:  103.0=30 201.5=30"],["div_grid_card_moniker","the header can show only the game title or two card monikers. Not everything together."]]});

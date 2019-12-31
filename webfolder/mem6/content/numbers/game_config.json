@@ -1,0 +1,45 @@
+{
+    "card_moniker": [
+        "",
+		"one","two","three","four","five","six","seven","eight","nine",
+		"ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen",
+		"twenty","twenty-one","twenty-two","twenty-three","twenty-four","twenty-five","twenty-six","twenty-seven","twenty-eight","twenty-nine",
+		"thirty","thirty-one","thirty-two","thirty-three","thirty-four","thirty-five","thirty-six","thirty-seven","thirty-eight","thirty-nine",
+		"forty","forty-one","forty-two","forty-three","forty-four","forty-five","forty-six","forty-seven","forty-eight","forty-nine",
+		"fifty","fifty-one","fifty-two","fifty-three","fifty-four","fifty-five","fifty-six","fifty-seven","fifty-eight","fifty-nine",
+		"sixty","sixty-one","sixty-two","sixty-three","sixty-four","sixty-five","sixty-six","sixty-seven","sixty-eight","sixty-nine",
+		"seventy","seventy-one","seventy-two","seventy-three","seventy-four","seventy-five","seventy-six","seventy-seven","seventy-eight","seventy-nine",
+		"eighty","eighty-one","eighty-two","eighty-three","eighty-four","eighty-five","eighty-six","eighty-seven","eighty-eight","eighty-nine",
+		"ninety","ninety-one","ninety-two","ninety-three","ninety-four","ninety-five","ninety-six","ninety-seven","ninety-eight","ninety-nine"
+    ],
+    "img_filename": [
+        "",
+		"num01.png","num02.png","num03.png","num04.png","num05.png","num06.png","num07.png","num08.png","num09.png",
+		"num10.png","num11.png","num12.png","num13.png","num14.png","num15.png","num16.png","num17.png","num18.png","num19.png",
+		"num20.png","num21.png","num22.png","num23.png","num24.png","num25.png","num26.png","num27.png","num28.png","num29.png",
+		"num30.png","num31.png","num32.png","num33.png","num34.png","num35.png","num36.png","num37.png","num38.png","num39.png",
+		"num40.png","num41.png","num42.png","num43.png","num44.png","num45.png","num46.png","num47.png","num48.png","num49.png",
+		"num50.png","num51.png","num52.png","num53.png","num54.png","num55.png","num56.png","num57.png","num58.png","num59.png",
+		"num60.png","num61.png","num62.png","num63.png","num64.png","num65.png","num66.png","num67.png","num68.png","num69.png",
+		"num70.png","num71.png","num72.png","num73.png","num74.png","num75.png","num76.png","num77.png","num78.png","num79.png",
+		"num80.png","num81.png","num82.png","num83.png","num84.png","num85.png","num86.png","num87.png","num88.png","num89.png",
+		"num90.png","num91.png","num92.png","num93.png","num94.png","num95.png","num96.png","num97.png","num98.png","num99.png"
+    ],
+    "sound_filename": [
+        "",
+		"num01.mp3","num02.mp3","num03.mp3","num04.mp3","num05.mp3","num06.mp3","num07.mp3","num08.mp3","num09.mp3",
+		"num10.mp3","num11.mp3","num12.mp3","num13.mp3","num14.mp3","num15.mp3","num16.mp3","num17.mp3","num18.mp3","num19.mp3",
+		"num20.mp3","num21.mp3","num22.mp3","num23.mp3","num24.mp3","num25.mp3","num26.mp3","num27.mp3","num28.mp3","num29.mp3",
+		"num30.mp3","num31.mp3","num32.mp3","num33.mp3","num34.mp3","num35.mp3","num36.mp3","num37.mp3","num38.mp3","num39.mp3",
+		"num40.mp3","num41.mp3","num42.mp3","num43.mp3","num44.mp3","num45.mp3","num46.mp3","num47.mp3","num48.mp3","num49.mp3",
+		"num50.mp3","num51.mp3","num52.mp3","num53.mp3","num54.mp3","num55.mp3","num56.mp3","num57.mp3","num58.mp3","num59.mp3",
+		"num60.mp3","num61.mp3","num62.mp3","num63.mp3","num64.mp3","num65.mp3","num66.mp3","num67.mp3","num68.mp3","num69.mp3",
+		"num70.mp3","num71.mp3","num72.mp3","num73.mp3","num74.mp3","num75.mp3","num76.mp3","num77.mp3","num78.mp3","num79.mp3",
+		"num80.mp3","num81.mp3","num82.mp3","num83.mp3","num84.mp3","num85.mp3","num86.mp3","num87.mp3","num88.mp3","num89.mp3",
+		"num90.mp3","num91.mp3","num92.mp3","num93.mp3","num94.mp3","num95.mp3","num96.mp3","num97.mp3","num98.mp3","num99.mp3"
+    ],
+    "card_width": 116,
+    "card_height": 116,
+    "grid_items_hor": 3,
+    "grid_items_ver": 3
+}

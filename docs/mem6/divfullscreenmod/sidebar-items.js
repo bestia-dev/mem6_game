@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["div_fullscreen","render the div for fullscreen"],["is_fullscreen","check the fullscreen_element. works only on android"]]});

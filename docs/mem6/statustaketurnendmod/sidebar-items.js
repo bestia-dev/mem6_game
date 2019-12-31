@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["on_click_take_turn_end","on click"],["on_msg_ack_take_turn_end","on msg ack"],["on_msg_take_turn_end","on msg"],["update_on_take_turn_end","update game data"]]});

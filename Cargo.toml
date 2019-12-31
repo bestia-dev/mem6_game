@@ -1,0 +1,11 @@
+[workspace]
+
+members = [
+    "mem6_common",
+    "mem6",
+    "mem6_server",
+]
+
+[profile.release]
+panic = "abort"
+

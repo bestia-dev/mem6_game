@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["on_click_start_game","prepares the game data"],["on_msg_start_game","on game data init"]]});
