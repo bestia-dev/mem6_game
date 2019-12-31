@@ -1,4 +1,4 @@
-# mem6_server 
+# mem6_server
 
 [comment]: # (lmake_readme version)  
 
@@ -15,4 +15,4 @@ One working server is installed on my google vm.
 There is a nginx server reverse proxy that accepts https http2 on 443 and relay to internal 8086.
 Nginx also redirects all http 80 to https 443.  
 You can play the game here (hosted on google cloud platform):  
-https://bestia.dev/mem6  
+<https://bestia.dev/mem6>  
