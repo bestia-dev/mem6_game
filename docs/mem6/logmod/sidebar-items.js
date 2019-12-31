@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["debug_write","debug write into sessionstorage"],["now_string","string of now time"]]});

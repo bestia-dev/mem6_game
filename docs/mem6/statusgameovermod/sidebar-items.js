@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["div_game_over","play again"],["on_msg_game_over","msg player click"]]});

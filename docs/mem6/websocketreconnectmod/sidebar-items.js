@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["div_reconnect","render reconnect"],["on_msg_all_game_data","after reconnect receive allthe data from other player"],["on_msg_request_ws_uid","send all data to reconnected player"]]});

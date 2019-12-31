@@ -85,6 +85,7 @@ pub fn div_fullscreen<'b>(is_fullscreen: bool, bump: &'b Bump) -> Vec<Node<'b>> 
             </h2>
         </div>
         ));
+        /*
         ret_val.push(dodrio!(bump,
         <div>
             <h5>
@@ -95,6 +96,7 @@ pub fn div_fullscreen<'b>(is_fullscreen: bool, bump: &'b Bump) -> Vec<Node<'b>> 
             </h5>
         </div>
         ));
+        */
     }
     //return
     ret_val

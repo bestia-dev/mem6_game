@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["create_webrequest","create web request from string"],["do_nothing","do nothing"],["fetch_all_img_for_cache_request","fetch all imgs for the cache"]]});

@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["do_fullscreen","do full screen function - imported from javascript"],["is_mobile_device","is mobile device function - imported from javascript"],["javascriptdofullscreen","the name of the extern javascript function"],["javascriptismobiledevice","the name of the extern javascript function"]]});

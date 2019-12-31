@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["create_webrequest","create web request from string"],["fetch_games_metadata_request","async fetch_response() for gamesmetadata.json"],["set_game_metadata_from_json","update a field in the struct"]]});

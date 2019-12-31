@@ -174,7 +174,7 @@ pub fn div_grid_item<'b>(
         GameStatus::Status1stCard => {
             dodrio!(bump,
             <div class= "grid_item">
-            <img src={img_src} id={img_id} style={opacity} onclick={move |root, vdom, event| {
+            <img class= "grid_item_img" src={img_src} id={img_id} style={opacity} onclick={move |root, vdom, event| {
                 let rrc = root.unwrap_mut::<RootRenderingComponent>();
                 // If the event's target is our image...
                 let img = match event
@@ -207,7 +207,7 @@ pub fn div_grid_item<'b>(
         GameStatus::Status2ndCard => {
             dodrio!(bump,
             <div class= "grid_item">
-            <img src={img_src} id={img_id} style={opacity} onclick={move |root, vdom, event| {
+            <img class= "grid_item_img" src={img_src} id={img_id} style={opacity} onclick={move |root, vdom, event| {
                 let rrc = root.unwrap_mut::<RootRenderingComponent>();
                 // If the event's target is our image...
                 let img = match event
@@ -239,7 +239,7 @@ pub fn div_grid_item<'b>(
         }
         _ => dodrio!(bump,
             <div class= "grid_item">
-                <img src={img_src} id={img_id} style={opacity} >
+                <img class= "grid_item_img" src={img_src} id={img_id} style={opacity} >
                 </img>
             </div>
         ),

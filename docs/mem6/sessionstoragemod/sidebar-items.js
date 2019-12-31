@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["add_to_begin_of_debug_text","add to begin of debug text"],["get_debug_text","get debug text from session storage"],["load_my_ws_uid","load my_ws_uid from session storage"],["save_my_ws_uid","save my_ws_uid to session storage"],["utf8_truncate","utf8 truncate"]]});
