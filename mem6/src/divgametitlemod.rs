@@ -6,7 +6,7 @@ use crate::rootrenderingcomponentmod::RootRenderingComponent;
 
 //use unwrap::unwrap;
 use dodrio::builder::text;
-use dodrio::bumpalo::{ Bump};
+use dodrio::bumpalo::{Bump};
 use dodrio::Node;
 use typed_html::dodrio;
 //endregion
@@ -19,6 +19,9 @@ pub fn div_game_title<'b>(_rrc: &RootRenderingComponent, bump: &'b Bump) -> Vec<
         <h2>
             {vec![text( env!("CARGO_PKG_NAME"))]}
         </h2>
+        <h4>
+            {vec![text("a simple memory drinking game")]}
+        </h4>
     </div>
     ));
     //return

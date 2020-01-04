@@ -1,7 +1,12 @@
 # mem6 TODO
 
+- new futures async await for fetch
+- group name is ws uid of first player. the other players write and join.
+- webRTC instead of websockets 1st version with a web server
+- STUN server for NAT traversal <https://github.com/sile/rustun>
+- free to try  
 - always full screen, no scroll, ever. It is a game.
-- more pages: 
+- more pages:  
 - 1st page enter nickname, choose group or new group
 - 2nd page enter group name, list members, button start play
 - 3rd page game grid and game actions

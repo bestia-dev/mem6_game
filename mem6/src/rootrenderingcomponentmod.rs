@@ -2,23 +2,24 @@
 //! renders the web page
 
 //region: use, const
-use crate::divcardmonikermod;
-use crate::divfordebuggingmod;
+
 use crate::divgridcontainermod;
-use crate::divgametitlemod;
-use crate::divnicknamemod;
-use crate::divplayeractionsmod;
+
 use crate::divplayersandscoresmod;
 use crate::divrulesanddescriptionmod;
 use crate::gamedatamod;
+use crate::page01nicknamemod;
+//use crate::page02groupmod;
+use crate::page03gamemod;
+//use crate::page04instructionsmod;
+use crate::page05errormod;
 
 use mem6_common::GameStatus;
 
 //use unwrap::unwrap;
-use dodrio::builder::text;
-use dodrio::bumpalo::{self, Bump};
+//use dodrio::builder::text;
+use dodrio::bumpalo::{Bump};
 use dodrio::{Cached, Node, Render};
-use typed_html::dodrio;
 use web_sys::WebSocket;
 //endregion
 
@@ -101,41 +102,12 @@ impl Render for RootRenderingComponent {
             let xmax_grid_size = divgridcontainermod::max_grid_size(self);
             //the UI has 2 different 'pages', depends on the status
             if self.game_data.is_status_for_grid_container() {
-                //page2: the game grid
-                dodrio!(bump,
-                <div class= "m_container" >
-                    {vec![divgridcontainermod::div_grid_container(self,bump,&xmax_grid_size)]}
-                    {divcardmonikermod::div_grid_card_moniker(self, bump)}
-                    {vec![self.cached_players_and_scores.render(bump)]}
-                    {vec![divplayeractionsmod::div_player_actions_from_game_status(self, bump)]}
-                    {divgametitlemod::div_game_title(self, bump)}
-                    {vec![divfordebuggingmod::div_for_debugging(self, bump)]}
-                </div>
-                )
+                page03gamemod::page_render(self, bump, xmax_grid_size)
             } else {
-                //page1: the startpage with invitation and instructions
-                dodrio!(bump,
-                <div class= "m_container" >
-                    {divgametitlemod::div_game_title(self, bump)}
-                    {vec![divnicknamemod::div_nickname_input(self,bump)]}
-                    {vec![divplayeractionsmod::div_player_actions_from_game_status(self, bump)]}
-                    {vec![divfordebuggingmod::div_for_debugging(self, bump)]}
-                    {vec![self.cached_rules_and_description.render(bump)]}
-                </div>
-                )
+                page01nicknamemod::page_render(self, bump)
             }
         } else {
-            //page3: on error
-            dodrio!(bump,
-                <div>
-                    <h2 class="h2_user_must_wait">
-                        {vec![text(
-                            bumpalo::format!(in bump, "error_text {}", self.game_data.error_text)
-                                .into_bump_str(),
-                            )]}
-                    </h2>
-                </div>
-            )
+            page05errormod::page_render(self, bump)
         }
         //endregion
     }

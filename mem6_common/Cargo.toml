@@ -1,6 +1,6 @@
 [package]
 name = "mem6_common"
-version = "2019.1231.1215" #no need for semver if it is not a library
+version = "2020.104.928" #no need for semver if it is not a library
 description = "commons for mem6 wasm and server"
 authors = ["Luciano Bestia"]
 edition = "2018"
@@ -11,8 +11,8 @@ categories = ["web-programming::http-server"]
 keywords = ["warp", "server", "http", "websocket"]
 
 [dependencies]
-serde = "1.0.101"
-serde_derive = "1.0.101"
+serde = "1.0.104"
+serde_derive = "1.0.104"
 #serde_json = "1.0"
 #strum = "0.16.0"
-strum_macros = "0.16.0"
+strum_macros = "0.17.1"

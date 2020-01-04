@@ -61,7 +61,7 @@ use mem6_common::{WsMessage};
 use unwrap::unwrap;
 use clap::{App, Arg};
 use env_logger::Env;
-use futures::sync::mpsc;
+//use futures::sync::mpsc;
 use futures::{Future, Stream};
 use std::collections::HashMap;
 use std::net::SocketAddr;
@@ -169,7 +169,8 @@ fn main() {
     warp::serve(routes).run(local_addr);
 }
 
-//the url_param is not consumed in this function and Clippy wants a reference instead a value
+//the url_param is not consumed in this function and Clippy wants
+//a reference instead a value
 #[allow(clippy::needless_pass_by_value)]
 //region: WebSocket callbacks: connect, msg, disconnect
 ///new user connects
