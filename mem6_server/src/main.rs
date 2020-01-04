@@ -61,8 +61,8 @@ use mem6_common::{WsMessage};
 use unwrap::unwrap;
 use clap::{App, Arg};
 use env_logger::Env;
-//use futures::sync::mpsc;
-use futures::{Future, Stream};
+use futures::channel::mpsc;
+use futures::{Future};
 use std::collections::HashMap;
 use std::net::SocketAddr;
 use std::net::{IpAddr, Ipv4Addr};
@@ -142,7 +142,7 @@ fn main() {
             std::sync::Mutex<
                 std::collections::HashMap<
                     usize,
-                    futures::sync::mpsc::UnboundedSender<warp::ws::Message>,
+                    futures::channel::mpsc::UnboundedSender<warp::ws::Message>,
                 >,
             >,
         >::clone(&users)
@@ -225,7 +225,7 @@ fn user_connected(
         std::sync::Mutex<
             std::collections::HashMap<
                 usize,
-                futures::sync::mpsc::UnboundedSender<warp::ws::Message>,
+                futures::channel::mpsc::UnboundedSender<warp::ws::Message>,
             >,
         >,
     >::clone(&users);

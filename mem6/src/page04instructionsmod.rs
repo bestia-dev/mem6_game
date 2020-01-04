@@ -3,9 +3,6 @@
 
 //region: use statements
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
-use crate::divgametitlemod;
-use crate::divnicknamemod;
-use crate::divplayeractionsmod;
 use crate::divfordebuggingmod;
 
 use dodrio::Render;

@@ -17,7 +17,6 @@ use crate::websocketreconnectmod;
 use mem6_common::{GameStatus, WsMessage, MsgAckKind};
 
 use unwrap::unwrap;
-use futures::Future;
 use js_sys::Reflect;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;

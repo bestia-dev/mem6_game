@@ -11,7 +11,7 @@ use mem6_common::{GameStatus, WsMessage, MsgAckKind};
 use unwrap::unwrap;
 use rand::Rng;
 use rand::rngs::SmallRng;
-use rand::FromEntropy;
+use rand::SeedableRng;
 //endregion
 
 ///remove ack msg from queue - return true if there are no more msgs

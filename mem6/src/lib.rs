@@ -307,7 +307,7 @@ mod websocketreconnectmod;
 //region: use statements
 use unwrap::unwrap;
 use rand::rngs::SmallRng;
-use rand::FromEntropy;
+use rand::SeedableRng;
 use rand::Rng;
 use wasm_bindgen::prelude::*;
 //endregion

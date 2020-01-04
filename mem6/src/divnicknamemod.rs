@@ -11,7 +11,6 @@ use dodrio::Node;
 use typed_html::dodrio;
 use unwrap::unwrap;
 use wasm_bindgen::JsCast;
-use futures::Future;
 //use wasm_bindgen::JsCast; //don't remove this. It is needed for dyn_into.
 //endregion
 
