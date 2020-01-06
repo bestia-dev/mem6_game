@@ -1,6 +1,8 @@
 // divnicknamemod.rs
 //! loadand save nickname
 
+#![allow(clippy::panic)]
+
 //region: use
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 

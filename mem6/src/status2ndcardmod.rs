@@ -1,6 +1,8 @@
 // status2ndcardmod.rs
 //! code flow from this status
 
+#![allow(clippy::panic)]
+
 //region: use
 use crate::gamedatamod::CardStatusCardFace;
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
@@ -57,7 +59,7 @@ pub fn on_click_2nd_card(
         update_click_2nd_card_point(rrc);
     //then wait for ack msg event and then check if is game over
     } else {
-        statustaketurnbeginmod::on_click_take_turn_begin(rrc, &vdom);
+        statustaketurnbeginmod::on_click_take_turn_begin(rrc, vdom);
     }
 }
 
@@ -119,6 +121,7 @@ pub fn on_msg_ack_player_click2nd_card_point(
 }
 
 ///msg player click
+#[allow(clippy::integer_arithmetic)] // points +1 is not going to overflow ever
 pub fn update_click_2nd_card_point(rrc: &mut RootRenderingComponent) {
     //flip the card up
     unwrap!(

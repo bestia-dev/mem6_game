@@ -1,6 +1,8 @@
 // page02nicknamemod.rs
 //! renders the first page with nickname and choose group
 
+#![allow(clippy::panic)]
+
 //region: use statements
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::divgametitlemod;

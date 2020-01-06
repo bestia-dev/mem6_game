@@ -1,6 +1,9 @@
 // divfullscreenmod.rs
 //! instruction and button for fullscreen
 
+//macro dodrio! now has warning about a panic?!?
+#![allow(clippy::panic)]
+
 //region: use, const
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::javascriptimportmod;

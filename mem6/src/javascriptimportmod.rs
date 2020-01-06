@@ -2,6 +2,8 @@
 //! one single module to import javascript functions and objects
 //! this are examples how to call a javascript function from rust
 
+#![allow(clippy::panic)]
+
 use wasm_bindgen::prelude::*;
 
 ///in the block extern "C" are the descriptions of imported javascript

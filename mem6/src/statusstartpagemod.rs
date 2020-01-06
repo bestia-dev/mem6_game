@@ -1,6 +1,8 @@
 // statusstartpagemod.rs
 //! code flow from this status
 
+#![allow(clippy::panic)]
+
 //region: use
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::websocketcommunicationmod;

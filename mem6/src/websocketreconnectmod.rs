@@ -8,6 +8,9 @@
 // All other players send him the complete data. He uses only the data from the first msg
 // he receives and ignore all others.
 
+//macro dodrio! now has warning about a panic?!?
+#![allow(clippy::panic)]
+
 //region: use
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::websocketcommunicationmod;

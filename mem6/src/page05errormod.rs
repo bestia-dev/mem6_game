@@ -1,6 +1,8 @@
 // page05errormod.rs
 //! renders the page with errors
 
+#![allow(clippy::panic)]
+
 //region: use statements
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 

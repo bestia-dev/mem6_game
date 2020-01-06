@@ -55,16 +55,15 @@
 )]
 //endregion
 
+//macro dodrio! now has warning about a panic?!?
+#![allow(clippy::panic)]
+
 //region: use statements
 use mem6_common::{WsMessage};
 
 use std::collections::HashMap;
-use std::sync::{
-    atomic::{AtomicUsize, Ordering},
-    Arc, Mutex,
-};
+use std::sync::{Arc, Mutex};
 use futures::{future, Future, FutureExt, StreamExt};
-use futures::stream::Stream;
 use tokio::sync::mpsc;
 use warp::ws::{Message, WebSocket};
 use warp::Filter;
@@ -120,17 +119,11 @@ async fn main() {
         .get_matches();
 
     //from string parameters to strong types
-    let fnl_prm_ip = matches
-        .value_of("prm_ip")
-        .expect("error on prm_ip")
-        .to_lowercase();
-    let fnl_prm_port = matches
-        .value_of("prm_port")
-        .expect("error on prm_port")
-        .to_lowercase();
+    let fnl_prm_ip = unwrap!(matches.value_of("prm_ip")).to_lowercase();
+    let fnl_prm_port = unwrap!(matches.value_of("prm_port")).to_lowercase();
 
-    let local_ip = IpAddr::V4(fnl_prm_ip.parse::<Ipv4Addr>().expect("not an ip address"));
-    let local_port = u16::from_str_radix(&fnl_prm_port, 10).expect("not a number");
+    let local_ip = IpAddr::V4(unwrap!(fnl_prm_ip.parse::<Ipv4Addr>()));
+    let local_port = unwrap!(u16::from_str_radix(&fnl_prm_port, 10));
     let local_addr = SocketAddr::new(local_ip, local_port);
 
     info!(
@@ -145,7 +138,18 @@ async fn main() {
     // Turn our "state" into a new Filter...
     //let users = warp::any().map(move || users.clone());
     //Clippy recommends this craziness instead of just users.clone()
-    let users = warp::any().map(move || users.clone());
+    let users = warp::any().map(move || {
+        Arc::<
+            std::sync::Mutex<
+                std::collections::HashMap<
+                    usize,
+                    tokio::sync::mpsc::UnboundedSender<
+                        std::result::Result<warp::filters::ws::Message, warp::Error>,
+                    >,
+                >,
+            >,
+        >::clone(&users)
+    });
 
     //WebSocket server
     // GET from route /mem6ws/ -> WebSocket upgrade
@@ -158,7 +162,7 @@ async fn main() {
         .map(|ws: warp::ws::Ws, users, url_param| {
             // This will call our function if the handshake succeeds.
             ws.on_upgrade(move |socket| {
-                user_connected(socket, users, url_param).map(|result| result.unwrap())
+                user_connected(socket, users, url_param).map(|result| unwrap!(result))
             })
         });
 
@@ -187,7 +191,7 @@ fn user_connected(
     let my_id = unwrap!(url_param.parse::<usize>());
     //if uid already exists, it is an error
     let mut user_exist = false;
-    for (&uid, ..) in users.lock().expect("error users.lock()").iter() {
+    for (&uid, ..) in unwrap!(users.lock()).iter() {
         if uid == my_id {
             user_exist = true;
             break;
@@ -213,7 +217,7 @@ fn user_connected(
     }));
     // Save the sender in our list of connected users.
     info!("users.insert: {}", my_id);
-    users.lock().expect("error uses.lock()").insert(my_id, tx);
+    unwrap!(users.lock()).insert(my_id, tx);
 
     // Return a `Future` that is basically a state machine managing
     // this specific user's connection.
@@ -225,7 +229,7 @@ fn user_connected(
     user_ws_rx
         // Every time the user sends a message, call receive message
         .for_each(move |msg| {
-            receive_message(my_id, &msg.unwrap(), &users);
+            receive_message(my_id, &unwrap!(msg), &users);
             future::ready(())
         })
         // for_each will keep processing as long as the user stays
@@ -263,19 +267,12 @@ fn receive_message(ws_uid_of_message: usize, messg: &Message, users: &Users) {
             players_ws_uid,
         } => {
             info!("MsgRequestWsUid: {} {}", my_ws_uid, players_ws_uid);
-            let j = serde_json::to_string(
-                &WsMessage::MsgResponseWsUid {
-                    your_ws_uid: ws_uid_of_message,
-                    server_version: env!("CARGO_PKG_VERSION").to_string(),
-                     })
-                .expect("serde_json::to_string(&WsMessage::MsgResponseWsUid { your_ws_uid: ws_uid_of_message })");
+            let j = unwrap!(serde_json::to_string(&WsMessage::MsgResponseWsUid {
+                your_ws_uid: ws_uid_of_message,
+                server_version: env!("CARGO_PKG_VERSION").to_string(),
+            }));
             info!("send MsgResponseWsUid: {}", j);
-            match users
-                .lock()
-                .expect("error users.lock()")
-                .get(&ws_uid_of_message)
-                .unwrap()
-                .send(Ok(Message::text(j)))
+            match unwrap!(unwrap!(users.lock()).get(&ws_uid_of_message)).send(Ok(Message::text(j)))
             {
                 Ok(()) => (),
                 Err(_disconnected) => {}
@@ -288,18 +285,13 @@ fn receive_message(ws_uid_of_message: usize, messg: &Message, users: &Users) {
 
             let j = unwrap!(serde_json::to_string(&WsMessage::MsgPong { msg_id }));
             //info!("send MsgPong: {}", j);
-            match users
-                .lock()
-                .expect("error users.lock()")
-                .get(&ws_uid_of_message)
-                .unwrap()
-                .send(Ok(Message::text(j)))
+            match unwrap!(unwrap!(users.lock()).get(&ws_uid_of_message)).send(Ok(Message::text(j)))
             {
                 Ok(()) => (),
                 Err(_disconnected) => {}
             }
         }
-        WsMessage::MsgPong { msg_id: _ } => {
+        WsMessage::MsgPong { .. } => {
             unreachable!("mem6_server must not receive MsgPong");
         }
         WsMessage::MsgInvite { .. } => {
@@ -334,7 +326,7 @@ fn send_to_other_players(
 
     let vec_players_ws_uid: Vec<usize> = unwrap!(serde_json::from_str(players_ws_uid));
 
-    for (&uid, tx) in users.lock().expect("error users.lock()").iter() {
+    for (&uid, tx) in unwrap!(users.lock()).iter() {
         let mut is_player;
         is_player = false;
         for &pl_ws_uid in &vec_players_ws_uid {
@@ -361,7 +353,7 @@ fn broadcast(users: &Users, ws_uid_of_message: usize, new_msg: &str) {
     // We use `retain` instead of a for loop so that we can reap any user that
     // appears to have disconnected.
     info!("broadcast: {}", new_msg);
-    for (&uid, tx) in users.lock().expect("error users.lock()").iter() {
+    for (&uid, tx) in unwrap!(users.lock()).iter() {
         if ws_uid_of_message != uid {
             match tx.send(Ok(Message::text(String::from(new_msg)))) {
                 Ok(()) => (),
@@ -380,6 +372,6 @@ fn user_disconnected(my_id: usize, users: &Users) {
     info!("good bye user: {}", my_id);
 
     // Stream closed up, so remove from the user list
-    users.lock().expect("users.lock").remove(&my_id);
+    unwrap!(users.lock()).remove(&my_id);
 }
 //endregion

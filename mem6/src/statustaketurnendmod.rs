@@ -16,7 +16,7 @@ use unwrap::unwrap;
 pub fn on_click_take_turn_end(rrc: &mut RootRenderingComponent, vdom: &dodrio::VdomWeak) {
     logmod::debug_write(&format!("on_click_take_turn_end {}", ""));
 
-    let msg_id = ackmsgmod::prepare_for_ack_msg_waiting(rrc, &vdom);
+    let msg_id = ackmsgmod::prepare_for_ack_msg_waiting(rrc, vdom);
 
     let msg = WsMessage::MsgTakeTurnEnd {
         my_ws_uid: rrc.game_data.my_ws_uid,

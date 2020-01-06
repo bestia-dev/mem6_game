@@ -1,6 +1,8 @@
 // statustaketurnbeginmod.rs
 //! code flow for this status
 
+#![allow(clippy::panic)]
+
 //region: use
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::gamedatamod::{CardStatusCardFace};

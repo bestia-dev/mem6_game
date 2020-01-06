@@ -1,6 +1,8 @@
 // divplayersandscoresmod.rs
 //! renders the div that shows players and scores
 
+#![allow(clippy::panic)]
+
 //region: use
 use crate::gamedatamod::GameData;
 use crate::utilsmod;

@@ -1,6 +1,9 @@
 // divfordebuggingmod.rs
 //! information for debugging
 
+//macro dodrio! now has warning about a panic?!?
+#![allow(clippy::panic)]
+
 //region: use, const
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::sessionstoragemod;

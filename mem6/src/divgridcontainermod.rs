@@ -2,6 +2,8 @@
 //! renders the grid container with the images
 //! and most important the on click event
 
+#![allow(clippy::panic)]
+
 //region: use, const
 use crate::gamedatamod::{CardStatusCardFace, Size2d};
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
@@ -67,6 +69,7 @@ pub fn div_grid_container<'a>(
 
 ///prepare a vector<Node> for the Virtual Dom for 'css grid' item with <img>
 ///the grid container needs only grid items. There is no need for rows and columns in 'css grid'.
+#[allow(clippy::integer_arithmetic)] // end_index-1 will not overflow
 pub fn div_grid_items<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Vec<Node<'a>> {
     //this game_data mutable reference is dropped on the end of the function
     let game_data = &rrc.game_data;
@@ -237,7 +240,15 @@ pub fn div_grid_item<'a>(
             </div>
             )
         }
-        _ => dodrio!(bump,
+        mem6_common::GameStatus::StatusStartPage
+        | mem6_common::GameStatus::StatusInviting
+        | mem6_common::GameStatus::StatusInvited
+        | mem6_common::GameStatus::StatusAccepted
+        | mem6_common::GameStatus::StatusTakeTurnBegin
+        | mem6_common::GameStatus::StatusTakeTurnEnd
+        | mem6_common::GameStatus::StatusGameOver
+        | mem6_common::GameStatus::StatusReconnect
+        | mem6_common::GameStatus::StatusWaitingAckMsg => dodrio!(bump,
             <div class= "grid_item">
                 <img class= "grid_item_img" src={img_src} id={img_id} style={opacity} >
                 </img>

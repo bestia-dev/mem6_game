@@ -1,6 +1,9 @@
 // divcardmonikermod.rs
 //! renders the card moniker (card name/title)
 
+//macro dodrio! now has warning about a panic?!?
+#![allow(clippy::panic)]
+
 //region: use statements
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 

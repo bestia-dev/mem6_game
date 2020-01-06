@@ -1,6 +1,8 @@
 // page02instructonsmod.rs
 //! renders the page with instructions
 
+#![allow(clippy::panic)]
+
 //region: use statements
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::divfordebuggingmod;

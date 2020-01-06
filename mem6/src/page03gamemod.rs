@@ -1,6 +1,8 @@
 // page03gamemod.rs
 //! renders the page with game grid
 
+#![allow(clippy::panic)]
+
 //region: use statements
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::divgridcontainermod;
@@ -21,7 +23,7 @@ use typed_html::dodrio;
 pub fn page_render<'a>(
     rrc: &RootRenderingComponent,
     cx: &mut RenderContext<'a>,
-    xmax_grid_size: gamedatamod::Size2d,
+    xmax_grid_size: &gamedatamod::Size2d,
 ) -> Node<'a> {
     let bump = cx.bump;
     dodrio!(bump,

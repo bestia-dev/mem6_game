@@ -56,13 +56,13 @@ impl RootRenderingComponent {
             .cached_players_and_scores
             .update_intern_cache(&self.game_data)
         {
-            Cached::invalidate(&mut self.cached_players_and_scores);
+            Cached::invalidate(&self.cached_players_and_scores);
         }
         if self
             .cached_rules_and_description
             .update_intern_cache(&self.game_data)
         {
-            Cached::invalidate(&mut self.cached_rules_and_description);
+            Cached::invalidate(&self.cached_rules_and_description);
         }
     }
     ///reset the data to replay the game
@@ -98,12 +98,12 @@ impl Render for RootRenderingComponent {
             let xmax_grid_size = divgridcontainermod::max_grid_size(self);
             //the UI has 2 different 'pages', depends on the status
             if self.game_data.is_status_for_grid_container() {
-                page03gamemod::page_render(&self, cx, xmax_grid_size)
+                page03gamemod::page_render(self, cx, &xmax_grid_size)
             } else {
-                page01nicknamemod::page_render(&self, cx)
+                page01nicknamemod::page_render(self, cx)
             }
         } else {
-            page05errormod::page_render(&self, cx)
+            page05errormod::page_render(self, cx)
         }
         //endregion
     }

@@ -22,7 +22,6 @@ pub fn on_click_start_game(rrc: &mut RootRenderingComponent) {
 ///on game data init
 pub fn on_msg_start_game(
     rrc: &mut RootRenderingComponent,
-    _v2: dodrio::VdomWeak,
     card_grid_data: &str,
     game_config: &str,
     players: &str,

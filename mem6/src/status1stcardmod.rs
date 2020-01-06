@@ -1,6 +1,8 @@
 // status1stcardmod.rs
 //! code flow from this status
 
+#![allow(clippy::panic)]
+
 //region: use
 use crate::gamedatamod::CardStatusCardFace;
 use crate::rootrenderingcomponentmod::RootRenderingComponent;

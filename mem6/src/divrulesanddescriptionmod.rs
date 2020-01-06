@@ -2,6 +2,8 @@
 //! renders the div that shows rules and descriptions
 //! All is a static content. Great for implementing dodrio cache.
 
+#![allow(clippy::panic)]
+
 //region: use
 use crate::gamedatamod::GameData;
 use crate::divfullscreenmod;
@@ -26,6 +28,7 @@ Use the QR code on the bottom of this text.
 For better user experience 
 click on ";
 
+///descriptions
 const GAME_RULES2: &str = "On the start page write your nickname. \
 Now put all the smartphones on the table near to each other, \
 so all players can see them and touch \
@@ -61,12 +64,13 @@ pub struct RulesAndDescription {
 
 impl RulesAndDescription {
     ///constructor
+    #[allow(clippy::missing_const_for_fn)] //who cares
     pub fn new() -> Self {
         RulesAndDescription {
             is_fullscreen: false,
         }
     }
-
+    ///update internal cache
     pub fn update_intern_cache(&mut self, game_data: &GameData) -> bool {
         let mut is_invalidated;
         is_invalidated = false;
