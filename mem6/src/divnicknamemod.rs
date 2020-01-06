@@ -10,16 +10,12 @@ use dodrio::bumpalo::{self, Bump};
 use dodrio::Node;
 use typed_html::dodrio;
 use unwrap::unwrap;
-use wasm_bindgen::JsCast;
-//use wasm_bindgen::JsCast; //don't remove this. It is needed for dyn_into.
+use wasm_bindgen::JsCast; //don't remove this. It is needed for dyn_into.
+use wasm_bindgen_futures::spawn_local;
 //endregion
 
 ///render the nickname input
-pub fn div_nickname_input<'b>(
-    rrc: & RootRenderingComponent,
-    bump: &'b Bump,
-) -> Node<'b>
-{
+pub fn div_nickname_input<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
     //if the user did not yet input his nickname than blink
     //all the code is the same except the class and the call to schedule_render
     if rrc.game_data.my_nickname == "nickname" {
@@ -39,9 +35,9 @@ pub fn div_nickname_input<'b>(
                     rrc.game_data.my_nickname)
                     .into_bump_str()
                 }
-                onkeyup={ move |root, vdom_weak, event| {
+                onkeyup={ move |root, vdom, event| {
                     //save on every key stroke
-                    let v2 = vdom_weak.clone();
+                    let v2 = vdom.clone();
                     save_nickname_to_localstorage(&v2);
                     v2.schedule_render();
                     }
@@ -67,9 +63,9 @@ pub fn div_nickname_input<'b>(
                     rrc.game_data.my_nickname)
                     .into_bump_str()
                 }
-                onkeyup={ move |root, vdom_weak, event| {
+                onkeyup={ move |root, vdom, event| {
                     //save on every key stroke
-                    let v2 = vdom_weak.clone();
+                    let v2 = vdom.clone();
                     save_nickname_to_localstorage(&v2);
                     }
                 }>
@@ -81,7 +77,7 @@ pub fn div_nickname_input<'b>(
 }
 
 ///save nickname from html input elements to local storage and rrc
-pub fn save_nickname_to_localstorage(vdom_weak: &dodrio::VdomWeak) {
+pub fn save_nickname_to_localstorage(vdom: &dodrio::VdomWeak) {
     let window = unwrap!(web_sys::window(), "window");
     let document = unwrap!(window.document(), "document");
 
@@ -103,16 +99,20 @@ pub fn save_nickname_to_localstorage(vdom_weak: &dodrio::VdomWeak) {
 
     //To change the data in rrc I must use the future `vdom.with_component`
     //it will be executed at the next tick to avoid concurrent data races.
-    wasm_bindgen_futures::spawn_local(
-        vdom_weak
-            .with_component({
-                move |root| {
-                    let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                    rrc.game_data.my_nickname = nickname_string;
-                }
-            })
-            .map_err(|_| ()),
-    );
+
+    spawn_local({
+        let vdom = vdom.clone();
+        async move {
+            let _rslt = vdom
+                .with_component({
+                    move |root| {
+                        let rrc = root.unwrap_mut::<RootRenderingComponent>();
+                        rrc.game_data.my_nickname = nickname_string;
+                    }
+                })
+                .await;
+        }
+    });
 }
 
 ///load nickname from local storage

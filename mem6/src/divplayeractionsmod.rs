@@ -23,10 +23,10 @@ use typed_html::dodrio;
 //endregion
 
 ///render html element to inform player what to do and get a click action from user
-pub fn div_player_actions_from_game_status<'b>(
+pub fn div_player_actions_from_game_status<'a>(
     rrc: &RootRenderingComponent,
-    bump: &'b Bump,
-) -> Node<'b> {
+    bump: &'a Bump,
+) -> Node<'a> {
     //if rrc.game_data.is_status_start_page() {
     /*
         && (rrc.game_data.is_reconnect || rrc.game_data.ws.ready_state() != 1)
@@ -58,7 +58,7 @@ pub fn div_player_actions_from_game_status<'b>(
 }
 
 ///render unpredicted
-fn div_unpredicted<'b>(rrc: &RootRenderingComponent, bump: &'b Bump) -> Node<'b> {
+fn div_unpredicted<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
     //unpredictable situation
     //return
     dodrio!(bump,

@@ -10,18 +10,18 @@ use crate::divplayeractionsmod;
 //use dodrio::Render;
 //use unwrap::unwrap;
 //use dodrio::builder::text;
-use dodrio::bumpalo::{Bump};
-use dodrio::Node;
+use dodrio::{Node, RenderContext};
 use typed_html::dodrio;
 //endregion
 
 ///page render
-pub fn page_render<'b>(rrc: &'b RootRenderingComponent, bump: &'b Bump) -> Node<'b> {
+pub fn page_render<'a>(rrc: &RootRenderingComponent, cx: &mut RenderContext<'a>) -> Node<'a> {
+    let bump = cx.bump;
     dodrio!(bump,
     <div class= "m_container" >
-        {divgametitlemod::div_game_title(rrc, bump)}
-        {vec![divnicknamemod::div_nickname_input(rrc,bump)]}
-        {vec![divplayeractionsmod::div_player_actions_from_game_status(rrc, bump)]}
+        {divgametitlemod::div_game_title(rrc, cx.bump)}
+        {vec![divnicknamemod::div_nickname_input(rrc,cx.bump)]}
+        {vec![divplayeractionsmod::div_player_actions_from_game_status(rrc, cx.bump)]}
     </div>
     )
 }

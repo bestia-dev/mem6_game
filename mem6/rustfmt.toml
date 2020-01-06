@@ -10,6 +10,6 @@ reorder_imports = false
 reorder_modules = false
 #reorder_impl_items = false
 
-force_multiline_blocks = true
-single_line_if_else = false
+#force_multiline_blocks = true
+#single_line_if_else = false
 

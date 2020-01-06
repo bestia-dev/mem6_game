@@ -12,7 +12,7 @@ use typed_html::dodrio;
 //endregion
 
 ///the header shows the game title
-pub fn div_game_title<'b>(_rrc: &RootRenderingComponent, bump: &'b Bump) -> Vec<Node<'b>> {
+pub fn div_game_title<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Vec<Node<'a>> {
     let mut vec_node = Vec::new();
     vec_node.push(dodrio!(bump,
     <div>

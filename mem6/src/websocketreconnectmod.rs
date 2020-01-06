@@ -23,7 +23,7 @@ use typed_html::dodrio;
 //endregion
 
 ///render reconnect
-pub fn div_reconnect<'b>(_rrc: &RootRenderingComponent, bump: &'b Bump) -> Node<'b> {
+pub fn div_reconnect<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
     dodrio!(bump,
     <div>
       <h4>

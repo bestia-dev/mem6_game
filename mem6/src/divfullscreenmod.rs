@@ -61,7 +61,7 @@ pub fn is_fullscreen(rrc: &RootRenderingComponent) -> bool {
 }
 
 ///render the div for fullscreen
-pub fn div_fullscreen<'b>(is_fullscreen: bool, bump: &'b Bump) -> Vec<Node<'b>> {
+pub fn div_fullscreen<'a>(is_fullscreen: bool, bump: &'a Bump) -> Vec<Node<'a>> {
     let mut ret_val = vec![dodrio!(bump,
         <div>
         </div>

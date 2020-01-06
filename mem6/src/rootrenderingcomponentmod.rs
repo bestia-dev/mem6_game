@@ -18,8 +18,7 @@ use mem6_common::GameStatus;
 
 //use unwrap::unwrap;
 //use dodrio::builder::text;
-use dodrio::bumpalo::{Bump};
-use dodrio::{Cached, Node, Render};
+use dodrio::{Cached, Node, Render, RenderContext};
 use web_sys::WebSocket;
 //endregion
 
@@ -89,10 +88,7 @@ impl RootRenderingComponent {
 ///Only when render is scheduled after aomw change id the game data.
 impl Render for RootRenderingComponent {
     #[inline]
-    fn render<'a, 'bump>(&'a self, bump: &'bump Bump) -> Node<'bump>
-    where
-        'a: 'bump,
-    {
+    fn render<'a>(&self, cx: &mut RenderContext<'a>) -> Node<'a> {
         //the card grid is a html css grid object (like a table) with <img> inside
         //other html elements are pretty simple.
 
@@ -102,12 +98,12 @@ impl Render for RootRenderingComponent {
             let xmax_grid_size = divgridcontainermod::max_grid_size(self);
             //the UI has 2 different 'pages', depends on the status
             if self.game_data.is_status_for_grid_container() {
-                page03gamemod::page_render(self, bump, xmax_grid_size)
+                page03gamemod::page_render(&self, cx, xmax_grid_size)
             } else {
-                page01nicknamemod::page_render(self, bump)
+                page01nicknamemod::page_render(&self, cx)
             }
         } else {
-            page05errormod::page_render(self, bump)
+            page05errormod::page_render(&self, cx)
         }
         //endregion
     }

@@ -16,8 +16,7 @@ use typed_html::dodrio;
 //endregion
 
 ///render asked
-pub fn div_invited<'b>(rrc: & RootRenderingComponent, bump: &'b Bump) -> Node<'b>
-{
+pub fn div_invited<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
     //return Click here to Accept play
     dodrio!(bump,
     <div class="div_clickable" onclick={move |root, vdom, _event| {
@@ -55,11 +54,7 @@ pub fn on_click_accept(rrc: &mut RootRenderingComponent) {
 }
 
 ///msg accept play
-pub fn on_msg_accept(
-    rrc: &mut RootRenderingComponent,
-    his_ws_uid: usize,
-    his_nickname: String,
-) {
+pub fn on_msg_accept(rrc: &mut RootRenderingComponent, his_ws_uid: usize, his_nickname: String) {
     //logmod::debug_write(&format!("on_msg_accept {}",his_ws_uid));
     if rrc.game_data.my_player_number == 1 {
         rrc.game_data.players.push(Player {
@@ -73,11 +68,7 @@ pub fn on_msg_accept(
 }
 
 ///render play accepted
-pub fn div_invite_accepted<'b>(
-    rrc: & RootRenderingComponent,
-    bump: &'b Bump,
-) -> Node<'b>
-{
+pub fn div_invite_accepted<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
     dodrio!(bump,
     <h2 class="h2_user_must_wait">
         {vec![text(bumpalo::format!(in bump, "Game {} accepted.", rrc.game_data.asked_game_name).into_bump_str(),)]}

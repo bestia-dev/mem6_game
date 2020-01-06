@@ -14,8 +14,7 @@ use typed_html::dodrio;
 //endregion
 
 ///play again
-pub fn div_game_over<'b>(_rrc: & RootRenderingComponent, bump: &'b Bump) -> Node<'b>
-{
+pub fn div_game_over<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
     //end game ,Play again?  reload webpage
     dodrio!(bump,
     <div class="div_clickable" onclick={

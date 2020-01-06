@@ -1,4 +1,4 @@
-// page02nicknamemod.rs
+// page05errormod.rs
 //! renders the page with errors
 
 //region: use statements
@@ -6,13 +6,13 @@ use crate::rootrenderingcomponentmod::RootRenderingComponent;
 
 //use unwrap::unwrap;
 use dodrio::builder::text;
-use dodrio::bumpalo::{self, Bump};
-use dodrio::Node;
+use dodrio::{bumpalo, Node, RenderContext};
 use typed_html::dodrio;
 //endregion
 
 ///page render
-pub fn page_render<'b>(rrc: &RootRenderingComponent, bump: &'b Bump) -> Node<'b> {
+pub fn page_render<'a>(rrc: &RootRenderingComponent, cx: &mut RenderContext<'a>) -> Node<'a> {
+    let bump = cx.bump;
     dodrio!(bump,
         <div>
             <h2 class="h2_user_must_wait">

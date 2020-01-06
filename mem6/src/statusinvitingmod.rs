@@ -17,8 +17,7 @@ use typed_html::dodrio;
 //endregion
 
 ///render
-pub fn div_inviting<'b>(rrc: & RootRenderingComponent, bump: &'b Bump) -> Node<'b>
-{
+pub fn div_inviting<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
     dodrio!(bump,
     <div>
         <div>
@@ -45,7 +44,7 @@ pub fn div_inviting<'b>(rrc: & RootRenderingComponent, bump: &'b Bump) -> Node<'
             );
             let v2 = vdom.clone();
             //async fetch all imgs and put them in service worker cache
-            fetchallimgsforcachemod::fetch_all_img_for_cache_request(rrc, v2);
+            fetchallimgsforcachemod::fetch_all_img_for_cache_request(rrc);
             //endregion
             vdom.schedule_render();
         }}>

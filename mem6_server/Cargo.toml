@@ -1,6 +1,6 @@
 [package]
 name = "mem6_server"
-version = "2020.104.1043" #no need for semver if it is not a library
+version = "2020.106.1336" #no need for semver if it is not a library
 description = "server for the game mem6 http + WebSocket on the same port"
 authors = ["Luciano Bestia"]
 edition = "2018"
@@ -15,7 +15,8 @@ mem6_common = { path = "../mem6_common" }
 futures = "0.3.1"
 log = "0.4.8"
 env_logger = "0.7.1"
-warp="0.1.20"
+warp =  { git = "https://github.com/seanmonstar/warp.git", branch = "master" }
+#warp="0.1.20"
 regex="1.3.1"
 # cmd line input parameters
 clap ="2.33.0"
@@ -25,4 +26,4 @@ serde = "1.0.104"
 serde_derive ="1.0.104"
 serde_json = "1.0"
 unwrap = "1.2.1"
-
+tokio = { version = "0.2", features = ["blocking", "fs", "macros", "rt-threaded", "stream", "sync", "time"] }

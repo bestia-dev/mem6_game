@@ -7,40 +7,33 @@ use crate::fetchmod;
 use crate::gamedatamod;
 
 use unwrap::unwrap;
-use web_sys::{Request, RequestInit};
+use wasm_bindgen_futures::spawn_local;
 //endregion
 
-///async fetch_response() for gamesmetadata.json
+///async fetch for gamesmetadata.json
 #[allow(clippy::needless_pass_by_value)]
 pub fn fetch_games_metadata_request(href: String, vdom_weak: dodrio::VdomWeak) {
     let url_config = format!("{}/content/gamesmetadata.json", href);
-    //logmod::debug_write(url_config.as_str());
-    let webrequest = create_webrequest(url_config.as_str());
-    fetchmod::fetch_response(vdom_weak, &webrequest, &set_game_metadata_from_json);
+    spawn_local(set_game_metadata_from_json(url_config, vdom_weak));
 }
 
-///create web request from string
-pub fn create_webrequest(url: &str) -> web_sys::Request {
-    let mut opts = RequestInit::new();
-    opts.method("GET");
-
-    let w_webrequest = unwrap!(Request::new_with_str_and_init(url, &opts));
-
-    //logmod::debug_write("let w_webrequest =");
-    //return
-    w_webrequest
-}
-
-#[allow(clippy::needless_pass_by_value)]
 /// update a field in the struct
-pub fn set_game_metadata_from_json(rrc: &mut RootRenderingComponent, respbody: String) {
-    //respbody is json.
+pub async fn set_game_metadata_from_json(url_config: String, vdom: dodrio::VdomWeak) {
     //logmod::debug_write(format!("respbody: {}", respbody).as_str());
-    let v: gamedatamod::GamesMetadata = unwrap!(serde_json::from_str(respbody.as_str()));
-    rrc.game_data.games_metadata = Some(v.clone());
-    //fill the vector
-    rrc.game_data.content_folders.clear();
-    for x in v.vec_game_metadata {
-        rrc.game_data.content_folders.push(x.folder);
-    }
+    let respbody = fetchmod::fetch_response(url_config).await;
+    let v: gamedatamod::GamesMetadata = unwrap!(serde_json::from_str(&respbody));
+    unwrap!(
+        vdom.with_component({
+            move |root| {
+                let rrc = root.unwrap_mut::<RootRenderingComponent>();
+                //fill the vector
+                rrc.game_data.content_folders.clear();
+                for x in &v.vec_game_metadata {
+                    rrc.game_data.content_folders.push(x.folder.clone());
+                }
+                rrc.game_data.games_metadata = Some(v);
+            }
+        })
+        .await
+    );
 }

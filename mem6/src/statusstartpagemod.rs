@@ -18,7 +18,7 @@ use typed_html::dodrio;
 //endregion
 
 ///render invite ask begin, ask to play for multiple contents/folders
-pub fn div_start_page<'b>(rrc: &RootRenderingComponent, bump: &'b Bump) -> Node<'b> {
+pub fn div_start_page<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
     let mut vec_of_nodes = Vec::new();
     //I don't know how to solve the lifetime problems. So I just clone the small data.
     let ff = rrc.game_data.content_folders.clone();
@@ -73,7 +73,7 @@ pub fn on_click_invite(
     rrc.game_data.asked_game_name = folder_name.to_string();
 
     //async fetch_response() for gameconfig.json
-    fetchgameconfigmod::fetch_game_config_request(rrc, vdom_weak);
+    fetchgameconfigmod::async_fetch_game_config_request(rrc, vdom_weak);
     //send the msg MsgInvite
     //logmod::debug_write(&format!("MsgInvite send {}", rrc.game_data.my_ws_uid));
     websocketcommunicationmod::ws_send_msg(

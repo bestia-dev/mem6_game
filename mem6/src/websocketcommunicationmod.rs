@@ -20,6 +20,7 @@ use unwrap::unwrap;
 use js_sys::Reflect;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
+use wasm_bindgen_futures::spawn_local;
 use web_sys::{ErrorEvent, WebSocket};
 //endregion
 
@@ -100,336 +101,226 @@ pub fn setup_ws_connection(
 /// receive WebSocket msg callback.
 #[allow(clippy::unneeded_field_pattern)]
 pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
-    let msg_recv_handler = Box::new(move |msg: JsValue| {
-        let data: JsValue = unwrap!(
-            Reflect::get(&msg, &"data".into()),
-            "No 'data' field in WebSocket message!"
-        );
-        let data = data.as_string().expect("Field 'data' is not string");
-        //don't log ping pong there are too much
-        if !(data.to_string().contains("MsgPing") || data.to_string().contains("MsgPong")) {
-            //logmod::debug_write(&data);
-        }
-        //serde_json can find out the variant of WsMessage
-        //parse json and put data in the enum
-        let msg: WsMessage = serde_json::from_str(&data).unwrap_or_else(|_x| WsMessage::MsgDummy {
-            dummy: String::from("error"),
-        });
+    let msg_recv_handler =
+        Box::new(move |msg: JsValue| {
+            let data: JsValue = unwrap!(
+                Reflect::get(&msg, &"data".into()),
+                "No 'data' field in WebSocket message!"
+            );
+            let data = data.as_string().expect("Field 'data' is not string");
+            //don't log ping pong there are too much
+            if !(data.to_string().contains("MsgPing") || data.to_string().contains("MsgPong")) {
+                //logmod::debug_write(&data);
+            }
+            //serde_json can find out the variant of WsMessage
+            //parse json and put data in the enum
+            let msg: WsMessage =
+                serde_json::from_str(&data).unwrap_or_else(|_x| WsMessage::MsgDummy {
+                    dummy: String::from("error"),
+                });
 
-        //match enum by variant and prepares the future that will be executed on the next tick
-        //in this big enum I put only boilerplate code that don't change any data.
-        //for changing data I put code in separate functions for easy reading.
-        match msg {
-            //I don't know why I need a dummy, but is entertaining to have one.
-            WsMessage::MsgDummy { dummy } => logmod::debug_write(dummy.as_str()),
-            WsMessage::MsgPing { msg_id: _ } => {
-                unreachable!("mem6 wasm must not receive MsgPing");
-            }
-            WsMessage::MsgPong { msg_id: _ } => {
-                //logmod::debug_write(format!("MsgPong {}", msg_id).as_str())
-            }
-            WsMessage::MsgRequestWsUid {
-                my_ws_uid,
-                players_ws_uid,
-            } => {
-                logmod::debug_write(players_ws_uid.as_str());
-                //this is a reconnect. Send all data to this player.
-                wasm_bindgen_futures::spawn_local(
-                    vdom.with_component({
-                        let v2 = vdom.clone();
-                        move |root| {
-                            let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                            websocketreconnectmod::send_msg_for_resync(rrc, my_ws_uid);
-                            v2.schedule_render();
-                        }
-                    })
-                    .map_err(|_| ()),
-                );
-            }
-            WsMessage::MsgResponseWsUid {
-                your_ws_uid,
-                server_version: _,
-            } => {
-                wasm_bindgen_futures::spawn_local(
-                    vdom.with_component({
-                        move |root| {
-                            //logmod::debug_write(&format!("MsgResponseWsUid: {}  ", your_ws_uid));
-                            let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                            on_response_ws_uid(rrc, your_ws_uid);
-                        }
-                    })
-                    .map_err(|_| ()),
-                );
-            }
+            //match enum by variant and prepares the future that will be executed on the next tick
+            //in this big enum I put only boilerplate code that don't change any data.
+            //for changing data I put code in separate functions for easy reading.
+            spawn_local({
+                let vdom = vdom.clone();
+                async move {
+                    let _rslt = vdom.with_component({
+                    let vdom = vdom.clone();
+                    move |root| {
+                        let rrc = root.unwrap_mut::<RootRenderingComponent>();
 
-            WsMessage::MsgInvite {
-                my_ws_uid,
-                my_nickname,
-                asked_game_name,
-            } => {
-                wasm_bindgen_futures::spawn_local(
-                    vdom.with_component({
-                        let v2 = vdom.clone();
-                        move |root| {
-                            let rrc = root.unwrap_mut::<RootRenderingComponent>();
-
-                            if let GameStatus::StatusGameOver
-                            | GameStatus::StatusStartPage
-                            | GameStatus::StatusInvited = rrc.game_data.game_status
-                            {
-                                statusstartpagemod::on_msg_invite(
-                                    rrc,
-                                    my_ws_uid,
-                                    my_nickname,
-                                    asked_game_name,
-                                );
-                                v2.schedule_render();
+                        match msg {
+                            //I don't know why I need a dummy, but is entertaining to have one.
+                            WsMessage::MsgDummy { dummy } => logmod::debug_write(dummy.as_str()),
+                            WsMessage::MsgPing { msg_id: _ } => {
+                                unreachable!("mem6 wasm must not receive MsgPing");
                             }
-                        }
-                    })
-                    .map_err(|_| ()),
-                );
-            }
-
-            WsMessage::MsgAccept {
-                my_ws_uid,
-                players_ws_uid: _,
-                my_nickname,
-            } => {
-                wasm_bindgen_futures::spawn_local(
-                    vdom.with_component({
-                        let v2 = vdom.clone();
-                        move |root| {
-                            let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                            statusinvitedmod::on_msg_accept(rrc, my_ws_uid, my_nickname);
-                            v2.schedule_render();
-                        }
-                    })
-                    .map_err(|_| ()),
-                );
-            }
-            WsMessage::MsgStartGame {
-                my_ws_uid: _,
-                players_ws_uid: _,
-                card_grid_data,
-                game_config,
-                players,
-            } => {
-                wasm_bindgen_futures::spawn_local(
-                    vdom.with_component({
-                        let v2 = vdom.clone();
-                        move |root| {
-                            let rrc = root.unwrap_mut::<RootRenderingComponent>();
-
-                            if let GameStatus::StatusAccepted = rrc.game_data.game_status {
-                                let v3 = v2.clone();
-                                statusgamedatainitmod::on_msg_start_game(
-                                    rrc,
-                                    v3,
-                                    &card_grid_data,
-                                    &game_config,
-                                    &players,
-                                );
-                                v2.schedule_render();
+                            WsMessage::MsgPong { msg_id: _ } => {
+                                //logmod::debug_write(format!("MsgPong {}", msg_id).as_str())
                             }
-                        }
-                    })
-                    .map_err(|_| ()),
-                );
-            }
-            WsMessage::MsgClick1stCard {
-                my_ws_uid,
-                players_ws_uid: _,
-                card_index_of_first_click,
-                msg_id,
-            } => {
-                wasm_bindgen_futures::spawn_local(
-                    vdom.with_component({
-                        let v2 = vdom.clone();
-                        move |root| {
-                            let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                            status1stcardmod::on_msg_click_1st_card(
-                                rrc,
-                                &v2,
+                            WsMessage::MsgRequestWsUid {
+                                my_ws_uid: _,
+                                players_ws_uid: _,
+                            } => {}
+                            WsMessage::MsgResponseWsUid {
+                                your_ws_uid,
+                                server_version: _,
+                            } => {
+                                //logmod::debug_write(&format!("MsgResponseWsUid: {}  ", your_ws_uid));
+                                on_response_ws_uid(rrc, your_ws_uid);
+                            }
+                            WsMessage::MsgInvite {
                                 my_ws_uid,
+                                my_nickname,
+                                asked_game_name,
+                            } => {
+                                if let GameStatus::StatusGameOver
+                                | GameStatus::StatusStartPage
+                                | GameStatus::StatusInvited = rrc.game_data.game_status
+                                {
+                                    statusstartpagemod::on_msg_invite(
+                                        rrc,
+                                        my_ws_uid,
+                                        my_nickname,
+                                        asked_game_name,
+                                    );
+                                    vdom.schedule_render();
+                                }
+                            }
+                            WsMessage::MsgAccept {
+                                my_ws_uid,
+                                players_ws_uid: _,
+                                my_nickname,
+                            } => {
+                                statusinvitedmod::on_msg_accept(rrc, my_ws_uid, my_nickname);
+                                vdom.schedule_render();
+                            }
+                            WsMessage::MsgStartGame {
+                                my_ws_uid: _,
+                                players_ws_uid: _,
+                                card_grid_data,
+                                game_config,
+                                players,
+                            } => {
+                                if let GameStatus::StatusAccepted = rrc.game_data.game_status {
+                                    let vdom2 = vdom.clone();
+                                    statusgamedatainitmod::on_msg_start_game(
+                                        rrc,
+                                        vdom2,
+                                        &card_grid_data,
+                                        &game_config,
+                                        &players,
+                                    );
+                                    vdom.schedule_render();
+                                }
+                            }
+                            WsMessage::MsgClick1stCard {
+                                my_ws_uid,
+                                players_ws_uid: _,
                                 card_index_of_first_click,
                                 msg_id,
-                            );
-                            v2.schedule_render();
-                        }
-                    })
-                    .map_err(|_| ()),
-                );
-            }
-            WsMessage::MsgClick2ndCardPoint {
-                my_ws_uid,
-                players_ws_uid: _,
-                card_index_of_second_click,
-                msg_id,
-            } => {
-                wasm_bindgen_futures::spawn_local(
-                    vdom.with_component({
-                        let v2 = vdom.clone();
-                        move |root| {
-                            let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                            status2ndcardmod::on_msg_click_2nd_card_point(
-                                rrc,
-                                my_ws_uid,
-                                card_index_of_second_click,
-                                msg_id,
-                            );
-                            v2.schedule_render();
-                        }
-                    })
-                    .map_err(|_| ()),
-                );
-            }
-            WsMessage::MsgTakeTurnBegin {
-                my_ws_uid,
-                players_ws_uid: _,
-                card_index_of_second_click,
-                msg_id,
-            } => {
-                wasm_bindgen_futures::spawn_local(
-                    vdom.with_component({
-                        let v2 = vdom.clone();
-                        move |root| {
-                            let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                            statustaketurnbeginmod::on_msg_take_turn_begin(
-                                rrc,
-                                my_ws_uid,
-                                card_index_of_second_click,
-                                msg_id,
-                            );
-                            v2.schedule_render();
-                        }
-                    })
-                    .map_err(|_| ()),
-                );
-            }
-            WsMessage::MsgTakeTurnEnd {
-                my_ws_uid,
-                players_ws_uid: _,
-                msg_id,
-            } => {
-                wasm_bindgen_futures::spawn_local(
-                    vdom.with_component({
-                        let v2 = vdom.clone();
-                        move |root| {
-                            let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                            statustaketurnendmod::on_msg_take_turn_end(rrc, my_ws_uid, msg_id);
-                            v2.schedule_render();
-                        }
-                    })
-                    .map_err(|_| ()),
-                );
-            }
-            WsMessage::MsgGameOver {
-                my_ws_uid: _,
-                players_ws_uid: _,
-            } => {
-                wasm_bindgen_futures::spawn_local(
-                    vdom.with_component({
-                        let v2 = vdom.clone();
-                        move |root| {
-                            let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                            statusgameovermod::on_msg_game_over(rrc);
-                            v2.schedule_render();
-                        }
-                    })
-                    .map_err(|_| ()),
-                );
-            }
-            WsMessage::MsgAck {
-                my_ws_uid,
-                players_ws_uid: _,
-                msg_id,
-                msg_ack_kind,
-            } => {
-                wasm_bindgen_futures::spawn_local(
-                    vdom.with_component({
-                        let v2 = vdom.clone();
-                        move |root| {
-                            let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                            match msg_ack_kind {
-                                MsgAckKind::MsgTakeTurnEnd => {
-                                    statustaketurnendmod::on_msg_ack_take_turn_end(
-                                        rrc, my_ws_uid, msg_id,
-                                    );
-                                }
-                                MsgAckKind::MsgClick1stCard => {
-                                    status1stcardmod::on_msg_ack_click_1st_card(
-                                        rrc, my_ws_uid, msg_id,
-                                    );
-                                }
-                                MsgAckKind::MsgClick2ndCardPoint => {
-                                    status2ndcardmod::on_msg_ack_player_click2nd_card_point(
-                                        rrc, my_ws_uid, msg_id,
-                                    );
-                                }
-                                MsgAckKind::MsgTakeTurnBegin => {
-                                    statustaketurnbeginmod::on_msg_ack_take_turn_begin(
-                                        rrc, my_ws_uid, msg_id,
-                                    );
-                                }
+                            } => {
+                                status1stcardmod::on_msg_click_1st_card(
+                                    rrc,
+                                    &vdom,
+                                    my_ws_uid,
+                                    card_index_of_first_click,
+                                    msg_id,
+                                );
+                                vdom.schedule_render();
                             }
-                            v2.schedule_render();
-                        }
-                    })
-                    .map_err(|_| ()),
-                );
-            }
-            WsMessage::MsgAskPlayer1ForResync {
-                my_ws_uid: _,
-                players_ws_uid: _,
-            } => {
-                wasm_bindgen_futures::spawn_local(
-                    vdom.with_component({
-                        let v2 = vdom.clone();
-                        move |root| {
-                            let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                            websocketreconnectmod::send_msg_for_resync(
-                                rrc,
-                                rrc.game_data.my_ws_uid,
-                            );
-                            v2.schedule_render();
-                        }
-                    })
-                    .map_err(|_| ()),
-                );
-            }
-            WsMessage::MsgAllGameData {
-                my_ws_uid: _,
-                players_ws_uid: _,
-                players,
-                card_grid_data,
-                card_index_of_first_click,
-                card_index_of_second_click,
-                player_turn,
-                game_status,
-            } => {
-                wasm_bindgen_futures::spawn_local(
-                    vdom.with_component({
-                        let v2 = vdom.clone();
-                        move |root| {
-                            let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                            websocketreconnectmod::on_msg_all_game_data(
-                                rrc,
+                            WsMessage::MsgClick2ndCardPoint {
+                                my_ws_uid,
+                                players_ws_uid: _,
+                                card_index_of_second_click,
+                                msg_id,
+                            } => {
+                                status2ndcardmod::on_msg_click_2nd_card_point(
+                                    rrc,
+                                    my_ws_uid,
+                                    card_index_of_second_click,
+                                    msg_id,
+                                );
+                                vdom.schedule_render();
+                            }
+                            WsMessage::MsgTakeTurnBegin {
+                                my_ws_uid,
+                                players_ws_uid: _,
+                                card_index_of_second_click,
+                                msg_id,
+                            } => {
+                                statustaketurnbeginmod::on_msg_take_turn_begin(
+                                    rrc,
+                                    my_ws_uid,
+                                    card_index_of_second_click,
+                                    msg_id,
+                                );
+                                vdom.schedule_render();
+                            }
+                            WsMessage::MsgTakeTurnEnd {
+                                my_ws_uid,
+                                players_ws_uid: _,
+                                msg_id,
+                            } => {
+                                statustaketurnendmod::on_msg_take_turn_end(rrc, my_ws_uid, msg_id);
+                                vdom.schedule_render();
+                            }
+                            WsMessage::MsgGameOver {
+                                my_ws_uid: _,
+                                players_ws_uid: _,
+                            } => {
+                                statusgameovermod::on_msg_game_over(rrc);
+                                vdom.schedule_render();
+                            }
+                            WsMessage::MsgAck {
+                                my_ws_uid,
+                                players_ws_uid: _,
+                                msg_id,
+                                msg_ack_kind,
+                            } => {
+                                match msg_ack_kind {
+                                    MsgAckKind::MsgTakeTurnEnd => {
+                                        statustaketurnendmod::on_msg_ack_take_turn_end(
+                                            rrc, my_ws_uid, msg_id,
+                                        );
+                                    }
+                                    MsgAckKind::MsgClick1stCard => {
+                                        status1stcardmod::on_msg_ack_click_1st_card(
+                                            rrc, my_ws_uid, msg_id,
+                                        );
+                                    }
+                                    MsgAckKind::MsgClick2ndCardPoint => {
+                                        status2ndcardmod::on_msg_ack_player_click2nd_card_point(
+                                            rrc, my_ws_uid, msg_id,
+                                        );
+                                    }
+                                    MsgAckKind::MsgTakeTurnBegin => {
+                                        statustaketurnbeginmod::on_msg_ack_take_turn_begin(
+                                            rrc, my_ws_uid, msg_id,
+                                        );
+                                    }
+                                }
+                                vdom.schedule_render();
+                            }
+                            WsMessage::MsgAskPlayer1ForResync {
+                                my_ws_uid: _,
+                                players_ws_uid: _,
+                            } => {
+                                websocketreconnectmod::send_msg_for_resync(
+                                    rrc,
+                                    rrc.game_data.my_ws_uid,
+                                );
+                                vdom.schedule_render();
+                            }
+                            WsMessage::MsgAllGameData {
+                                my_ws_uid: _,
+                                players_ws_uid: _,
                                 players,
                                 card_grid_data,
                                 card_index_of_first_click,
                                 card_index_of_second_click,
                                 player_turn,
                                 game_status,
-                            );
-                            v2.schedule_render();
+                            } => {
+                                websocketreconnectmod::on_msg_all_game_data(
+                                    rrc,
+                                    players,
+                                    card_grid_data,
+                                    card_index_of_first_click,
+                                    card_index_of_second_click,
+                                    player_turn,
+                                    game_status,
+                                );
+                                vdom.schedule_render();
+                            }
                         }
-                    })
-                    .map_err(|_| ()),
-                );
-            }
-        }
-    });
+                    }
+                })
+                .await;
+                }
+            });
+        });
 
     //magic ??
     let cb_mrh: Closure<dyn Fn(JsValue)> = Closure::wrap(msg_recv_handler);
@@ -445,17 +336,21 @@ pub fn setup_ws_onerror(ws: &WebSocket, vdom: dodrio::VdomWeak) {
         let err_text = format!("error event {:?}", e);
         //logmod::debug_write(&err_text);
         {
-            wasm_bindgen_futures::spawn_local(
-                vdom.with_component({
-                    let v2 = vdom.clone();
-                    move |root| {
-                        let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                        rrc.game_data.error_text = err_text;
-                        v2.schedule_render();
-                    }
-                })
-                .map_err(|_| ()),
-            );
+            spawn_local({
+                let vdom = vdom.clone();
+                async move {
+                    let _rslt = vdom
+                        .with_component({
+                            let vdom = vdom.clone();
+                            move |root| {
+                                let rrc = root.unwrap_mut::<RootRenderingComponent>();
+                                rrc.game_data.error_text = err_text;
+                                vdom.schedule_render();
+                            }
+                        })
+                        .await;
+                }
+            });
         }
     }) as Box<dyn FnMut(ErrorEvent)>);
     ws.set_onerror(Some(onerror_callback.as_ref().unchecked_ref()));
@@ -467,18 +362,22 @@ pub fn setup_ws_onclose(ws: &WebSocket, vdom: dodrio::VdomWeak) {
         let err_text = format!("ws_onclose {:?}", e);
         logmod::debug_write(&format!("onclose_callback {}", &err_text));
         {
-            wasm_bindgen_futures::spawn_local(
-                vdom.with_component({
-                    let v2 = vdom.clone();
-                    move |root| {
-                        let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                        //I want to show a reconnect button to the user
-                        rrc.game_data.is_reconnect = true;
-                        v2.schedule_render();
-                    }
-                })
-                .map_err(|_| ()),
-            );
+            spawn_local({
+                let vdom = vdom.clone();
+                async move {
+                    let _rslt = vdom
+                        .with_component({
+                            let vdom = vdom.clone();
+                            move |root| {
+                                let rrc = root.unwrap_mut::<RootRenderingComponent>();
+                                //I want to show a reconnect button to the user
+                                rrc.game_data.is_reconnect = true;
+                                vdom.schedule_render();
+                            }
+                        })
+                        .await;
+                }
+            });
         }
     }) as Box<dyn FnMut(ErrorEvent)>);
     ws.set_onclose(Some(onclose_callback.as_ref().unchecked_ref()));

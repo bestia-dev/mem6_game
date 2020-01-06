@@ -8,8 +8,7 @@ use crate::utilsmod;
 
 use unwrap::unwrap;
 use dodrio::builder::{text};
-use dodrio::bumpalo::{self, Bump};
-use dodrio::{Node, Render};
+use dodrio::{bumpalo, Node, Render, RenderContext};
 use typed_html::dodrio;
 //endregion
 
@@ -17,6 +16,7 @@ use typed_html::dodrio;
 ///Its private fields are a cache copy from `game_data` fields.
 ///They are used for rendering
 ///and for checking if the data has changed to invalidate the render cache.
+#[derive(Default)]
 pub struct PlayersAndScores {
     ///whose turn is now:  player 1 or 2
     player_turn: usize,
@@ -98,15 +98,13 @@ impl Render for PlayersAndScores {
     ///This rendering will be rendered and then cached . It will not be rerendered untill invalidation.
     ///It is invalidate, when the points change.
     ///html element with 1 score for this players
-    fn render<'a, 'bump>(&'a self, bump: &'bump Bump) -> Node<'bump>
-    where
-        'a: 'bump,
-    {
-        let text1 = bumpalo::format!(in bump, "{} {}: {} points",
+    fn render<'a>(&self, cx: &mut RenderContext<'a>) -> Node<'a> {
+        let text1 = bumpalo::format!(in cx.bump, "{} {}: {} points",
         self.my_nickname,
         utilsmod::ordinal_numbers(self.my_player_number),
         self.my_points)
         .into_bump_str();
+        let bump = cx.bump;
         //return
         dodrio!(bump,
         <div class="grid_container_players" style= "grid-template-columns: auto;">

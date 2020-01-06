@@ -58,17 +58,22 @@
 //region: use statements
 use mem6_common::{WsMessage};
 
+use std::collections::HashMap;
+use std::sync::{
+    atomic::{AtomicUsize, Ordering},
+    Arc, Mutex,
+};
+use futures::{future, Future, FutureExt, StreamExt};
+use futures::stream::Stream;
+use tokio::sync::mpsc;
+use warp::ws::{Message, WebSocket};
+use warp::Filter;
+
 use unwrap::unwrap;
 use clap::{App, Arg};
 use env_logger::Env;
-use futures::channel::mpsc;
-use futures::{Future};
-use std::collections::HashMap;
 use std::net::SocketAddr;
 use std::net::{IpAddr, Ipv4Addr};
-use std::sync::{Arc, Mutex};
-use warp::ws::{Message, WebSocket};
-use warp::Filter;
 use log::info;
 //endregion
 
@@ -76,13 +81,16 @@ use log::info;
 /// Our status of currently connected users.
 /// - Key is their id
 /// - Value is a sender of `warp::ws::Message`
-type Users = Arc<Mutex<HashMap<usize, mpsc::UnboundedSender<Message>>>>;
+type Users = Arc<Mutex<HashMap<usize, mpsc::UnboundedSender<Result<Message, warp::Error>>>>>;
 
 //endregion
 
 ///main function of the binary
-fn main() {
+#[tokio::main]
+async fn main() {
     //region: env_logger log text to stdout depend on ENV variable
+
+    //pretty_env_logger::init();
     //in Linux : RUST_LOG=info ./mem6_server.exe
     //in Windows I don't know yet.
     //default for env variable info
@@ -137,28 +145,21 @@ fn main() {
     // Turn our "state" into a new Filter...
     //let users = warp::any().map(move || users.clone());
     //Clippy recommends this craziness instead of just users.clone()
-    let users = warp::any().map(move || {
-        Arc::<
-            std::sync::Mutex<
-                std::collections::HashMap<
-                    usize,
-                    futures::channel::mpsc::UnboundedSender<warp::ws::Message>,
-                >,
-            >,
-        >::clone(&users)
-    });
+    let users = warp::any().map(move || users.clone());
 
     //WebSocket server
     // GET from route /mem6ws/ -> WebSocket upgrade
     let websocket = warp::path("mem6ws")
         // The `ws2()` filter will prepare WebSocket handshake...
-        .and(warp::ws2())
+        .and(warp::ws())
         .and(users)
         // Match `/mem6ws/url_param` it can be any string.
         .and(warp::path::param::<String>())
-        .map(|ws: warp::ws::Ws2, users, url_param| {
+        .map(|ws: warp::ws::Ws, users, url_param| {
             // This will call our function if the handshake succeeds.
-            ws.on_upgrade(move |socket| user_connected(socket, users, url_param))
+            ws.on_upgrade(move |socket| {
+                user_connected(socket, users, url_param).map(|result| result.unwrap())
+            })
         });
 
     //static file server
@@ -166,7 +167,7 @@ fn main() {
     let fileserver = warp::fs::dir("./mem6/");
 
     let routes = fileserver.or(websocket);
-    warp::serve(routes).run(local_addr);
+    warp::serve(routes).run(local_addr).await;
 }
 
 //the url_param is not consumed in this function and Clippy wants
@@ -178,7 +179,7 @@ fn user_connected(
     ws: WebSocket,
     users: Users,
     url_param: String,
-) -> impl Future<Item = (), Error = ()> {
+) -> impl Future<Output = Result<(), ()>> {
     //the client sends his ws_uid in url_param. it is a random number.
     info!("user_connect() url_param: {}", url_param);
     //convert string to usize
@@ -204,14 +205,12 @@ fn user_connected(
 
     // Use an unbounded channel to handle buffering and flushing of messages
     // to the WebSocket...
-    let (tx, rx) = mpsc::unbounded();
-    warp::spawn(
-        rx.map_err(|()| -> warp::Error { unreachable!("unbounded rx never errors") })
-            .forward(user_ws_tx)
-            .map(|_tx_rx| ())
-            .map_err(|ws_err| info!("WebSocket send error: {}", ws_err)),
-    );
-
+    let (tx, rx) = mpsc::unbounded_channel();
+    tokio::task::spawn(rx.forward(user_ws_tx).map(|result| {
+        if let Err(e) = result {
+            eprintln!("websocket send error: {}", e);
+        }
+    }));
     // Save the sender in our list of connected users.
     info!("users.insert: {}", my_id);
     users.lock().expect("error uses.lock()").insert(my_id, tx);
@@ -221,30 +220,19 @@ fn user_connected(
     // Make an extra clone to give to our disconnection handler...
     //let users2 = users.clone();
     //Clippy recommends this craziness instead of users.clone()
-    let users2 = Arc::<
-        std::sync::Mutex<
-            std::collections::HashMap<
-                usize,
-                futures::channel::mpsc::UnboundedSender<warp::ws::Message>,
-            >,
-        >,
-    >::clone(&users);
+    let users2 = users.clone();
 
     user_ws_rx
         // Every time the user sends a message, call receive message
         .for_each(move |msg| {
-            receive_message(my_id, &msg, &users);
-            Ok(())
+            receive_message(my_id, &msg.unwrap(), &users);
+            future::ready(())
         })
         // for_each will keep processing as long as the user stays
         // connected. Once they disconnect, then...
         .then(move |result| {
             user_disconnected(my_id, &users2);
-            result
-        })
-        // If at any time, there was a WebSocket error, log here...
-        .map_err(move |e| {
-            info!("WebSocket error(uid={}): {}", my_id, e);
+            future::ok(result)
         })
 }
 
@@ -287,7 +275,7 @@ fn receive_message(ws_uid_of_message: usize, messg: &Message, users: &Users) {
                 .expect("error users.lock()")
                 .get(&ws_uid_of_message)
                 .unwrap()
-                .unbounded_send(Message::text(j))
+                .send(Ok(Message::text(j)))
             {
                 Ok(()) => (),
                 Err(_disconnected) => {}
@@ -305,7 +293,7 @@ fn receive_message(ws_uid_of_message: usize, messg: &Message, users: &Users) {
                 .expect("error users.lock()")
                 .get(&ws_uid_of_message)
                 .unwrap()
-                .unbounded_send(Message::text(j))
+                .send(Ok(Message::text(j)))
             {
                 Ok(()) => (),
                 Err(_disconnected) => {}
@@ -355,7 +343,7 @@ fn send_to_other_players(
             }
         }
         if ws_uid_of_message != uid && is_player {
-            match tx.unbounded_send(Message::text(String::from(new_msg))) {
+            match tx.send(Ok(Message::text(String::from(new_msg)))) {
                 Ok(()) => (),
                 Err(_disconnected) => {
                     // The tx is disconnected, our `user_disconnected` code
@@ -375,7 +363,7 @@ fn broadcast(users: &Users, ws_uid_of_message: usize, new_msg: &str) {
     info!("broadcast: {}", new_msg);
     for (&uid, tx) in users.lock().expect("error users.lock()").iter() {
         if ws_uid_of_message != uid {
-            match tx.unbounded_send(Message::text(String::from(new_msg))) {
+            match tx.send(Ok(Message::text(String::from(new_msg)))) {
                 Ok(()) => (),
                 Err(_disconnected) => {
                     // The tx is disconnected, our `user_disconnected` code
