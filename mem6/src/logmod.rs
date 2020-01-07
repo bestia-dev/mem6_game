@@ -3,8 +3,8 @@
 
 use crate::sessionstoragemod;
 
-//use web_sys::console;
-//use wasm_bindgen::prelude::*;
+use web_sys::console;
+use wasm_bindgen::prelude::*;
 
 /*
 ///simple console write with a string
@@ -26,6 +26,7 @@ pub fn debug_write(text: &str) {
     //I must write it on the UI.
     //so I must access this string from the UI rendere
     sessionstoragemod::add_to_begin_of_debug_text(text);
+    console::log_1(&JsValue::from_str(text));
 }
 
 ///string of now time

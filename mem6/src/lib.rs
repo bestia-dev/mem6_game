@@ -309,23 +309,63 @@ use unwrap::unwrap;
 use rand::rngs::SmallRng;
 use rand::SeedableRng;
 use rand::Rng;
+use wasm_bindgen::JsCast; //don't remove this. It is needed for dyn_into.
 use wasm_bindgen::prelude::*;
+use conv::{ConvUtil};
+use conv::{ConvAsUtil};
 //endregion
 
 #[wasm_bindgen(start)]
 #[allow(clippy::shadow_same)]
 ///To start the Wasm application, wasm_bindgen runs this functions
-pub fn run() -> Result<(), JsValue> {
+pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     // Initialize debugging for when/if something goes wrong.
     console_error_panic_hook::set_once();
 
     // Get the document's container to render the virtual Dom component.
-    let window = unwrap!(web_sys::window(), "error: web_sys::window");
-    let document = unwrap!(window.document(), "error: window.document");
-    let div_for_virtual_dom = unwrap!(
-        document.get_element_by_id("div_for_virtual_dom"),
-        "No #div_for_virtual_dom"
-    );
+    let window = unwrap!(web_sys::window());
+    let document = unwrap!(window.document());
+    let div_for_virtual_dom = unwrap!(document.get_element_by_id("div_for_virtual_dom"));
+
+    //font-sie for window less then 300 and more then 600 does not need to be calculated
+    let window_width =
+        unwrap!(unwrap!(JsValue::as_f64(&unwrap!(window.inner_width()))).approx_as::<usize>());
+    let mut str_px = "16px".to_owned();
+    if window_width > 600 {
+        //fixed size
+        str_px = "32px".to_owned();
+    } else if window_width < 300 {
+        //size relative to viewport
+        str_px = "3vw".to_owned();
+    } else {
+        //manually calculated size
+        //font-size is a nightmare. Cannot find a way to make fix font-size with css
+        //on mobile browsers with bigger font for accessibility enabled.
+        //I will try to get the width of a string of known length
+        //in the browser and then calculate what a font-size should be.
+        let test_text_width = unwrap!(document.get_element_by_id("forfontwidth"));
+        let html_element_test_width =
+            unwrap!(test_text_width.dyn_into::<web_sys::HtmlSpanElement>());
+        let text_width = html_element_test_width.offset_width();
+        let body = unwrap!(document.body());
+        let body_width = body.client_width();
+        logmod::debug_write(&format!(
+            "width text {:?}px as 16px inside body {:?}px window {:?}px",
+            text_width, body_width, window_width
+        ));
+        //just change factor if fonts are too big or too small
+        //0.7 is 70% of the body width I want to have for this text example.
+        let factor = (body_width as f64 * 0.7) / text_width as f64;
+        let px = 16.0 * factor;
+        str_px = format!("{:.2}px", px);
+        logmod::debug_write(&format!("calculated px  {:?} {}", px, &str_px));
+    }
+    //the root element <html> for css style
+    let elem_doc_el = unwrap!(document.document_element());
+    let html_html_element_doc_elem = unwrap!(elem_doc_el.dyn_into::<web_sys::HtmlHtmlElement>());
+    html_html_element_doc_elem
+        .style()
+        .set_property("font-size", &str_px);
 
     //my_ws_uid is random generated on the client and sent to
     //WebSocket server with an url param. It is saved locally to allow reconnection
@@ -343,7 +383,7 @@ pub fn run() -> Result<(), JsValue> {
     let mut location_href = unwrap!(window.location().href(), "href not known");
     //without /index.html
     location_href = location_href.to_lowercase().replace("index.html", "");
-    //logmod::debug_write(&format!("location_href: {}", &location_href));
+    logmod::debug_write(&format!("location_href: {}", &location_href));
 
     //WebSocket connection
     let players_ws_uid = "[]".to_string(); //empty vector in json

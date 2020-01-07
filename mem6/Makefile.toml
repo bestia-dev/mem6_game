@@ -25,9 +25,9 @@ skip_core_tasks = true
     description = "cargo build development"
     clear = true
     dependencies = [
-        #"lmake_version_from_date",
+        "lmake_version_from_date",
         "build_dev",
-        "delete_old_js_snippets",
+        #"delete_old_js_snippets",
         "copy_pkg_to_webfolder",
     ]
 
@@ -35,9 +35,9 @@ skip_core_tasks = true
     description = "cargo build release"
     clear = true
     dependencies = [
-        #"lmake_version_from_date",
+        "lmake_version_from_date",
         "build_release",
-        "delete_old_js_snippets",
+        #"delete_old_js_snippets",
         "copy_pkg_to_webfolder",
     ]
 

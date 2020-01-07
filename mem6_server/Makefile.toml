@@ -80,7 +80,7 @@ script = [
     "chrome http://127.0.0.1:8086", 
     "chrome http://127.0.0.1:8086", 
     "cd ../webfolder",
-    "sudo ./mem6_server"
+    " ./mem6_server"
 ]
 
 [tasks.post_build_release]
@@ -95,7 +95,7 @@ script = [
     "chrome http://127.0.0.1:8086", 
     "chrome http://127.0.0.1:8086", 
     "cd ../webfolder",
-    "sudo ./mem6_server"
+    " ./mem6_server"
 ]
 
 [tasks.cargo_audit]

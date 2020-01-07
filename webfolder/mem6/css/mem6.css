@@ -2,40 +2,72 @@
 
 /*region elements - styles accross all the elements */
 
-html {
-    max-width: 600px;
-    min-width: 300px;
-    margin:    2 auto;
-    text-size-adjust: None;
-    /* 32px at 600 width, 16px at 300 width */
-    /* on crome android the font is rendered bigger than this property, 
-    if the accessibility is more than 150% */
-    font-size: calc(100vw / 30);
+html { 
+    /*the font-size is very much dependent on the font-family*/
+    font-family: Verdana, sans-serif;
+    /*try to avoid mobile browsers to mess with the font-size*/
+    -webkit-text-size-adjust: none; 
+    -ms-text-size-adjust: none; 
+    text-size-adjust: none;
+    /*This is the base font-size. All other font-size 
+    use rem units that are
+    relative to this font-size.
+    In WASM I manipulate this value to have the right text width for the game.*/
+    font-size: 16px;
+    /*this is a game. All pages except instructions should be not scrollable*/
     height: 100%;
-    width:100%;
+    padding-right: 0px;
+	overflow-y: auto;
+	overflow-x: hidden;
     word-wrap: break-word;
-    overflow-x: hidden;
     box-sizing: border-box;
     background-color: #000000;
-    font-family: Verdana, sans-serif;
     line-height: 1.5;
-    color: #FBF462 !important;
+    color: #FBF462;
     user-select: none;
 }
 
-*,
-*:before,
-*:after {
+body{
+    max-width: 600px;
+    width:100vw;
+    /*margin auto means centered horizontaly*/
+    margin: auto;
+    /*this is a game. All pages except instructions should be not scrollable*/
+    height: 100%;
+}
+
+/*CSS Reset*/
+div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+ margin: 0;
+ padding: 0;
+ border: 0;
+ border-style: none;
+ outline: 0;
+ font-family: Verdana, sans-serif;
+ vertical-align: baseline;
+ background: transparent;
+ font-size: 1.2rem;
+}
+
+img { 
+    max-width:100%; 
+    -ms-interpolation-mode: bicubic; 
+    vertical-align: middle;
+}
+
+*,*:before,*:after {
     box-sizing: inherit;
 }
 
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1,h2,h3,h4,h5,h6 {
     font-weight: 400;
     margin: 10px 0;
     text-align: center;
@@ -43,31 +75,27 @@ h6 {
 }
 
 h1 {
-    font-size: 3.6rem;
+    font-size: 3.6rem ;
 }
 
 h2 {
-    font-size: 3.0rem;
+    font-size: 3.0rem ;
 }
 
 h3 {
-    font-size: 2.4rem;
+    font-size: 2.4rem ;
 }
 
 h4 {
-    font-size: 2.0rem;
+    font-size: 2.0rem ;
 }
 
 h5 {
-    font-size: 1.8rem;
+    font-size: 1.8rem ;
 }
 
 h6 {
-    font-size: 1.6rem;
-}
-
-img {
-    border-style: none;
+    font-size: 1.6rem ;
 }
 
 /*region classes - can be used for many elements*/
@@ -81,8 +109,8 @@ img.center{
 .m_container {
     margin-left: auto;
     margin-right: auto;
-    color: #FBF462 !important;
-    background-color: #000000 !important;
+    color: #FBF462 ;
+    background-color: #000000 ;
     width:100%;
 }
 
@@ -101,7 +129,6 @@ img.center{
 }
 
 .grid_item_img{
-    border-style: none;
     align-content: center;
     vertical-align: middle;
     width: 100%;
@@ -110,13 +137,13 @@ img.center{
 
 .grid_container_header {
     display: grid;
-    font-size: 3.6rem;
+    font-size: 3.6rem ;
     width:100%;
 }
 
 .grid_container_players {
     display: grid;
-    font-size: 2.0rem;
+    font-size: 2.0rem ;
     width:100%;
 }
 
@@ -125,18 +152,18 @@ img.center{
     cursor: pointer;
 }
 
-/*user must click this to continue*/
+/*user must click this to continue. It blinks.*/
 .h2_user_must_click{
     color:green;
     animation: blinker 1s linear infinite;
 }
 
-/*user can click this*/
+/*user can click this, but is not required.*/
 .h2_user_can_click{
     color:green;
 }
 
-/*user must wait*/
+/*user must wait. Cannot click anything.*/
 .h2_user_must_wait{
     color:red;
 }
@@ -146,7 +173,11 @@ img.center{
     color:orange;
 }
 
-/*region ids - because they are used only one time*/
+.input_nickname_blink{
+    animation: blinker 1s linear infinite;
+}
+
+/*region css for elements by id - because they are used only one time*/
 
 #card_moniker_left #card_moniker_right #card_moniker_center{
     white-space:nowrap;
@@ -174,11 +205,7 @@ img.center{
     text-align: center;
     background-color: #212121;
     color: rgb(252, 255, 77);
-    font-size: 3.0rem;
-}
-
-.input_nickname_blink{
-    animation: blinker 1s linear infinite;
+    font-size: 3.0rem ;
 }
 
 #div_fullscreen{
@@ -192,10 +219,10 @@ img.center{
     animation: blinker 1s linear infinite;
 }
 
+/*special instructions*/
 @keyframes blinker {
     50% {
       opacity: 0.2;
     }
   }
-
 
