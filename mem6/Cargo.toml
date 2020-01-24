@@ -1,6 +1,6 @@
 [package]
 name = "mem6"
-version = "2020.107.1901"
+version = "2020.124.2114"
 authors = ["Luciano Furlan <Luciano.Bestia@gmail.com>"]
 edition = "2018"
 description = "Learning Rust Wasm/WebAssembly with Virtual Dom Dodrio"
@@ -9,6 +9,7 @@ readme = "README.md"
 license = "MIT"
 keywords = ["wasm","dodrio","virtual dom"]
 categories = ["game","learning"]
+publish = false
 
 [lib]
 crate-type = ["cdylib"]
@@ -16,7 +17,8 @@ crate-type = ["cdylib"]
 [dependencies]
 unwrap = "1.2.1"
 mem6_common = { path = "../mem6_common" }
-dodrio =  { git = "https://github.com/fitzgen/dodrio", branch = "master" }
+#dodrio =  { git = "https://github.com/fitzgen/dodrio", branch = "master" }
+dodrio = {path = "../../dodrio"}
 wasm-bindgen = { version = "0.2.56", features = ["serde-serialize"] }
 console_error_panic_hook = "0.1.6"
 #newer version of rand dont have smallring
@@ -34,6 +36,7 @@ strum_macros = "0.17.1"
 typed-html = {version="0.2.1", features = ["dodrio_macro"]}
 conv = "0.3.3"
 gloo-timers = "0.2.0"
+reader_for_microxml = "1.0.4"
 
 [dependencies.web-sys]
 version = "0.3.33"

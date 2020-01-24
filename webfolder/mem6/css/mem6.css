@@ -7,7 +7,6 @@ html {
     font-family: Verdana, sans-serif;
     /*try to avoid mobile browsers to mess with the font-size*/
     -webkit-text-size-adjust: none; 
-    -ms-text-size-adjust: none; 
     text-size-adjust: none;
     /*This is the base font-size. All other font-size 
     use rem units that are
@@ -21,13 +20,15 @@ html {
 	overflow-x: hidden;
     word-wrap: break-word;
     box-sizing: border-box;
-    background-color: #000000;
+    background-color: #444444;
     line-height: 1.5;
     color: #FBF462;
+	fill: #FBF462;
     user-select: none;
 }
 
 body{
+	background-color: #000000;
     max-width: 600px;
     width:100vw;
     /*margin auto means centered horizontaly*/
@@ -37,7 +38,7 @@ body{
 }
 
 /*CSS Reset*/
-div, span, applet, object, iframe,
+svg, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
 del, dfn, em, font, img, ins, kbd, q, s, samp,
@@ -52,9 +53,11 @@ table, caption, tbody, tfoot, thead, tr, th, td {
  border-style: none;
  outline: 0;
  font-family: Verdana, sans-serif;
- vertical-align: baseline;
+ vertical-align:	 baseline;
  background: transparent;
  font-size: 1.2rem;
+ color: #FBF462;
+ fill: #FBF462;
 }
 
 img { 
@@ -67,34 +70,40 @@ img {
     box-sizing: inherit;
 }
 
-h1,h2,h3,h4,h5,h6 {
+svg{
+	dominant-baseline:middle; 
+	text-anchor:middle;	
+}
+
+h1,h2,h3,h4,h5,h6,
+.h1,.h2,.h3,.h4,.h5,.h6 {
     font-weight: 400;
     margin: 10px 0;
     text-align: center;
     width:100%;
 }
 
-h1 {
+h1,.h1 {
     font-size: 3.6rem ;
 }
 
-h2 {
+h2,.h2 {
     font-size: 3.0rem ;
 }
 
-h3 {
+h3,.h3 {
     font-size: 2.4rem ;
 }
 
-h4 {
+h4,.h4 {
     font-size: 2.0rem ;
 }
 
-h5 {
+h5,.h5 {
     font-size: 1.8rem ;
 }
 
-h6 {
+h6,.h6 {
     font-size: 1.6rem ;
 }
 
@@ -110,6 +119,7 @@ img.center{
     margin-left: auto;
     margin-right: auto;
     color: #FBF462 ;
+	fill: #FBF462 ;
     background-color: #000000 ;
     width:100%;
 }

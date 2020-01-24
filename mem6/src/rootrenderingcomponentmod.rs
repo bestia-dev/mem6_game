@@ -25,6 +25,8 @@ use web_sys::WebSocket;
 /// Root Rendering Component has all
 /// the data needed for play logic and rendering
 pub struct RootRenderingComponent {
+    pub local_route: String,
+    pub html_template: String,
     ///game data will be inside of Root
     pub game_data: gamedatamod::GameData,
     ///subComponent 1: players and scores. The data is a cached copy of GameData.
@@ -45,6 +47,8 @@ impl RootRenderingComponent {
             Cached::new(divplayersandscoresmod::PlayersAndScores::new(my_ws_uid));
 
         RootRenderingComponent {
+            local_route: "".to_owned(),
+            html_template: "".to_owned(),
             game_data,
             cached_players_and_scores,
             cached_rules_and_description,

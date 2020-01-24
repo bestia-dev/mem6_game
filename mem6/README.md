@@ -75,9 +75,9 @@ Workflow:
 
 - sender sends one message to more players (more ws_uid) with one random number msg_id
     push to a vector (msg queue) more items with ws_uid and msg_id
-    blocks the continuation of the workflow untill receives all ACK from all players
+    blocks the continuation of the workflow until receives all ACK from all players
 
-- receiver on receive send the ACK aknowledge msg with his ws_uid and msg_id
+- receiver on receive send the ACK acknowledge msg with his ws_uid and msg_id
 
 - the sender receives the ACK and removes one item from the vector
     if there is no more items for that msg_id, the workflow can continue.
@@ -87,8 +87,8 @@ This is very similar to a message queue...
 
 ## gRPC, WebRTC datachannel
 
-The new shiny protocol gRPC for web communication is great for server-to-server communication. But it is still very limited inside the browser. When it eventually becomes stable I would like to change Websockets for gRPC.  
-The WebRTC datachannel sounds great for peer-to-peer commnication. Very probably the players will be all on the same wifi network, this solves all latency issues. TODO: in version 6.  
+The new shiny protocol gRPC for web communication is great for server-to-server communication. But it is still very limited inside the browser. When it eventually becomes stable I would like to change WebSockets for gRPC.  
+The WebRTC datachannel sounds great for peer-to-peer communication. Very probably the players will be all on the same wifi network, this solves all latency issues. TODO: in version 6.  
 
 ## The game flow
 
@@ -117,7 +117,7 @@ One player is the playing player and all others are awaiting.
 The active user then makes an action on the GUI.
 This action will eventually change the GameData and the GameStatus. But before that there is communication.  
 A message is sent to other players so they can also change their local GameData and GameStatus.  
-Because of unreliable networks ther must be an acknowledge ack msg to confirm, that the msg is received to continue the game.  
+Because of unreliable networks there must be an acknowledge ack msg to confirm, that the msg is received to continue the game.  
 The rendering is scheduled and it will happen shortly (async).  
 
 | Game Status1      | Render                     | User action                    | Condition                     | GameStatus2 p.p.    | Sends Msg            | On rcv Msg o.p.             | GameStatus2 o.p.               |
@@ -157,12 +157,12 @@ TODO: what if an attribute is not covered by the macro. Can I add it later?
 
 At least in modern browsers (Firefox and Chrome) we have the developer tools F12 and there is a
 console we can output to. So we can debug what is going on with our Wasm program.
-But not on smartphones !! I save the eroor and log messages in sessionStorage and this is displayed on the screen.  
+But not on smartphones !! I save the error and log messages in sessionStorage and this is displayed on the screen.  
 
 ## Safari on iOS and FullScreen
 
 Apple is very restrictive and does not allow fullscreen Safari on iPhones.  
-The workaround is to `Add to Homescreen` the webapp.  
+The workaround is to `Add to HomeScreen` the webapp.  
 
 ## PWA (Progressive Web App)
 

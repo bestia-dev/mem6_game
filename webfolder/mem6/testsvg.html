@@ -5,16 +5,7 @@
   <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
   <title>mem6</title>
   <meta name="Description" content="A simple and fun memory game for friends in close proximity.">
-  <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/mem6.css">
-  <!--
-A lot of tricks is needed to simply make the game fill the width of the smartphone and go fullscreen.
-IOS Safari does not have the FullScreen API, but Android Chrome has it.
-The best option is the browser menu item "Add to home screen" on both iPhone and Android.
-Even better is a true and complete PWA (Progressive Web App), but that requires a lot of prerequisits. 
-The meta viewport properties user-scalable and maximum-scale does not work in many cases: 
-on Safari or in Crome with accessibility settings (bigger fonts). So I will try with javascript.
--->
 
   <link rel="manifest" href="manifest.json">
   <meta name="viewport" content="width = device-width,initial-scale = 1.0" />
@@ -32,34 +23,20 @@ on Safari or in Crome with accessibility settings (bigger fonts). So I will try 
 </head>
 
 <body>
-  <!--
-  <script src="start_service_worker.js"></script>
-  -->
-  <noscript>
-    <h2>
-      !!!???!!!<br>
-      This game <br>
-      cannot work <br>
-      without javascript<br>
-      enabled<br>
-      !!!???!!!</h2>
-  </noscript>
+
+	<svg x="0" y="0" width="100%" height="20%">
+	  <rect x="0" y="0" width="100%" height="100%" stroke="red" stroke-width="3px" fill="black"/>
+		<text x="50%" y="50%" class="h1" >lalala bubu hhohoho tutu</text>
+		
+	</svg>
+	<!--
   <div id="div_for_virtual_dom">
-    <h2>
-      Waiting to<br>
-      download <br>
-      mem6...<br>
-      This is <br>
-      very quick on fast<br>
-    </h2>
-    <h2>
-      <span id="forfontwidth" style="font-size:48px !important;">networks.</span>
-    </h2>
   </div>
   <script type="module">
     import init from "./pkg/mem6.js";
     init("./pkg/mem6_bg.wasm");
   </script>
+  -->
 </body>
 
 </html>

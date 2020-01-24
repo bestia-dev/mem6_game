@@ -82,9 +82,9 @@
 //!
 //! - sender sends one message to more players (more ws_uid) with one random number msg_id
 //!     push to a vector (msg queue) more items with ws_uid and msg_id
-//!     blocks the continuation of the workflow untill receives all ACK from all players
+//!     blocks the continuation of the workflow until receives all ACK from all players
 //!
-//! - receiver on receive send the ACK aknowledge msg with his ws_uid and msg_id
+//! - receiver on receive send the ACK acknowledge msg with his ws_uid and msg_id
 //!
 //! - the sender receives the ACK and removes one item from the vector
 //!     if there is no more items for that msg_id, the workflow can continue.
@@ -94,8 +94,8 @@
 //!
 //! ## gRPC, WebRTC datachannel
 //!
-//! The new shiny protocol gRPC for web communication is great for server-to-server communication. But it is still very limited inside the browser. When it eventually becomes stable I would like to change Websockets for gRPC.  
-//! The WebRTC datachannel sounds great for peer-to-peer commnication. Very probably the players will be all on the same wifi network, this solves all latency issues. TODO: in version 6.  
+//! The new shiny protocol gRPC for web communication is great for server-to-server communication. But it is still very limited inside the browser. When it eventually becomes stable I would like to change WebSockets for gRPC.  
+//! The WebRTC datachannel sounds great for peer-to-peer communication. Very probably the players will be all on the same wifi network, this solves all latency issues. TODO: in version 6.  
 //!
 //! ## The game flow
 //!
@@ -124,7 +124,7 @@
 //! The active user then makes an action on the GUI.
 //! This action will eventually change the GameData and the GameStatus. But before that there is communication.  
 //! A message is sent to other players so they can also change their local GameData and GameStatus.  
-//! Because of unreliable networks ther must be an acknowledge ack msg to confirm, that the msg is received to continue the game.  
+//! Because of unreliable networks there must be an acknowledge ack msg to confirm, that the msg is received to continue the game.  
 //! The rendering is scheduled and it will happen shortly (async).  
 //!
 //! | Game Status1      | Render                     | User action                    | Condition                     | GameStatus2 p.p.    | Sends Msg            | On rcv Msg o.p.             | GameStatus2 o.p.               |
@@ -164,12 +164,12 @@
 //!
 //! At least in modern browsers (Firefox and Chrome) we have the developer tools F12 and there is a
 //! console we can output to. So we can debug what is going on with our Wasm program.
-//! But not on smartphones !! I save the eroor and log messages in sessionStorage and this is displayed on the screen.  
+//! But not on smartphones !! I save the error and log messages in sessionStorage and this is displayed on the screen.  
 //!
 //! ## Safari on iOS and FullScreen
 //!
 //! Apple is very restrictive and does not allow fullscreen Safari on iPhones.  
-//! The workaround is to `Add to Homescreen` the webapp.  
+//! The workaround is to `Add to HomeScreen` the webapp.  
 //!
 //! ## PWA (Progressive Web App)
 //!
@@ -302,6 +302,8 @@ mod statuswaitingackmsgmod;
 mod utilsmod;
 mod websocketcommunicationmod;
 mod websocketreconnectmod;
+mod routermod;
+mod fncallermod;
 //endregion
 
 //region: use statements
@@ -312,7 +314,6 @@ use rand::Rng;
 use wasm_bindgen::JsCast; //don't remove this. It is needed for dyn_into.
 use wasm_bindgen::prelude::*;
 use conv::{ConvUtil};
-use conv::{ConvAsUtil};
 //endregion
 
 #[wasm_bindgen(start)]
@@ -326,46 +327,6 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     let window = unwrap!(web_sys::window());
     let document = unwrap!(window.document());
     let div_for_virtual_dom = unwrap!(document.get_element_by_id("div_for_virtual_dom"));
-
-    //font-sie for window less then 300 and more then 600 does not need to be calculated
-    let window_width =
-        unwrap!(unwrap!(JsValue::as_f64(&unwrap!(window.inner_width()))).approx_as::<usize>());
-    let mut str_px = "16px".to_owned();
-    if window_width > 600 {
-        //fixed size
-        str_px = "32px".to_owned();
-    } else if window_width < 300 {
-        //size relative to viewport
-        str_px = "3vw".to_owned();
-    } else {
-        //manually calculated size
-        //font-size is a nightmare. Cannot find a way to make fix font-size with css
-        //on mobile browsers with bigger font for accessibility enabled.
-        //I will try to get the width of a string of known length
-        //in the browser and then calculate what a font-size should be.
-        let test_text_width = unwrap!(document.get_element_by_id("forfontwidth"));
-        let html_element_test_width =
-            unwrap!(test_text_width.dyn_into::<web_sys::HtmlSpanElement>());
-        let text_width = html_element_test_width.offset_width();
-        let body = unwrap!(document.body());
-        let body_width = body.client_width();
-        logmod::debug_write(&format!(
-            "width text {:?}px as 16px inside body {:?}px window {:?}px",
-            text_width, body_width, window_width
-        ));
-        //just change factor if fonts are too big or too small
-        //0.7 is 70% of the body width I want to have for this text example.
-        let factor = (body_width as f64 * 0.7) / text_width as f64;
-        let px = 16.0 * factor;
-        str_px = format!("{:.2}px", px);
-        logmod::debug_write(&format!("calculated px  {:?} {}", px, &str_px));
-    }
-    //the root element <html> for css style
-    let elem_doc_el = unwrap!(document.document_element());
-    let html_html_element_doc_elem = unwrap!(elem_doc_el.dyn_into::<web_sys::HtmlHtmlElement>());
-    html_html_element_doc_elem
-        .style()
-        .set_property("font-size", &str_px);
 
     //my_ws_uid is random generated on the client and sent to
     //WebSocket server with an url param. It is saved locally to allow reconnection
@@ -403,6 +364,9 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     rrc.game_data.is_fullscreen = divfullscreenmod::is_fullscreen(&rrc);
     // Mount the component to the `<div id="div_for_virtual_dom">`.
     let vdom = dodrio::Vdom::new(&div_for_virtual_dom, rrc);
+
+    // Start the URL router.
+    routermod::start_router(vdom.weak());
 
     websocketcommunicationmod::setup_all_ws_events(&ws, vdom.weak());
 

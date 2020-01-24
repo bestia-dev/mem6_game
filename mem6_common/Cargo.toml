@@ -1,6 +1,6 @@
 [package]
 name = "mem6_common"
-version = "2020.104.928" #no need for semver if it is not a library
+version = "2020.124.2047" #no need for semver if it is not a library
 description = "commons for mem6 wasm and server"
 authors = ["Luciano Bestia"]
 edition = "2018"
@@ -9,6 +9,7 @@ readme = "README.md"
 repository = "https://github.com/lucianobestia/mem6_game"
 categories = ["web-programming::http-server"]
 keywords = ["warp", "server", "http", "websocket"]
+publish = false
 
 [dependencies]
 serde = "1.0.104"
