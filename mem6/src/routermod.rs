@@ -34,11 +34,18 @@ pub fn start_router(vdom: VdomWeak) {
                             // don't match, then we need to update the rrc' local_route
                             // and re-render.
                             if rrc.local_route != local_route {
-                                rrc.local_route = local_route;
-                                let url = format!(
-                                    "html_templates/{}.html",
-                                    rrc.local_route.replace("#", "")
-                                );
+                                if local_route == "#02" {
+                                    rrc.local_route = "p02_start_a_group.html".to_owned();
+                                } else if local_route == "#03" {
+                                    rrc.local_route = "p03_join_a_group.html".to_owned();
+                                } else if local_route == "#04" {
+                                    rrc.local_route = "p04_wait_to_start.html".to_owned();
+                                } else if local_route == "#11" {
+                                    rrc.local_route = "p11_gameboard.html".to_owned();
+                                } else {
+                                    rrc.local_route = "index.html".to_owned();
+                                }
+                                let url = format!("html_templates/{}", rrc.local_route);
                                 let v2 = vdom.clone();
                                 //I cannot simply await here because this closure is not async
                                 spawn_local(async_fetch_and_write_to_rrc_html_template(url, v2));

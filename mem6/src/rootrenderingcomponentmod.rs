@@ -13,10 +13,11 @@ use crate::page01nicknamemod;
 use crate::page03gamemod;
 //use crate::page04instructionsmod;
 use crate::page05errormod;
+use crate::htmltemplatemod;
 
 use mem6_common::GameStatus;
 
-//use unwrap::unwrap;
+use unwrap::unwrap;
 //use dodrio::builder::text;
 use dodrio::{Cached, Node, Render, RenderContext};
 use web_sys::WebSocket;
@@ -91,25 +92,15 @@ impl RootRenderingComponent {
 ///It is called for every Dodrio animation frame to render the vdom.
 ///Only when render is scheduled after aomw change id the game data.
 impl Render for RootRenderingComponent {
-    #[inline]
     fn render<'a>(&self, cx: &mut RenderContext<'a>) -> Node<'a> {
-        //the card grid is a html css grid object (like a table) with <img> inside
-        //other html elements are pretty simple.
-
-        //region: create the whole virtual dom. The verbose stuff is in private functions
-        //the UI has different 'pages' for playing or errors
-        if self.game_data.error_text == "" {
-            let xmax_grid_size = divgridcontainermod::max_grid_size(self);
-            //the UI has 2 different 'pages', depends on the status
-            if self.game_data.is_status_for_grid_container() {
-                page03gamemod::page_render(self, cx, &xmax_grid_size)
-            } else {
-                page01nicknamemod::page_render(self, cx)
-            }
+        let bump = cx.bump;
+        //return
+        // html fragment from html_template defined in # local_route
+        if self.html_template.is_empty() {
+            htmltemplatemod::empty_div(cx)
         } else {
-            page05errormod::page_render(self, cx)
+            unwrap!(htmltemplatemod::get_root_element(&self, bump))
         }
-        //endregion
     }
 }
 //endregion

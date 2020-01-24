@@ -304,6 +304,7 @@ mod websocketcommunicationmod;
 mod websocketreconnectmod;
 mod routermod;
 mod fncallermod;
+mod htmltemplatemod;
 //endregion
 
 //region: use statements
