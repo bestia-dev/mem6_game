@@ -85,7 +85,13 @@ svg {
     left: 0;
     fill:yellow;
 }
-
+rect {
+    stroke:#fff;
+    fill:green;
+    fill-opacity:50;
+    stroke-opacity:50;
+  }
+  
 #div_for_virtual_dom{
     height: 100%;
     padding-top: 0.01%;

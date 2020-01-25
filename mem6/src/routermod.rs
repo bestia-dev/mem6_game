@@ -20,7 +20,7 @@ pub fn start_router(vdom: VdomWeak) {
         if local_route.is_empty() {
             local_route = "index".to_owned();
         }
-        logmod::debug_write("after .hash");
+        //logmod::debug_write("after .hash");
         wasm_bindgen_futures::spawn_local({
             let vdom = vdom.clone();
             async move {

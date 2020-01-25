@@ -29,7 +29,7 @@ pub async fn async_spwloc_fetch_text(url: String) -> String {
     let resp_jsvalue = unwrap!(JsFuture::from(window.fetch_with_request(&request)).await);
     let resp: Response = unwrap!(resp_jsvalue.dyn_into());
     let resp_body_text = unwrap!(JsFuture::from(unwrap!(resp.text())).await);
-    logmod::debug_write(&unwrap!(JsValue::as_string(&resp_body_text)));
+    //logmod::debug_write(&unwrap!(JsValue::as_string(&resp_body_text)));
     //returns response as String
     unwrap!(JsValue::as_string(&resp_body_text))
 }
@@ -49,7 +49,7 @@ pub async fn fetch_response(url: String) -> String {
     //log1("before text()");
     let text_jsvalue = unwrap!(JsFuture::from(unwrap!(resp.text())).await);
     let txt_response: String = unwrap!(text_jsvalue.as_string());
-    logmod::debug_write(&txt_response);
+    //logmod::debug_write(&txt_response);
     //returns response as String
     txt_response
 }

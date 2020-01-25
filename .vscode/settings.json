@@ -30,6 +30,7 @@
         "instructionsmod",
         "javascriptimportmod",
         "logmod",
+        "nanos",
         "ndcardmod",
         "nicknamemod",
         "rootrenderingcomponentmod",

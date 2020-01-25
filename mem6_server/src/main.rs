@@ -94,7 +94,7 @@ async fn main() {
     //in Windows I don't know yet.
     //default for env variable info
     let mut builder = env_logger::from_env(Env::default().default_filter_or("info"));
-    //nanoseconds in the logger
+    //nano seconds in the logger
     builder.format_timestamp_nanos();
     builder.init();
     //endregion
@@ -224,7 +224,16 @@ fn user_connected(
     // Make an extra clone to give to our disconnection handler...
     //let users2 = users.clone();
     //Clippy recommends this craziness instead of users.clone()
-    let users2 = users.clone();
+    let users2 = Arc::<
+        std::sync::Mutex<
+            std::collections::HashMap<
+                usize,
+                tokio::sync::mpsc::UnboundedSender<
+                    std::result::Result<warp::filters::ws::Message, warp::Error>,
+                >,
+            >,
+        >,
+    >::clone(&users);
 
     user_ws_rx
         // Every time the user sends a message, call receive message
@@ -241,9 +250,9 @@ fn user_connected(
 }
 
 ///on receive WebSocket message
-fn receive_message(ws_uid_of_message: usize, messg: &Message, users: &Users) {
+fn receive_message(ws_uid_of_message: usize, message: &Message, users: &Users) {
     // Skip any non-Text messages...
-    let msg = if let Ok(s) = messg.to_str() {
+    let msg = if let Ok(s) = message.to_str() {
         s
     } else {
         return;

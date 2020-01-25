@@ -40,6 +40,12 @@ pub fn setup_ws_connection(
         .replace("https://", "wss://");
     //Only for debugging in the development environment
     //let mut loc_href = String::from("ws://192.168.1.57:80/");
+    logmod::debug_write(&loc_href);
+    //remove the hash at the end
+    if let Some(pos) = loc_href.find("#") {
+        loc_href = loc_href[..pos].to_string();
+    }
+    logmod::debug_write(&loc_href);
     loc_href.push_str("mem6ws/");
 
     //send the client ws id as url_param for the first connect

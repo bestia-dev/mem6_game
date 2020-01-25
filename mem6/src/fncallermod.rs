@@ -4,17 +4,15 @@ use crate::logmod;
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::divnicknamemod;
 
+use wasm_bindgen::JsValue;
+use unwrap::unwrap;
+
 /// html_templating functions that return a String
 pub fn call_function_string(rrc: &RootRenderingComponent, sx: &str) -> String {
     logmod::debug_write(&format!("call_function_string: {}", &sx));
     match sx {
         "my_nickname" => rrc.game_data.my_nickname.to_owned(),
         "blink_or_not" => divnicknamemod::blink_or_not(rrc),
-        "first_text" => "this is first text replaced".to_owned(),
-        "first_attr" => "this is first attr replaces".to_owned(),
-        "get_local_route" => get_local_route(rrc),
-        "get_red" => get_red(),
-        "local_route" => rrc.local_route.to_owned(),
         _ => {
             let x = format!("Error: Unrecognized call_function_string: {}", sx);
             logmod::debug_write(&x);
@@ -29,6 +27,18 @@ pub fn call_listener(vdom: &dodrio::VdomWeak, rrc: &RootRenderingComponent, sx: 
     match sx.as_str() {
         "nickname_onkeyup" => {
             divnicknamemod::nickname_onkeyup(vdom);
+        }
+        "start_a_group_onclick" => {
+            logmod::debug_write("start a group on click");
+            // an example how to change the local_route from code
+            let window = unwrap!(web_sys::window());
+            let _x = window.location().set_hash("#02");
+        }
+        "join_a_group_onclick" => {
+            logmod::debug_write("join a group on click");
+            // an example how to change the local_route from code
+            let window = unwrap!(web_sys::window());
+            let _x = window.location().set_hash("#03");
         }
         _ => {
             let x = format!("Error: Unrecognized call_listener: {}", sx);

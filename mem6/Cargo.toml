@@ -1,6 +1,6 @@
 [package]
 name = "mem6"
-version = "2020.125.1204"
+version = "2020.125.2209"
 authors = ["Luciano Furlan <Luciano.Bestia@gmail.com>"]
 edition = "2018"
 description = "Learning Rust Wasm/WebAssembly with Virtual Dom Dodrio"
@@ -52,6 +52,7 @@ features = [
   "EventTarget",
   "FormData",
   "Headers",
+  "History",
   "HtmlElement",
   "HtmlFontElement",
   "HtmlFormElement",

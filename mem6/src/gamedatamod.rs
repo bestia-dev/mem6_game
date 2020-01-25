@@ -134,6 +134,8 @@ pub struct GameData {
     pub error_text: String,
     ///href
     pub href: String,
+    ///href hash the local page #
+    pub href_hash: String,
     /// is reconnect
     pub is_reconnect: bool,
     /// to not check it all the time
@@ -284,6 +286,7 @@ impl GameData {
             games_metadata: None,
             error_text: "".to_string(),
             href: "".to_string(),
+            href_hash: "".to_string(),
             is_reconnect: false,
             is_fullscreen: false,
             msgs_waiting_ack: vec![],

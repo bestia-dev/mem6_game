@@ -346,6 +346,15 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     location_href = location_href.to_lowercase().replace("index.html", "");
     logmod::debug_write(&format!("location_href: {}", &location_href));
 
+    //split it ba # hash
+    let cl = location_href.clone();
+    let mut spl = cl.split("#");
+    location_href = spl.next().unwrap().to_string();
+    let href_hash = spl.next().unwrap_or("");
+
+    logmod::debug_write(&format!("location_href: {}", &location_href));
+    logmod::debug_write(&format!("href_hash: {}", &href_hash));
+
     //WebSocket connection
     let players_ws_uid = "[]".to_string(); //empty vector in json
     let ws = websocketcommunicationmod::setup_ws_connection(
@@ -361,6 +370,7 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
 
     let mut rrc = rootrenderingcomponentmod::RootRenderingComponent::new(ws_c, my_ws_uid);
     rrc.game_data.href = location_href.to_string();
+    rrc.game_data.href_hash = href_hash.to_string();
     rrc.game_data.is_fullscreen = divfullscreenmod::is_fullscreen(&rrc);
     // Mount the component to the `<div id="div_for_virtual_dom">`.
     let vdom = dodrio::Vdom::new(&div_for_virtual_dom, rrc);
