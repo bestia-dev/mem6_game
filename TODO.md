@@ -1,6 +1,6 @@
 # mem6 TODO
 
-- new futures async await for fetch
+- html templating instead of typed_html macros
 - group name is ws uid of first player. the other players write and join.
 - webRTC instead of websockets 1st version with a web server
 - STUN server for NAT traversal <https://github.com/sile/rustun>

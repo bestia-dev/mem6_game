@@ -3,6 +3,8 @@
 
 use crate::fncallermod;
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
+use crate::logmod;
+use crate::divnicknamemod;
 
 use dodrio::builder::*;
 use dodrio::{Node, Listener, Attribute, RenderContext};
@@ -109,22 +111,33 @@ fn fill_element_builder<'a>(
                     let fn_name = value;
                     let repl_txt = fncallermod::call_function_string(rrc, fn_name);
                     replacement = Some(repl_txt);
+                } else if name.starts_with("data-on-") {
+                    // TODO: add a listener.
+                    // Only one listener for now because the api does not give me other method.
+                    let event_to_listen = &name[8..];
+                    let fn_name = value.to_string();
+                    let event_to_listen =
+                        bumpalo::format!(in bump, "{}",event_to_listen).into_bump_str();
+                    element = element.on(event_to_listen, move |root, vdom, event| {
+                        let fn_name = fn_name.clone();
+                        let vdom = vdom.clone();
+                        let rrc = root.unwrap_mut::<RootRenderingComponent>();
+                        //call a function from string
+                        fncallermod::call_listener(&vdom, rrc, fn_name);
+                    });
                 } else {
                     let name = bumpalo::format!(in bump, "{}",name).into_bump_str();
                     let value2;
-                    match replacement {
-                        Some(repl) => {
-                            value2 =
-                        bumpalo::format!(in bump, "{}",decode_5_minimum_html_entities(&repl))
-                            .into_bump_str();
-                            //empty the replacement for the next node
-                            replacement = None;
-                        }
-                        None => {
-                            value2 =
-                        bumpalo::format!(in bump, "{}",decode_5_minimum_html_entities(value))
-                            .into_bump_str();
-                        }
+                    if let Some(repl) = replacement {
+                        value2 =
+                            bumpalo::format!(in bump, "{}",decode_5_minimum_html_entities(&repl))
+                                .into_bump_str();
+                        //empty the replacement for the next node
+                        replacement = None;
+                    } else {
+                        value2 =
+                            bumpalo::format!(in bump, "{}",decode_5_minimum_html_entities(value))
+                                .into_bump_str();
                     }
                     element = element.attr(name, value2);
                 }

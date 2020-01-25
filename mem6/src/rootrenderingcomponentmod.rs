@@ -2,17 +2,9 @@
 //! renders the web page
 
 //region: use, const
-
-use crate::divgridcontainermod;
-
 use crate::divplayersandscoresmod;
 use crate::divrulesanddescriptionmod;
 use crate::gamedatamod;
-use crate::page01nicknamemod;
-//use crate::page02groupmod;
-use crate::page03gamemod;
-//use crate::page04instructionsmod;
-use crate::page05errormod;
 use crate::htmltemplatemod;
 
 use mem6_common::GameStatus;

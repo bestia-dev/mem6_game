@@ -72,13 +72,13 @@ args = ["build","--release"]
 clear=true
 private=true
 script = [
-    "\\cp ~/rustprojects/mem6_game/target/debug/mem6_server -rf -v ~/rustprojects/mem6_game/webfolder",
+    #"\\cp ~/rustprojects/mem6_game/target/debug/mem6_server -rf -v ~/rustprojects/mem6_game/webfolder",
     # I cannot script the exact IP here.  
     # It must be copied from the mem6_server.exe output.
-    "alias chrome=\"/mnt/c/Program\\ Files\\ \\(x86\\)/Google/Chrome/Application/chrome.exe\"",
-    "chrome http://127.0.0.1:8086", 
-    "chrome http://127.0.0.1:8086", 
-    "chrome http://127.0.0.1:8086", 
+    #"alias chrome=\"/mnt/c/Program\\ Files\\ \\(x86\\)/Google/Chrome/Application/chrome.exe\"",
+    #"chrome http://127.0.0.1:8086", 
+    #"chrome http://127.0.0.1:8086", 
+    #"chrome http://127.0.0.1:8086", 
     "cd ../webfolder",
     " ./mem6_server"
 ]
@@ -90,10 +90,10 @@ script = [
     "\\cp ~/rustprojects/mem6_game/target/release/mem6_server -rf -v ~/rustprojects/mem6_game/webfolder",
     # I cannot script the exact IP here.  
     # It must be copied from the mem6_server.exe output.
-    "alias chrome=\"/mnt/c/Program\\ Files\\ \\(x86\\)/Google/Chrome/Application/chrome.exe\"",
-    "chrome http://127.0.0.1:8086", 
-    "chrome http://127.0.0.1:8086", 
-    "chrome http://127.0.0.1:8086", 
+    #"alias chrome=\"/mnt/c/Program\\ Files\\ \\(x86\\)/Google/Chrome/Application/chrome.exe\"",
+    #"chrome http://127.0.0.1:8086", 
+    #"chrome http://127.0.0.1:8086", 
+    #"chrome http://127.0.0.1:8086", 
     "cd ../webfolder",
     " ./mem6_server"
 ]

@@ -1,9 +1,10 @@
 // divnicknamemod.rs
-//! loadand save nickname
+//! load and save nickname
 
 #![allow(clippy::panic)]
 
 //region: use
+use crate::logmod;
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 
 //use unwrap::unwrap;
@@ -15,68 +16,6 @@ use unwrap::unwrap;
 use wasm_bindgen::JsCast; //don't remove this. It is needed for dyn_into.
 use wasm_bindgen_futures::spawn_local;
 //endregion
-
-///render the nickname input
-pub fn div_nickname_input<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
-    //if the user did not yet input his nickname than blink
-    //all the code is the same except the class and the call to schedule_render
-    if rrc.game_data.my_nickname == "nickname" {
-        dodrio!(bump,
-        <div style="margin-left: auto ;margin-right: auto ;text-align: center" >
-            <label>
-                {vec![text(
-                    bumpalo::format!(in bump, "{}",
-                    "Write your nickname:")
-                    .into_bump_str()
-                )]}
-                <input
-                id="input_nickname"
-                name="nickname"
-                class="input_nickname_blink"
-                value={bumpalo::format!(in bump, "{}",
-                    rrc.game_data.my_nickname)
-                    .into_bump_str()
-                }
-                onkeyup={ move |root, vdom, event| {
-                    //save on every key stroke
-                    let v2 = vdom.clone();
-                    save_nickname_to_localstorage(&v2);
-                    v2.schedule_render();
-                    }
-                }>
-                </input>
-            </label>
-        </div>
-        )
-    } else {
-        //if the use already has input his nickname no blinking is needed
-        dodrio!(bump,
-        <div style="margin-left: auto ;margin-right: auto ;text-align: center" >
-            <label>
-                {vec![text(
-                    bumpalo::format!(in bump, "{}",
-                    "Write your nickname:")
-                    .into_bump_str()
-                )]}
-                <input
-                id="input_nickname"
-                name="nickname"
-                value={bumpalo::format!(in bump, "{}",
-                    rrc.game_data.my_nickname)
-                    .into_bump_str()
-                }
-                onkeyup={ move |root, vdom, event| {
-                    //save on every key stroke
-                    let v2 = vdom.clone();
-                    save_nickname_to_localstorage(&v2);
-                    }
-                }>
-                </input>
-            </label>
-        </div>
-        )
-    }
-}
 
 ///save nickname from html input elements to local storage and rrc
 pub fn save_nickname_to_localstorage(vdom: &dodrio::VdomWeak) {
@@ -124,4 +63,20 @@ pub fn load_nickname() -> String {
     let empty1 = "nickname".to_string();
     //return nickname
     unwrap!(ls.get_item("nickname")).unwrap_or(empty1)
+}
+
+//if there is already a nickname don't blink
+pub fn blink_or_not(rrc: &RootRenderingComponent) -> String {
+    if rrc.game_data.my_nickname == "nickname" {
+        "input_nickname_blink".to_owned()
+    } else {
+        "".to_owned()
+    }
+}
+
+/// save on every key stroke
+pub fn nickname_onkeyup(vdom: &dodrio::VdomWeak) {
+    //logmod::debug_write("on key up");
+    save_nickname_to_localstorage(&vdom);
+    vdom.schedule_render();
 }

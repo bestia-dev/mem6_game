@@ -282,8 +282,7 @@ mod gamedatamod;
 mod javascriptimportmod;
 mod divnicknamemod;
 mod logmod;
-mod page01nicknamemod;
-mod page02groupmod;
+
 mod page03gamemod;
 mod page04instructionsmod;
 mod page05errormod;
@@ -312,9 +311,9 @@ use unwrap::unwrap;
 use rand::rngs::SmallRng;
 use rand::SeedableRng;
 use rand::Rng;
-use wasm_bindgen::JsCast; //don't remove this. It is needed for dyn_into.
+//use wasm_bindgen::JsCast; //don't remove this. It is needed for dyn_into.
 use wasm_bindgen::prelude::*;
-use conv::{ConvUtil};
+//use conv::{ConvUtil};
 //endregion
 
 #[wasm_bindgen(start)]

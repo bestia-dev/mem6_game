@@ -43,7 +43,7 @@ pub fn start_router(vdom: VdomWeak) {
                                 } else if local_route == "#11" {
                                     rrc.local_route = "p11_gameboard.html".to_owned();
                                 } else {
-                                    rrc.local_route = "index.html".to_owned();
+                                    rrc.local_route = "p01_start.html".to_owned();
                                 }
                                 let url = format!("html_templates/{}", rrc.local_route);
                                 let v2 = vdom.clone();
