@@ -9,7 +9,7 @@
 //endregion
 
 //region: use
-use crate::logmod;
+//use crate::logmod;
 
 use unwrap::unwrap;
 use wasm_bindgen::JsValue;

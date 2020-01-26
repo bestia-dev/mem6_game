@@ -4,14 +4,10 @@
 #![allow(clippy::panic)]
 
 //region: use
-use crate::logmod;
+//use crate::logmod;
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 
 //use unwrap::unwrap;
-use dodrio::builder::text;
-use dodrio::bumpalo::{self, Bump};
-use dodrio::Node;
-use typed_html::dodrio;
 use unwrap::unwrap;
 use wasm_bindgen::JsCast; //don't remove this. It is needed for dyn_into.
 use wasm_bindgen_futures::spawn_local;
@@ -68,7 +64,7 @@ pub fn load_nickname() -> String {
 //if there is already a nickname don't blink
 pub fn blink_or_not(rrc: &RootRenderingComponent) -> String {
     if rrc.game_data.my_nickname == "nickname" {
-        "input_nickname_blink".to_owned()
+        "input_blink".to_owned()
     } else {
         "".to_owned()
     }

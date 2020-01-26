@@ -4,17 +4,20 @@
   <text x="50%" y="40%" class="h2">to loose memory</text>
   <text x="50%" y="48%" class="h6">Write your nickname</text>text>
 
-  <rect x="10%" y="68%" width="80%" height="10%" rx="5" ry="5" id="join_a_group" data-on-click="join_a_group_onclick">
-  </rect>
-  <text x="50%" y="73.5%" class="h3" pointer-events="none">Join a group</text>
+  <!-- if I put the foreignElement here, that the rest of the svg elements is no rendered -->
+
+  <rect class="btn" y="68%" data-on-click="start_a_group_onclick" />
+  <text x="50%" y="73.5%" class="h3">Start a group </text>
+
   <text x="50%" y="80.5%" class="h6">or</text>
-  <rect x="10%" y="83%" width="80%" height="10%" rx="5" ry="5" id="start_a_group" data-on-click="start_a_group_onclick">
-  </rect>
-  <text x="50%" y="88.5%" class="h3" pointer-events="none">Start a group </text>
+
+  <rect class="btn" y="83%" data-on-click="join_a_group_onclick" />
+  <text x="50%" y="88.5%" class="h3">Join a group</text>
 
   <foreignObject x="0%" y="50%" width="100%" height="17%">
-    <input data-t-class="blink_or_not" class="input_nickname_blink" id="input_nickname" data-t-value="my_nickname"
-      value="nickname" data-on-keyup="nickname_onkeyup"></input>
+    <input data-t-class="blink_or_not" class="input_blink" id="input_nickname"
+           data-t-value="my_nickname" value="nickname"
+           data-on-keyup="nickname_onkeyup"></input>
   </foreignObject>
 
 </svg>

@@ -4,7 +4,6 @@
 use crate::fncallermod;
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::logmod;
-use crate::divnicknamemod;
 
 use dodrio::builder::*;
 use dodrio::{Node, Listener, Attribute, RenderContext};
@@ -118,7 +117,7 @@ fn fill_element_builder<'a>(
                     let fn_name = value.to_string();
                     let event_to_listen =
                         bumpalo::format!(in bump, "{}",event_to_listen).into_bump_str();
-                        logmod::debug_write(&format!("create listener {}", &fn_name));
+                    //logmod::debug_write(&format!("create listener {}", &fn_name));
                     element = element.on(event_to_listen, move |root, vdom, event| {
                         let fn_name = fn_name.clone();
                         let vdom = vdom.clone();

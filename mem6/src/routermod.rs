@@ -2,7 +2,7 @@
 
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::fetchmod;
-use crate::logmod;
+//use crate::logmod;
 
 use dodrio::VdomWeak;
 use wasm_bindgen::{prelude::*, JsCast};

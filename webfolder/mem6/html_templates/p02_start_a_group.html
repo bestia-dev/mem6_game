@@ -1,17 +1,27 @@
 <svg height="100%" width="100%">
-  <text x="50%" y="10%" class="h3">Other players</text>
-  <text x="50%" y="20%" class="h3">can now join</text>
-  <text x="50%" y="30%" class="h3">the group</text>
-  <text x="50%" y="43%" class="h2">Group id = 265</text>
+  <text x="50%" y="5%" class="h3">Other players</text>
+  <text x="50%" y="12%" class="h3">can now join</text>
+  <text x="50%" y="19%" class="h3">the group</text>
 
-  <text x="50%" y="52%" class="h6">Choose a type</text>
-  <rect x="10%" y="55%" width="10%" height="10%" fill="green"></rect>
-  <rect x="80%" y="55%" width="10%" height="10%" fill="green"></rect>
-  <text x="50%" y="62%" class="h2">animals </text>
+  <text x="50%" y="35%" class="h2">Group id =
+    <!--t=my_ws_uid-->265</text>
 
-  <text x="50%" y="75%" class="h3">3 players joined</text>
+  <text x="50%" y="52%" class="h6">Choose a type of game</text>
+  <rect class="rounded" x="10%" y="55%" width="10%" height="10%"
+        data-on-click="game_type_left_onclick" />
+  <text x="15%" y="60.5%" class="h2">&lt;-</text>
+  <rect class="rounded" x="80%" y="55%" width="10%" height="10%"
+        data-on-click="game_type_right_onclick" />
+  <text x="85%" y="60.5%" class="h2">-&gt;</text>
+  <text x="50%" y="60.5%" class="h2">
+    <!--t=game_name-->animals</text>
 
-  <text x="50%" y="82%" class="h6">Wait for all players to join and then</text>
-  <rect x="10%" y="85%" width="80%" height="10%" fill="green"></rect>
-  <text x="50%" y="92%" class="h3">Start the game </text>
+  <text x="50%" y="74%" class="h3">
+    <!--t=players_count-->3
+    <!-- --> players joined</text>
+
+  <text x="50%" y="83%" class="h6">Wait for all players to join and then
+    you</text>
+  <rect class="btn" y="87%" data-on-click="start_game_onclick"></rect>
+  <text x="50%" y="92.5%" class="h3">Start the game </text>
 </svg>

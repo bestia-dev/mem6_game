@@ -51,10 +51,10 @@ html {
     }
 }
 
-
 body{
     background-color: #000000;
     /*this is a game. All pages except instructions should be not scrollable*/
+    /*this looks funny when the keyboard appers. That smashes all the elements. Hahahaha*/
     height: 100%;
     margin: auto;
 }
@@ -79,19 +79,44 @@ table, caption, tbody, tfoot, thead, tr, th, td {
  background: transparent;
 }
 
+/*region: svg elements*/
 svg {
     position: absolute;
     top: 0;
     left: 0;
     fill:yellow;
+    dominant-baseline:middle;
+    text-anchor:middle;
 }
+
 rect {
     stroke:#fff;
     fill:green;
     fill-opacity:50;
     stroke-opacity:50;
   }
-  
+
+text{
+    /* this let the click go through the element to the lower element. Usually a rect.*/
+    pointer-events:none;
+    text-anchor:middle;
+}
+
+rect.btn{
+    rx:5; 
+    ry:5;
+    width:80%;
+    height:10%;
+    x:10%;
+}
+
+rect.rounded{
+    rx:5; 
+    ry:5;
+}
+
+/*endregion: svg elements*/
+
 #div_for_virtual_dom{
     height: 100%;
     padding-top: 0.01%;
@@ -99,7 +124,6 @@ rect {
 }
 
 img { 
-					
     -ms-interpolation-mode: bicubic; 
     vertical-align: middle;
     border-style: none;
@@ -112,12 +136,6 @@ img {
     box-sizing: inherit;
 }
 
-svg{
-    dominant-baseline:middle;
-    text-anchor:middle;
-}
-
-
 h1,h2,h3,h4,h5,h6,p,
 .h1,.h2,.h3,.h4,.h5,.h6
  {
@@ -125,7 +143,6 @@ h1,h2,h3,h4,h5,h6,p,
     margin: 0;
     text-align: center;
     width:100%;
-    text-anchor:middle;
 }
 
 h1, .h1 {
@@ -228,7 +245,7 @@ img.center{
     color:orange;
 }
 
-.input_nickname_blink{
+.input_blink{
     animation: blinker 1s linear infinite;
 }
 
@@ -252,7 +269,7 @@ img.center{
     text-align: center;
 }
 
-#input_nickname {
+#input_nickname, #input_group_id {
     width:100%;
     border: none;
     margin:auto;
