@@ -3,6 +3,7 @@
 use crate::logmod;
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::divnicknamemod;
+use crate::statusjoinedmod;
 
 use unwrap::unwrap;
 use wasm_bindgen::JsCast; //don't remove this. It is needed for dyn_into.
@@ -16,6 +17,7 @@ pub fn call_function_string(rrc: &RootRenderingComponent, sx: &str) -> String {
         "my_ws_uid" => format!("{}", rrc.game_data.my_ws_uid),
         "players_count" => format!("{} ", rrc.game_data.players.len() - 1),
         "game_name" => format!("{}", rrc.game_data.game_name),
+        "group_id_joined" => group_id_joined(rrc),
         _ => {
             let x = format!("Error: Unrecognized call_function_string: {}", sx);
             logmod::debug_write(&x);
@@ -32,15 +34,12 @@ pub fn call_listener(vdom: &dodrio::VdomWeak, rrc: &mut RootRenderingComponent, 
             divnicknamemod::nickname_onkeyup(vdom);
         }
         "start_a_group_onclick" => {
-            let window = unwrap!(web_sys::window());
             set_hash("#02");
         }
         "join_a_group_onclick" => {
-            let window = unwrap!(web_sys::window());
             set_hash("#03");
         }
         "start_game_onclick" => {
-            let window = unwrap!(web_sys::window());
             set_hash("#11");
         }
         "game_type_right_onclick" => {
@@ -51,11 +50,8 @@ pub fn call_listener(vdom: &dodrio::VdomWeak, rrc: &mut RootRenderingComponent, 
         }
         "join_group_on_click" => {
             //find the group_id input element
-            let s = get_input_value("input_group_id");
-            //send msg JoinGroup
-            logmod::debug_write(&s);
-            //wait for start
-            set_hash("#04");
+            let group_id = get_input_value("input_group_id");
+            set_hash(&format!("#04.{}", group_id));
         }
         _ => {
             let x = format!("Error: Unrecognized call_listener: {}", sx);
@@ -105,7 +101,7 @@ pub fn game_type_left_onclick(rrc: &mut RootRenderingComponent, vdom: &dodrio::V
 fn get_input_value(id: &str) -> String {
     let window = unwrap!(web_sys::window());
     let document = unwrap!(window.document(), "document");
-    //logmod::debug_write("before get_element_by_id");
+    logmod::debug_write(&format!("before get_element_by_id: {}", id));
     let input_el = unwrap!(document.get_element_by_id(id));
     //logmod::debug_write("before dyn_into");
     let input_html_element = unwrap!(input_el.dyn_into::<web_sys::HtmlInputElement>(), "dyn_into");
@@ -117,4 +113,12 @@ fn get_input_value(id: &str) -> String {
 fn set_hash(hash: &str) {
     let window = unwrap!(web_sys::window());
     let _x = window.location().set_hash(hash);
+}
+
+/// send a message to the first player
+/// return the text for html template replace
+pub fn group_id_joined(rrc: &RootRenderingComponent) -> String {
+    let group_id = rrc.game_data.players.get(0).unwrap().ws_uid;
+    let group_id = format!("{}", group_id);
+    group_id
 }

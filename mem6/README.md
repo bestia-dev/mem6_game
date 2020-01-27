@@ -96,19 +96,19 @@ In a few words:
 Playing player : Status1 - user action - send msg - await for ack msgs - update game data - Status2  
 Other players: Status1 - receive WsMessage - send ack msg - update game data - Status2  
   
-Before the actual game there is the `invitation and accepting` flow.  
+Before the actual game there is the `join` flow.  
 It is a little bit different from the game flow. The first player broadcast an invitation msg.  
-All other players that are in the first status receive that and are asked if they accept.  
-When the user Accepts it sends a msg to the first player.  
+All other players that are in the first status receive that and are asked if they join.  
+When the user join it sends a msg to the first player.  
 The first player waits to receive msgs from all other users.  
 After that he starts the game. This calculates the game_data and send this init data to all other players.  
 
 | Game Status1         | Render               | User action           | GameStatus2 p.p. | Sends Msg       | On rcv Msg o.p.       | GameStatus2 o.p. |
 | -------------------- | -------------------- | --------------------- | ---------------- | --------------  | -------------------   | --------------   |
-| p.p. StatusStartPage | div_start_page       | on_click_invite       | StatusInviting   | MsgInvite       | on_msg_invite         | StatusInvited    |
-| o.p. StatusInvited   | div_invited          | on_click_accept       | StatusAccepted   | MsgAccept       | on_msg_accept         | -                |
-| o.p. StatusAccepted  | div_invite_accepted  |                       |                  |                 |                       | -                |
-| p.p. StatusInviting  | div_inviting         | on_click_start_game   | Status1stCard    | MsgStartGame    | on_msg_start_game     | Status1stCard    |
+| p.p. StatusStartPage | div_start_page       | on_click_invite       |    | MsgInvite       | on_msg_invite         |     |
+| o.p.    |           | on_click_join       | StatusJoined   | MsgJoin       | on_msg_joined         | -                |
+| o.p. StatusJoined  | div_invite_joined  |                       |                  |                 |                       | -                |
+| p.p.   |          | on_click_start_game   | Status1stCard    | MsgStartGame    | on_msg_start_game     | Status1stCard    |
 
 This starts the game flow, that repeats until the game is over.  
   

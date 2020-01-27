@@ -83,17 +83,8 @@ pub enum WsMessage {
         ///random msg_id
         msg_id: usize,
     },
-    ///invite
-    MsgInvite {
-        ///ws client instance unique id. To not listen the echo to yourself.
-        my_ws_uid: usize,
-        /// my nickname
-        my_nickname: String,
-        ///content folder name
-        asked_game_name: String,
-    },
-    /// accept invitation
-    MsgAccept {
+    /// join the group
+    MsgJoin {
         ///ws client instance unique id. To not listen the echo to yourself.
         my_ws_uid: usize,
         ///json of vector of players for the server to know whom to send msg
@@ -210,12 +201,8 @@ pub enum WsMessage {
 pub enum GameStatus {
     /// start page
     StatusStartPage,
-    ///inviting
-    StatusInviting,
-    ///invited
-    StatusInvited,
-    ///InviteAccepted
-    StatusAccepted,
+    ///Joined
+    StatusJoined,
     ///before first card
     Status1stCard,
     ///before second card

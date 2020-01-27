@@ -109,7 +109,7 @@ pub struct GameData {
     pub players: Vec<Player>,
     ///the json string for the ws server to send msgs to other players only
     pub players_ws_uid: String,
-    ///game status: StatusStartPage,StatusInviting,StatusInvited,Player1,Player2
+    ///game status: StatusStartPage,Player1,Player2
     pub game_status: GameStatus,
     ///vector of cards
     pub card_grid_data: Vec<Card>,
@@ -240,9 +240,9 @@ impl GameData {
         ));
         */
     }
-    ///asociated function: before Accept, there are not random numbers, just default cards.
+    ///asociated function: before join, there are not random numbers, just default cards.
     pub fn prepare_for_empty() -> Vec<Card> {
-        //prepare 32 empty cards. The random is calculated only on MsgAccept.
+        //prepare 32 empty cards. The random is calculated only on MsgJoin.
         let mut card_grid_data = Vec::new();
         //I must prepare the 0 index, but then I don't use it ever.
         for i in 0..=32 {

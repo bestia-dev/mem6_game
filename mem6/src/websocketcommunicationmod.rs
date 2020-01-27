@@ -4,12 +4,11 @@
 //region: use
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::statusgamedatainitmod;
-use crate::statusinvitedmod;
-use crate::statusstartpagemod;
 use crate::status1stcardmod;
 use crate::status2ndcardmod;
 use crate::statustaketurnbeginmod;
 use crate::statustaketurnendmod;
+use crate::statusjoinedmod;
 use crate::logmod;
 use crate::statusgameovermod;
 use crate::websocketreconnectmod;
@@ -22,6 +21,7 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::spawn_local;
 use web_sys::{ErrorEvent, WebSocket};
+use gloo_timers::future::TimeoutFuture;
 //endregion
 
 //the location_href is not consumed in this function and Clippy wants a reference instead a value
@@ -165,30 +165,12 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                     //logmod::debug_write(&format!("MsgResponseWsUid: {}  ", your_ws_uid));
                                     on_response_ws_uid(rrc, your_ws_uid);
                                 }
-                                WsMessage::MsgInvite {
-                                    my_ws_uid,
-                                    my_nickname,
-                                    asked_game_name,
-                                } => {
-                                    if let GameStatus::StatusGameOver
-                                    | GameStatus::StatusStartPage
-                                    | GameStatus::StatusInvited = rrc.game_data.game_status
-                                    {
-                                        statusstartpagemod::on_msg_invite(
-                                            rrc,
-                                            my_ws_uid,
-                                            my_nickname,
-                                            asked_game_name,
-                                        );
-                                        vdom.schedule_render();
-                                    }
-                                }
-                                WsMessage::MsgAccept {
+                                WsMessage::MsgJoin {
                                     my_ws_uid,
                                     players_ws_uid: _,
                                     my_nickname,
                                 } => {
-                                    statusinvitedmod::on_msg_accept(rrc, my_ws_uid, my_nickname);
+                                    statusjoinedmod::on_msg_joined(rrc, my_ws_uid, my_nickname);
                                     vdom.schedule_render();
                                 }
                                 WsMessage::MsgStartGame {
@@ -198,7 +180,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                     game_config,
                                     players,
                                 } => {
-                                    if let GameStatus::StatusAccepted = rrc.game_data.game_status {
+                                    if let GameStatus::StatusJoined = rrc.game_data.game_status {
                                         let vdom = vdom.clone();
                                         statusgamedatainitmod::on_msg_start_game(
                                             rrc,
@@ -413,13 +395,32 @@ pub fn setup_all_ws_events(ws: &WebSocket, vdom: dodrio::VdomWeak) {
 
 ///generic send ws message
 pub fn ws_send_msg(ws: &WebSocket, ws_message: &WsMessage) {
-    unwrap!(
-        ws.send_with_str(&unwrap!(
-            serde_json::to_string(ws_message),
-            "error serde_json to_string WsMessage"
-        ),),
-        "Failed to send"
-    );
+    let x = ws.send_with_str(&unwrap!(serde_json::to_string(ws_message)));
+    // retry send a 5 times before panicking
+    if let Err(err) = x {
+        let ws = ws.clone();
+        let ws_message = ws_message.clone();
+        spawn_local({
+            let ws = ws.clone();
+            let ws_message = ws_message.clone();
+            async move {
+                let mut retries: usize = 1;
+                while retries <= 5 {
+                    logmod::debug_write(&format!("send retries: {}", retries));
+                    //Wait 100 ms
+                    TimeoutFuture::new(5).await;
+                    let x = ws.send_with_str(&unwrap!(serde_json::to_string(&ws_message)));
+                    if let Ok(y) = x {
+                        break;
+                    }
+                    retries += 1;
+                }
+                if retries == 0 {
+                    panic!("error 5 times retry ws_send_msg");
+                }
+            }
+        });
+    }
 }
 
 ///msg response with ws_uid, just to check.

@@ -41,6 +41,7 @@
         "statusgameovermod",
         "statusinvitedmod",
         "statusinvitingmod",
+        "statusjoinedmod",
         "statusstartpagemod",
         "statustaketurnbeginmod",
         "statustaketurnendmod",

@@ -2,7 +2,12 @@
 
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::fetchmod;
-//use crate::logmod;
+use crate::statusjoinedmod;
+use crate::gamedatamod;
+use crate::logmod;
+
+//use mem6_common::{GameStatus, Player, WsMessage};
+use mem6_common::{Player};
 
 use dodrio::VdomWeak;
 use wasm_bindgen::{prelude::*, JsCast};
@@ -38,7 +43,24 @@ pub fn start_router(vdom: VdomWeak) {
                                     rrc.local_route = "p02_start_a_group.html".to_owned();
                                 } else if local_route == "#03" {
                                     rrc.local_route = "p03_join_a_group.html".to_owned();
-                                } else if local_route == "#04" {
+                                } else if local_route.starts_with("#04") {
+                                    let mut spl = local_route.split(".");
+                                    spl.next().unwrap();
+                                    let group_id = spl.next().unwrap();
+                                    //add the first player so the msg can be sent to him
+                                    let ws_uid = unwrap!(group_id.parse::<usize>());
+                                    if rrc.game_data.players.is_empty() {
+                                        rrc.game_data.players.push(Player {
+                                            ws_uid,
+                                            nickname: "FirstPlayer".to_string(),
+                                            points: 0,
+                                        });
+                                        let players_ws_uid = gamedatamod::prepare_players_ws_uid(
+                                            &rrc.game_data.players,
+                                        );
+                                        rrc.game_data.players_ws_uid = players_ws_uid;
+                                    }
+                                    statusjoinedmod::on_click_join(rrc);
                                     rrc.local_route = "p04_wait_to_start.html".to_owned();
                                 } else if local_route == "#11" {
                                     rrc.local_route = "p11_gameboard.html".to_owned();
@@ -47,6 +69,7 @@ pub fn start_router(vdom: VdomWeak) {
                                 }
                                 let url = format!("html_templates/{}", rrc.local_route);
                                 let v2 = vdom.clone();
+
                                 //I cannot simply await here because this closure is not async
                                 spawn_local(async_fetch_and_write_to_rrc_html_template(url, v2));
                                 vdom.schedule_render();

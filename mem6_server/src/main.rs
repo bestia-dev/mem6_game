@@ -303,13 +303,10 @@ fn receive_message(ws_uid_of_message: usize, message: &Message, users: &Users) {
         WsMessage::MsgPong { .. } => {
             unreachable!("mem6_server must not receive MsgPong");
         }
-        WsMessage::MsgInvite { .. } => {
-            broadcast(users, ws_uid_of_message, &new_msg);
-        }
         WsMessage::MsgResponseWsUid { .. } => {
             info!("MsgResponseWsUid: {}", "");
         }
-        WsMessage::MsgAccept { players_ws_uid, .. }
+        WsMessage::MsgJoin { players_ws_uid, .. }
         | WsMessage::MsgStartGame { players_ws_uid, .. }
         | WsMessage::MsgClick1stCard { players_ws_uid, .. }
         | WsMessage::MsgClick2ndCardPoint { players_ws_uid, .. }
@@ -344,26 +341,6 @@ fn send_to_other_players(
             }
         }
         if ws_uid_of_message != uid && is_player {
-            match tx.send(Ok(Message::text(String::from(new_msg)))) {
-                Ok(()) => (),
-                Err(_disconnected) => {
-                    // The tx is disconnected, our `user_disconnected` code
-                    // should be happening in another task, nothing more to
-                    // do here.
-                }
-            }
-        }
-    }
-}
-
-///broadcast is the simplest
-fn broadcast(users: &Users, ws_uid_of_message: usize, new_msg: &str) {
-    // New message from this user, send it to everyone else (except same uid)...
-    // We use `retain` instead of a for loop so that we can reap any user that
-    // appears to have disconnected.
-    info!("broadcast: {}", new_msg);
-    for (&uid, tx) in unwrap!(users.lock()).iter() {
-        if ws_uid_of_message != uid {
             match tx.send(Ok(Message::text(String::from(new_msg)))) {
                 Ok(()) => (),
                 Err(_disconnected) => {

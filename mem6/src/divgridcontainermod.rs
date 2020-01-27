@@ -241,9 +241,7 @@ pub fn div_grid_item<'a>(
             )
         }
         mem6_common::GameStatus::StatusStartPage
-        | mem6_common::GameStatus::StatusInviting
-        | mem6_common::GameStatus::StatusInvited
-        | mem6_common::GameStatus::StatusAccepted
+        | mem6_common::GameStatus::StatusJoined
         | mem6_common::GameStatus::StatusTakeTurnBegin
         | mem6_common::GameStatus::StatusTakeTurnEnd
         | mem6_common::GameStatus::StatusGameOver

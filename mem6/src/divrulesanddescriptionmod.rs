@@ -35,11 +35,11 @@ so all players can see them and touch \
 them. All smartphones combined will be used as a board game. \
 The first player invites the others and chooses a kind of game visuals: \
 alphabet, animal, playing cards,...  \
-Other players can then accept the invitation.  \
+Other players can then join.  \
 If there are some communication sync issues, \
 reload the webpage simultaneously on all smartphones. \
 Just pool the screen down slightly and let go when the reload circle is visible. \
-Player1 will see how many players have accepted. Then he starts the game. \
+Player1 will see how many players have joined. Then he starts the game. \
 On the screen under the grid are clear instructions which player plays and which waits. \
 The green color calls for player action, the red means wait and the orange is informational. \
 Player1 flips over two cards with two clicks. This cards can be on any smartphone. \

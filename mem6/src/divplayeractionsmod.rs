@@ -8,9 +8,6 @@ use crate::statusgameovermod;
 use crate::status1stcardmod;
 use crate::status2ndcardmod;
 use crate::statustaketurnbeginmod;
-use crate::statusstartpagemod;
-use crate::statusinvitedmod;
-use crate::statusinvitingmod;
 use crate::statuswaitingackmsgmod;
 //use crate::websocketreconnectmod;
 
@@ -34,15 +31,7 @@ pub fn div_player_actions_from_game_status<'a>(
         //ready_state: 0	CONNECTING, 1	OPEN, 2	CLOSING, 3	CLOSED
         websocketreconnectmod::div_reconnect(rrc, bump)
     */
-    if let GameStatus::StatusStartPage = rrc.game_data.game_status {
-        statusstartpagemod::div_start_page(rrc, bump)
-    } else if let GameStatus::StatusInvited = rrc.game_data.game_status {
-        statusinvitedmod::div_invited(rrc, bump)
-    } else if let GameStatus::StatusInviting = rrc.game_data.game_status {
-        statusinvitingmod::div_inviting(rrc, bump)
-    } else if let GameStatus::StatusAccepted = rrc.game_data.game_status {
-        statusinvitedmod::div_invite_accepted(rrc, bump)
-    } else if let GameStatus::Status1stCard = rrc.game_data.game_status {
+    if let GameStatus::Status1stCard = rrc.game_data.game_status {
         status1stcardmod::div_on_1st_card(rrc, bump)
     } else if let GameStatus::Status2ndCard = rrc.game_data.game_status {
         status2ndcardmod::div_click_2nd_card(rrc, bump)

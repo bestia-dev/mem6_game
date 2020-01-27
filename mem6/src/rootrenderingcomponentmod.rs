@@ -82,7 +82,7 @@ impl RootRenderingComponent {
 
 //region: `Render` trait implementation on RootRenderingComponent struct
 ///It is called for every Dodrio animation frame to render the vdom.
-///Only when render is scheduled after aomw change id the game data.
+///Only when render is scheduled after some change id the game data.
 impl Render for RootRenderingComponent {
     fn render<'a>(&self, cx: &mut RenderContext<'a>) -> Node<'a> {
         let bump = cx.bump;
