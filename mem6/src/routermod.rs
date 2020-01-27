@@ -5,6 +5,7 @@ use crate::fetchmod;
 use crate::statusjoinedmod;
 use crate::gamedatamod;
 use crate::logmod;
+use crate::fetchgameconfigmod;
 
 //use mem6_common::{GameStatus, Player, WsMessage};
 use mem6_common::{Player};
@@ -40,6 +41,8 @@ pub fn start_router(vdom: VdomWeak) {
                             // and re-render.
                             if rrc.local_route != local_route {
                                 if local_route == "#02" {
+                                    let vdom = vdom.clone();
+                                    fetchgameconfigmod::async_fetch_game_config_request(rrc, vdom);
                                     rrc.local_route = "p02_start_a_group.html".to_owned();
                                 } else if local_route == "#03" {
                                     rrc.local_route = "p03_join_a_group.html".to_owned();
@@ -47,20 +50,22 @@ pub fn start_router(vdom: VdomWeak) {
                                     let mut spl = local_route.split(".");
                                     spl.next().unwrap();
                                     let group_id = spl.next().unwrap();
+                                    logmod::debug_write(&format!("group_id: {}", &group_id));
                                     //add the first player so the msg can be sent to him
                                     let ws_uid = unwrap!(group_id.parse::<usize>());
-                                    if rrc.game_data.players.is_empty() {
-                                        rrc.game_data.players.push(Player {
-                                            ws_uid,
-                                            nickname: "FirstPlayer".to_string(),
-                                            points: 0,
-                                        });
-                                        let players_ws_uid = gamedatamod::prepare_players_ws_uid(
-                                            &rrc.game_data.players,
-                                        );
-                                        rrc.game_data.players_ws_uid = players_ws_uid;
-                                    }
-                                    statusjoinedmod::on_click_join(rrc);
+                                    rrc.game_data.players.clear();
+                                    rrc.game_data.players.push(Player {
+                                        ws_uid,
+                                        nickname: "FirstPlayer".to_string(),
+                                        points: 0,
+                                    });
+                                    rrc.game_data.players_ws_uid =
+                                        gamedatamod::prepare_players_ws_uid(&rrc.game_data.players);
+                                    logmod::debug_write(&format!(
+                                        "players_ws_uid: {}",
+                                        &rrc.game_data.players_ws_uid
+                                    ));
+                                    statusjoinedmod::on_load_joined(rrc);
                                     rrc.local_route = "p04_wait_to_start.html".to_owned();
                                 } else if local_route == "#11" {
                                     rrc.local_route = "p11_gameboard.html".to_owned();

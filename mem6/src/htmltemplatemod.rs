@@ -124,7 +124,7 @@ fn fill_element_builder<'a>(
                         let rrc = root.unwrap_mut::<RootRenderingComponent>();
                         //call a function from string
                         logmod::debug_write(&format!("fn_name {}", fn_name));
-                        fncallermod::call_listener(&vdom, rrc, fn_name);
+                        fncallermod::call_listener(vdom, rrc, fn_name);
                     });
                 } else {
                     let name = bumpalo::format!(in bump, "{}",name).into_bump_str();

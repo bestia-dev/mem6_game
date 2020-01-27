@@ -70,7 +70,6 @@ impl RootRenderingComponent {
         self.game_data.players.clear();
         self.game_data.game_status = GameStatus::StatusStartPage;
         self.game_data.game_name = "alphabet".to_string();
-        self.game_data.asked_game_name = "".to_string();
         self.game_data.my_player_number = 1;
         self.game_data.player_turn = 0;
         self.game_data.game_config = None;

@@ -13,7 +13,6 @@ use unwrap::unwrap;
 
 ///prepares the game data
 pub fn on_click_start_game(rrc: &mut RootRenderingComponent) {
-    rrc.game_data.game_name = rrc.game_data.asked_game_name.clone();
     rrc.game_data.prepare_random_data();
     rrc.game_data.game_status = GameStatus::Status1stCard;
     rrc.game_data.player_turn = 1;
@@ -27,7 +26,6 @@ pub fn on_msg_start_game(
     players: &str,
 ) {
     //logmod::debug_write(&format!("on_msg_start_game {}", players));
-    rrc.game_data.game_name = rrc.game_data.asked_game_name.clone();
     rrc.game_data.game_status = GameStatus::Status1stCard;
     rrc.game_data.player_turn = 1;
 

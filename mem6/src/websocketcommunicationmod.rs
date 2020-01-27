@@ -407,8 +407,8 @@ pub fn ws_send_msg(ws: &WebSocket, ws_message: &WsMessage) {
                 let mut retries: usize = 1;
                 while retries <= 5 {
                     logmod::debug_write(&format!("send retries: {}", retries));
-                    //Wait 100 ms
-                    TimeoutFuture::new(5).await;
+                    //Wait 10 ms
+                    TimeoutFuture::new(10).await;
                     let x = ws.send_with_str(&unwrap!(serde_json::to_string(&ws_message)));
                     if let Ok(y) = x {
                         break;

@@ -119,9 +119,6 @@ pub struct GameData {
     pub card_index_of_second_click: usize,
     ///content folder name
     pub game_name: String,
-    ///invite asks for a specific game
-    pub asked_game_name: String,
-
     ///whose turn is now:  player 1,2,3,...
     pub player_turn: usize,
     ///content folders vector
@@ -278,7 +275,6 @@ impl GameData {
             players_ws_uid,
             game_status: GameStatus::StatusStartPage,
             game_name: "alphabet".to_string(),
-            asked_game_name: "".to_string(),
             my_player_number: 1,
             player_turn: 0,
             content_folders: vec![String::from("alphabet")],

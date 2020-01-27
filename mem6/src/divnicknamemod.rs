@@ -71,7 +71,7 @@ pub fn blink_or_not(rrc: &RootRenderingComponent) -> String {
 }
 
 /// save on every key stroke
-pub fn nickname_onkeyup(vdom: &dodrio::VdomWeak) {
+pub fn nickname_onkeyup(vdom: dodrio::VdomWeak) {
     //logmod::debug_write("on key up");
     save_nickname_to_localstorage(&vdom);
     vdom.schedule_render();

@@ -7,6 +7,7 @@
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::websocketcommunicationmod;
 use crate::gamedatamod;
+use crate::logmod;
 
 use mem6_common::{GameStatus, Player, WsMessage};
 
@@ -15,10 +16,13 @@ use mem6_common::{GameStatus, Player, WsMessage};
 //endregion
 
 /// group_id is the ws_uid of the first player
-pub fn on_click_join(rrc: &mut RootRenderingComponent) {
+pub fn on_load_joined(rrc: &mut RootRenderingComponent) {
     rrc.game_data.game_status = GameStatus::StatusJoined;
     let group_id = format!("{}", rrc.game_data.players.get(0).unwrap().ws_uid);
-    //logmod::debug_write(&format!("StatusJoined send {}",rrc.game_data.players_ws_uid));
+    logmod::debug_write(&format!(
+        "StatusJoined send {}",
+        rrc.game_data.players_ws_uid
+    ));
     websocketcommunicationmod::ws_send_msg(
         &rrc.game_data.ws,
         &WsMessage::MsgJoin {

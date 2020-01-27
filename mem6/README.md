@@ -106,7 +106,7 @@ After that he starts the game. This calculates the game_data and send this init 
 | Game Status1         | Render               | User action           | GameStatus2 p.p. | Sends Msg       | On rcv Msg o.p.       | GameStatus2 o.p. |
 | -------------------- | -------------------- | --------------------- | ---------------- | --------------  | -------------------   | --------------   |
 | p.p. StatusStartPage | div_start_page       | on_click_invite       |    | MsgInvite       | on_msg_invite         |     |
-| o.p.    |           | on_click_join       | StatusJoined   | MsgJoin       | on_msg_joined         | -                |
+| o.p.    |           | on_load_joined       | StatusJoined   | MsgJoin       | on_msg_joined         | -                |
 | o.p. StatusJoined  | div_invite_joined  |                       |                  |                 |                       | -                |
 | p.p.   |          | on_click_start_game   | Status1stCard    | MsgStartGame    | on_msg_start_game     | Status1stCard    |
 
