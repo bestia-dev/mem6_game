@@ -321,6 +321,8 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     // Initialize debugging for when/if something goes wrong.
     console_error_panic_hook::set_once();
 
+    logmod::debug_write(&format!("wasm app version: {}", env!("CARGO_PKG_VERSION")));
+
     // Get the document's container to render the virtual Dom component.
     let window = unwrap!(web_sys::window());
     let document = unwrap!(window.document());

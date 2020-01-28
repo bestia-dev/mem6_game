@@ -3,10 +3,8 @@
 
 //region: use
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
-use crate::fetchallimgsforcachemod;
-use crate::gamedatamod;
-
-use mem6_common::GameStatus;
+use crate::*;
+use mem6_common::*;
 
 use unwrap::unwrap;
 //endregion
@@ -16,6 +14,17 @@ pub fn on_click_start_game(rrc: &mut RootRenderingComponent) {
     rrc.game_data.prepare_random_data();
     rrc.game_data.game_status = GameStatus::Status1stCard;
     rrc.game_data.player_turn = 1;
+
+    websocketcommunicationmod::ws_send_msg(
+        &rrc.game_data.ws,
+        &WsMessage::MsgStartGame {
+            my_ws_uid: rrc.game_data.my_ws_uid,
+            players_ws_uid: rrc.game_data.players_ws_uid.to_string(),
+            players: unwrap!(serde_json::to_string(&rrc.game_data.players)),
+            card_grid_data: unwrap!(serde_json::to_string(&rrc.game_data.card_grid_data)),
+            game_config: unwrap!(serde_json::to_string(&rrc.game_data.game_config)),
+        },
+    );
 }
 
 ///on game data init

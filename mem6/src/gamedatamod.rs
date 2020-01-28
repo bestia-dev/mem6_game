@@ -237,7 +237,7 @@ impl GameData {
         ));
         */
     }
-    ///asociated function: before join, there are not random numbers, just default cards.
+    ///associated function: before join, there are not random numbers, just default cards.
     pub fn prepare_for_empty() -> Vec<Card> {
         //prepare 32 empty cards. The random is calculated only on MsgJoin.
         let mut card_grid_data = Vec::new();
@@ -299,21 +299,9 @@ impl GameData {
         }
     }
     */
-    ///the only status for rendering the grid container
-    pub fn is_status_for_grid_container(&self) -> bool {
-        #[allow(clippy::wildcard_enum_match_arm)]
-        match self.game_status {
-            GameStatus::Status1stCard
-            | GameStatus::Status2ndCard
-            | GameStatus::StatusTakeTurnBegin
-            | GameStatus::StatusTakeTurnEnd
-            | GameStatus::StatusWaitingAckMsg
-            | GameStatus::StatusGameOver => true,
-            _ => false,
-        }
-    }
 }
-///from the vector of players prepare a json string for the ws server
+
+/// from the vector of players prepare a json string for the ws server
 /// so that it can send the msgs only to the players
 pub fn prepare_players_ws_uid(players: &[Player]) -> String {
     let mut players_ws_uid = Vec::new();

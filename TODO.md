@@ -18,3 +18,4 @@
 - tokei lines of code could change the numbers in readme.md  
 - editor to add new images, words and audio (with size, resolution limitations)  
 - idea for hostels: photos of guests and names. So it is easy to remember the names.  
+- start with status "take your turn" so other players that are less experienced can learn from the first player who is usually more experienced.

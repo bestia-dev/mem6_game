@@ -3,17 +3,9 @@
 
 //region: use
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
-use crate::statusgamedatainitmod;
-use crate::status1stcardmod;
-use crate::status2ndcardmod;
-use crate::statustaketurnbeginmod;
-use crate::statustaketurnendmod;
-use crate::statusjoinedmod;
-use crate::logmod;
-use crate::statusgameovermod;
-use crate::websocketreconnectmod;
+use crate::*;
 
-use mem6_common::{GameStatus, WsMessage, MsgAckKind};
+use mem6_common::*;
 
 use unwrap::unwrap;
 use js_sys::Reflect;
@@ -188,6 +180,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                             &game_config,
                                             &players,
                                         );
+                                        fncallermod::open_new_local_page("#11");
                                         vdom.schedule_render();
                                     }
                                 }

@@ -22,7 +22,7 @@ pub fn fetch_all_img_for_cache_request(rrc: &mut RootRenderingComponent) {
                     .img_filename
                     .get(x.card_number_and_img_src))
             );
-            logmod::debug_write(&url_img);
+            //logmod::debug_write(&url_img);
             //this is async, so I don't care how much it takes
             spawn_local(fetchmod::fetch_only(url_img));
         }

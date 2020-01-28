@@ -1,11 +1,7 @@
 //! fncallermod  
 
-use crate::logmod;
+use crate::*;
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
-use crate::divnicknamemod;
-use crate::statusjoinedmod;
-use crate::statusgamedatainitmod;
-use crate::fetchgameconfigmod;
 
 use unwrap::unwrap;
 use wasm_bindgen::JsCast; //don't remove this. It is needed for dyn_into.
@@ -40,14 +36,18 @@ pub fn call_listener(vdom: dodrio::VdomWeak, rrc: &mut RootRenderingComponent, s
             divnicknamemod::nickname_onkeyup(vdom);
         }
         "start_a_group_onclick" => {
-            set_hash("#02");
+            open_new_local_page("#02");
         }
         "join_a_group_onclick" => {
-            set_hash("#03");
+            open_new_local_page("#03");
         }
         "start_game_onclick" => {
             statusgamedatainitmod::on_click_start_game(rrc);
-            set_hash("#11");
+            //async fetch all imgs and put them in service worker cache
+            fetchallimgsforcachemod::fetch_all_img_for_cache_request(rrc);
+            //endregion
+            vdom.schedule_render();
+            open_new_local_page("#11");
         }
         "game_type_right_onclick" => {
             game_type_right_onclick(rrc, vdom);
@@ -58,7 +58,7 @@ pub fn call_listener(vdom: dodrio::VdomWeak, rrc: &mut RootRenderingComponent, s
         "join_group_on_click" => {
             //find the group_id input element
             let group_id = get_input_value("input_group_id");
-            set_hash(&format!("#04.{}", group_id));
+            open_new_local_page(&format!("#04.{}", group_id));
         }
         _ => {
             let x = format!("Error: Unrecognized call_listener: {}", sx);
@@ -119,8 +119,8 @@ fn get_input_value(id: &str) -> String {
     input_html_element.value()
 }
 
-/// fn for window.location. set_hash
-fn set_hash(hash: &str) {
+/// fn open new local page with # window.location.set_hash
+pub fn open_new_local_page(hash: &str) {
     let window = unwrap!(web_sys::window());
     let _x = window.location().set_hash(hash);
 }
