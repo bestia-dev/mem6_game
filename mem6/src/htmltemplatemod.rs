@@ -170,8 +170,13 @@ fn fill_element_builder<'a>(
                     let fn_name = &txt[2..];
                     let repl_txt = fncallermod::call_function_string(rrc, fn_name);
                     replacement = Some(repl_txt);
+                } else if txt.starts_with("n=") {
+                    let fn_name = &txt[2..];
+                    let repl_node = fncallermod::call_function_node(rrc, bump, fn_name);
+                    element = element.child(repl_node);
+                } else {
+                    //nothing. it is really a comment
                 }
-                //TODO: replace an entire node ?
             }
             Event::EndElement(name) => {
                 let last_name = unwrap!(dom_path.pop());

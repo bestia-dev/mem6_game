@@ -5,6 +5,10 @@ use crate::rootrenderingcomponentmod::RootRenderingComponent;
 
 use unwrap::unwrap;
 use wasm_bindgen::JsCast; //don't remove this. It is needed for dyn_into.
+use dodrio::bumpalo::{self, Bump};
+use dodrio::Node;
+use dodrio::builder::*;
+use typed_html::dodrio;
 
 /// html_templating functions that return a String
 pub fn call_function_string(rrc: &RootRenderingComponent, sx: &str) -> String {
@@ -19,6 +23,38 @@ pub fn call_function_string(rrc: &RootRenderingComponent, sx: &str) -> String {
         "gameboard_btn" => {
             //different class depend on status
             "btn".to_owned()
+        }
+        "card_moniker_first" => {
+            return unwrap!(unwrap!(rrc.game_data.game_config.as_ref())
+                .card_moniker
+                .get(
+                    unwrap!(rrc
+                        .game_data
+                        .card_grid_data
+                        .get(rrc.game_data.card_index_of_first_click))
+                    .card_number_and_img_src
+                ))
+            .to_string();
+        }
+        "card_moniker_second" => {
+            return unwrap!(unwrap!(rrc.game_data.game_config.as_ref())
+                .card_moniker
+                .get(
+                    unwrap!(rrc
+                        .game_data
+                        .card_grid_data
+                        .get(rrc.game_data.card_index_of_second_click))
+                    .card_number_and_img_src
+                ))
+            .to_string();
+        }
+        "my_points" => {
+            return unwrap!(rrc
+                .game_data
+                .players
+                .get(rrc.game_data.my_player_number - 1))
+            .points
+            .to_string();
         }
         _ => {
             let x = format!("Error: Unrecognized call_function_string: {}", sx);
@@ -67,7 +103,34 @@ pub fn call_listener(vdom: dodrio::VdomWeak, rrc: &mut RootRenderingComponent, s
     }
 }
 
-//TODO: html_templating functions that return a Node
+/// html_templating functions that return a Node
+pub fn call_function_node<'a>(rrc: &RootRenderingComponent, bump: &'a Bump, sx: &str) -> Node<'a> {
+    logmod::debug_write(&format!("call_function_node: {}", &sx));
+    match sx {
+        "div_grid_container" => {
+            //what is the game_status now?
+            logmod::debug_write(&format!("game status: {}", rrc.game_data.game_status));
+            let max_grid_size = divgridcontainermod::max_grid_size(rrc);
+            return divgridcontainermod::div_grid_container(rrc, bump, &max_grid_size);
+        }
+        "dumy div" => {
+            let node = dodrio!(bump,
+            <h2  >
+                {vec![text(bumpalo::format!(in bump, "a dummy just for clippy: {}", sx).into_bump_str())]}
+            </h2>
+            );
+            return node;
+        }
+        _ => {
+            let node = dodrio!(bump,
+            <h2  >
+                {vec![text(bumpalo::format!(in bump, "Error: Unrecognized call_function_node: {}", sx).into_bump_str())]}
+            </h2>
+            );
+            return node;
+        }
+    }
+}
 
 pub fn game_type_right_onclick(rrc: &mut RootRenderingComponent, vdom: dodrio::VdomWeak) {
     let gmd = &rrc

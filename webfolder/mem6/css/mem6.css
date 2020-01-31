@@ -87,6 +87,7 @@ svg {
     fill:yellow;
     dominant-baseline:middle;
     text-anchor:middle;
+    pointer-events:none;
 }
 
 rect {
@@ -108,11 +109,16 @@ rect.btn{
     width:80%;
     height:10%;
     x:10%;
+    pointer-events:fill;
 }
 
 rect.rounded{
     rx:5; 
     ry:5;
+}
+
+foreignObject{
+    pointer-events:all;
 }
 
 /*endregion: svg elements*/

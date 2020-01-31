@@ -7,9 +7,7 @@
 //region: use, const
 use crate::gamedatamod::{CardStatusCardFace, Size2d};
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
-use crate::status1stcardmod;
-use crate::status2ndcardmod;
-//use crate::logmod;
+use crate::*;
 
 use mem6_common::GameStatus;
 
@@ -178,6 +176,7 @@ pub fn div_grid_item<'a>(
             dodrio!(bump,
             <div class= "grid_item">
             <img class= "grid_item_img" src={img_src} id={img_id} style={opacity} onclick={move |root, vdom, event| {
+                logmod::debug_write("img click");
                 let rrc = root.unwrap_mut::<RootRenderingComponent>();
                 // If the event's target is our image...
                 let img = match event
