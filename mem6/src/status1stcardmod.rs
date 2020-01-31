@@ -39,6 +39,7 @@ pub fn on_click_1st_card(
         msg_id,
     };
     ackmsgmod::send_msg_and_write_in_queue(rrc, &msg, msg_id);
+    logmod::debug_write(&format!("send_msg_and_write_in_queue: {}", msg_id));
     divgridcontainermod::play_sound(rrc, this_click_card_index);
     //after ack for this message call on_msg_click_1st_card(rrc, this_click_card_index);
 }
@@ -76,6 +77,10 @@ pub fn on_msg_ack_click_1st_card(
     msg_id: usize,
 ) {
     logmod::debug_write("on_msg_ack_click_1st_card");
+    logmod::debug_write(&format!(
+        "remove_ack_msg_from_queue: {} {}",
+        player_ws_uid, msg_id
+    ));
     if ackmsgmod::remove_ack_msg_from_queue(rrc, player_ws_uid, msg_id) {
         logmod::debug_write("update_on_1st_card (rrc)");
         update_on_1st_card(rrc);

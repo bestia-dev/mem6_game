@@ -3,8 +3,7 @@
 
 //region: use
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
-use crate::websocketcommunicationmod;
-use crate::gamedatamod;
+use crate::*;
 
 use mem6_common::{GameStatus, WsMessage, MsgAckKind};
 
@@ -22,7 +21,7 @@ pub fn remove_ack_msg_from_queue(
     msg_id: usize,
 ) -> bool {
     //remove the waiting msg from the queue
-    //I use the oposite method "retain" because there is not a method "remove"
+    //I use the opposite method "retain" because there is not a method "remove"
     rrc.game_data
         .msgs_waiting_ack
         .retain(|x| !(x.player_ws_uid == player_ws_uid && x.msg_id == msg_id));
@@ -81,6 +80,7 @@ pub fn send_ack(
     msg_id: usize,
     msg_ack_kind: MsgAckKind,
 ) {
+    logmod::debug_write(&format!("send_ack players: {:?}", rrc.game_data.players));
     //send back the ACK msg to the sender
     websocketcommunicationmod::ws_send_msg(
         &rrc.game_data.ws,

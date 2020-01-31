@@ -192,7 +192,7 @@ pub fn div_grid_item<'a>(
                     (unwrap!(img.id().get(3..), "error slicing")).parse::<usize>(),
                     "error parse img id to usize"
                 );
-                //click is usefull only on facedown cards
+                //click is useful only on facedown cards
                 if unwrap!(
                     rrc.game_data.card_grid_data.get(this_click_card_index),
                     "error this_click_card_index"

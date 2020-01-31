@@ -54,7 +54,8 @@ pub fn call_function_string(rrc: &RootRenderingComponent, sx: &str) -> String {
                 .players
                 .get(rrc.game_data.my_player_number - 1))
             .points
-            .to_string();
+            .to_string()
+                + " ";
         }
         _ => {
             let x = format!("Error: Unrecognized call_function_string: {}", sx);
@@ -83,6 +84,10 @@ pub fn call_listener(vdom: dodrio::VdomWeak, rrc: &mut RootRenderingComponent, s
             fetchallimgsforcachemod::fetch_all_img_for_cache_request(rrc);
             //endregion
             vdom.schedule_render();
+            logmod::debug_write(&format!(
+                "start_game_onclick players: {:?}",
+                rrc.game_data.players
+            ));
             open_new_local_page("#11");
         }
         "game_type_right_onclick" => {
@@ -113,12 +118,8 @@ pub fn call_function_node<'a>(rrc: &RootRenderingComponent, bump: &'a Bump, sx: 
             let max_grid_size = divgridcontainermod::max_grid_size(rrc);
             return divgridcontainermod::div_grid_container(rrc, bump, &max_grid_size);
         }
-        "dumy div" => {
-            let node = dodrio!(bump,
-            <h2  >
-                {vec![text(bumpalo::format!(in bump, "a dummy just for clippy: {}", sx).into_bump_str())]}
-            </h2>
-            );
+        "div_player_action" => {
+            let node = divplayeractionsmod::div_player_actions_from_game_status(rrc, bump);
             return node;
         }
         _ => {

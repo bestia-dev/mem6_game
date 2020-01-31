@@ -257,7 +257,7 @@ impl GameData {
         let my_nickname = divnicknamemod::load_nickname();
         let mut players = Vec::new();
         players.push(Player {
-            ws_uid: 0,
+            ws_uid: my_ws_uid,
             nickname: my_nickname.to_string(),
             points: 0,
         });

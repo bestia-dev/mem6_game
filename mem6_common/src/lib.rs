@@ -220,7 +220,7 @@ pub enum GameStatus {
 }
 
 ///data for one player
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Player {
     ///ws_uid
     pub ws_uid: usize,
