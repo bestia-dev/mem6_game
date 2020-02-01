@@ -23,6 +23,7 @@ pub fn on_click_start_game(rrc: &mut RootRenderingComponent) {
             players: unwrap!(serde_json::to_string(&rrc.game_data.players)),
             card_grid_data: unwrap!(serde_json::to_string(&rrc.game_data.card_grid_data)),
             game_config: unwrap!(serde_json::to_string(&rrc.game_data.game_config)),
+            game_name: rrc.game_data.game_name.to_string(),
         },
     );
 }
@@ -33,10 +34,12 @@ pub fn on_msg_start_game(
     card_grid_data: &str,
     game_config: &str,
     players: &str,
+    game_name: &str,
 ) {
     //logmod::debug_write(&format!("on_msg_start_game {}", players));
     rrc.game_data.game_status = GameStatus::Status1stCard;
     rrc.game_data.player_turn = 1;
+    rrc.game_data.game_name = game_name.to_string();
 
     rrc.game_data.game_config = unwrap!(
         serde_json::from_str(game_config),

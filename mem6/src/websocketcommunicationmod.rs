@@ -171,6 +171,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                     card_grid_data,
                                     game_config,
                                     players,
+                                    game_name,
                                 } => {
                                     if let GameStatus::StatusJoined = rrc.game_data.game_status {
                                         let vdom = vdom.clone();
@@ -179,6 +180,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                             &card_grid_data,
                                             &game_config,
                                             &players,
+                                            &game_name,
                                         );
                                         fncallermod::open_new_local_page("#11");
                                         vdom.schedule_render();

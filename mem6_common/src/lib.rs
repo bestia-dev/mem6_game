@@ -105,6 +105,8 @@ pub enum WsMessage {
         card_grid_data: String,
         ///json of game_config
         game_config: String,
+        /// game name
+        game_name: String,
     },
     ///player click
     MsgClick1stCard {
