@@ -47,21 +47,6 @@ impl RootRenderingComponent {
             cached_rules_and_description,
         }
     }
-    ///check invalidate render cache for all sub components
-    pub fn check_invalidate_for_all_components(&mut self) {
-        if self
-            .cached_players_and_scores
-            .update_intern_cache(&self.game_data)
-        {
-            Cached::invalidate(&self.cached_players_and_scores);
-        }
-        if self
-            .cached_rules_and_description
-            .update_intern_cache(&self.game_data)
-        {
-            Cached::invalidate(&self.cached_rules_and_description);
-        }
-    }
     ///reset the data to replay the game
     pub fn reset(&mut self) {
         self.game_data.card_grid_data = gamedatamod::GameData::prepare_for_empty();
@@ -73,8 +58,6 @@ impl RootRenderingComponent {
         self.game_data.my_player_number = 1;
         self.game_data.player_turn = 0;
         self.game_data.game_config = None;
-
-        self.check_invalidate_for_all_components();
     }
 }
 //endregion

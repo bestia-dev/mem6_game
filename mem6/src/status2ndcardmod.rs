@@ -146,7 +146,6 @@ pub fn update_click_2nd_card_point(rrc: &mut RootRenderingComponent) {
     unwrap!(rrc.game_data.card_grid_data.get_mut(x2)).status = CardStatusCardFace::UpPermanently;
     //the same player continues to play
     rrc.game_data.game_status = GameStatus::Status1stCard;
-    rrc.check_invalidate_for_all_components();
 }
 
 ///render Play or Wait

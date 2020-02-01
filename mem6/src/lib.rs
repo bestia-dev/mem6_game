@@ -266,7 +266,6 @@
 
 //region: mod is used only in lib file. All the rest use use crate
 mod ackmsgmod;
-mod divcardmonikermod;
 mod divfordebuggingmod;
 mod divfullscreenmod;
 mod divgametitlemod;
@@ -282,10 +281,6 @@ mod gamedatamod;
 mod javascriptimportmod;
 mod divnicknamemod;
 mod logmod;
-
-mod page03gamemod;
-mod page04instructionsmod;
-mod page05errormod;
 mod rootrenderingcomponentmod;
 mod sessionstoragemod;
 mod statusgamedatainitmod;

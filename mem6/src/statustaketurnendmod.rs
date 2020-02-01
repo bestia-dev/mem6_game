@@ -83,8 +83,6 @@ pub fn update_on_take_turn_end(rrc: &mut RootRenderingComponent) {
     rrc.game_data.card_index_of_first_click = 0;
     rrc.game_data.card_index_of_second_click = 0;
     rrc.game_data.game_status = GameStatus::Status1stCard;
-
-    rrc.check_invalidate_for_all_components();
 }
 
 //there is no special div render, because it jumps to StatusBefore1stClick

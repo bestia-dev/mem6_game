@@ -43,6 +43,5 @@ pub fn on_msg_joined(rrc: &mut RootRenderingComponent, his_ws_uid: usize, his_ni
             points: 0,
         });
         rrc.game_data.players_ws_uid = gamedatamod::prepare_players_ws_uid(&rrc.game_data.players);
-        rrc.check_invalidate_for_all_components();
     }
 }

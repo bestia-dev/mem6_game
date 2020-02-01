@@ -74,7 +74,6 @@ pub fn update_on_take_turn_begin(rrc: &mut RootRenderingComponent) {
     )
     .status = CardStatusCardFace::UpTemporary;
     rrc.game_data.game_status = GameStatus::StatusTakeTurnBegin;
-    rrc.check_invalidate_for_all_components();
 }
 
 ///render div

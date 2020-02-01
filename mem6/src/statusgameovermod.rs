@@ -40,5 +40,4 @@ pub fn on_msg_game_over(rrc: &mut RootRenderingComponent) {
     //logmod::debug_write("on_msg_game_over");
     //The game is over and the question Play again?
     rrc.game_data.game_status = GameStatus::StatusGameOver;
-    rrc.check_invalidate_for_all_components();
 }

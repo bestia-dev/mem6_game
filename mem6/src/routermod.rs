@@ -69,10 +69,12 @@ pub fn start_router(vdom: VdomWeak) {
                                     rrc.local_route = "p04_wait_to_start.html".to_owned();
                                 } else if local_route == "#11" {
                                     rrc.local_route = "p11_gameboard.html".to_owned();
+                                } else if local_route == "#08" {
+                                    rrc.local_route = "p08_instructions.html".to_owned();
                                 } else {
                                     rrc.local_route = "p01_start.html".to_owned();
                                 }
-                                let url = format!("html_templates/{}", rrc.local_route);
+                                let url = format!("{}", rrc.local_route);
                                 let v2 = vdom.clone();
 
                                 //I cannot simply await here because this closure is not async
@@ -109,13 +111,13 @@ pub fn start_router(vdom: VdomWeak) {
 /// .on("click", |_root, vdom, _event| {
 ///     let v2 = vdom;
 ///     //async executor spawn_local is the recommended for wasm
-///     let url = "html_templates/t1.html".to_owned();
+///     let url = "t1.html".to_owned();
 ///     //this will change the rrc.html_template eventually
 ///     spawn_local(async_fetch_and_write_to_rrc_html_template(url, v2));
 /// })
 /// ```
 pub async fn async_fetch_and_write_to_rrc_html_template(url: String, vdom: VdomWeak) {
-    let resp_body_text: String = fetchmod::async_spwloc_fetch_text(url).await;
+    let mut resp_body_text: String = fetchmod::async_spwloc_fetch_text(url).await;
     // update values in rrc is async.
     // I can await a fn call or an async block.
     async {
@@ -123,6 +125,13 @@ pub async fn async_fetch_and_write_to_rrc_html_template(url: String, vdom: VdomW
             vdom.with_component({
                 move |root| {
                     let rrc = root.unwrap_mut::<RootRenderingComponent>();
+                    //only the html inside the <body> </body>
+                    let pos1 = resp_body_text.find("<body>").unwrap_or(0);
+                    let pos2 = resp_body_text.find("</body>").unwrap_or(0);
+                    if pos1 != 0 {
+                        resp_body_text = resp_body_text[pos1 + 6..pos2].to_string();
+                    }
+                    logmod::debug_write(&format!("body: {}", resp_body_text));
                     rrc.html_template = resp_body_text;
                 }
             })

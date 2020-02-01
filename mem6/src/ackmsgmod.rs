@@ -80,7 +80,7 @@ pub fn send_ack(
     msg_id: usize,
     msg_ack_kind: MsgAckKind,
 ) {
-    logmod::debug_write(&format!("send_ack players: {:?}", rrc.game_data.players));
+    //logmod::debug_write(&format!("send_ack players: {:?}", rrc.game_data.players));
     //send back the ACK msg to the sender
     websocketcommunicationmod::ws_send_msg(
         &rrc.game_data.ws,

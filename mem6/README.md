@@ -196,3 +196,16 @@ Browsers have 2 types of zoom:
 
 When the font-size in android is increased (accessibility) it applies somehow also to the browser rendering.  
 I have tried many different things, but it looks this cannot be overridden from the css or javascript. Only the user can change this setting in his phone.  
+
+## font-family
+
+The size of the font depends a lot of the font-family. Every browser show different fonts
+even when they call them the same. I need to use a third-party web font. Google seems to
+be a good source of free fonts. I choose Roboto. Having them download every time from google is time consuming. So I will download them and host them on my website.  
+I use the <https://google-webfonts-helper.herokuapp.com> to download fonts.  
+
+## favicon.ico
+
+Crazy stuff. I used the website <https://www.favicon-generator.org/> to generate
+all the different imgs, sizes and code.  
+

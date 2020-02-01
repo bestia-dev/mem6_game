@@ -99,7 +99,6 @@ pub fn update_on_1st_card(rrc: &mut RootRenderingComponent) {
         .get_mut(rrc.game_data.card_index_of_first_click))
     .status = CardStatusCardFace::UpTemporary;
     rrc.game_data.game_status = GameStatus::Status2ndCard;
-    rrc.check_invalidate_for_all_components();
 }
 
 ///render div

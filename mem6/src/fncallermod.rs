@@ -84,10 +84,7 @@ pub fn call_listener(vdom: dodrio::VdomWeak, rrc: &mut RootRenderingComponent, s
             fetchallimgsforcachemod::fetch_all_img_for_cache_request(rrc);
             //endregion
             vdom.schedule_render();
-            logmod::debug_write(&format!(
-                "start_game_onclick players: {:?}",
-                rrc.game_data.players
-            ));
+            //logmod::debug_write(&format!("start_game_onclick players: {:?}",rrc.game_data.players));
             open_new_local_page("#11");
         }
         "game_type_right_onclick" => {
@@ -110,11 +107,11 @@ pub fn call_listener(vdom: dodrio::VdomWeak, rrc: &mut RootRenderingComponent, s
 
 /// html_templating functions that return a Node
 pub fn call_function_node<'a>(rrc: &RootRenderingComponent, bump: &'a Bump, sx: &str) -> Node<'a> {
-    logmod::debug_write(&format!("call_function_node: {}", &sx));
+    //logmod::debug_write(&format!("call_function_node: {}", &sx));
     match sx {
         "div_grid_container" => {
             //what is the game_status now?
-            logmod::debug_write(&format!("game status: {}", rrc.game_data.game_status));
+            //logmod::debug_write(&format!("game status: {}", rrc.game_data.game_status));
             let max_grid_size = divgridcontainermod::max_grid_size(rrc);
             return divgridcontainermod::div_grid_container(rrc, bump, &max_grid_size);
         }
@@ -175,7 +172,7 @@ pub fn game_type_left_onclick(rrc: &mut RootRenderingComponent, vdom: dodrio::Vd
 fn get_input_value(id: &str) -> String {
     let window = unwrap!(web_sys::window());
     let document = unwrap!(window.document(), "document");
-    logmod::debug_write(&format!("before get_element_by_id: {}", id));
+    //logmod::debug_write(&format!("before get_element_by_id: {}", id));
     let input_el = unwrap!(document.get_element_by_id(id));
     //logmod::debug_write("before dyn_into");
     let input_html_element = unwrap!(input_el.dyn_into::<web_sys::HtmlInputElement>(), "dyn_into");

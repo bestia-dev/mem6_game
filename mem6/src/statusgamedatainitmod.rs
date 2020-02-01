@@ -70,5 +70,4 @@ pub fn on_msg_start_game(
             rrc.game_data.my_player_number = unwrap!(index.checked_add(1));
         }
     }
-    rrc.check_invalidate_for_all_components();
 }
