@@ -3,7 +3,6 @@
 
 //region: use, const
 use crate::divplayersandscoresmod;
-use crate::divrulesanddescriptionmod;
 use crate::gamedatamod;
 use crate::htmltemplatemod;
 
@@ -22,10 +21,6 @@ pub struct RootRenderingComponent {
     pub html_template: String,
     ///game data will be inside of Root
     pub game_data: gamedatamod::GameData,
-    ///subComponent 1: players and scores. The data is a cached copy of GameData.
-    pub cached_players_and_scores: Cached<divplayersandscoresmod::PlayersAndScores>,
-    ///subComponent 2: the static parts can be cached.
-    pub cached_rules_and_description: Cached<divrulesanddescriptionmod::RulesAndDescription>,
 }
 
 ///methods
@@ -34,17 +29,10 @@ impl RootRenderingComponent {
     pub fn new(ws: WebSocket, my_ws_uid: usize) -> Self {
         let game_data = gamedatamod::GameData::new(ws, my_ws_uid);
 
-        let cached_rules_and_description =
-            Cached::new(divrulesanddescriptionmod::RulesAndDescription::new());
-        let cached_players_and_scores =
-            Cached::new(divplayersandscoresmod::PlayersAndScores::new(my_ws_uid));
-
         RootRenderingComponent {
             local_route: "".to_owned(),
             html_template: "".to_owned(),
             game_data,
-            cached_players_and_scores,
-            cached_rules_and_description,
         }
     }
     ///reset the data to replay the game

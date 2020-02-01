@@ -61,7 +61,7 @@ pub fn load_nickname() -> String {
     unwrap!(ls.get_item("nickname")).unwrap_or(empty1)
 }
 
-//if there is already a nickname don't blink
+/// if there is already a nickname don't blink
 pub fn blink_or_not(rrc: &RootRenderingComponent) -> String {
     if rrc.game_data.my_nickname == "nickname" {
         "input_blink".to_owned()

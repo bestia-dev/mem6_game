@@ -1,5 +1,6 @@
 # mem6 TODO
 
+- move decode xml control characters into reader for microxml
 - can I have font on my web server, not on googles?
 - html templating instead of typed_html macros
 - group name is ws uid of first player. the other players write and join.

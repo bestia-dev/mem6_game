@@ -268,11 +268,9 @@
 mod ackmsgmod;
 mod divfordebuggingmod;
 mod divfullscreenmod;
-mod divgametitlemod;
 mod divgridcontainermod;
 mod divplayeractionsmod;
 mod divplayersandscoresmod;
-mod divrulesanddescriptionmod;
 mod fetchmod;
 mod fetchgamesmetadatamod;
 mod fetchgameconfigmod;

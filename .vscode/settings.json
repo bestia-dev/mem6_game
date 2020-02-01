@@ -27,6 +27,7 @@
         "gamemod",
         "gamesmetadata",
         "groupmod",
+        "htmltemplatemod",
         "instructionsmod",
         "javascriptimportmod",
         "logmod",

@@ -131,7 +131,7 @@ pub async fn async_fetch_and_write_to_rrc_html_template(url: String, vdom: VdomW
                     if pos1 != 0 {
                         resp_body_text = resp_body_text[pos1 + 6..pos2].to_string();
                     }
-                    logmod::debug_write(&format!("body: {}", resp_body_text));
+                    //logmod::debug_write(&format!("body: {}", resp_body_text));
                     rrc.html_template = resp_body_text;
                 }
             })

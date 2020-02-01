@@ -78,7 +78,8 @@ fn fill_element_builder<'a>(
     >,
     String,
 > {
-    let mut replacement: Option<String> = None;
+    let mut replace_string: Option<String> = None;
+    let mut replace_node: Option<Node> = None;
     loop {
         match pp.read_event() {
             Event::StartElement(name) => {
@@ -101,15 +102,21 @@ fn fill_element_builder<'a>(
                 }
                 child_element =
                     fill_element_builder(rrc, pp, child_element, bump, html_or_svg, dom_path)?;
-                element = element.child(child_element.finish());
+                if let Some(repl_node) = replace_node {
+                    //logmod::debug_write(&format!("child is repl_node {}", ""));
+                    element = element.child(repl_node);
+                    replace_node = None;
+                } else {
+                    element = element.child(child_element.finish());
+                }
             }
             Event::Attribute(name, value) => {
                 if name.starts_with("data-t-") {
                     //the rest of the name does not matter.
-                    //The replacement will always be applied to the next attribute.
+                    //The replace_string will always be applied to the next attribute.
                     let fn_name = value;
                     let repl_txt = fncallermod::call_function_string(rrc, fn_name);
-                    replacement = Some(repl_txt);
+                    replace_string = Some(repl_txt);
                 } else if name.starts_with("data-on-") {
                     // TODO: add a listener.
                     // Only one listener for now because the api does not give me other method.
@@ -123,21 +130,21 @@ fn fill_element_builder<'a>(
                         let vdom = vdom.clone();
                         let rrc = root.unwrap_mut::<RootRenderingComponent>();
                         //call a function from string
-                        logmod::debug_write(&format!("fn_name {}", fn_name));
+                        //logmod::debug_write(&format!("fn_name {}", fn_name));
                         fncallermod::call_listener(vdom, rrc, fn_name);
                     });
                 } else {
                     let name = bumpalo::format!(in bump, "{}",name).into_bump_str();
                     let value2;
-                    if let Some(repl) = replacement {
+                    if let Some(repl) = replace_string {
                         value2 =
-                            bumpalo::format!(in bump, "{}",decode_5_minimum_html_entities(&repl))
+                            bumpalo::format!(in bump, "{}",decode_5_xml_control_characters(&repl))
                                 .into_bump_str();
-                        //empty the replacement for the next node
-                        replacement = None;
+                        //empty the replace_string for the next node
+                        replace_string = None;
                     } else {
                         value2 =
-                            bumpalo::format!(in bump, "{}",decode_5_minimum_html_entities(value))
+                            bumpalo::format!(in bump, "{}",decode_5_xml_control_characters(value))
                                 .into_bump_str();
                     }
                     element = element.attr(name, value2);
@@ -145,18 +152,14 @@ fn fill_element_builder<'a>(
             }
             Event::TextNode(txt) => {
                 let txt2;
-                match replacement {
-                    Some(repl) => {
-                        txt2 =
-                            bumpalo::format!(in bump, "{}",decode_5_minimum_html_entities(&repl))
-                                .into_bump_str();
-                        //empty the replacement for the next node
-                        replacement = None;
-                    }
-                    None => {
-                        txt2 = bumpalo::format!(in bump, "{}",decode_5_minimum_html_entities(txt))
-                            .into_bump_str();
-                    }
+                if let Some(repl) = replace_string {
+                    txt2 = bumpalo::format!(in bump, "{}",decode_5_xml_control_characters(&repl))
+                        .into_bump_str();
+                    //empty the replace_string for the next node
+                    replace_string = None;
+                } else {
+                    txt2 = bumpalo::format!(in bump, "{}",decode_5_xml_control_characters(txt))
+                        .into_bump_str();
                 }
                 // here accepts only utf-8.
                 // only minimum html entities are decoded
@@ -169,11 +172,12 @@ fn fill_element_builder<'a>(
                 if txt.starts_with("t=") {
                     let fn_name = &txt[2..];
                     let repl_txt = fncallermod::call_function_string(rrc, fn_name);
-                    replacement = Some(repl_txt);
+                    replace_string = Some(repl_txt);
                 } else if txt.starts_with("n=") {
                     let fn_name = &txt[2..];
                     let repl_node = fncallermod::call_function_node(rrc, bump, fn_name);
-                    element = element.child(repl_node);
+                    //logmod::debug_write(&format!("n= {:?}", &repl_node));
+                    replace_node = Some(repl_node);
                 } else {
                     //nothing. it is really a comment
                 }
@@ -184,7 +188,10 @@ fn fill_element_builder<'a>(
                 if last_name == name || name == "" {
                     return Ok(element);
                 } else {
-                    return Err(format!("End element not correct: {} {}", last_name, name));
+                    return Err(format!(
+                        "End element not correct: starts <{}> ends </{}>",
+                        last_name, name
+                    ));
                 }
             }
             Event::Error(error_msg) => {
@@ -202,17 +209,18 @@ pub fn empty_div<'a>(cx: &mut RenderContext<'a>) -> Node<'a> {
     div(&cx).finish()
 }
 
-/// decode 5 minimum html entities for html5 : " ' & < >  
+/// decode 5 xml control characters : " ' & < >  
+/// https://www.liquid-technologies.com/XML/EscapingData.aspx
+/// I will ignore all html entities, to keep things simple,
+/// because all others characters can be written as utf-8 characters.
 /// https://www.tutorialspoint.com/html5/html5_entities.htm  
-/// I will ignore all others to keep it simple,
-/// because all others can be written as utf-8 characters.
-pub fn decode_5_minimum_html_entities(input: &str) -> String {
+pub fn decode_5_xml_control_characters(input: &str) -> String {
     //I don't know how slow is replace, but I have really small texts.
-    let entity_symbols = vec!["\"", "'", "&", "<", ">"];
-    let entity_names = vec!["&quot;", "&apos;", "&amp;", "&lt;", "&gt;"];
+    let control_character_symbols = vec!["\"", "'", "&", "<", ">"];
+    let control_character_names = vec!["&quot;", "&apos;", "&amp;", "&lt;", "&gt;"];
     let mut output = input.to_owned();
-    for i in 0..entity_symbols.len() {
-        output = output.replace(entity_names[i], entity_symbols[i])
+    for i in 0..control_character_symbols.len() {
+        output = output.replace(control_character_names[i], control_character_symbols[i])
     }
     //return
     output
