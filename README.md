@@ -4,7 +4,8 @@
 ![loc](https://img.shields.io/badge/lines_of_docs/comments-1231-informational)
 
 **Learning Rust Wasm/WebAssembly, Virtual Dom Dodrio, WebSocket communication and PWA (Progressive Web Apps) - part six**  
-*Things are changing fast. This is the situation on 2019-12-31.*
+*Things are changing fast. This is the situation on 2020-02-01.*
+Work in progress - alpha.  
 
 ## Documentation
 
