@@ -4,14 +4,7 @@
 #![allow(clippy::panic)]
 
 //region: use
-use crate::gamedatamod::GameData;
-use crate::utilsmod;
-//use crate::logmod;
 
-use unwrap::unwrap;
-use dodrio::builder::{text};
-use dodrio::{bumpalo, Node, Render, RenderContext};
-use typed_html::dodrio;
 //endregion
 
 ///Render Component: player score

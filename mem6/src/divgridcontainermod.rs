@@ -31,7 +31,7 @@ pub fn div_grid_container<'a>(
     bump: &'a Bump,
     max_grid_size: &Size2d,
 ) -> Node<'a> {
-    let xstyle = format!(
+    let s_style = format!(
         "width:{}px; height:{}px;grid-template-columns: {} {} {} {};",
         max_grid_size.hor,
         max_grid_size.ver,
@@ -57,7 +57,7 @@ pub fn div_grid_container<'a>(
         },
     );
     let grid_container = dodrio!(bump,
-        <div class= "grid_container" style={xstyle}>
+        <div class= "grid_container" style={s_style}>
             {div_grid_items(rrc, bump)}
         </div>
     );
@@ -225,7 +225,7 @@ pub fn div_grid_item<'a>(
                     (unwrap!(img.id().get(3..), "error slicing")).parse::<usize>(),
                     "error parse img id to usize"
                 );
-                //click is usefull only on facedown cards
+                //click is useful only on facedown cards
                 if unwrap!(
                     rrc.game_data.card_grid_data.get(this_click_card_index),
                     "error this_click_card_index"
@@ -241,7 +241,7 @@ pub fn div_grid_item<'a>(
         }
         mem6_common::GameStatus::StatusStartPage
         | mem6_common::GameStatus::StatusJoined
-        | mem6_common::GameStatus::StatusTakeTurnEnd
+        | mem6_common::GameStatus::StatusTakeTurn
         | mem6_common::GameStatus::StatusGameOver
         | mem6_common::GameStatus::StatusReconnect
         | mem6_common::GameStatus::StatusWaitingAckMsg => dodrio!(bump,
@@ -274,7 +274,7 @@ pub fn play_sound(rrc: &RootRenderingComponent, this_click_card_index: usize) {
     );
 
     //play() return a Promise in JSValue. That is too hard for me to deal with now.
-    unwrap!(
+    let _x = unwrap!(
         unwrap!(audio_element, "Error: HtmlAudioElement new.").play(),
         "Error: HtmlAudioElement.play() "
     );
@@ -303,7 +303,7 @@ pub fn grid_height() -> usize {
     let usize_inner_height = usize_window_inner_height();
 
     //height minimum 300, max 1000, else 0.8*visible height
-    //3 row separetors 5px wide
+    //3 row separators 5px wide
     let grid_height: usize;
     if usize_inner_height < 300 {
         grid_height = 300;
@@ -334,7 +334,7 @@ pub fn max_grid_size(rrc: &RootRenderingComponent) -> Size2d {
             max_grid_width, max_grid_height
         ));
         */
-        //default if not choosen
+        //default if not chosen
         let mut card_width = 115;
         let mut card_height = 115;
         match &rrc.game_data.game_config {

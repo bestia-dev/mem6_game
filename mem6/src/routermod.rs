@@ -79,7 +79,6 @@ pub fn start_router(vdom: VdomWeak) {
 
                                 //I cannot simply await here because this closure is not async
                                 spawn_local(async_fetch_and_write_to_rrc_html_template(url, v2));
-                                vdom.schedule_render();
                             }
                         }
                     })

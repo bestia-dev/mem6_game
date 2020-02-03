@@ -2,15 +2,12 @@
 //! renders the web page
 
 //region: use, const
-use crate::divplayersandscoresmod;
-use crate::gamedatamod;
-use crate::htmltemplatemod;
-
-use mem6_common::GameStatus;
+use crate::*;
+use mem6_common::*;
 
 use unwrap::unwrap;
 //use dodrio::builder::text;
-use dodrio::{Cached, Node, Render, RenderContext};
+use dodrio::{Node, Render, RenderContext};
 use web_sys::WebSocket;
 //endregion
 

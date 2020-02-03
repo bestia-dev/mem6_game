@@ -39,8 +39,10 @@ pub fn on_click_2nd_card(
     //2 possible outcomes: 1) Next Player 2) end game/play again
     //that changes: game status,CardStatusCardFace, points or/and player_turn
     //if the cards match, player get one point, but it is the next player turn.
-    let mut is_point = false;
     let is_point = get_is_point(rrc);
+    if is_point{
+        update_click_2nd_card_flip_permanently(rrc, is_point);
+    }
     let msg_id = ackmsgmod::prepare_for_ack_msg_waiting(rrc, vdom);
     let msg = WsMessage::MsgClick2ndCard {
         my_ws_uid: rrc.game_data.my_ws_uid,
@@ -50,7 +52,42 @@ pub fn on_click_2nd_card(
         msg_id,
     };
     ackmsgmod::send_msg_and_write_in_queue(rrc, &msg, msg_id);
-    statustaketurnendmod::on_click_take_turn_end(rrc, vdom);
+
+    //if all the cards are permanently up, this is the end of the game
+    if is_all_permanently(rrc) {
+        statusgameovermod::on_msg_game_over(rrc);
+        vdom.schedule_render();
+        //send message
+        websocketcommunicationmod::ws_send_msg(
+            &rrc.game_data.ws,
+            &WsMessage::MsgGameOver {
+                my_ws_uid: rrc.game_data.my_ws_uid,
+                players_ws_uid: rrc.game_data.players_ws_uid.to_string(),
+            },
+        );
+    }
+    else{
+        statustaketurnmod::on_click_take_turn(rrc, vdom);
+    }
+}
+
+/// is all card permanently on
+pub fn is_all_permanently(rrc:&mut RootRenderingComponent) -> bool{
+    let mut is_all_permanently = true;
+    //the zero element is exceptional, but the iterator uses it
+    unwrap!(rrc.game_data.card_grid_data.get_mut(0)).status = CardStatusCardFace::UpPermanently;
+
+    for x in &rrc.game_data.card_grid_data {
+        match x.status {
+            CardStatusCardFace::UpPermanently => {}
+            CardStatusCardFace::Down | CardStatusCardFace::UpTemporary => {
+                is_all_permanently = false;
+                break;
+            }
+        }
+    }
+    //return
+    is_all_permanently
 }
 
 /// is it a point or not
@@ -76,7 +113,8 @@ pub fn on_msg_click_2nd_card(
 ) {
     ackmsgmod::send_ack(rrc, msg_sender_ws_uid, msg_id, MsgAckKind::MsgClick2ndCard);
     rrc.game_data.card_index_of_second_click = card_index_of_second_click;
-    update_click_2nd_card(rrc, is_point);
+    update_click_2nd_card_flip_permanently(rrc, is_point);
+    update_click_2nd_card_point(rrc, is_point);
 }
 
 ///on msg ack player click2nd card
@@ -88,33 +126,8 @@ pub fn on_msg_ack_player_click2nd_card(
     if ackmsgmod::remove_ack_msg_from_queue(rrc, player_ws_uid, msg_id) {
         logmod::debug_write("update on_msg_ack_player_click2nd_card(rrc)");
         let is_point = get_is_point(rrc);
-        update_click_2nd_card(rrc, is_point);
+        update_click_2nd_card_point(rrc, is_point);
 
-        //if all the cards are permanently up, this is the end of the game
-        let mut is_all_permanently = true;
-        //the zero element is exceptional, but the iterator uses it
-        unwrap!(rrc.game_data.card_grid_data.get_mut(0)).status = CardStatusCardFace::UpPermanently;
-
-        for x in &rrc.game_data.card_grid_data {
-            match x.status {
-                CardStatusCardFace::UpPermanently => {}
-                CardStatusCardFace::Down | CardStatusCardFace::UpTemporary => {
-                    is_all_permanently = false;
-                    break;
-                }
-            }
-        }
-        if is_all_permanently {
-            statusgameovermod::on_msg_game_over(rrc);
-            //send message
-            websocketcommunicationmod::ws_send_msg(
-                &rrc.game_data.ws,
-                &WsMessage::MsgGameOver {
-                    my_ws_uid: rrc.game_data.my_ws_uid,
-                    players_ws_uid: rrc.game_data.players_ws_uid.to_string(),
-                },
-            );
-        }
     }
     //TODO: timer if after 3 seconds the ack is not received resend the msg
     //do this 3 times and then hard error
@@ -122,7 +135,7 @@ pub fn on_msg_ack_player_click2nd_card(
 
 ///msg player click
 #[allow(clippy::integer_arithmetic)] // points +1 is not going to overflow ever
-pub fn update_click_2nd_card(rrc: &mut RootRenderingComponent, is_point: bool) {
+pub fn update_click_2nd_card_point(rrc: &mut RootRenderingComponent, is_point: bool) {
     if is_point {
         //give points
         unwrap!(rrc
@@ -130,7 +143,14 @@ pub fn update_click_2nd_card(rrc: &mut RootRenderingComponent, is_point: bool) {
             .players
             .get_mut(unwrap!(rrc.game_data.player_turn.checked_sub(1))))
         .points += 1;
+    }
+}
 
+///msg player click
+#[allow(clippy::integer_arithmetic)] // points +1 is not going to overflow ever
+pub fn update_click_2nd_card_flip_permanently(rrc: &mut RootRenderingComponent, is_point: bool) {
+    if is_point {
+   
         // the two cards matches. make them permanent FaceUp
         let x1 = rrc.game_data.card_index_of_first_click;
         let x2 = rrc.game_data.card_index_of_second_click;

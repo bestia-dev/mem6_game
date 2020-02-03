@@ -135,8 +135,6 @@ pub struct GameData {
     pub href_hash: String,
     /// is reconnect
     pub is_reconnect: bool,
-    /// to not check it all the time
-    pub is_fullscreen: bool,
     /// vector of msgs waiting for ack. If the 3 sec timeout passes it resends the same msg.
     pub msgs_waiting_ack: Vec<MsgInQueue>,
     /// show debug info on the smartphone screen
@@ -284,7 +282,6 @@ impl GameData {
             href: "".to_string(),
             href_hash: "".to_string(),
             is_reconnect: false,
-            is_fullscreen: false,
             msgs_waiting_ack: vec![],
             show_debug_info: false,
         }

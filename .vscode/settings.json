@@ -9,6 +9,8 @@
     ],
     "cSpell.words": [
         "ackmsgmod",
+        "cardfacedown",
+        "columnsdelimiter",
         "conv",
         "divcardmonikermod",
         "divfordebuggingmod",
@@ -19,6 +21,7 @@
         "divplayeractionsmod",
         "divplayersandscoresmod",
         "divrulesanddescriptionmod",
+        "endindex",
         "errormod",
         "fetchallimgsforcachemod",
         "fetchgameconfigmod",
@@ -38,6 +41,7 @@
         "routermod",
         "sessionstoragemod",
         "spwloc",
+        "startindex",
         "statusgamedatainitmod",
         "statusgameovermod",
         "statusinvitedmod",
@@ -46,9 +50,11 @@
         "statusstartpagemod",
         "statustaketurnbeginmod",
         "statustaketurnendmod",
+        "statustaketurnmod",
         "statuswaitingackmsgmod",
         "stcardmod",
         "utilsmod",
+        "websocketcommunication",
         "websocketcommunicationmod",
         "websocketreconnectmod"
     ]

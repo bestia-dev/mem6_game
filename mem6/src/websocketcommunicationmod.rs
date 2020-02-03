@@ -127,7 +127,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
         spawn_local({
             let vdom = vdom.clone();
             async move {
-                let _rslt = vdom
+                let _result = vdom
                     .with_component({
                         let vdom = vdom.clone();
                         move |root| {
@@ -217,14 +217,12 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                     );
                                     vdom.schedule_render();
                                 }
-                                WsMessage::MsgTakeTurnEnd {
+                                WsMessage::MsgTakeTurn {
                                     my_ws_uid,
                                     players_ws_uid: _,
                                     msg_id,
                                 } => {
-                                    statustaketurnendmod::on_msg_take_turn_end(
-                                        rrc, my_ws_uid, msg_id,
-                                    );
+                                    statustaketurnmod::on_msg_take_turn(rrc, my_ws_uid, msg_id);
                                     vdom.schedule_render();
                                 }
                                 WsMessage::MsgGameOver {
@@ -241,8 +239,8 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                     msg_ack_kind,
                                 } => {
                                     match msg_ack_kind {
-                                        MsgAckKind::MsgTakeTurnEnd => {
-                                            statustaketurnendmod::on_msg_ack_take_turn_end(
+                                        MsgAckKind::MsgTakeTurn => {
+                                            statustaketurnmod::on_msg_ack_take_turn(
                                                 rrc, my_ws_uid, msg_id,
                                             );
                                         }
@@ -315,7 +313,7 @@ pub fn setup_ws_onerror(ws: &WebSocket, vdom: dodrio::VdomWeak) {
             spawn_local({
                 let vdom = vdom.clone();
                 async move {
-                    let _rslt = vdom
+                    let _result = vdom
                         .with_component({
                             let vdom = vdom.clone();
                             move |root| {
@@ -341,7 +339,7 @@ pub fn setup_ws_onclose(ws: &WebSocket, vdom: dodrio::VdomWeak) {
             spawn_local({
                 let vdom = vdom.clone();
                 async move {
-                    let _rslt = vdom
+                    let _result = vdom
                         .with_component({
                             let vdom = vdom.clone();
                             move |root| {

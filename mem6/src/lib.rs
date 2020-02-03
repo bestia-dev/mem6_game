@@ -133,7 +133,7 @@
 //! | Status2ndCard     | div_grid_container         | on_click_2nd_card()            | If cards match                | Status1stCard       | MsgClick2ndCard | on_msg_click_2nd_card | Status1stCard                  |
 //! | -                 | -                          | continues on ack msgs received | if all cards permanently up   | StatusGameOver      | MsgGameOver          | on_msg_game_over            | StatusGameOver                 |
 //! | Status2ndCard     | div_grid_container         |        | else cards don't match        |  |      |       |                |
-//! |   |         | on_click_take_turn_end         | -                             | Status1stCard       | MsgTakeTurnEnd       | on_msg_take_turn_end        | Status1stCard, the next player |
+//! |   |         | on_click_take_turn         | -                             | Status1stCard       | MsgTakeTurn       | on_msg_take_turn        | Status1stCard, the next player |
 //! | StatusGameOver    | div_game_over              | window.location().reload()     | -                             | -                   | -                    | -                           | -                              |
 //! |  |  |  |  |  |  |  |  |
 //!
@@ -267,7 +267,6 @@
 //region: mod is used only in lib file. All the rest use use crate
 mod ackmsgmod;
 mod divfordebuggingmod;
-mod divfullscreenmod;
 mod divgridcontainermod;
 mod divplayeractionsmod;
 mod divplayersandscoresmod;
@@ -276,7 +275,6 @@ mod fetchgamesmetadatamod;
 mod fetchgameconfigmod;
 mod fetchallimgsforcachemod;
 mod gamedatamod;
-mod javascriptimportmod;
 mod divnicknamemod;
 mod logmod;
 mod rootrenderingcomponentmod;
@@ -286,7 +284,7 @@ mod statusgameovermod;
 mod statusjoinedmod;
 mod status1stcardmod;
 mod status2ndcardmod;
-mod statustaketurnendmod;
+mod statustaketurnmod;
 mod statuswaitingackmsgmod;
 mod utilsmod;
 mod websocketcommunicationmod;
@@ -363,7 +361,6 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     let mut rrc = rootrenderingcomponentmod::RootRenderingComponent::new(ws_c, my_ws_uid);
     rrc.game_data.href = location_href.to_string();
     rrc.game_data.href_hash = href_hash.to_string();
-    rrc.game_data.is_fullscreen = divfullscreenmod::is_fullscreen(&rrc);
     // Mount the component to the `<div id="div_for_virtual_dom">`.
     let vdom = dodrio::Vdom::new(&div_for_virtual_dom, rrc);
 

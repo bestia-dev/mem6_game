@@ -140,7 +140,7 @@ pub enum WsMessage {
         players_ws_uid: String,
     },
     ///player change
-    MsgTakeTurnEnd {
+    MsgTakeTurn {
         ///ws client instance unique id. To not listen the echo to yourself.
         my_ws_uid: usize,
         ///all players for the server to know whom to send msg
@@ -170,7 +170,7 @@ pub enum WsMessage {
     MsgAllGameData {
         ///ws client instance unique id. To not listen the echo to yourself.
         my_ws_uid: usize,
-        ///only the players that recconected
+        ///only the players that reconnected
         players_ws_uid: String,
         ///json of vector of players with nicknames and order data
         players: String,
@@ -201,7 +201,7 @@ pub enum GameStatus {
     ///before second card
     Status2ndCard,
     ///take turn end
-    StatusTakeTurnEnd,
+    StatusTakeTurn,
     ///game over
     StatusGameOver,
     ///StatusReconnect after a lost connection
@@ -225,8 +225,8 @@ pub struct Player {
 #[allow(clippy::pub_enum_variant_names)]
 ///msg ack kind
 pub enum MsgAckKind {
-    ///ack for MsgTakeTurnEnd
-    MsgTakeTurnEnd,
+    ///ack for MsgTakeTurn
+    MsgTakeTurn,
     ///ack for MsgClick1stCard
     MsgClick1stCard,
     ///ack for MsgClick2ndCard

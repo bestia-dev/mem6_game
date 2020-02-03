@@ -37,11 +37,21 @@ pub fn on_load_joined(rrc: &mut RootRenderingComponent) {
 pub fn on_msg_joined(rrc: &mut RootRenderingComponent, his_ws_uid: usize, his_nickname: String) {
     //logmod::debug_write(&format!("on_msg_joined {}",his_ws_uid));
     if rrc.game_data.my_player_number == 1 {
-        rrc.game_data.players.push(Player {
-            ws_uid: his_ws_uid,
-            nickname: his_nickname,
-            points: 0,
-        });
-        rrc.game_data.players_ws_uid = gamedatamod::prepare_players_ws_uid(&rrc.game_data.players);
+        //push if not exists
+        let mut ws_uid_exists=false;
+        for x in &rrc.game_data.players{
+            if x.ws_uid==his_ws_uid{
+                ws_uid_exists=true;
+                break;
+            }
+        }
+        if !ws_uid_exists{
+            rrc.game_data.players.push(Player {
+                ws_uid: his_ws_uid,
+                nickname: his_nickname,
+                points: 0,
+            });
+            rrc.game_data.players_ws_uid = gamedatamod::prepare_players_ws_uid(&rrc.game_data.players);
+        }
     }
 }

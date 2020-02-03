@@ -5,7 +5,7 @@
 
 //region: use
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
-
+use crate::*;
 use mem6_common::GameStatus;
 
 use unwrap::unwrap;
@@ -21,9 +21,17 @@ pub fn div_game_over<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<
     dodrio!(bump,
     <div class="div_clickable" onclick={
                 move |root, vdom, _event| {
-                //reload the webpage
+                let rrc = root.unwrap_mut::<RootRenderingComponent>();
                 let window = unwrap!(web_sys::window(), "error: web_sys::window");
-                let x = window.location().reload();
+                //the first player go to the start group page
+                //other players join the group
+                if rrc.game_data.my_player_number==1{
+                    fncallermod::open_new_local_page("#p02");
+                }
+                else{
+                    let group_id=fncallermod::group_id_joined(rrc);
+                    fncallermod::open_new_local_page(&format!("#p04.{}",group_id));
+                }
             }}>
         <h2 class="h2_user_can_click">
                 {vec![text(
@@ -40,4 +48,5 @@ pub fn on_msg_game_over(rrc: &mut RootRenderingComponent) {
     //logmod::debug_write("on_msg_game_over");
     //The game is over and the question Play again?
     rrc.game_data.game_status = GameStatus::StatusGameOver;
+
 }

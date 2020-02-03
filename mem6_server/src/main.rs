@@ -310,7 +310,7 @@ fn receive_message(ws_uid_of_message: usize, message: &Message, users: &Users) {
         | WsMessage::MsgStartGame { players_ws_uid, .. }
         | WsMessage::MsgClick1stCard { players_ws_uid, .. }
         | WsMessage::MsgClick2ndCard { players_ws_uid, .. }
-        | WsMessage::MsgTakeTurnEnd { players_ws_uid, .. }
+        | WsMessage::MsgTakeTurn { players_ws_uid, .. }
         | WsMessage::MsgGameOver { players_ws_uid, .. }
         | WsMessage::MsgAllGameData { players_ws_uid, .. }
         | WsMessage::MsgAck { players_ws_uid, .. }
