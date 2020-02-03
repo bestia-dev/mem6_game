@@ -40,13 +40,13 @@ pub fn start_router(vdom: VdomWeak) {
                             // don't match, then we need to update the rrc' local_route
                             // and re-render.
                             if rrc.local_route != local_route {
-                                if local_route == "#02" {
+                                if local_route == "#p02" {
                                     let vdom = vdom.clone();
                                     fetchgameconfigmod::async_fetch_game_config_request(rrc, vdom);
                                     rrc.local_route = "p02_start_a_group.html".to_owned();
-                                } else if local_route == "#03" {
+                                } else if local_route == "#p03" {
                                     rrc.local_route = "p03_join_a_group.html".to_owned();
-                                } else if local_route.starts_with("#04") {
+                                } else if local_route.starts_with("#p04") {
                                     let mut spl = local_route.split(".");
                                     spl.next().unwrap();
                                     let group_id = spl.next().unwrap();
@@ -67,9 +67,9 @@ pub fn start_router(vdom: VdomWeak) {
                                     ));
                                     statusjoinedmod::on_load_joined(rrc);
                                     rrc.local_route = "p04_wait_to_start.html".to_owned();
-                                } else if local_route == "#11" {
+                                } else if local_route == "#p11" {
                                     rrc.local_route = "p11_gameboard.html".to_owned();
-                                } else if local_route == "#08" {
+                                } else if local_route == "#p08" {
                                     rrc.local_route = "p08_instructions.html".to_owned();
                                 } else {
                                     rrc.local_route = "p01_start.html".to_owned();

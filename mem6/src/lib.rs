@@ -130,10 +130,10 @@
 //! | Game Status1      | Render                     | User action                    | Condition                     | GameStatus2 p.p.    | Sends Msg            | On rcv Msg o.p.             | GameStatus2 o.p.               |
 //! | ----------------  | -------------------------- | ------------------------------ | ----------------------------- | ----------------    | ----------------     | --------------------------  | ----------------------------   |
 //! | Status1stCard     | div_grid_container         | on_click_1st_card()            | -                             | Status2ndCard       | MsgClick1stCard      | on_msg_click_1st_card       | Status2ndCard                  |
-//! | Status2ndCard     | div_grid_container         | on_click_2nd_card()            | If cards match                | Status1stCard       | MsgClick2ndCardPoint | on_msg_click_2nd_card_point | Status1stCard                  |
+//! | Status2ndCard     | div_grid_container         | on_click_2nd_card()            | If cards match                | Status1stCard       | MsgClick2ndCard | on_msg_click_2nd_card | Status1stCard                  |
 //! | -                 | -                          | continues on ack msgs received | if all cards permanently up   | StatusGameOver      | MsgGameOver          | on_msg_game_over            | StatusGameOver                 |
-//! | Status2ndCard     | div_grid_container         | on_click_take_turn_begin       | else cards don't match        | StatusTakeTurnBegin | MsgTakeTurnBegin     | on_msg_take_turn_begin      | MsgTakeTurnBegin               |
-//! | MsgTakeTurnBegin  | div_take_turn_begin        | on_click_take_turn_end         | -                             | Status1stCard       | MsgTakeTurnEnd       | on_msg_take_turn_end        | Status1stCard, the next player |
+//! | Status2ndCard     | div_grid_container         |        | else cards don't match        |  |      |       |                |
+//! |   |         | on_click_take_turn_end         | -                             | Status1stCard       | MsgTakeTurnEnd       | on_msg_take_turn_end        | Status1stCard, the next player |
 //! | StatusGameOver    | div_game_over              | window.location().reload()     | -                             | -                   | -                    | -                           | -                              |
 //! |  |  |  |  |  |  |  |  |
 //!
@@ -286,7 +286,6 @@ mod statusgameovermod;
 mod statusjoinedmod;
 mod status1stcardmod;
 mod status2ndcardmod;
-mod statustaketurnbeginmod;
 mod statustaketurnendmod;
 mod statuswaitingackmsgmod;
 mod utilsmod;

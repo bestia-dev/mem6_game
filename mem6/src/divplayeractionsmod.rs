@@ -4,12 +4,7 @@
 
 //region: use
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
-use crate::statusgameovermod;
-use crate::status1stcardmod;
-use crate::status2ndcardmod;
-use crate::statustaketurnbeginmod;
-use crate::statuswaitingackmsgmod;
-//use crate::websocketreconnectmod;
+use crate::*;
 
 use mem6_common::{GameStatus};
 
@@ -35,8 +30,6 @@ pub fn div_player_actions_from_game_status<'a>(
         status1stcardmod::div_on_1st_card(rrc, bump)
     } else if let GameStatus::Status2ndCard = rrc.game_data.game_status {
         status2ndcardmod::div_click_2nd_card(rrc, bump)
-    } else if let GameStatus::StatusTakeTurnBegin = rrc.game_data.game_status {
-        statustaketurnbeginmod::div_take_turn_begin(rrc, bump)
     } else if let GameStatus::StatusGameOver = rrc.game_data.game_status {
         statusgameovermod::div_game_over(rrc, bump)
     } else if let GameStatus::StatusWaitingAckMsg = rrc.game_data.game_status {

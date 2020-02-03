@@ -120,24 +120,15 @@ pub enum WsMessage {
         msg_id: usize,
     },
     ///player click success
-    MsgClick2ndCardPoint {
+    MsgClick2ndCard {
         ///this identifies the smartphone, but not the player-in-turn
         my_ws_uid: usize,
         ///all players for the server to know whom to send msg
         players_ws_uid: String,
         ///have to send all the state of the game
         card_index_of_second_click: usize,
-        ///msg id (random)
-        msg_id: usize,
-    },
-    ///take turn begin
-    MsgTakeTurnBegin {
-        ///this identifies the smartphone, but not the player-in-turn
-        my_ws_uid: usize,
-        ///all players for the server to know whom to send msg
-        players_ws_uid: String,
-        ///have to send all the state of the game
-        card_index_of_second_click: usize,
+        ///is point
+        is_point: bool,
         ///msg id (random)
         msg_id: usize,
     },
@@ -209,8 +200,6 @@ pub enum GameStatus {
     Status1stCard,
     ///before second card
     Status2ndCard,
-    ///take turn begin
-    StatusTakeTurnBegin,
     ///take turn end
     StatusTakeTurnEnd,
     ///game over
@@ -240,10 +229,8 @@ pub enum MsgAckKind {
     MsgTakeTurnEnd,
     ///ack for MsgClick1stCard
     MsgClick1stCard,
-    ///ack for MsgClick2ndCardPoint
-    MsgClick2ndCardPoint,
-    ///
-    MsgTakeTurnBegin,
+    ///ack for MsgClick2ndCard
+    MsgClick2ndCard,
 }
 
 //endregion

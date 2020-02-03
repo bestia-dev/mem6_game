@@ -1,4 +1,4 @@
-// statustaketurnbeginmod.rs
+// statustaketurnendmod.rs
 //! code flow from this status
 
 //region: use
@@ -67,21 +67,6 @@ pub fn update_on_take_turn_end(rrc: &mut RootRenderingComponent) {
         1
     };
 
-    //click on Change button closes first and second card
-    let x1 = rrc.game_data.card_index_of_first_click;
-    let x2 = rrc.game_data.card_index_of_second_click;
-    unwrap!(
-        rrc.game_data.card_grid_data.get_mut(x1),
-        "error game_data.card_index_of_first_click "
-    )
-    .status = CardStatusCardFace::Down;
-    unwrap!(
-        rrc.game_data.card_grid_data.get_mut(x2),
-        "error game_data.card_index_of_second_click"
-    )
-    .status = CardStatusCardFace::Down;
-    rrc.game_data.card_index_of_first_click = 0;
-    rrc.game_data.card_index_of_second_click = 0;
     rrc.game_data.game_status = GameStatus::Status1stCard;
 }
 

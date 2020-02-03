@@ -28,6 +28,7 @@ pub fn on_click_1st_card(
     this_click_card_index: usize,
 ) {
     logmod::debug_write("on_click_1st_card");
+    flip_back(rrc);
     //change card status and game status
     rrc.game_data.card_index_of_first_click = this_click_card_index;
 
@@ -39,9 +40,20 @@ pub fn on_click_1st_card(
         msg_id,
     };
     ackmsgmod::send_msg_and_write_in_queue(rrc, &msg, msg_id);
-    logmod::debug_write(&format!("send_msg_and_write_in_queue: {}", msg_id));
+    //logmod::debug_write(&format!("send_msg_and_write_in_queue: {}", msg_id));
     divgridcontainermod::play_sound(rrc, this_click_card_index);
     //after ack for this message call on_msg_click_1st_card(rrc, this_click_card_index);
+}
+
+/// flip back any not permanent card
+pub fn flip_back(rrc: &mut RootRenderingComponent) {
+    for x in &mut rrc.game_data.card_grid_data {
+        if let CardStatusCardFace::UpTemporary = x.status {
+            x.status = CardStatusCardFace::Down;
+        }
+    }
+    rrc.game_data.card_index_of_first_click = 0;
+    rrc.game_data.card_index_of_second_click = 0;
 }
 
 ///on msg
@@ -52,6 +64,7 @@ pub fn on_msg_click_1st_card(
     card_index_of_first_click: usize,
     msg_id: usize,
 ) {
+    flip_back(rrc);
     ackmsgmod::send_ack(rrc, msg_sender_ws_uid, msg_id, MsgAckKind::MsgClick1stCard);
     //it can happen that 2 smartphones send the msg click1st simultaneosly.
     //This is a conflict.
@@ -76,13 +89,10 @@ pub fn on_msg_ack_click_1st_card(
     player_ws_uid: usize,
     msg_id: usize,
 ) {
-    logmod::debug_write("on_msg_ack_click_1st_card");
-    logmod::debug_write(&format!(
-        "remove_ack_msg_from_queue: {} {}",
-        player_ws_uid, msg_id
-    ));
+    //logmod::debug_write("on_msg_ack_click_1st_card");
+    //logmod::debug_write(&format!("remove_ack_msg_from_queue: {} {}",player_ws_uid, msg_id));
     if ackmsgmod::remove_ack_msg_from_queue(rrc, player_ws_uid, msg_id) {
-        logmod::debug_write("update_on_1st_card (rrc)");
+        //logmod::debug_write("update_on_1st_card (rrc)");
         update_on_1st_card(rrc);
     }
     //TODO: timer if after 3 seconds the ack is not received resend the msg

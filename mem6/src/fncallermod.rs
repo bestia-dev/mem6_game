@@ -73,10 +73,10 @@ pub fn call_listener(vdom: dodrio::VdomWeak, rrc: &mut RootRenderingComponent, s
             divnicknamemod::nickname_onkeyup(vdom);
         }
         "start_a_group_onclick" => {
-            open_new_local_page("#02");
+            open_new_local_page("#p02");
         }
         "join_a_group_onclick" => {
-            open_new_local_page("#03");
+            open_new_local_page("#p03");
         }
         "start_game_onclick" => {
             statusgamedatainitmod::on_click_start_game(rrc);
@@ -85,7 +85,7 @@ pub fn call_listener(vdom: dodrio::VdomWeak, rrc: &mut RootRenderingComponent, s
             //endregion
             vdom.schedule_render();
             //logmod::debug_write(&format!("start_game_onclick players: {:?}",rrc.game_data.players));
-            open_new_local_page("#11");
+            open_new_local_page("#p11");
         }
         "game_type_right_onclick" => {
             game_type_right_onclick(rrc, vdom);
@@ -96,7 +96,7 @@ pub fn call_listener(vdom: dodrio::VdomWeak, rrc: &mut RootRenderingComponent, s
         "join_group_on_click" => {
             //find the group_id input element
             let group_id = get_input_value("input_group_id");
-            open_new_local_page(&format!("#04.{}", group_id));
+            open_new_local_page(&format!("#p04.{}", group_id));
         }
         _ => {
             let x = format!("Error: Unrecognized call_listener: {}", sx);

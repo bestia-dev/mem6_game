@@ -309,8 +309,7 @@ fn receive_message(ws_uid_of_message: usize, message: &Message, users: &Users) {
         WsMessage::MsgJoin { players_ws_uid, .. }
         | WsMessage::MsgStartGame { players_ws_uid, .. }
         | WsMessage::MsgClick1stCard { players_ws_uid, .. }
-        | WsMessage::MsgClick2ndCardPoint { players_ws_uid, .. }
-        | WsMessage::MsgTakeTurnBegin { players_ws_uid, .. }
+        | WsMessage::MsgClick2ndCard { players_ws_uid, .. }
         | WsMessage::MsgTakeTurnEnd { players_ws_uid, .. }
         | WsMessage::MsgGameOver { players_ws_uid, .. }
         | WsMessage::MsgAllGameData { players_ws_uid, .. }

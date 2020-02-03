@@ -182,7 +182,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                             &players,
                                             &game_name,
                                         );
-                                        fncallermod::open_new_local_page("#11");
+                                        fncallermod::open_new_local_page("#p11");
                                         vdom.schedule_render();
                                     }
                                 }
@@ -201,30 +201,18 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                     );
                                     vdom.schedule_render();
                                 }
-                                WsMessage::MsgClick2ndCardPoint {
+                                WsMessage::MsgClick2ndCard {
                                     my_ws_uid,
                                     players_ws_uid: _,
                                     card_index_of_second_click,
+                                    is_point,
                                     msg_id,
                                 } => {
-                                    status2ndcardmod::on_msg_click_2nd_card_point(
+                                    status2ndcardmod::on_msg_click_2nd_card(
                                         rrc,
                                         my_ws_uid,
                                         card_index_of_second_click,
-                                        msg_id,
-                                    );
-                                    vdom.schedule_render();
-                                }
-                                WsMessage::MsgTakeTurnBegin {
-                                    my_ws_uid,
-                                    players_ws_uid: _,
-                                    card_index_of_second_click,
-                                    msg_id,
-                                } => {
-                                    statustaketurnbeginmod::on_msg_take_turn_begin(
-                                        rrc,
-                                        my_ws_uid,
-                                        card_index_of_second_click,
+                                        is_point,
                                         msg_id,
                                     );
                                     vdom.schedule_render();
@@ -263,13 +251,8 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                                 rrc, my_ws_uid, msg_id,
                                             );
                                         }
-                                        MsgAckKind::MsgClick2ndCardPoint => {
-                                            status2ndcardmod::on_msg_ack_player_click2nd_card_point(
-                                                rrc, my_ws_uid, msg_id,
-                                            );
-                                        }
-                                        MsgAckKind::MsgTakeTurnBegin => {
-                                            statustaketurnbeginmod::on_msg_ack_take_turn_begin(
+                                        MsgAckKind::MsgClick2ndCard => {
+                                            status2ndcardmod::on_msg_ack_player_click2nd_card(
                                                 rrc, my_ws_uid, msg_id,
                                             );
                                         }

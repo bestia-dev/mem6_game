@@ -1,9 +1,8 @@
 //! **htmltemplatemod**  
 //!
 
-use crate::fncallermod;
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
-use crate::logmod;
+use crate::*;
 
 use dodrio::builder::*;
 use dodrio::{Node, Listener, Attribute, RenderContext};
