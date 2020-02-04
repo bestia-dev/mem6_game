@@ -78,6 +78,7 @@ pub fn start_router(vdom: VdomWeak) {
                                 } else {
                                     rrc.local_route = "p01_start.html".to_owned();
                                 }
+
                                 let url = format!("{}", rrc.local_route);
                                 let v2 = vdom.clone();
 
@@ -120,6 +121,7 @@ pub fn start_router(vdom: VdomWeak) {
 /// })
 /// ```
 pub async fn async_fetch_and_write_to_rrc_html_template(url: String, vdom: VdomWeak) {
+    logmod::debug_write(&format!("fetch {}", &url));
     let mut resp_body_text: String = fetchmod::async_spwloc_fetch_text(url).await;
     // update values in rrc is async.
     // I can await a fn call or an async block.
