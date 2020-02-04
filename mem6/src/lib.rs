@@ -284,6 +284,7 @@ mod statusgameovermod;
 mod statusjoinedmod;
 mod status1stcardmod;
 mod status2ndcardmod;
+mod statusdrinkmod;
 mod statustaketurnmod;
 mod statuswaitingackmsgmod;
 mod utilsmod;

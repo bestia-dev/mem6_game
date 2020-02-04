@@ -66,8 +66,11 @@ pub fn on_click_2nd_card(
             },
         );
     }
-    else{
+    else if !is_point{
         statustaketurnmod::on_click_take_turn(rrc, vdom);
+    }
+    else{
+        //nothing
     }
 }
 
@@ -124,10 +127,9 @@ pub fn on_msg_ack_player_click2nd_card(
     msg_id: usize,
 ) {
     if ackmsgmod::remove_ack_msg_from_queue(rrc, player_ws_uid, msg_id) {
-        logmod::debug_write("update on_msg_ack_player_click2nd_card(rrc)");
+        //logmod::debug_write("update on_msg_ack_player_click2nd_card(rrc)");
         let is_point = get_is_point(rrc);
         update_click_2nd_card_point(rrc, is_point);
-
     }
     //TODO: timer if after 3 seconds the ack is not received resend the msg
     //do this 3 times and then hard error
@@ -137,12 +139,23 @@ pub fn on_msg_ack_player_click2nd_card(
 #[allow(clippy::integer_arithmetic)] // points +1 is not going to overflow ever
 pub fn update_click_2nd_card_point(rrc: &mut RootRenderingComponent, is_point: bool) {
     if is_point {
+        rrc.game_data.game_status=GameStatus::StatusDrink;
+        let player_for_point = unwrap!(rrc.game_data.player_turn.checked_sub(1));
         //give points
         unwrap!(rrc
             .game_data
             .players
-            .get_mut(unwrap!(rrc.game_data.player_turn.checked_sub(1))))
+            .get_mut(player_for_point))
         .points += 1;
+
+        if rrc.game_data.my_player_number== player_for_point+1{
+            //drink
+            fncallermod::open_new_local_page("#p06");
+        }
+        else{
+            //do not drink
+            fncallermod::open_new_local_page("#p07");
+        }
     }
 }
 

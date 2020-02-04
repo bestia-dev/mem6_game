@@ -6,7 +6,7 @@
 //region: use
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::*;
-use mem6_common::GameStatus;
+use mem6_common::*;
 
 use unwrap::unwrap;
 use dodrio::builder::text;
@@ -16,37 +16,57 @@ use typed_html::dodrio;
 //endregion
 
 ///play again
-pub fn div_game_over<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
-    //end game ,Play again?  reload webpage
-    dodrio!(bump,
-    <div class="div_clickable" onclick={
-                move |root, vdom, _event| {
-                let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                let window = unwrap!(web_sys::window(), "error: web_sys::window");
-                //the first player go to the start group page
-                //other players join the group
-                if rrc.game_data.my_player_number==1{
-                    fncallermod::open_new_local_page("#p02");
-                }
-                else{
-                    let group_id=fncallermod::group_id_joined(rrc);
-                    fncallermod::open_new_local_page(&format!("#p04.{}",group_id));
-                }
-            }}>
-        <h2 class="h2_user_can_click">
-                {vec![text(
-                    //Play again?
-                    bumpalo::format!(in bump, "Game Over! Play again{}?", "").into_bump_str(),
-                )]}
-        </h2>
-    </div>
-    )
+pub fn div_game_over<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
+    //game over
+    // only the first player can choose Play again? 
+    // other players are already joined to the group
+    if rrc.game_data.my_player_number==1{
+        dodrio!(bump,
+            <div class="div_clickable" onclick={
+                        move |root, vdom, _event| {
+                        let rrc = root.unwrap_mut::<RootRenderingComponent>();
+                        let window = unwrap!(web_sys::window(), "error: web_sys::window");
+                        websocketcommunicationmod::ws_send_msg(
+                            &rrc.game_data.ws,
+                            &WsMessage::MsgPlayAgain {
+                                my_ws_uid: rrc.game_data.my_ws_uid,
+                                players_ws_uid: rrc.game_data.players_ws_uid.to_string(),
+                            },
+                        );
+                        rrc.reset_for_play_again();
+                        fncallermod::open_new_local_page("#p02");
+                    }}>
+                <h2 class="h2_user_can_click">
+                        {vec![text(
+                            bumpalo::format!(in bump, "Game Over! Play again{}?", "").into_bump_str(),
+                        )]}
+                </h2>
+            </div>
+        )
+    }else{
+        dodrio!(bump,
+            <div >
+                <h2 class="h2_user_must_wait">
+                        {vec![text(
+                            bumpalo::format!(in bump, "Game Over!{}", "").into_bump_str(),
+                        )]}
+                </h2>
+            </div>
+        )
+    }
 }
 
-///msg player click
+///on msg game over
 pub fn on_msg_game_over(rrc: &mut RootRenderingComponent) {
-    //logmod::debug_write("on_msg_game_over");
-    //The game is over and the question Play again?
+    //The game is over.
     rrc.game_data.game_status = GameStatus::StatusGameOver;
+}
 
+///on msg play again
+pub fn on_msg_play_again(rrc: &mut RootRenderingComponent) {
+    //The first players can choose Play again and send to others.
+    rrc.game_data.game_status = GameStatus::StatusJoined;
+    rrc.reset_for_play_again();
+    let group_id = fncallermod::group_id_joined(rrc);
+    fncallermod::open_new_local_page(&format!("#p04.{}", group_id));
 }

@@ -12,7 +12,7 @@ use unwrap::unwrap;
 
 ///on click
 pub fn on_click_take_turn(rrc: &mut RootRenderingComponent, vdom: &dodrio::VdomWeak) {
-    logmod::debug_write(&format!("on_click_take_turn {}", ""));
+    //logmod::debug_write(&format!("on_click_take_turn {}", ""));
 
     let msg_id = ackmsgmod::prepare_for_ack_msg_waiting(rrc, vdom);
 
@@ -37,7 +37,6 @@ pub fn on_msg_take_turn(rrc: &mut RootRenderingComponent, msg_sender_ws_uid: usi
 #[allow(clippy::needless_pass_by_value)]
 pub fn on_msg_ack_take_turn(rrc: &mut RootRenderingComponent, player_ws_uid: usize, msg_id: usize) {
     if ackmsgmod::remove_ack_msg_from_queue(rrc, player_ws_uid, msg_id) {
-        logmod::debug_write("update_on_take_turn");
         update_on_take_turn(rrc);
     }
     //TODO: timer if after 3 seconds the ack is not received resend the msg
@@ -47,7 +46,7 @@ pub fn on_msg_ack_take_turn(rrc: &mut RootRenderingComponent, player_ws_uid: usi
 ///update game data
 pub fn update_on_take_turn(rrc: &mut RootRenderingComponent) {
     logmod::debug_write(&format!(
-        "take_turn: player_turn {}  my_player_number {}",
+        "update_on_take_turn: player_turn {}  my_player_number {}",
         &rrc.game_data.player_turn, &rrc.game_data.my_player_number
     ));
 

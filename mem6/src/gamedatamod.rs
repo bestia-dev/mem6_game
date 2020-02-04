@@ -2,9 +2,9 @@
 //! structs and methods around game data
 
 //region: use
-use crate::divnicknamemod;
+use crate::*;
 
-use mem6_common::{GameStatus, Player, WsMessage};
+use mem6_common::*;
 
 use serde_derive::{Serialize, Deserialize};
 use unwrap::unwrap;

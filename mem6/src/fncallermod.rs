@@ -2,6 +2,7 @@
 
 use crate::*;
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
+use mem6_common::*;
 
 use unwrap::unwrap;
 use wasm_bindgen::JsCast; //don't remove this. It is needed for dyn_into.
@@ -57,6 +58,14 @@ pub fn call_function_string(rrc: &RootRenderingComponent, sx: &str) -> String {
             .to_string()
                 + " ";
         }
+        "player_turn" => {
+            return unwrap!(rrc
+                .game_data
+                .players
+                .get(rrc.game_data.player_turn-1))
+            .nickname
+            .to_string();
+        }
         _ => {
             let x = format!("Error: Unrecognized call_function_string: {}", sx);
             logmod::debug_write(&x);
@@ -97,6 +106,20 @@ pub fn call_listener(vdom: dodrio::VdomWeak, rrc: &mut RootRenderingComponent, s
             //find the group_id input element
             let group_id = get_input_value("input_group_id");
             open_new_local_page(&format!("#p04.{}", group_id));
+        }
+        "drink_end" => {
+            //send a msg to end drinking to all players
+            logmod::debug_write(&format!("MsgDrinkEnd send{}", ""));
+            websocketcommunicationmod::ws_send_msg(
+                &rrc.game_data.ws,
+                &WsMessage::MsgDrinkEnd {
+                    my_ws_uid: rrc.game_data.my_ws_uid,
+                    players_ws_uid: rrc.game_data.players_ws_uid.to_string(),
+                },
+            );
+            statustaketurnmod::on_click_take_turn(rrc, &vdom);
+            //end the drink dialog
+            open_new_local_page("#p11");
         }
         _ => {
             let x = format!("Error: Unrecognized call_listener: {}", sx);

@@ -27,7 +27,7 @@ pub fn on_click_1st_card(
     vdom: &dodrio::VdomWeak,
     this_click_card_index: usize,
 ) {
-    logmod::debug_write("on_click_1st_card");
+    //logmod::debug_write("on_click_1st_card");
     flip_back(rrc);
     //change card status and game status
     rrc.game_data.card_index_of_first_click = this_click_card_index;
@@ -77,7 +77,7 @@ pub fn on_msg_click_1st_card(
         //do the whole click2nd process
         status2ndcardmod::on_click_2nd_card(rrc, vdom, card_index_of_first_click)
     } else {
-        logmod::debug_write("on_msg_click_1st_card");
+        //logmod::debug_write("on_msg_click_1st_card");
         rrc.game_data.card_index_of_first_click = card_index_of_first_click;
         update_on_1st_card(rrc);
     }

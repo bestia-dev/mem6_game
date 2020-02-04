@@ -1,14 +1,16 @@
 /*region elements - styles across all the elements */
 
 /* roboto-regular - latin-ext_latin locally hosted*/
+/*
 @font-face {
     font-family: 'Roboto';
     font-style: normal;
     font-weight: 400;
     src: local('Roboto'), local('Roboto-Regular'),
-         url('../fonts/roboto-v20-latin-ext_latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-         url('../fonts/roboto-v20-latin-ext_latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+         url('../fonts/roboto-v20-latin-ext_latin-regular.woff2') format('woff2'), 
+         url('../fonts/roboto-v20-latin-ext_latin-regular.woff') format('woff'); 
 }
+*/
 
 html { 
     /*the font-size is very much dependent on the font-family*/
@@ -103,7 +105,6 @@ svg {
 
 rect {
     stroke:#fff;
-    fill:green;
     fill-opacity:50;
     stroke-opacity:50;
   }
@@ -121,10 +122,19 @@ rect.btn{
     height:10%;
     x:10%;
     pointer-events:fill;
+    fill:green;
 }
 
 .clickable{
     pointer-events:fill;
+}
+
+.green{
+    fill:green;
+}
+
+.red{
+    fill:red;
 }
 
 rect.rounded{
@@ -266,7 +276,7 @@ img.center{
     color:orange;
 }
 
-.input_blink{
+.blink{
     animation: blinker 1s linear infinite;
 }
 

@@ -13,6 +13,7 @@ use unwrap::unwrap;
 pub fn on_click_start_game(rrc: &mut RootRenderingComponent) {
     rrc.game_data.prepare_random_data();
     rrc.game_data.game_status = GameStatus::Status1stCard;
+    //TODO: random start player_turn
     rrc.game_data.player_turn = 1;
 
     websocketcommunicationmod::ws_send_msg(

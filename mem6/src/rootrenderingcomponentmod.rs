@@ -32,17 +32,14 @@ impl RootRenderingComponent {
             game_data,
         }
     }
-    ///reset the data to replay the game
-    pub fn reset(&mut self) {
-        self.game_data.card_grid_data = gamedatamod::GameData::prepare_for_empty();
+    ///reset the data to play again the game
+    pub fn reset_for_play_again(&mut self) {
         self.game_data.card_index_of_first_click = 0;
         self.game_data.card_index_of_second_click = 0;
-        self.game_data.players.clear();
-        self.game_data.game_status = GameStatus::StatusStartPage;
-        self.game_data.game_name = "alphabet".to_string();
-        self.game_data.my_player_number = 1;
-        self.game_data.player_turn = 0;
-        self.game_data.game_config = None;
+        //reset points
+        for x in &mut self.game_data.players{
+            x.points=0;
+        }
     }
 }
 //endregion

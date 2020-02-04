@@ -173,18 +173,16 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                     players,
                                     game_name,
                                 } => {
-                                    if let GameStatus::StatusJoined = rrc.game_data.game_status {
-                                        let vdom = vdom.clone();
-                                        statusgamedatainitmod::on_msg_start_game(
-                                            rrc,
-                                            &card_grid_data,
-                                            &game_config,
-                                            &players,
-                                            &game_name,
-                                        );
-                                        fncallermod::open_new_local_page("#p11");
-                                        vdom.schedule_render();
-                                    }
+                                    let vdom = vdom.clone();
+                                    statusgamedatainitmod::on_msg_start_game(
+                                        rrc,
+                                        &card_grid_data,
+                                        &game_config,
+                                        &players,
+                                        &game_name,
+                                    );
+                                    fncallermod::open_new_local_page("#p11");
+                                    vdom.schedule_render();
                                 }
                                 WsMessage::MsgClick1stCard {
                                     my_ws_uid,
@@ -217,6 +215,13 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                     );
                                     vdom.schedule_render();
                                 }
+                                WsMessage::MsgDrinkEnd{
+                                    my_ws_uid,
+                                    players_ws_uid: _,
+                                } => {
+                                    statusdrinkmod::on_msg_drink_end(rrc, my_ws_uid,&vdom,);
+                                    vdom.schedule_render();
+                                }
                                 WsMessage::MsgTakeTurn {
                                     my_ws_uid,
                                     players_ws_uid: _,
@@ -232,6 +237,13 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                     statusgameovermod::on_msg_game_over(rrc);
                                     vdom.schedule_render();
                                 }
+                                WsMessage::MsgPlayAgain {
+                                    my_ws_uid: _,
+                                    players_ws_uid: _,
+                                } => {
+                                    statusgameovermod::on_msg_play_again(rrc);
+                                }
+                                
                                 WsMessage::MsgAck {
                                     my_ws_uid,
                                     players_ws_uid: _,

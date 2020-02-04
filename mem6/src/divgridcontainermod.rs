@@ -241,6 +241,7 @@ pub fn div_grid_item<'a>(
         }
         mem6_common::GameStatus::StatusStartPage
         | mem6_common::GameStatus::StatusJoined
+        | mem6_common::GameStatus::StatusDrink
         | mem6_common::GameStatus::StatusTakeTurn
         | mem6_common::GameStatus::StatusGameOver
         | mem6_common::GameStatus::StatusReconnect

@@ -67,10 +67,14 @@ pub fn start_router(vdom: VdomWeak) {
                                     ));
                                     statusjoinedmod::on_load_joined(rrc);
                                     rrc.local_route = "p04_wait_to_start.html".to_owned();
-                                } else if local_route == "#p11" {
-                                    rrc.local_route = "p11_gameboard.html".to_owned();
+                                } else if local_route == "#p06" {
+                                    rrc.local_route = "p06_drink.html".to_owned();
+                                } else if local_route == "#p07" {
+                                    rrc.local_route = "p07_do_not_drink.html".to_owned();
                                 } else if local_route == "#p08" {
                                     rrc.local_route = "p08_instructions.html".to_owned();
+                                } else if local_route == "#p11" {
+                                    rrc.local_route = "p11_gameboard.html".to_owned();
                                 } else {
                                     rrc.local_route = "p01_start.html".to_owned();
                                 }

@@ -132,8 +132,22 @@ pub enum WsMessage {
         ///msg id (random)
         msg_id: usize,
     },
-    ///Play Again
+    /// drink end
+    MsgDrinkEnd{
+        ///this identifies the smartphone, but not the player-in-turn
+        my_ws_uid: usize,
+        ///all players for the server to know whom to send msg
+        players_ws_uid: String,
+    },
+    ///Game Over
     MsgGameOver {
+        ///this identifies the smartphone, but not the player-in-turn
+        my_ws_uid: usize,
+        ///all players for the server to know whom to send msg
+        players_ws_uid: String,
+    },
+    ///Play Again
+    MsgPlayAgain {
         ///this identifies the smartphone, but not the player-in-turn
         my_ws_uid: usize,
         ///all players for the server to know whom to send msg
@@ -200,6 +214,8 @@ pub enum GameStatus {
     Status1stCard,
     ///before second card
     Status2ndCard,
+    ///drink
+    StatusDrink,
     ///take turn end
     StatusTakeTurn,
     ///game over
