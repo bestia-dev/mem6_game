@@ -215,11 +215,11 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                     );
                                     vdom.schedule_render();
                                 }
-                                WsMessage::MsgDrinkEnd{
+                                WsMessage::MsgDrinkEnd {
                                     my_ws_uid,
                                     players_ws_uid: _,
                                 } => {
-                                    statusdrinkmod::on_msg_drink_end(rrc, my_ws_uid,&vdom,);
+                                    statusdrinkmod::on_msg_drink_end(rrc, my_ws_uid, &vdom);
                                     vdom.schedule_render();
                                 }
                                 WsMessage::MsgTakeTurn {
@@ -243,7 +243,6 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                 } => {
                                     statusgameovermod::on_msg_play_again(rrc);
                                 }
-                                
                                 WsMessage::MsgAck {
                                     my_ws_uid,
                                     players_ws_uid: _,
@@ -263,7 +262,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                         }
                                         MsgAckKind::MsgClick2ndCard => {
                                             status2ndcardmod::on_msg_ack_player_click2nd_card(
-                                                rrc, my_ws_uid, msg_id,
+                                                rrc, my_ws_uid, msg_id, &vdom,
                                             );
                                         }
                                     }

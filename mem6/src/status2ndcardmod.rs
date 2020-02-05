@@ -40,7 +40,7 @@ pub fn on_click_2nd_card(
     //that changes: game status,CardStatusCardFace, points or/and player_turn
     //if the cards match, player get one point, but it is the next player turn.
     let is_point = get_is_point(rrc);
-    if is_point{
+    if is_point {
         update_click_2nd_card_flip_permanently(rrc, is_point);
     }
     let msg_id = ackmsgmod::prepare_for_ack_msg_waiting(rrc, vdom);
@@ -52,30 +52,10 @@ pub fn on_click_2nd_card(
         msg_id,
     };
     ackmsgmod::send_msg_and_write_in_queue(rrc, &msg, msg_id);
-
-    //if all the cards are permanently up, this is the end of the game
-    if is_all_permanently(rrc) {
-        statusgameovermod::on_msg_game_over(rrc);
-        vdom.schedule_render();
-        //send message
-        websocketcommunicationmod::ws_send_msg(
-            &rrc.game_data.ws,
-            &WsMessage::MsgGameOver {
-                my_ws_uid: rrc.game_data.my_ws_uid,
-                players_ws_uid: rrc.game_data.players_ws_uid.to_string(),
-            },
-        );
-    }
-    else if !is_point{
-        statustaketurnmod::on_click_take_turn(rrc, vdom);
-    }
-    else{
-        //nothing
-    }
 }
 
 /// is all card permanently on
-pub fn is_all_permanently(rrc:&mut RootRenderingComponent) -> bool{
+pub fn is_all_permanently(rrc: &mut RootRenderingComponent) -> bool {
     let mut is_all_permanently = true;
     //the zero element is exceptional, but the iterator uses it
     unwrap!(rrc.game_data.card_grid_data.get_mut(0)).status = CardStatusCardFace::UpPermanently;
@@ -125,11 +105,17 @@ pub fn on_msg_ack_player_click2nd_card(
     rrc: &mut RootRenderingComponent,
     player_ws_uid: usize,
     msg_id: usize,
+    vdom: &dodrio::VdomWeak,
 ) {
     if ackmsgmod::remove_ack_msg_from_queue(rrc, player_ws_uid, msg_id) {
-        //logmod::debug_write("update on_msg_ack_player_click2nd_card(rrc)");
         let is_point = get_is_point(rrc);
         update_click_2nd_card_point(rrc, is_point);
+        if !is_point {
+            logmod::debug_write("no");
+            statustaketurnmod::on_click_take_turn(rrc, vdom);
+        } else {
+            //nothing because all happens after the Drink/no drink dialog
+        }
     }
     //TODO: timer if after 3 seconds the ack is not received resend the msg
     //do this 3 times and then hard error
@@ -139,20 +125,15 @@ pub fn on_msg_ack_player_click2nd_card(
 #[allow(clippy::integer_arithmetic)] // points +1 is not going to overflow ever
 pub fn update_click_2nd_card_point(rrc: &mut RootRenderingComponent, is_point: bool) {
     if is_point {
-        rrc.game_data.game_status=GameStatus::StatusDrink;
+        rrc.game_data.game_status = GameStatus::StatusDrink;
         let player_for_point = unwrap!(rrc.game_data.player_turn.checked_sub(1));
         //give points
-        unwrap!(rrc
-            .game_data
-            .players
-            .get_mut(player_for_point))
-        .points += 1;
+        unwrap!(rrc.game_data.players.get_mut(player_for_point)).points += 1;
 
-        if rrc.game_data.my_player_number== player_for_point+1{
+        if rrc.game_data.my_player_number == player_for_point + 1 {
             //drink
             fncallermod::open_new_local_page("#p06");
-        }
-        else{
+        } else {
             //do not drink
             fncallermod::open_new_local_page("#p07");
         }
@@ -163,7 +144,6 @@ pub fn update_click_2nd_card_point(rrc: &mut RootRenderingComponent, is_point: b
 #[allow(clippy::integer_arithmetic)] // points +1 is not going to overflow ever
 pub fn update_click_2nd_card_flip_permanently(rrc: &mut RootRenderingComponent, is_point: bool) {
     if is_point {
-   
         // the two cards matches. make them permanent FaceUp
         let x1 = rrc.game_data.card_index_of_first_click;
         let x2 = rrc.game_data.card_index_of_second_click;

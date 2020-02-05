@@ -59,12 +59,9 @@ pub fn call_function_string(rrc: &RootRenderingComponent, sx: &str) -> String {
                 + " ";
         }
         "player_turn" => {
-            return unwrap!(rrc
-                .game_data
-                .players
-                .get(rrc.game_data.player_turn-1))
-            .nickname
-            .to_string();
+            return unwrap!(rrc.game_data.players.get(rrc.game_data.player_turn - 1))
+                .nickname
+                .to_string();
         }
         _ => {
             let x = format!("Error: Unrecognized call_function_string: {}", sx);
@@ -117,7 +114,22 @@ pub fn call_listener(vdom: dodrio::VdomWeak, rrc: &mut RootRenderingComponent, s
                     players_ws_uid: rrc.game_data.players_ws_uid.to_string(),
                 },
             );
-            statustaketurnmod::on_click_take_turn(rrc, &vdom);
+            //if all the cards are permanently up, this is the end of the game
+            //logmod::debug_write("if is_all_permanently(rrc)");
+            if status2ndcardmod::is_all_permanently(rrc) {
+                logmod::debug_write("yes");
+                statusgameovermod::on_msg_game_over(rrc);
+                //send message
+                websocketcommunicationmod::ws_send_msg(
+                    &rrc.game_data.ws,
+                    &WsMessage::MsgGameOver {
+                        my_ws_uid: rrc.game_data.my_ws_uid,
+                        players_ws_uid: rrc.game_data.players_ws_uid.to_string(),
+                    },
+                );
+            } else {
+                statustaketurnmod::on_click_take_turn(rrc, &vdom);
+            }
             //end the drink dialog
             open_new_local_page("#p11");
         }

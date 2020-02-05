@@ -11,6 +11,10 @@ use unwrap::unwrap;
 //endregion
 
 ///on msg
-pub fn on_msg_drink_end(rrc: &mut RootRenderingComponent, msg_sender_ws_uid: usize,vdom:&dodrio::VdomWeak) {
+pub fn on_msg_drink_end(
+    rrc: &mut RootRenderingComponent,
+    msg_sender_ws_uid: usize,
+    vdom: &dodrio::VdomWeak,
+) {
     fncallermod::open_new_local_page("#p11");
 }
