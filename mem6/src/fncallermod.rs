@@ -1,8 +1,8 @@
 //! fncallermod  
 
 use crate::*;
-use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use mem6_common::*;
+use qrcode53bytes::*;
 
 use unwrap::unwrap;
 use wasm_bindgen::JsCast; //don't remove this. It is needed for dyn_into.
@@ -157,6 +157,17 @@ pub fn call_function_node<'a>(rrc: &RootRenderingComponent, bump: &'a Bump, sx: 
             let node = divplayeractionsmod::div_player_actions_from_game_status(rrc, bump);
             return node;
         }
+        "svg_qrcode" => {
+            let link = format!("https://bestia.dev/mem6/#p04.{}",group_id_joined(rrc));
+            let qr = qrcode53bytes::Qr::new(&link).unwrap();
+            let svg_str = qrcode53bytes::SvgRenderer::new()
+                .light_module(Color::new(255, 255, 255))
+                .dark_module(Color::new(0, 0, 0))
+                .dimensions(222, 222)
+                .render(&qr);
+            let node = svg_qrcode_to_node(rrc, bump, &svg_str);
+            return node;
+        }
         _ => {
             let node = dodrio!(bump,
             <h2  >
@@ -166,6 +177,15 @@ pub fn call_function_node<'a>(rrc: &RootRenderingComponent, bump: &'a Bump, sx: 
             return node;
         }
     }
+}
+
+//qrcode svg
+pub fn svg_qrcode_to_node<'a>(
+    rrc: &RootRenderingComponent,
+    bump: &'a Bump,
+    svg_template: &str,
+) -> Node<'a> {
+    unwrap!(htmltemplatemod::get_root_element(rrc, bump, svg_template))
 }
 
 /// the arrow to the right

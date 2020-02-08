@@ -55,24 +55,20 @@
 )]
 //endregion
 
-//macro dodrio! now has warning about a panic?!?
-#![allow(clippy::panic)]
-
 //region: use statements
 use mem6_common::{WsMessage};
-
-use std::collections::HashMap;
-use std::sync::{Arc, Mutex};
-use futures::{future, Future, FutureExt, StreamExt};
-use tokio::sync::mpsc;
-use warp::ws::{Message, WebSocket};
-use warp::Filter;
 
 use unwrap::unwrap;
 use clap::{App, Arg};
 use env_logger::Env;
+use futures::sync::mpsc;
+use futures::{Future, Stream};
+use std::collections::HashMap;
 use std::net::SocketAddr;
 use std::net::{IpAddr, Ipv4Addr};
+use std::sync::{Arc, Mutex};
+use warp::ws::{Message, WebSocket};
+use warp::Filter;
 use log::info;
 //endregion
 
@@ -80,21 +76,18 @@ use log::info;
 /// Our status of currently connected users.
 /// - Key is their id
 /// - Value is a sender of `warp::ws::Message`
-type Users = Arc<Mutex<HashMap<usize, mpsc::UnboundedSender<Result<Message, warp::Error>>>>>;
+type Users = Arc<Mutex<HashMap<usize, mpsc::UnboundedSender<Message>>>>;
 
 //endregion
 
 ///main function of the binary
-#[tokio::main]
-async fn main() {
+fn main() {
     //region: env_logger log text to stdout depend on ENV variable
-
-    //pretty_env_logger::init();
     //in Linux : RUST_LOG=info ./mem6_server.exe
     //in Windows I don't know yet.
     //default for env variable info
     let mut builder = env_logger::from_env(Env::default().default_filter_or("info"));
-    //nano seconds in the logger
+    //nanoseconds in the logger
     builder.format_timestamp_nanos();
     builder.init();
     //endregion
@@ -119,11 +112,17 @@ async fn main() {
         .get_matches();
 
     //from string parameters to strong types
-    let fnl_prm_ip = unwrap!(matches.value_of("prm_ip")).to_lowercase();
-    let fnl_prm_port = unwrap!(matches.value_of("prm_port")).to_lowercase();
+    let fnl_prm_ip = matches
+        .value_of("prm_ip")
+        .expect("error on prm_ip")
+        .to_lowercase();
+    let fnl_prm_port = matches
+        .value_of("prm_port")
+        .expect("error on prm_port")
+        .to_lowercase();
 
-    let local_ip = IpAddr::V4(unwrap!(fnl_prm_ip.parse::<Ipv4Addr>()));
-    let local_port = unwrap!(u16::from_str_radix(&fnl_prm_port, 10));
+    let local_ip = IpAddr::V4(fnl_prm_ip.parse::<Ipv4Addr>().expect("not an ip address"));
+    let local_port = u16::from_str_radix(&fnl_prm_port, 10).expect("not a number");
     let local_addr = SocketAddr::new(local_ip, local_port);
 
     info!(
@@ -143,9 +142,7 @@ async fn main() {
             std::sync::Mutex<
                 std::collections::HashMap<
                     usize,
-                    tokio::sync::mpsc::UnboundedSender<
-                        std::result::Result<warp::filters::ws::Message, warp::Error>,
-                    >,
+                    futures::sync::mpsc::UnboundedSender<warp::ws::Message>,
                 >,
             >,
         >::clone(&users)
@@ -155,15 +152,13 @@ async fn main() {
     // GET from route /mem6ws/ -> WebSocket upgrade
     let websocket = warp::path("mem6ws")
         // The `ws2()` filter will prepare WebSocket handshake...
-        .and(warp::ws())
+        .and(warp::ws2())
         .and(users)
         // Match `/mem6ws/url_param` it can be any string.
         .and(warp::path::param::<String>())
-        .map(|ws: warp::ws::Ws, users, url_param| {
+        .map(|ws: warp::ws::Ws2, users, url_param| {
             // This will call our function if the handshake succeeds.
-            ws.on_upgrade(move |socket| {
-                user_connected(socket, users, url_param).map(|result| unwrap!(result))
-            })
+            ws.on_upgrade(move |socket| user_connected(socket, users, url_param))
         });
 
     //static file server
@@ -171,11 +166,10 @@ async fn main() {
     let fileserver = warp::fs::dir("./mem6/");
 
     let routes = fileserver.or(websocket);
-    warp::serve(routes).run(local_addr).await;
+    warp::serve(routes).run(local_addr);
 }
 
-//the url_param is not consumed in this function and Clippy wants
-//a reference instead a value
+//the url_param is not consumed in this function and Clippy wants a reference instead a value
 #[allow(clippy::needless_pass_by_value)]
 //region: WebSocket callbacks: connect, msg, disconnect
 ///new user connects
@@ -183,7 +177,7 @@ fn user_connected(
     ws: WebSocket,
     users: Users,
     url_param: String,
-) -> impl Future<Output = Result<(), ()>> {
+) -> impl Future<Item = (), Error = ()> {
     //the client sends his ws_uid in url_param. it is a random number.
     info!("user_connect() url_param: {}", url_param);
     //convert string to usize
@@ -191,7 +185,7 @@ fn user_connected(
     let my_id = unwrap!(url_param.parse::<usize>());
     //if uid already exists, it is an error
     let mut user_exist = false;
-    for (&uid, ..) in unwrap!(users.lock()).iter() {
+    for (&uid, ..) in users.lock().expect("error users.lock()").iter() {
         if uid == my_id {
             user_exist = true;
             break;
@@ -209,15 +203,17 @@ fn user_connected(
 
     // Use an unbounded channel to handle buffering and flushing of messages
     // to the WebSocket...
-    let (tx, rx) = mpsc::unbounded_channel();
-    tokio::task::spawn(rx.forward(user_ws_tx).map(|result| {
-        if let Err(e) = result {
-            eprintln!("websocket send error: {}", e);
-        }
-    }));
+    let (tx, rx) = mpsc::unbounded();
+    warp::spawn(
+        rx.map_err(|()| -> warp::Error { unreachable!("unbounded rx never errors") })
+            .forward(user_ws_tx)
+            .map(|_tx_rx| ())
+            .map_err(|ws_err| info!("WebSocket send error: {}", ws_err)),
+    );
+
     // Save the sender in our list of connected users.
     info!("users.insert: {}", my_id);
-    unwrap!(users.lock()).insert(my_id, tx);
+    users.lock().expect("error uses.lock()").insert(my_id, tx);
 
     // Return a `Future` that is basically a state machine managing
     // this specific user's connection.
@@ -228,9 +224,7 @@ fn user_connected(
         std::sync::Mutex<
             std::collections::HashMap<
                 usize,
-                tokio::sync::mpsc::UnboundedSender<
-                    std::result::Result<warp::filters::ws::Message, warp::Error>,
-                >,
+                futures::sync::mpsc::UnboundedSender<warp::ws::Message>,
             >,
         >,
     >::clone(&users);
@@ -238,21 +232,25 @@ fn user_connected(
     user_ws_rx
         // Every time the user sends a message, call receive message
         .for_each(move |msg| {
-            receive_message(my_id, &unwrap!(msg), &users);
-            future::ready(())
+            receive_message(my_id, &msg, &users);
+            Ok(())
         })
         // for_each will keep processing as long as the user stays
         // connected. Once they disconnect, then...
         .then(move |result| {
             user_disconnected(my_id, &users2);
-            future::ok(result)
+            result
+        })
+        // If at any time, there was a WebSocket error, log here...
+        .map_err(move |e| {
+            info!("WebSocket error(uid={}): {}", my_id, e);
         })
 }
 
 ///on receive WebSocket message
-fn receive_message(ws_uid_of_message: usize, message: &Message, users: &Users) {
+fn receive_message(ws_uid_of_message: usize, messg: &Message, users: &Users) {
     // Skip any non-Text messages...
-    let msg = if let Ok(s) = message.to_str() {
+    let msg = if let Ok(s) = messg.to_str() {
         s
     } else {
         return;
@@ -276,12 +274,19 @@ fn receive_message(ws_uid_of_message: usize, message: &Message, users: &Users) {
             players_ws_uid,
         } => {
             info!("MsgRequestWsUid: {} {}", my_ws_uid, players_ws_uid);
-            let j = unwrap!(serde_json::to_string(&WsMessage::MsgResponseWsUid {
-                your_ws_uid: ws_uid_of_message,
-                server_version: env!("CARGO_PKG_VERSION").to_string(),
-            }));
+            let j = serde_json::to_string(
+                &WsMessage::MsgResponseWsUid {
+                    your_ws_uid: ws_uid_of_message,
+                    server_version: env!("CARGO_PKG_VERSION").to_string(),
+                     })
+                .expect("serde_json::to_string(&WsMessage::MsgResponseWsUid { your_ws_uid: ws_uid_of_message })");
             info!("send MsgResponseWsUid: {}", j);
-            match unwrap!(unwrap!(users.lock()).get(&ws_uid_of_message)).send(Ok(Message::text(j)))
+            match users
+                .lock()
+                .expect("error users.lock()")
+                .get(&ws_uid_of_message)
+                .unwrap()
+                .unbounded_send(Message::text(j))
             {
                 Ok(()) => (),
                 Err(_disconnected) => {}
@@ -294,28 +299,34 @@ fn receive_message(ws_uid_of_message: usize, message: &Message, users: &Users) {
 
             let j = unwrap!(serde_json::to_string(&WsMessage::MsgPong { msg_id }));
             //info!("send MsgPong: {}", j);
-            match unwrap!(unwrap!(users.lock()).get(&ws_uid_of_message)).send(Ok(Message::text(j)))
+            match users
+                .lock()
+                .expect("error users.lock()")
+                .get(&ws_uid_of_message)
+                .unwrap()
+                .unbounded_send(Message::text(j))
             {
                 Ok(()) => (),
                 Err(_disconnected) => {}
             }
         }
-        WsMessage::MsgPong { .. } => {
+        WsMessage::MsgPong { msg_id: _ } => {
             unreachable!("mem6_server must not receive MsgPong");
         }
         WsMessage::MsgResponseWsUid { .. } => {
             info!("MsgResponseWsUid: {}", "");
         }
-        WsMessage::MsgJoin { players_ws_uid, .. }
-        | WsMessage::MsgStartGame { players_ws_uid, .. }
+
+        WsMessage::MsgStartGame { players_ws_uid, .. }
         | WsMessage::MsgClick1stCard { players_ws_uid, .. }
         | WsMessage::MsgClick2ndCard { players_ws_uid, .. }
-        | WsMessage::MsgDrinkEnd { players_ws_uid, .. }
         | WsMessage::MsgTakeTurn { players_ws_uid, .. }
         | WsMessage::MsgGameOver { players_ws_uid, .. }
-        | WsMessage::MsgPlayAgain { players_ws_uid, .. }
         | WsMessage::MsgAllGameData { players_ws_uid, .. }
         | WsMessage::MsgAck { players_ws_uid, .. }
+        | WsMessage::MsgJoin { players_ws_uid, .. }
+        | WsMessage::MsgDrinkEnd { players_ws_uid, .. }
+        | WsMessage::MsgPlayAgain { players_ws_uid, .. }
         | WsMessage::MsgAskPlayer1ForResync { players_ws_uid, .. } => {
             send_to_other_players(users, ws_uid_of_message, &new_msg, &players_ws_uid)
         }
@@ -333,7 +344,7 @@ fn send_to_other_players(
 
     let vec_players_ws_uid: Vec<usize> = unwrap!(serde_json::from_str(players_ws_uid));
 
-    for (&uid, tx) in unwrap!(users.lock()).iter() {
+    for (&uid, tx) in users.lock().expect("error users.lock()").iter() {
         let mut is_player;
         is_player = false;
         for &pl_ws_uid in &vec_players_ws_uid {
@@ -342,7 +353,7 @@ fn send_to_other_players(
             }
         }
         if ws_uid_of_message != uid && is_player {
-            match tx.send(Ok(Message::text(String::from(new_msg)))) {
+            match tx.unbounded_send(Message::text(String::from(new_msg))) {
                 Ok(()) => (),
                 Err(_disconnected) => {
                     // The tx is disconnected, our `user_disconnected` code
@@ -359,6 +370,6 @@ fn user_disconnected(my_id: usize, users: &Users) {
     info!("good bye user: {}", my_id);
 
     // Stream closed up, so remove from the user list
-    unwrap!(users.lock()).remove(&my_id);
+    users.lock().expect("users.lock").remove(&my_id);
 }
 //endregion

@@ -56,7 +56,11 @@ impl Render for RootRenderingComponent {
         if self.html_template.is_empty() {
             htmltemplatemod::empty_div(cx)
         } else {
-            unwrap!(htmltemplatemod::get_root_element(self, bump))
+            unwrap!(htmltemplatemod::get_root_element(
+                self,
+                bump,
+                &self.html_template
+            ))
         }
     }
 }

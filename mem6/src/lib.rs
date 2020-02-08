@@ -295,6 +295,8 @@ mod htmltemplatemod;
 //endregion
 
 //region: use statements
+use crate::rootrenderingcomponentmod::RootRenderingComponent;
+
 use unwrap::unwrap;
 use rand::rngs::SmallRng;
 use rand::SeedableRng;

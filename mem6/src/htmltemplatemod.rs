@@ -1,5 +1,5 @@
 //! **htmltemplatemod**  
-//!
+//! html templating for dodrio
 
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::*;
@@ -10,33 +10,46 @@ use dodrio::bumpalo::{self, Bump};
 use unwrap::unwrap;
 use reader_for_microxml::*;
 
-/// get root element Node. The html template is in the field rrc.html_template.  
+#[derive(Clone)]
+enum HtmlOrSvg {
+    Html,
+    Svg,
+}
+
+/// get root element Node.   
 /// I wanted to use dodrio::Node, but it has only private methods.  
-/// I must use element_builder.  
+/// I must use dodrio element_builder.  
 pub fn get_root_element<'a>(
     rrc: &RootRenderingComponent,
     bump: &'a Bump,
+    html_template: &str,
 ) -> Result<Node<'a>, String> {
-    let mut pp = ReaderForMicroXml::new(&rrc.html_template);
+    let mut reader_for_microxml = ReaderForMicroXml::new(html_template);
     let mut dom_path = Vec::new();
     let mut root_element;
-    let mut html_or_svg = 0; //0-html, 1-svg
+    let mut html_or_svg_local = HtmlOrSvg::Html;
     #[allow(clippy::single_match_else, clippy::wildcard_enum_match_arm)]
-    match pp.read_event() {
+    match reader_for_microxml.read_event() {
         Event::StartElement(name) => {
             dom_path.push(name.to_owned());
             let name = bumpalo::format!(in bump, "{}",name).into_bump_str();
             root_element = ElementBuilder::new(bump, name);
             if name == "svg" {
-                html_or_svg = 1; //svg
+                html_or_svg_local = HtmlOrSvg::Svg;
             }
-            if html_or_svg == 1 {
+            if let HtmlOrSvg::Svg = html_or_svg_local {
                 //svg elements have this namespace
                 root_element = root_element.namespace(Some("http://www.w3.org/2000/svg"));
             }
             // recursive function can return error
-            match fill_element_builder(rrc, &mut pp, root_element, bump, html_or_svg, &mut dom_path)
-            {
+            match fill_element_builder(
+                rrc,
+                &mut reader_for_microxml,
+                root_element,
+                bump,
+                &html_or_svg_local,
+                &mut dom_path,
+            ) {
                 //the methods are move, so I have to return the moved value
                 Ok(new_root_element) => root_element = new_root_element,
                 Err(err) => {
@@ -60,7 +73,7 @@ pub fn get_root_element<'a>(
 #[allow(clippy::too_many_lines, clippy::type_complexity)]
 fn fill_element_builder<'a>(
     rrc: &RootRenderingComponent,
-    pp: &mut ReaderForMicroXml,
+    reader_for_microxml: &mut ReaderForMicroXml,
     mut element: ElementBuilder<
         'a,
         bumpalo::collections::Vec<'a, Listener<'a>>,
@@ -68,7 +81,7 @@ fn fill_element_builder<'a>(
         bumpalo::collections::Vec<'a, Node<'a>>,
     >,
     bump: &'a Bump,
-    mut html_or_svg: usize,
+    html_or_svg_parent: &HtmlOrSvg,
     dom_path: &mut Vec<String>,
 ) -> Result<
     ElementBuilder<
@@ -81,8 +94,10 @@ fn fill_element_builder<'a>(
 > {
     let mut replace_string: Option<String> = None;
     let mut replace_node: Option<Node> = None;
+    // the children inherits from the parent, but cannot change the parent
+    let mut html_or_svg_local = html_or_svg_parent.clone();
     loop {
-        match pp.read_event() {
+        match reader_for_microxml.read_event() {
             Event::StartElement(name) => {
                 dom_path.push(name.to_owned());
                 //construct a child element and fill it (recursive)
@@ -90,19 +105,25 @@ fn fill_element_builder<'a>(
                 let mut child_element = ElementBuilder::new(bump, name);
                 if name == "svg" {
                     //this tagname changes to svg now
-                    html_or_svg = 1; //svg
+                    html_or_svg_local = HtmlOrSvg::Svg;
                 }
-                if html_or_svg == 1 {
+                if let HtmlOrSvg::Svg = html_or_svg_local {
                     //this is the
                     //svg elements have this namespace
                     child_element = child_element.namespace(Some("http://www.w3.org/2000/svg"));
                 }
                 if name == "foreignObject" {
                     //this tagname changes to html for children, not for this element
-                    html_or_svg = 0; //html
+                    html_or_svg_local = HtmlOrSvg::Html;
                 }
-                child_element =
-                    fill_element_builder(rrc, pp, child_element, bump, html_or_svg, dom_path)?;
+                child_element = fill_element_builder(
+                    rrc,
+                    reader_for_microxml,
+                    child_element,
+                    bump,
+                    &html_or_svg_local,
+                    dom_path,
+                )?;
                 if let Some(repl_node) = replace_node {
                     //logmod::debug_write(&format!("child is repl_node {}", ""));
                     element = element.child(repl_node);
