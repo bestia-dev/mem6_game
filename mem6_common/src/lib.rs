@@ -76,12 +76,12 @@ pub enum WsMessage {
     ///MsgPing
     MsgPing {
         ///random msg_id
-        msg_id: usize,
+        msg_id: u32,
     },
     ///MsgPong
     MsgPong {
         ///random msg_id
-        msg_id: usize,
+        msg_id: u32,
     },
     /// join the group
     MsgJoin {
@@ -133,7 +133,7 @@ pub enum WsMessage {
         msg_id: usize,
     },
     /// drink end
-    MsgDrinkEnd{
+    MsgDrinkEnd {
         ///this identifies the smartphone, but not the player-in-turn
         my_ws_uid: usize,
         ///all players for the server to know whom to send msg

@@ -42,14 +42,14 @@ pub fn start_router(vdom: VdomWeak) {
                             if rrc.local_route != local_route {
                                 if local_route == "#p02" {
                                     let vdom = vdom.clone();
-                                    fetchgameconfigmod::async_fetch_game_config_request(rrc, vdom);
+                                    fetchgameconfigmod::async_fetch_game_config_request(rrc, &vdom);
                                     rrc.local_route = "p02_start_a_group.html".to_owned();
                                 } else if local_route == "#p03" {
                                     rrc.local_route = "p03_join_a_group.html".to_owned();
                                 } else if local_route.starts_with("#p04") {
-                                    let mut spl = local_route.split(".");
-                                    spl.next().unwrap();
-                                    let group_id = spl.next().unwrap();
+                                    let mut spl = local_route.split('.');
+                                    unwrap!(spl.next());
+                                    let group_id = unwrap!(spl.next());
                                     logmod::debug_write(&format!("group_id: {}", &group_id));
                                     //add the first player so the msg can be sent to him
                                     let ws_uid = unwrap!(group_id.parse::<usize>());
@@ -79,11 +79,10 @@ pub fn start_router(vdom: VdomWeak) {
                                     rrc.local_route = "p01_start.html".to_owned();
                                 }
 
-                                let url = format!("{}", rrc.local_route);
-                                let v2 = vdom.clone();
+                                let url = rrc.local_route.to_string();
 
                                 //I cannot simply await here because this closure is not async
-                                spawn_local(async_fetch_and_write_to_rrc_html_template(url, v2));
+                                spawn_local(async_fetch_and_write_to_rrc_html_template(url, vdom));
                             }
                         }
                     })
@@ -100,6 +99,7 @@ pub fn start_router(vdom: VdomWeak) {
     // Note that if we ever intended to unmount our app, we would want to
     // provide a method for removing this router's event listener and cleaning
     // up after ourselves.
+    #[allow(clippy::as_conversions)]
     let on_hash_change = Closure::wrap(Box::new(on_hash_change) as Box<dyn FnMut()>);
     let window = unwrap!(web_sys::window());
     window
@@ -134,7 +134,11 @@ pub async fn async_fetch_and_write_to_rrc_html_template(url: String, vdom: VdomW
                     let pos1 = resp_body_text.find("<body>").unwrap_or(0);
                     let pos2 = resp_body_text.find("</body>").unwrap_or(0);
                     if pos1 != 0 {
-                        resp_body_text = resp_body_text[pos1 + 6..pos2].to_string();
+                        #[allow(clippy::integer_arithmetic)]
+                        {
+                            resp_body_text =
+                                unwrap!(resp_body_text.get(pos1 + 6..pos2)).to_string();
+                        }
                     }
                     //logmod::debug_write(&format!("body: {}", resp_body_text));
                     rrc.html_template = resp_body_text;

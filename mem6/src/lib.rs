@@ -269,7 +269,6 @@ mod ackmsgmod;
 mod divfordebuggingmod;
 mod divgridcontainermod;
 mod divplayeractionsmod;
-mod divplayersandscoresmod;
 mod fetchmod;
 mod fetchgamesmetadatamod;
 mod fetchgameconfigmod;
@@ -339,8 +338,8 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
 
     //split it ba # hash
     let cl = location_href.clone();
-    let mut spl = cl.split("#");
-    location_href = spl.next().unwrap().to_string();
+    let mut spl = cl.split('#');
+    location_href = unwrap!(spl.next()).to_string();
     let href_hash = spl.next().unwrap_or("");
 
     logmod::debug_write(&format!("location_href: {}", &location_href));

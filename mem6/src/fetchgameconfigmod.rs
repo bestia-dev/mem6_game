@@ -12,7 +12,7 @@ use wasm_bindgen_futures::spawn_local;
 ///async fetch for gameconfig.json
 pub fn async_fetch_game_config_request(
     rrc: &mut RootRenderingComponent,
-    vdom_weak: dodrio::VdomWeak,
+    vdom_weak: &dodrio::VdomWeak,
 ) {
     let url_config = format!(
         "{}/content/{}/game_config.json",

@@ -5,20 +5,18 @@
 
 //region: use
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
-use crate::websocketcommunicationmod;
-use crate::gamedatamod;
-use crate::logmod;
+use crate::*;
 
 use mem6_common::{GameStatus, Player, WsMessage};
 
-//use unwrap::unwrap;
+use unwrap::unwrap;
 
 //endregion
 
 /// group_id is the ws_uid of the first player
 pub fn on_load_joined(rrc: &mut RootRenderingComponent) {
     rrc.game_data.game_status = GameStatus::StatusJoined;
-    let group_id = format!("{}", rrc.game_data.players.get(0).unwrap().ws_uid);
+    let _group_id = format!("{}", unwrap!(rrc.game_data.players.get(0)).ws_uid);
     logmod::debug_write(&format!(
         "StatusJoined send {}",
         rrc.game_data.players_ws_uid
@@ -38,20 +36,21 @@ pub fn on_msg_joined(rrc: &mut RootRenderingComponent, his_ws_uid: usize, his_ni
     //logmod::debug_write(&format!("on_msg_joined {}",his_ws_uid));
     if rrc.game_data.my_player_number == 1 {
         //push if not exists
-        let mut ws_uid_exists=false;
-        for x in &rrc.game_data.players{
-            if x.ws_uid==his_ws_uid{
-                ws_uid_exists=true;
+        let mut ws_uid_exists = false;
+        for x in &rrc.game_data.players {
+            if x.ws_uid == his_ws_uid {
+                ws_uid_exists = true;
                 break;
             }
         }
-        if !ws_uid_exists{
+        if !ws_uid_exists {
             rrc.game_data.players.push(Player {
                 ws_uid: his_ws_uid,
                 nickname: his_nickname,
                 points: 0,
             });
-            rrc.game_data.players_ws_uid = gamedatamod::prepare_players_ws_uid(&rrc.game_data.players);
+            rrc.game_data.players_ws_uid =
+                gamedatamod::prepare_players_ws_uid(&rrc.game_data.players);
         }
     }
 }

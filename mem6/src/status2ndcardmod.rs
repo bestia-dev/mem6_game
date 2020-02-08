@@ -110,11 +110,11 @@ pub fn on_msg_ack_player_click2nd_card(
     if ackmsgmod::remove_ack_msg_from_queue(rrc, player_ws_uid, msg_id) {
         let is_point = get_is_point(rrc);
         update_click_2nd_card_point(rrc, is_point);
-        if !is_point {
+        if is_point {
+            //nothing because all happens after the Drink/no drink dialog
+        } else {
             logmod::debug_write("no");
             statustaketurnmod::on_click_take_turn(rrc, vdom);
-        } else {
-            //nothing because all happens after the Drink/no drink dialog
         }
     }
     //TODO: timer if after 3 seconds the ack is not received resend the msg

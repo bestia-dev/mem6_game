@@ -1,6 +1,8 @@
 // websocketcommunication.rs
 //! module that cares about WebSocket communication
 
+#![allow(clippy::panic)]
+
 //region: use
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::*;
@@ -34,8 +36,8 @@ pub fn setup_ws_connection(
     //let mut loc_href = String::from("ws://192.168.1.57:80/");
     logmod::debug_write(&loc_href);
     //remove the hash at the end
-    if let Some(pos) = loc_href.find("#") {
-        loc_href = loc_href[..pos].to_string();
+    if let Some(pos) = loc_href.find('#') {
+        loc_href = unwrap!(loc_href.get(..pos)).to_string();
     }
     logmod::debug_write(&loc_href);
     loc_href.push_str("mem6ws/");
@@ -73,10 +75,10 @@ pub fn setup_ws_connection(
         let ws2 = ws_c.clone();
         let timeout = gloo_timers::callback::Interval::new(10_000, move || {
             // Do something after the one second timeout is up!
-            let usize_time = usize_time();
-            let msg = WsMessage::MsgPing { msg_id: usize_time };
+            let u32_size = u32_size();
+            let msg = WsMessage::MsgPing { msg_id: u32_size };
             ws_send_msg(ws2.as_ref(), &msg);
-            //logmod::console_log(format!("gloo timer: {}", usize_time).as_str());
+            //logmod::console_log(format!("gloo timer: {}", u32_size).as_str());
         });
         // Since we don't plan on cancelling the timeout, call `forget`.
         timeout.forget();
@@ -93,12 +95,11 @@ pub fn setup_ws_connection(
 }
 
 ///usize of time
-#[allow(clippy::integer_arithmetic)] //it will not overflow, the minutes are max 60
-pub fn usize_time() -> usize {
+#[allow(clippy::integer_arithmetic)]
+//u32 will not overflow, the minutes are max 60, so 6 mio
+pub fn u32_size() -> u32 {
     let now = js_sys::Date::new_0();
-    now.get_minutes() as usize * 100_000 as usize
-        + now.get_seconds() as usize * 1_000 as usize
-        + now.get_milliseconds() as usize
+    now.get_minutes() * 100_000 + now.get_seconds() * 1_000 + now.get_milliseconds()
 }
 
 /// receive WebSocket msg callback.
@@ -316,6 +317,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
 }
 
 /// on error write it on the screen for debugging
+#[allow(clippy::as_conversions)]
 pub fn setup_ws_onerror(ws: &WebSocket, vdom: dodrio::VdomWeak) {
     let onerror_callback = Closure::wrap(Box::new(move |e: ErrorEvent| {
         let err_text = format!("error event {:?}", e);
@@ -341,7 +343,9 @@ pub fn setup_ws_onerror(ws: &WebSocket, vdom: dodrio::VdomWeak) {
     ws.set_onerror(Some(onerror_callback.as_ref().unchecked_ref()));
     onerror_callback.forget();
 }
+
 /// on close WebSocket connection
+#[allow(clippy::as_conversions)]
 pub fn setup_ws_onclose(ws: &WebSocket, vdom: dodrio::VdomWeak) {
     let onclose_callback = Closure::wrap(Box::new(move |e: ErrorEvent| {
         let err_text = format!("ws_onclose {:?}", e);
@@ -384,12 +388,10 @@ pub fn setup_all_ws_events(ws: &WebSocket, vdom: dodrio::VdomWeak) {
 pub fn ws_send_msg(ws: &WebSocket, ws_message: &WsMessage) {
     let x = ws.send_with_str(&unwrap!(serde_json::to_string(ws_message)));
     // retry send a 5 times before panicking
-    if let Err(err) = x {
+    if let Err(_err) = x {
         let ws = ws.clone();
         let ws_message = ws_message.clone();
         spawn_local({
-            let ws = ws.clone();
-            let ws_message = ws_message.clone();
             async move {
                 let mut retries: usize = 1;
                 while retries <= 5 {
@@ -397,10 +399,14 @@ pub fn ws_send_msg(ws: &WebSocket, ws_message: &WsMessage) {
                     //Wait 10 ms
                     TimeoutFuture::new(10).await;
                     let x = ws.send_with_str(&unwrap!(serde_json::to_string(&ws_message)));
-                    if let Ok(y) = x {
+                    if let Ok(_y) = x {
                         break;
                     }
-                    retries += 1;
+                    // this will go until 5 and cannot overflow
+                    #[allow(clippy::integer_arithmetic)]
+                    {
+                        retries += 1;
+                    }
                 }
                 if retries == 0 {
                     panic!("error 5 times retry ws_send_msg");

@@ -21,6 +21,7 @@ pub fn get_root_element<'a>(
     let mut dom_path = Vec::new();
     let mut root_element;
     let mut html_or_svg = 0; //0-html, 1-svg
+    #[allow(clippy::single_match_else, clippy::wildcard_enum_match_arm)]
     match pp.read_event() {
         Event::StartElement(name) => {
             dom_path.push(name.to_owned());
@@ -56,6 +57,7 @@ pub fn get_root_element<'a>(
 /// Moves & Returns ElementBuilder or error.  
 /// I must `move` ElementBuilder because its methods are all `move`.  
 /// It makes the code less readable. It is only good for chaining and type changing.  
+#[allow(clippy::too_many_lines, clippy::type_complexity)]
 fn fill_element_builder<'a>(
     rrc: &RootRenderingComponent,
     pp: &mut ReaderForMicroXml,
@@ -117,20 +119,17 @@ fn fill_element_builder<'a>(
                     let repl_txt = fncallermod::call_function_string(rrc, fn_name);
                     replace_string = Some(repl_txt);
                 } else if name.starts_with("data-on-") {
-                    // TODO: add a listener.
                     // Only one listener for now because the api does not give me other method.
-                    let event_to_listen = &name[8..];
                     let fn_name = value.to_string();
                     let event_to_listen =
-                        bumpalo::format!(in bump, "{}",event_to_listen).into_bump_str();
+                        bumpalo::format!(in bump, "{}",&unwrap!(name.get(8..))).into_bump_str();
                     //logmod::debug_write(&format!("create listener {}", &fn_name));
-                    element = element.on(event_to_listen, move |root, vdom, event| {
+                    element = element.on(event_to_listen, move |root, vdom, _event| {
                         let fn_name = fn_name.clone();
-                        let vdom = vdom.clone();
                         let rrc = root.unwrap_mut::<RootRenderingComponent>();
                         //call a function from string
                         //logmod::debug_write(&format!("fn_name {}", fn_name));
-                        fncallermod::call_listener(vdom, rrc, fn_name);
+                        fncallermod::call_listener(&vdom, rrc, &fn_name);
                     });
                 } else {
                     let name = bumpalo::format!(in bump, "{}",name).into_bump_str();
@@ -169,11 +168,11 @@ fn fill_element_builder<'a>(
                 //with the result of a function
                 // it must look like <!--t=get_text-->
                 if txt.starts_with("t=") {
-                    let fn_name = &txt[2..];
+                    let fn_name = unwrap!(txt.get(2..));
                     let repl_txt = fncallermod::call_function_string(rrc, fn_name);
                     replace_string = Some(repl_txt);
                 } else if txt.starts_with("n=") {
-                    let fn_name = &txt[2..];
+                    let fn_name = unwrap!(txt.get(2..));
                     let repl_node = fncallermod::call_function_node(rrc, bump, fn_name);
                     //logmod::debug_write(&format!("n= {:?}", &repl_node));
                     replace_node = Some(repl_node);
@@ -194,7 +193,7 @@ fn fill_element_builder<'a>(
                 }
             }
             Event::Error(error_msg) => {
-                return Err(format!("{}", error_msg));
+                return Err(error_msg.to_string());
             }
             Event::Eof => {
                 return Ok(element);
@@ -203,7 +202,7 @@ fn fill_element_builder<'a>(
     }
 }
 
-//get en empty div node
+/// get en empty div node
 pub fn empty_div<'a>(cx: &mut RenderContext<'a>) -> Node<'a> {
     div(&cx).finish()
 }
@@ -219,7 +218,10 @@ pub fn decode_5_xml_control_characters(input: &str) -> String {
     let control_character_names = vec!["&quot;", "&apos;", "&amp;", "&lt;", "&gt;"];
     let mut output = input.to_owned();
     for i in 0..control_character_symbols.len() {
-        output = output.replace(control_character_names[i], control_character_symbols[i])
+        output = output.replace(
+            unwrap!(control_character_names.get(i)),
+            unwrap!(control_character_symbols.get(i)),
+        )
     }
     //return
     output

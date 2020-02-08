@@ -3,7 +3,6 @@
 
 //region: use, const
 use crate::*;
-use mem6_common::*;
 
 use unwrap::unwrap;
 //use dodrio::builder::text;
@@ -14,7 +13,9 @@ use web_sys::WebSocket;
 /// Root Rendering Component has all
 /// the data needed for play logic and rendering
 pub struct RootRenderingComponent {
+    /// local # hash route
     pub local_route: String,
+    /// downloaded html template
     pub html_template: String,
     ///game data will be inside of Root
     pub game_data: gamedatamod::GameData,
@@ -37,8 +38,8 @@ impl RootRenderingComponent {
         self.game_data.card_index_of_first_click = 0;
         self.game_data.card_index_of_second_click = 0;
         //reset points
-        for x in &mut self.game_data.players{
-            x.points=0;
+        for x in &mut self.game_data.players {
+            x.points = 0;
         }
     }
 }
@@ -55,7 +56,7 @@ impl Render for RootRenderingComponent {
         if self.html_template.is_empty() {
             htmltemplatemod::empty_div(cx)
         } else {
-            unwrap!(htmltemplatemod::get_root_element(&self, bump))
+            unwrap!(htmltemplatemod::get_root_element(self, bump))
         }
     }
 }
