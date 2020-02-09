@@ -1,7 +1,6 @@
 //! **htmltemplatemod**  
 //! html templating for dodrio
 
-use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::*;
 
 use dodrio::builder::*;

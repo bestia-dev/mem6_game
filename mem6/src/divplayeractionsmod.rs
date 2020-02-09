@@ -3,7 +3,6 @@
 //! and get a click action from the user
 
 //region: use
-use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::*;
 
 use mem6_common::{GameStatus};

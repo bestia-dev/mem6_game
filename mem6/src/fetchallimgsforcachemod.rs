@@ -2,7 +2,6 @@
 //! fetch all imgs for cache
 
 //region: use
-use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::*;
 
 use unwrap::unwrap;

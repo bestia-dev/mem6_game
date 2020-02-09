@@ -2,8 +2,7 @@
 //! fetch game_config
 
 //region: use
-use crate::rootrenderingcomponentmod::RootRenderingComponent;
-use crate::fetchmod;
+use crate::*;
 
 use unwrap::unwrap;
 use wasm_bindgen_futures::spawn_local;

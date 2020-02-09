@@ -1,11 +1,6 @@
 //! A simple `#`-fragment router for dodrio.
 
-use crate::rootrenderingcomponentmod::RootRenderingComponent;
-use crate::fetchmod;
-use crate::statusjoinedmod;
-use crate::gamedatamod;
-use crate::logmod;
-use crate::fetchgameconfigmod;
+use crate::*;
 
 //use mem6_common::{GameStatus, Player, WsMessage};
 use mem6_common::{Player};

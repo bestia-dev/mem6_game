@@ -4,13 +4,8 @@
 #![allow(clippy::panic)]
 
 //region: use
-use crate::gamedatamod::CardStatusCardFace;
-use crate::rootrenderingcomponentmod::RootRenderingComponent;
-use crate::logmod;
-use crate::ackmsgmod;
-use crate::divgridcontainermod;
-use crate::utilsmod;
-use crate::status2ndcardmod;
+use crate::gamedatamod::*;
+use crate::*;
 
 use mem6_common::{GameStatus, WsMessage, MsgAckKind};
 
@@ -118,9 +113,8 @@ pub fn div_on_1st_card<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node
         dodrio!(bump,
         <div >
             <h2 class="h2_must_do_something">
-                {vec![text(bumpalo::format!(in bump, "Play {} {}",
-                unwrap!(rrc.game_data.players.get(rrc.game_data.player_turn-1)).nickname,
-                utilsmod::ordinal_numbers(rrc.game_data.player_turn))
+                {vec![text(bumpalo::format!(in bump, "Play {}",
+                unwrap!(rrc.game_data.players.get(rrc.game_data.player_turn-1)).nickname)
                 .into_bump_str())]}
             </h2>
         </div>
@@ -129,9 +123,8 @@ pub fn div_on_1st_card<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node
         //return wait for the other player
         dodrio!(bump,
         <h2 class="h2_user_must_wait">
-            {vec![text(bumpalo::format!(in bump, "Wait for {} {}",
-            unwrap!(rrc.game_data.players.get(rrc.game_data.player_turn-1)).nickname,
-            utilsmod::ordinal_numbers(rrc.game_data.player_turn)
+            {vec![text(bumpalo::format!(in bump, "Wait for {}",
+            unwrap!(rrc.game_data.players.get(rrc.game_data.player_turn-1)).nickname
             ).into_bump_str())]}
         </h2>
         )

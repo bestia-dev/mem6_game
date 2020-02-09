@@ -2,9 +2,7 @@
 //! fetch the names of all games
 
 //region: use
-use crate::rootrenderingcomponentmod::RootRenderingComponent;
-use crate::fetchmod;
-use crate::gamedatamod;
+use crate::*;
 
 use unwrap::unwrap;
 use wasm_bindgen_futures::spawn_local;

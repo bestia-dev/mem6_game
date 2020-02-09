@@ -4,8 +4,7 @@
 #![allow(clippy::panic)]
 
 //region: use
-//use crate::logmod;
-use crate::rootrenderingcomponentmod::RootRenderingComponent;
+use crate::*;
 
 //use unwrap::unwrap;
 use unwrap::unwrap;

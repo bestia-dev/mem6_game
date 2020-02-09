@@ -4,7 +4,7 @@
 #![allow(clippy::panic)]
 
 //region: use
-use crate::rootrenderingcomponentmod::RootRenderingComponent;
+use crate::*;
 
 //use unwrap::unwrap;
 use dodrio::builder::text;

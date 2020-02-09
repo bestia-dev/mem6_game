@@ -12,9 +12,7 @@
 #![allow(clippy::panic)]
 
 //region: use
-use crate::rootrenderingcomponentmod::RootRenderingComponent;
-use crate::websocketcommunicationmod;
-use crate::logmod;
+use crate::*;
 
 use mem6_common::{GameStatus, WsMessage};
 

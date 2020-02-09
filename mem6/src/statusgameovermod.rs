@@ -4,7 +4,6 @@
 #![allow(clippy::panic)]
 
 //region: use
-use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::*;
 use mem6_common::*;
 
@@ -18,9 +17,9 @@ use typed_html::dodrio;
 ///play again
 pub fn div_game_over<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
     //game over
-    // only the first player can choose Play again? 
+    // only the first player can choose Play again?
     // other players are already joined to the group
-    if rrc.game_data.my_player_number==1{
+    if rrc.game_data.my_player_number == 1 {
         dodrio!(bump,
             <div class="div_clickable" onclick={
                         move |root, vdom, _event| {
@@ -43,7 +42,7 @@ pub fn div_game_over<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'
                 </h2>
             </div>
         )
-    }else{
+    } else {
         dodrio!(bump,
             <div >
                 <h2 class="h2_user_must_wait">

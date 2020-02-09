@@ -1,5 +1,6 @@
 # mem6 TODO
 
+- don't put hash in history. it is not good.
 - move decode xml control characters into reader for microxml
 - can I have font on my web server, not on googles?
 - html templating instead of typed_html macros

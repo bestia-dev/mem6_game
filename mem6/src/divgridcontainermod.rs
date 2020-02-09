@@ -6,7 +6,6 @@
 
 //region: use, const
 use crate::gamedatamod::{CardStatusCardFace, Size2d};
-use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::*;
 
 use mem6_common::GameStatus;
