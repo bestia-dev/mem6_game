@@ -387,29 +387,29 @@ pub fn setup_all_ws_events(ws: &WebSocket, vdom: dodrio::VdomWeak) {
 ///generic send ws message
 pub fn ws_send_msg(ws: &WebSocket, ws_message: &WsMessage) {
     let x = ws.send_with_str(&unwrap!(serde_json::to_string(ws_message)));
-    // retry send a 5 times before panicking
+    // retry send a 10 times before panicking
     if let Err(_err) = x {
         let ws = ws.clone();
         let ws_message = ws_message.clone();
         spawn_local({
             async move {
                 let mut retries: usize = 1;
-                while retries <= 5 {
+                while retries <= 10 {
                     logmod::debug_write(&format!("send retries: {}", retries));
-                    //Wait 10 ms
-                    TimeoutFuture::new(10).await;
+                    //Wait 100 ms
+                    TimeoutFuture::new(100).await;
                     let x = ws.send_with_str(&unwrap!(serde_json::to_string(&ws_message)));
                     if let Ok(_y) = x {
                         break;
                     }
-                    // this will go until 5 and cannot overflow
+                    // this will go until 10 and cannot overflow
                     #[allow(clippy::integer_arithmetic)]
                     {
                         retries += 1;
                     }
                 }
                 if retries == 0 {
-                    panic!("error 5 times retry ws_send_msg");
+                    panic!("error 10 times retry ws_send_msg");
                 }
             }
         });
