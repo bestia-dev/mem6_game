@@ -38,7 +38,7 @@ pub fn start_router(vdom: VdomWeak) {
                                     let vdom = vdom.clone();
                                     fetchgameconfigmod::async_fetch_game_config_request(rrc, &vdom);
                                     rrc.local_route = "p02_start_a_group.html".to_owned();
-                                } else if local_route == "#p03" {
+                                } else if local_route.starts_with("#p03") {
                                     let group_id = get_url_param_in_hash_after_dot(&local_route);
                                     push_first_player_as_group_id(rrc, group_id);
                                     rrc.local_route = "p03_join_a_group.html".to_owned();

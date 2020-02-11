@@ -60,7 +60,7 @@ pub struct GameConfig {
     pub grid_items_ver: usize,
 }
 
-///the 3 possible statuss of one card
+///the 3 possible statuses of one card
 #[derive(Serialize, Deserialize, AsRefStr)]
 pub enum CardStatusCardFace {
     ///card face down
@@ -75,7 +75,7 @@ pub enum CardStatusCardFace {
 pub struct Card {
     ///card status
     pub status: CardStatusCardFace,
-    ///field for src attribute for HTML element imagea and filename of card image
+    ///field for src attribute for HTML element image and filename of card image
     pub card_number_and_img_src: usize,
     ///field for id attribute for HTML element image contains the card index
     pub card_index_and_id: usize,
@@ -196,8 +196,8 @@ impl GameData {
         //endregion
 
         //region: shuffle the numbers
-        let vrndslice = vec_of_random_numbers.as_mut_slice();
-        vrndslice.shuffle(&mut rng);
+        let rnd_slice = vec_of_random_numbers.as_mut_slice();
+        rnd_slice.shuffle(&mut rng);
         //endregion
 
         //region: create Cards from random numbers
