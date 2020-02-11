@@ -58,7 +58,8 @@ impl Render for RootRenderingComponent {
             unwrap!(htmltemplatemod::get_root_element(
                 self,
                 bump,
-                &self.html_template
+                &self.html_template,
+                htmltemplatemod::HtmlOrSvg::Html
             ))
         }
     }

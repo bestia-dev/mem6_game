@@ -39,14 +39,19 @@ pub fn start_router(vdom: VdomWeak) {
                                     fetchgameconfigmod::async_fetch_game_config_request(rrc, &vdom);
                                     rrc.local_route = "p02_start_a_group.html".to_owned();
                                 } else if local_route.starts_with("#p03") {
-                                    let group_id = get_url_param_in_hash_after_dot(&local_route);
-                                    push_first_player_as_group_id(rrc, group_id);
+                                    if local_route.contains('.') {
+                                        let group_id =
+                                            get_url_param_in_hash_after_dot(&local_route);
+                                        push_first_player_as_group_id(rrc, group_id);
+                                    }
                                     rrc.local_route = "p03_join_a_group.html".to_owned();
                                 } else if local_route.starts_with("#p04") {
                                     let group_id = get_url_param_in_hash_after_dot(&local_route);
                                     push_first_player_as_group_id(rrc, group_id);
                                     statusjoinedmod::on_load_joined(rrc);
                                     rrc.local_route = "p04_wait_to_start.html".to_owned();
+                                } else if local_route == "#p05" {
+                                    rrc.local_route = "p05_choose_game.html".to_owned();
                                 } else if local_route == "#p06" {
                                     rrc.local_route = "p06_drink.html".to_owned();
                                 } else if local_route == "#p07" {

@@ -9,11 +9,10 @@ use crate::*;
 //use unwrap::unwrap;
 use unwrap::unwrap;
 use wasm_bindgen::JsCast; //don't remove this. It is needed for dyn_into.
-use wasm_bindgen_futures::spawn_local;
-//endregion
+                          //endregion
 
 ///save nickname from html input elements to local storage and rrc
-pub fn save_nickname_to_localstorage(vdom: &dodrio::VdomWeak) {
+pub fn save_nickname_to_localstorage(rrc: &mut RootRenderingComponent) {
     let window = unwrap!(web_sys::window(), "window");
     let document = unwrap!(window.document(), "document");
 
@@ -35,20 +34,7 @@ pub fn save_nickname_to_localstorage(vdom: &dodrio::VdomWeak) {
 
     //To change the data in rrc I must use the future `vdom.with_component`
     //it will be executed at the next tick to avoid concurrent data races.
-
-    spawn_local({
-        let vdom = vdom.clone();
-        async move {
-            let _rslt = vdom
-                .with_component({
-                    move |root| {
-                        let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                        rrc.game_data.my_nickname = nickname_string;
-                    }
-                })
-                .await;
-        }
-    });
+    rrc.game_data.my_nickname = nickname_string;
 }
 
 ///load nickname from local storage
@@ -61,7 +47,7 @@ pub fn load_nickname() -> String {
 }
 
 /// if there is already a nickname don't blink
-pub fn blink_or_not(rrc: &RootRenderingComponent) -> String {
+pub fn blink_or_not_nickname(rrc: &RootRenderingComponent) -> String {
     if rrc.game_data.my_nickname == "nickname" {
         "blink".to_owned()
     } else {
@@ -70,8 +56,8 @@ pub fn blink_or_not(rrc: &RootRenderingComponent) -> String {
 }
 
 /// save on every key stroke
-pub fn nickname_onkeyup(vdom: &dodrio::VdomWeak) {
+pub fn nickname_onkeyup(rrc: &mut RootRenderingComponent, vdom: &dodrio::VdomWeak) {
     //logmod::debug_write("on key up");
-    save_nickname_to_localstorage(vdom);
+    save_nickname_to_localstorage(rrc);
     vdom.schedule_render();
 }

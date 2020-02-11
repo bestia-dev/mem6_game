@@ -13,8 +13,8 @@ use dodrio::{
 use unwrap::unwrap;
 
 /// Svg elements are different because they have a namespace
-#[derive(Clone)]
-enum HtmlOrSvg {
+#[derive(Clone, Copy)]
+pub enum HtmlOrSvg {
     /// html element
     Html,
     /// svg element
@@ -28,11 +28,12 @@ pub fn get_root_element<'a>(
     rrc: &RootRenderingComponent,
     bump: &'a Bump,
     html_template: &str,
+    html_or_svg_parent: HtmlOrSvg,
 ) -> Result<Node<'a>, String> {
     let mut reader_for_microxml = ReaderForMicroXml::new(html_template);
     let mut dom_path = Vec::new();
     let mut root_element;
-    let mut html_or_svg_local = HtmlOrSvg::Html;
+    let mut html_or_svg_local = html_or_svg_parent;
     #[allow(clippy::single_match_else, clippy::wildcard_enum_match_arm)]
     match reader_for_microxml.read_event() {
         Event::StartElement(name) => {
@@ -52,7 +53,7 @@ pub fn get_root_element<'a>(
                 &mut reader_for_microxml,
                 root_element,
                 bump,
-                &html_or_svg_local,
+                html_or_svg_local,
                 &mut dom_path,
             ) {
                 //the methods are move, so I have to return the moved value
@@ -86,7 +87,7 @@ fn fill_element_builder<'a>(
         bumpalo::collections::Vec<'a, Node<'a>>,
     >,
     bump: &'a Bump,
-    html_or_svg_parent: &HtmlOrSvg,
+    html_or_svg_parent: HtmlOrSvg,
     dom_path: &mut Vec<String>,
 ) -> Result<
     ElementBuilder<
@@ -99,9 +100,11 @@ fn fill_element_builder<'a>(
 > {
     let mut replace_string: Option<String> = None;
     let mut replace_node: Option<Node> = None;
-    // the children inherits from the parent, but cannot change the parent
-    let mut html_or_svg_local = html_or_svg_parent.clone();
+    let mut html_or_svg_local;
+    //loop through all the siblings in this iteration
     loop {
+        // the children inherits html_or_svg from the parent, but cannot change the parent
+        html_or_svg_local = html_or_svg_parent;
         match reader_for_microxml.read_event() {
             Event::StartElement(name) => {
                 dom_path.push(name.to_owned());
@@ -126,7 +129,7 @@ fn fill_element_builder<'a>(
                     reader_for_microxml,
                     child_element,
                     bump,
-                    &html_or_svg_local,
+                    html_or_svg_local,
                     dom_path,
                 )?;
                 if let Some(repl_node) = replace_node {

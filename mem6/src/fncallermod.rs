@@ -19,11 +19,13 @@ pub fn call_function_string(rrc: &RootRenderingComponent, sx: &str) -> String {
     //logmod::debug_write(&format!("call_function_string: {}", &sx));
     match sx {
         "my_nickname" => rrc.game_data.my_nickname.to_owned(),
-        "blink_or_not" => divnicknamemod::blink_or_not(rrc),
+        "blink_or_not_nickname" => divnicknamemod::blink_or_not_nickname(rrc),
+        "blink_or_not_group_id" => blink_or_not_group_id(rrc),
         "my_ws_uid" => format!("{}", rrc.game_data.my_ws_uid),
         "players_count" => format!("{} ", rrc.game_data.players.len() - 1),
         "game_name" => rrc.game_data.game_name.to_string(),
         "group_id_joined" => group_id_joined(rrc),
+        "url_to_join" => format!("bestia.dev/mem6/#p03.{}", rrc.game_data.my_ws_uid),
         "gameboard_btn" => {
             //different class depend on status
             "btn".to_owned()
@@ -80,13 +82,16 @@ pub fn call_listener(vdom: &dodrio::VdomWeak, rrc: &mut RootRenderingComponent, 
     //logmod::debug_write(&format!("call_listener: {}", &sx));
     match sx {
         "nickname_onkeyup" => {
-            divnicknamemod::nickname_onkeyup(vdom);
+            divnicknamemod::nickname_onkeyup(rrc, vdom);
         }
         "start_a_group_onclick" => {
             open_new_local_page("#p02");
         }
         "join_a_group_onclick" => {
             open_new_local_page("#p03");
+        }
+        "choose_a_game_onclick" => {
+            open_new_local_page("#p05");
         }
         "start_game_onclick" => {
             statusgamedatainitmod::on_click_start_game(rrc);
@@ -179,7 +184,12 @@ pub fn svg_qrcode_to_node<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> N
     let qr = unwrap!(qrcode53bytes::Qr::new(&link));
     let svg_template = qrcode53bytes::SvgDodrioRenderer::new(222, 222).render(&qr);
 
-    unwrap!(htmltemplatemod::get_root_element(rrc, bump, &svg_template))
+    unwrap!(htmltemplatemod::get_root_element(
+        rrc,
+        bump,
+        &svg_template,
+        htmltemplatemod::HtmlOrSvg::Svg
+    ))
 }
 
 /// the arrow to the right
@@ -229,10 +239,26 @@ pub fn open_new_local_page(hash: &str) {
     let _x = window.location().set_hash(hash);
 }
 
-/// send a message to the first player
 /// return the text for html template replace
 pub fn group_id_joined(rrc: &RootRenderingComponent) -> String {
-    let group_id = unwrap!(rrc.game_data.players.get(0)).ws_uid;
+    //if the first players is not yet pushed
+    let mut group_id = match rrc.game_data.players.get(0) {
+        Some(ggg) => ggg.ws_uid,
+        None => 0,
+    };
+    //the  first player cannot join himself
+    if group_id == rrc.game_data.my_ws_uid {
+        group_id = 0;
+    }
     let group_id = format!("{}", group_id);
     group_id
+}
+
+/// if there is already a group_id don't blink
+pub fn blink_or_not_group_id(rrc: &RootRenderingComponent) -> String {
+    if group_id_joined(rrc) == "0" {
+        "blink".to_owned()
+    } else {
+        "".to_owned()
+    }
 }
