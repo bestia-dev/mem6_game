@@ -39,7 +39,7 @@ pub fn div_game_over<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'
                     }}>
                 <h2 class="h2_user_can_click">
                         {vec![text(
-                            bumpalo::format!(in bump, "Game Over! Play again{}?", "").into_bump_str(),
+                            bumpalo::format!(in bump, "Play again{}?", "").into_bump_str(),
                         )]}
                 </h2>
             </div>

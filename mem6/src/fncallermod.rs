@@ -84,6 +84,12 @@ pub fn call_listener(vdom: &dodrio::VdomWeak, rrc: &mut RootRenderingComponent, 
         "nickname_onkeyup" => {
             divnicknamemod::nickname_onkeyup(rrc, vdom);
         }
+        "open_youtube1" => {
+            open_new_tab("https://www.youtube.com/watch?v=VQdhDw-hE8s");
+        }
+        "open_youtube2" => {
+            open_new_tab("https://www.youtube.com/watch?v=2RT9AzqEfLo");
+        }
         "start_a_group_onclick" => {
             open_new_local_page("#p02");
         }
@@ -180,7 +186,7 @@ pub fn call_function_node<'a>(rrc: &RootRenderingComponent, bump: &'a Bump, sx: 
 
 /// qrcode svg
 pub fn svg_qrcode_to_node<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
-    let link = format!("https://bestia.dev/mem6/#p03.{}", group_id_joined(rrc));
+    let link = format!("https://bestia.dev/mem6/#p03.{}", rrc.game_data.my_ws_uid);
     let qr = unwrap!(qrcode53bytes::Qr::new(&link));
     let svg_template = qrcode53bytes::SvgDodrioRenderer::new(222, 222).render(&qr);
 
@@ -236,7 +242,13 @@ fn get_input_value(id: &str) -> String {
 /// fn open new local page with # window.location.set_hash
 pub fn open_new_local_page(hash: &str) {
     let window = unwrap!(web_sys::window());
-    let _x = window.location().set_hash(hash);
+    let _x = window.location().replace(hash);
+}
+
+/// fn open new tab
+pub fn open_new_tab(url: &str) {
+    let window = unwrap!(web_sys::window());
+    let win = window.open_with_url_and_target(url, "_blank");
 }
 
 /// return the text for html template replace
