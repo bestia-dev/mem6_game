@@ -2,13 +2,15 @@
 
 use crate::*;
 use mem6_common::*;
-use qrcode53bytes::*;
+//use qrcode53bytes::*;
 
 use unwrap::unwrap;
 use wasm_bindgen::JsCast; //don't remove this. It is needed for dyn_into.
-use dodrio::bumpalo::{self, Bump};
-use dodrio::Node;
-use dodrio::builder::*;
+use dodrio::{
+    bumpalo::{self, Bump},
+    Node,
+    builder::*,
+};
 use typed_html::dodrio;
 
 /// html_templating functions that return a String
@@ -158,15 +160,7 @@ pub fn call_function_node<'a>(rrc: &RootRenderingComponent, bump: &'a Bump, sx: 
             return node;
         }
         "svg_qrcode" => {
-            let link = format!("https://bestia.dev/mem6/#p04.{}",group_id_joined(rrc));
-            let qr = qrcode53bytes::Qr::new(&link).unwrap();
-            let svg_str = qrcode53bytes::SvgRenderer::new()
-                .light_module(Color::new(255, 255, 255))
-                .dark_module(Color::new(0, 0, 0))
-                .dimensions(222, 222)
-                .render(&qr);
-            let node = svg_qrcode_to_node(rrc, bump, &svg_str);
-            return node;
+            return svg_qrcode_to_node(rrc, bump);
         }
         _ => {
             let node = dodrio!(bump,
@@ -179,13 +173,13 @@ pub fn call_function_node<'a>(rrc: &RootRenderingComponent, bump: &'a Bump, sx: 
     }
 }
 
-//qrcode svg
-pub fn svg_qrcode_to_node<'a>(
-    rrc: &RootRenderingComponent,
-    bump: &'a Bump,
-    svg_template: &str,
-) -> Node<'a> {
-    unwrap!(htmltemplatemod::get_root_element(rrc, bump, svg_template))
+/// qrcode svg
+pub fn svg_qrcode_to_node<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
+    let link = format!("https://bestia.dev/mem6/#p03.{}", group_id_joined(rrc));
+    let qr = unwrap!(qrcode53bytes::Qr::new(&link));
+    let svg_template = qrcode53bytes::SvgDodrioRenderer::new(222, 222).render(&qr);
+
+    unwrap!(htmltemplatemod::get_root_element(rrc, bump, &svg_template))
 }
 
 /// the arrow to the right

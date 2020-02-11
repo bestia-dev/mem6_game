@@ -297,6 +297,7 @@ mod htmltemplatemod;
 //region: use statements
 // this are then used in all the mods if I have there use crate::*;
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
+use crate::gamedatamod::*;
 
 use unwrap::unwrap;
 use rand::rngs::SmallRng;

@@ -9,11 +9,10 @@
 //endregion
 
 //region: use
-//use crate::logmod;
+//use crate::*;
 
 use unwrap::unwrap;
-use wasm_bindgen::JsValue;
-use wasm_bindgen::{JsCast};
+use wasm_bindgen::{JsValue, JsCast};
 use web_sys::{Request, RequestInit, Response};
 use wasm_bindgen_futures::{JsFuture};
 //endregion

@@ -4,15 +4,16 @@
 #![allow(clippy::panic)]
 
 //region: use
-use crate::gamedatamod::CardStatusCardFace;
 use crate::*;
 
 use mem6_common::*;
 
 use unwrap::unwrap;
-use dodrio::builder::text;
-use dodrio::bumpalo::{self, Bump};
-use dodrio::Node;
+use dodrio::{
+    builder::text,
+    bumpalo::{self, Bump},
+    Node,
+};
 use typed_html::dodrio;
 //endregion
 

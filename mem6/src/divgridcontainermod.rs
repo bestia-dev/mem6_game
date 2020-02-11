@@ -5,20 +5,20 @@
 #![allow(clippy::panic)]
 
 //region: use, const
-use crate::gamedatamod::{CardStatusCardFace, Size2d};
 use crate::*;
 
-use mem6_common::GameStatus;
+use mem6_common::*;
 
 use unwrap::unwrap;
-use conv::{ConvUtil};
-use conv::{ConvAsUtil};
-use dodrio::bumpalo::{self, Bump};
-use dodrio::Node;
+use conv::{ConvUtil, ConvAsUtil};
+use dodrio::{
+    bumpalo::{self, Bump},
+    Node,
+};
+use wasm_bindgen::JsCast; //don't remove this. It is needed for dyn_into.
 use typed_html::dodrio;
 //use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast; //don't remove this. It is needed for dyn_into.
-                          //use web_sys::console;
+//use web_sys::console;
 
 ///fixed filename for card face down
 const SRC_FOR_CARD_FACE_DOWN: &str = "img/mem_cardfacedown.png";

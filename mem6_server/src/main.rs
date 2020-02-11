@@ -61,14 +61,16 @@ use mem6_common::{WsMessage};
 use unwrap::unwrap;
 use clap::{App, Arg};
 use env_logger::Env;
-use futures::sync::mpsc;
-use futures::{Future, Stream};
-use std::collections::HashMap;
-use std::net::SocketAddr;
-use std::net::{IpAddr, Ipv4Addr};
-use std::sync::{Arc, Mutex};
-use warp::ws::{Message, WebSocket};
-use warp::Filter;
+use futures::{sync::mpsc, Future, Stream};
+use std::{
+    collections::HashMap,
+    net::{SocketAddr, IpAddr, Ipv4Addr},
+    sync::{Arc, Mutex},
+};
+use warp::{
+    ws::{Message, WebSocket},
+    Filter,
+};
 use log::info;
 //endregion
 

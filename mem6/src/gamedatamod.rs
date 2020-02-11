@@ -8,10 +8,7 @@ use mem6_common::*;
 
 use serde_derive::{Serialize, Deserialize};
 use unwrap::unwrap;
-use rand::rngs::SmallRng;
-use rand::seq::SliceRandom;
-use rand::SeedableRng;
-use rand::Rng;
+use rand::{rngs::SmallRng, seq::SliceRandom, SeedableRng, Rng};
 use strum_macros::AsRefStr;
 use web_sys::WebSocket;
 //endregion

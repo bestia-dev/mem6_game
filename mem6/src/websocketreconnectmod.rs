@@ -14,12 +14,14 @@
 //region: use
 use crate::*;
 
-use mem6_common::{GameStatus, WsMessage};
+use mem6_common::*;
 
 use unwrap::unwrap;
-use dodrio::builder::text;
-use dodrio::bumpalo::{self, Bump};
-use dodrio::Node;
+use dodrio::{
+    builder::text,
+    bumpalo::{self, Bump},
+    Node,
+};
 use typed_html::dodrio;
 //endregion
 

@@ -10,8 +10,7 @@ use mem6_common::*;
 
 use unwrap::unwrap;
 use js_sys::Reflect;
-use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
+use wasm_bindgen::{prelude::*, JsCast};
 use wasm_bindgen_futures::spawn_local;
 use web_sys::{ErrorEvent, WebSocket};
 use gloo_timers::future::TimeoutFuture;

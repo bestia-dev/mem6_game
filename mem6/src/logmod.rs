@@ -1,7 +1,7 @@
 // logmod.rs
 //! logging in wasm
 
-use crate::sessionstoragemod;
+use crate::*;
 
 use web_sys::console;
 use wasm_bindgen::prelude::*;

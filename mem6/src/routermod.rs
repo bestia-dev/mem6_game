@@ -2,8 +2,7 @@
 
 use crate::*;
 
-//use mem6_common::{GameStatus, Player, WsMessage};
-use mem6_common::{Player};
+use mem6_common::*;
 
 use dodrio::VdomWeak;
 use wasm_bindgen::{prelude::*, JsCast};
@@ -40,26 +39,12 @@ pub fn start_router(vdom: VdomWeak) {
                                     fetchgameconfigmod::async_fetch_game_config_request(rrc, &vdom);
                                     rrc.local_route = "p02_start_a_group.html".to_owned();
                                 } else if local_route == "#p03" {
+                                    let group_id = get_url_param_in_hash_after_dot(&local_route);
+                                    push_first_player_as_group_id(rrc, group_id);
                                     rrc.local_route = "p03_join_a_group.html".to_owned();
                                 } else if local_route.starts_with("#p04") {
-                                    let mut spl = local_route.split('.');
-                                    unwrap!(spl.next());
-                                    let group_id = unwrap!(spl.next());
-                                    logmod::debug_write(&format!("group_id: {}", &group_id));
-                                    //add the first player so the msg can be sent to him
-                                    let ws_uid = unwrap!(group_id.parse::<usize>());
-                                    rrc.game_data.players.clear();
-                                    rrc.game_data.players.push(Player {
-                                        ws_uid,
-                                        nickname: "FirstPlayer".to_string(),
-                                        points: 0,
-                                    });
-                                    rrc.game_data.players_ws_uid =
-                                        gamedatamod::prepare_players_ws_uid(&rrc.game_data.players);
-                                    logmod::debug_write(&format!(
-                                        "players_ws_uid: {}",
-                                        &rrc.game_data.players_ws_uid
-                                    ));
+                                    let group_id = get_url_param_in_hash_after_dot(&local_route);
+                                    push_first_player_as_group_id(rrc, group_id);
                                     statusjoinedmod::on_load_joined(rrc);
                                     rrc.local_route = "p04_wait_to_start.html".to_owned();
                                 } else if local_route == "#p06" {
@@ -101,6 +86,30 @@ pub fn start_router(vdom: VdomWeak) {
         .add_event_listener_with_callback("hashchange", on_hash_change.as_ref().unchecked_ref())
         .unwrap_throw();
     on_hash_change.forget();
+}
+
+/// get the first param after hash in local route after dot
+/// example &p04.1234 -> 1234
+fn get_url_param_in_hash_after_dot(local_route: &str) -> &str {
+    let mut spl = local_route.split('.');
+    unwrap!(spl.next());
+    unwrap!(spl.next())
+}
+
+/// add the first player as group_id so the msg can be sent to him
+pub fn push_first_player_as_group_id(rrc: &mut RootRenderingComponent, group_id: &str) {
+    let ws_uid = unwrap!(group_id.parse::<usize>());
+    rrc.game_data.players.clear();
+    rrc.game_data.players.push(Player {
+        ws_uid,
+        nickname: "FirstPlayer".to_string(),
+        points: 0,
+    });
+    rrc.game_data.players_ws_uid = gamedatamod::prepare_players_ws_uid(&rrc.game_data.players);
+    logmod::debug_write(&format!(
+        "players_ws_uid: {}",
+        &rrc.game_data.players_ws_uid
+    ));
 }
 
 /// Fetch the html_template and save it in rrc.html_template  

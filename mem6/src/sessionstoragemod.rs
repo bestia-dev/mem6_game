@@ -2,7 +2,7 @@
 //! for debugging texts accessible everywhere
 
 //region: use
-use crate::logmod;
+use crate::*;
 
 use unwrap::unwrap;
 //endregion
@@ -38,7 +38,7 @@ pub fn get_debug_text() -> String {
     let window = unwrap!(web_sys::window(), "window");
     let ls = unwrap!(unwrap!(window.session_storage()));
     let empty1 = "".to_string();
-    //return 
+    //return
     unwrap!(ls.get_item("debug_text")).unwrap_or(empty1)
 }
 

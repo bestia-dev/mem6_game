@@ -7,9 +7,11 @@
 //region: use, const
 use crate::*;
 
-use dodrio::builder::text;
-use dodrio::bumpalo::{self, Bump};
-use dodrio::Node;
+use dodrio::{
+    builder::text,
+    bumpalo::{self, Bump},
+    Node,
+};
 use typed_html::dodrio;
 //endregion
 

@@ -61,18 +61,20 @@
 //region: use statements
 use mem6_common::{WsMessage};
 
-use std::collections::HashMap;
-use std::sync::{Arc, Mutex};
+use std::{
+    collections::HashMap,
+    sync::{Arc, Mutex},
+    net::{SocketAddr, IpAddr, Ipv4Addr},
+};
 use futures::{future, Future, FutureExt, StreamExt};
 use tokio::sync::mpsc;
-use warp::ws::{Message, WebSocket};
-use warp::Filter;
-
+use warp::{
+    ws::{Message, WebSocket},
+    Filter,
+};
 use unwrap::unwrap;
 use clap::{App, Arg};
 use env_logger::Env;
-use std::net::SocketAddr;
-use std::net::{IpAddr, Ipv4Addr};
 use log::info;
 //endregion
 

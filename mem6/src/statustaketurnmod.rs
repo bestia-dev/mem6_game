@@ -4,7 +4,7 @@
 //region: use
 use crate::*;
 
-use mem6_common::{GameStatus, WsMessage, MsgAckKind};
+use mem6_common::*;
 
 use unwrap::unwrap;
 //endregion

@@ -3,15 +3,21 @@
 
 use crate::*;
 
-use dodrio::builder::*;
-use dodrio::{Node, Listener, Attribute, RenderContext};
-use dodrio::bumpalo::{self, Bump};
-use unwrap::unwrap;
 use reader_for_microxml::*;
 
+use dodrio::{
+    Node, Listener, Attribute, RenderContext,
+    bumpalo::{self, Bump},
+    builder::*,
+};
+use unwrap::unwrap;
+
+/// Svg elements are different because they have a namespace
 #[derive(Clone)]
 enum HtmlOrSvg {
+    /// html element
     Html,
+    /// svg element
     Svg,
 }
 

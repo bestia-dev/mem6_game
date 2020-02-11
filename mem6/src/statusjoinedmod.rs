@@ -6,7 +6,7 @@
 //region: use
 use crate::*;
 
-use mem6_common::{GameStatus, Player, WsMessage};
+use mem6_common::*;
 
 use unwrap::unwrap;
 
