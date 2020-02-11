@@ -1,7 +1,9 @@
-# mem6_game
+# "unForGetTable" (dev name mem6)
 
 ![loc](https://img.shields.io/badge/lines_of_Rust_code-4591-success)
 ![loc](https://img.shields.io/badge/lines_of_docs/comments-1231-informational)
+
+a drinking game to loose memory  
 
 **Learning Rust Wasm/WebAssembly, Virtual Dom Dodrio, WebSocket communication and PWA (Progressive Web Apps) - part six**  
 *Things are changing fast. This is the situation on 2020-02-01.*
