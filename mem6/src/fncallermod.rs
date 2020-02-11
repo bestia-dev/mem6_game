@@ -90,6 +90,9 @@ pub fn call_listener(vdom: &dodrio::VdomWeak, rrc: &mut RootRenderingComponent, 
         "open_youtube2" => {
             open_new_tab("https://www.youtube.com/watch?v=2RT9AzqEfLo");
         }
+        "open_instructions" => {
+            open_new_tab("#p08");
+        }
         "start_a_group_onclick" => {
             open_new_local_page("#p02");
         }
@@ -248,7 +251,7 @@ pub fn open_new_local_page(hash: &str) {
 /// fn open new tab
 pub fn open_new_tab(url: &str) {
     let window = unwrap!(web_sys::window());
-    let win = window.open_with_url_and_target(url, "_blank");
+    let _w = window.open_with_url_and_target(url, "_blank");
 }
 
 /// return the text for html template replace
