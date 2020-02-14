@@ -13,19 +13,20 @@
           data-on-click="open_youtube1">"unForGetTable"</text>
     <text x="50%" y="25%" class="h2">join the group</text>
 
-    <text x="50%" y="35%" class="h6">Enter group id:</text>text>
+    <text x="50%" y="35%" class="h6">Enter group id:</text>
     <foreignObject x="0%" y="37%" width="100%" height="10%">
       <input data-t-class="blink_or_not_group_id" class="blink"
-             autofocus="autofocus" id="input_group_id" tabindex="0"
-             placeholder="9999" data-t-value="group_id_joined" value="" />
+             id="input_group_id" placeholder="9999"
+             data-t-value="group_id_joined" value=""
+             data-on-keyup="group_id_onkeyup" />
     </foreignObject>
 
-    <text x="50%" y="55%" class="h6">Write your nickname</text>text>
+    <text x="50%" y="55%" class="h6">Write your nickname</text>
     <foreignObject x="0%" y="57%" width="100%" height="17%">
       <input data-t-class="blink_or_not_nickname" class="blink"
              id="input_nickname" placeholder="nickname"
              data-t-value="my_nickname" value=""
-             data-on-keyup="nickname_onkeyup"></input>
+             data-on-keyup="nickname_onkeyup" />
     </foreignObject>
 
     <rect class="btn" y="79.5%" data-on-click="join_group_on_click" />

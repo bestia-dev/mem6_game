@@ -78,11 +78,19 @@ pub fn call_function_string(rrc: &RootRenderingComponent, sx: &str) -> String {
 }
 /// html_templating functions for listeners
 /// get a clone of the VdomWeak
-pub fn call_listener(vdom: &dodrio::VdomWeak, rrc: &mut RootRenderingComponent, sx: &str) {
+pub fn call_listener(
+    vdom: &dodrio::VdomWeak,
+    rrc: &mut RootRenderingComponent,
+    sx: &str,
+    event: web_sys::Event,
+) {
     //logmod::debug_write(&format!("call_listener: {}", &sx));
     match sx {
         "nickname_onkeyup" => {
-            divnicknamemod::nickname_onkeyup(rrc, vdom);
+            divnicknamemod::nickname_onkeyup(rrc, vdom, event);
+        }
+        "group_id_onkeyup" => {
+            divnicknamemod::group_id_onkeyup(rrc, vdom, event);
         }
         "open_youtube1" => {
             open_new_tab("https://www.youtube.com/watch?v=VQdhDw-hE8s");
@@ -231,7 +239,7 @@ pub fn game_type_left_onclick(rrc: &mut RootRenderingComponent, vdom: &dodrio::V
 }
 
 /// get value form input html element by id
-fn get_input_value(id: &str) -> String {
+pub fn get_input_value(id: &str) -> String {
     let document = unwrap!(utilsmod::window().document(), "document");
     //logmod::debug_write(&format!("before get_element_by_id: {}", id));
     let input_el = unwrap!(document.get_element_by_id(id));

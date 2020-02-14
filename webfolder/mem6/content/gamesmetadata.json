@@ -11,6 +11,11 @@
 			"description":"animals"
 		},
 		{
+			"folder": "morsecode",
+			"name": "morsecode",
+			"description":"morsecode"
+		},
+		{
 			"folder": "numbers",
 			"name": "numbers",
 			"description":"numbers"

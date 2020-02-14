@@ -60,9 +60,35 @@ pub fn blink_or_not_nickname(rrc: &RootRenderingComponent) -> String {
 }
 
 /// save on every key stroke
-pub fn nickname_onkeyup(rrc: &mut RootRenderingComponent, vdom: &dodrio::VdomWeak) {
-    logmod::debug_write("on key up");
-    save_nickname_to_localstorage(rrc);
+pub fn nickname_onkeyup(
+    rrc: &mut RootRenderingComponent,
+    vdom: &dodrio::VdomWeak,
+    event: web_sys::Event,
+) {
+    //logmod::debug_write("on key up");
+    let keyboard_event = unwrap!(event.dyn_into::<web_sys::KeyboardEvent>());
+    //logmod::debug_write(&keyboard_event.key());
+    if keyboard_event.key() == "Enter" {
+        //open page start group
+        fncallermod::open_new_local_page("#p02");
+    } else {
+        save_nickname_to_localstorage(rrc);
+    }
+    //vdom.schedule_render();
+}
 
-    vdom.schedule_render();
+/// group id key stroke
+pub fn group_id_onkeyup(
+    rrc: &mut RootRenderingComponent,
+    vdom: &dodrio::VdomWeak,
+    event: web_sys::Event,
+) {
+    //logmod::debug_write("on key up");
+    let keyboard_event = unwrap!(event.dyn_into::<web_sys::KeyboardEvent>());
+    //logmod::debug_write(&keyboard_event.key());
+    if keyboard_event.key() == "Enter" {
+        //open page start group
+        let group_id = fncallermod::get_input_value("input_group_id");
+        fncallermod::open_new_local_page(&format!("#p04.{}", group_id));
+    }
 }

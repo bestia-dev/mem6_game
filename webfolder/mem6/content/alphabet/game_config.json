@@ -1,8 +1,8 @@
 {
     "card_moniker": [
-        "", "alpha", "bravo", "charlie", "delta", "echo", "foxtrot", "golf", "hotel", "india",
-        "juliet", "kilo", "lima", "mike", "november", "oscar", "papa", "quebec", "romeo", "sierra",
-        "tango", "uniform", "victor", "whiskey", "xray", "yankee", "zulu"
+        "", "A A A   a a a", "B B B   b b b", "C C C   c c c", "D D D   d d d", "E E E   e e e", "F F F   f f f", "G G G   g g g", "H H H   h h h", "I I I   i i i",
+        "J J J   j j j", "K K K   k k k", "L L L   l l l", "M M M   m m m", "N N N   n n n", "O O O   o o o", "P P P   p p p", "Q Q Q   q q q", "R R R   r r r", "S S S   s s s",
+        "T T T   t t t", "U U U   u u u", "V V V   v v v", "W W W   w w w", "X X X   x x x", "Y Y Y   y y y", "Z Z Z   z z z"
     ],
     "img_filename": [
         "", "a.png", "b.png", "c.png", "d.png", "e.png", "f.png", "g.png", "h.png", "i.png",

@@ -153,12 +153,12 @@ fn fill_element_builder<'a>(
                     let event_to_listen =
                         bumpalo::format!(in bump, "{}",&unwrap!(name.get(8..))).into_bump_str();
                     //logmod::debug_write(&format!("create listener {}", &fn_name));
-                    element = element.on(event_to_listen, move |root, vdom, _event| {
+                    element = element.on(event_to_listen, move |root, vdom, event| {
                         let fn_name = fn_name.clone();
                         let rrc = root.unwrap_mut::<RootRenderingComponent>();
                         //call a function from string
                         //logmod::debug_write(&format!("fn_name {}", fn_name));
-                        fncallermod::call_listener(&vdom, rrc, &fn_name);
+                        fncallermod::call_listener(&vdom, rrc, &fn_name, event);
                     });
                 } else {
                     let name = bumpalo::format!(in bump, "{}",name).into_bump_str();

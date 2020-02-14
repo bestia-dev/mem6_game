@@ -1,0 +1,21 @@
+{
+    "card_moniker": [
+        "", "alpha", "bravo", "charlie", "delta", "echo", "foxtrot", "golf", "hotel", "india",
+        "juliet", "kilo", "lima", "mike", "november", "oscar", "papa", "quebec", "romeo", "sierra",
+        "tango", "uniform", "victor", "whiskey", "xray", "yankee", "zulu"
+    ],
+    "img_filename": [
+        "", "a.png", "b.png", "c.png", "d.png", "e.png", "f.png", "g.png", "h.png", "i.png",
+        "j.png", "k.png", "l.png", "m.png", "n.png", "o.png", "p.png", "q.png", "r.png", "s.png",
+        "t.png", "u.png", "v.png", "w.png", "x.png", "y.png", "z.png"
+    ],
+    "sound_filename": [
+        "", "a.mp3", "b.mp3", "c.mp3", "d.mp3", "e.mp3", "f.mp3", "g.mp3", "h.mp3", "i.mp3",
+        "j.mp3", "k.mp3", "l.mp3", "m.mp3", "n.mp3", "o.mp3", "p.mp3", "q.mp3", "r.mp3", "s.mp3",
+        "t.mp3", "u.mp3", "v.mp3", "w.mp3", "x.mp3", "y.mp3", "z.mp3"
+    ],
+    "card_width": 116,
+    "card_height": 116,
+    "grid_items_hor": 3,
+    "grid_items_ver": 3
+}
