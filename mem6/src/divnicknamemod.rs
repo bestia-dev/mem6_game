@@ -60,11 +60,7 @@ pub fn blink_or_not_nickname(rrc: &RootRenderingComponent) -> String {
 }
 
 /// save on every key stroke
-pub fn nickname_onkeyup(
-    rrc: &mut RootRenderingComponent,
-    vdom: &dodrio::VdomWeak,
-    event: web_sys::Event,
-) {
+pub fn nickname_onkeyup(rrc: &mut RootRenderingComponent, event: web_sys::Event) {
     //logmod::debug_write("on key up");
     let keyboard_event = unwrap!(event.dyn_into::<web_sys::KeyboardEvent>());
     //logmod::debug_write(&keyboard_event.key());
@@ -78,11 +74,7 @@ pub fn nickname_onkeyup(
 }
 
 /// group id key stroke
-pub fn group_id_onkeyup(
-    rrc: &mut RootRenderingComponent,
-    vdom: &dodrio::VdomWeak,
-    event: web_sys::Event,
-) {
+pub fn group_id_onkeyup(event: web_sys::Event) {
     //logmod::debug_write("on key up");
     let keyboard_event = unwrap!(event.dyn_into::<web_sys::KeyboardEvent>());
     //logmod::debug_write(&keyboard_event.key());

@@ -1,7 +1,6 @@
 /*region elements - styles across all the elements */
 
 /* roboto-regular - latin-ext_latin locally hosted*/
-/*
 @font-face {
     font-family: 'Roboto';
     font-style: normal;
@@ -10,7 +9,6 @@
          url('../fonts/roboto-v20-latin-ext_latin-regular.woff2') format('woff2'), 
          url('../fonts/roboto-v20-latin-ext_latin-regular.woff') format('woff'); 
 }
-*/
 
 html { 
     /*the font-size is very much dependent on the font-family*/
@@ -131,10 +129,27 @@ rect.btn{
 
 .green{
     fill:green;
+    color: green;
 }
 
 .red{
     fill:red;
+    color: red;
+}
+
+.yellow{
+    fill:yellow;
+    color: yellow;
+}
+
+.orange{
+    fill:orange;
+    color: orange;
+}
+
+.blue{
+    fill:blue;
+    color: blue;
 }
 
 rect.rounded{

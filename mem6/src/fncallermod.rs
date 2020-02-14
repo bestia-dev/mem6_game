@@ -87,10 +87,10 @@ pub fn call_listener(
     //logmod::debug_write(&format!("call_listener: {}", &sx));
     match sx {
         "nickname_onkeyup" => {
-            divnicknamemod::nickname_onkeyup(rrc, vdom, event);
+            divnicknamemod::nickname_onkeyup(rrc, event);
         }
         "group_id_onkeyup" => {
-            divnicknamemod::group_id_onkeyup(rrc, vdom, event);
+            divnicknamemod::group_id_onkeyup(event);
         }
         "open_youtube1" => {
             open_new_tab("https://www.youtube.com/watch?v=VQdhDw-hE8s");
