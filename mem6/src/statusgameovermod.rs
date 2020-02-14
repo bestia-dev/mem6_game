@@ -7,7 +7,7 @@
 use crate::*;
 use mem6_common::*;
 
-use unwrap::unwrap;
+//use unwrap::unwrap;
 use dodrio::{
     builder::text,
     bumpalo::{self, Bump},
@@ -26,7 +26,6 @@ pub fn div_game_over<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'
             <div class="div_clickable" onclick={
                         move |root, vdom, _event| {
                         let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                        let window = unwrap!(web_sys::window(), "error: web_sys::window");
                         websocketcommunicationmod::ws_send_msg(
                             &rrc.game_data.ws,
                             &WsMessage::MsgPlayAgain {

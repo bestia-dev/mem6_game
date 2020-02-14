@@ -2,12 +2,12 @@
 <html lang="en">
 
 <head>
-  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-  <title>mem6</title>
-  <meta name="Description"
-        content="UnForGetTable a drinking game to loose memory">
-  <link rel="stylesheet" href="css/mem6.css">
-  <!--
+      <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+      <title>mem6</title>
+      <meta name="Description"
+            content="UnForGetTable a drinking game to lose memory">
+      <link rel="stylesheet" href="css/mem6.css">
+      <!--
 A lot of tricks is needed to simply make the game fill the width of the smartphone and go fullscreen.
 IOS Safari does not have the FullScreen API, but Android Chrome has it.
 The best option is the browser menu item "Add to home screen" on both iPhone and Android.
@@ -15,72 +15,75 @@ Even better is a true and complete PWA (Progressive Web App), but that requires 
 The meta viewport properties user-scalable and maximum-scale does not work in many cases: 
 on Safari or in Chrome with accessibility settings (bigger fonts). So I will try with javascript.
 -->
+      <link rel="manifest" href="manifest.json">
+      <meta name="viewport"
+            content="width = device-width,initial-scale = 1.0" />
+      <meta name="mobile-web-app-capable" content="yes">
+      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-status-bar-style"
+            content="black-translucent" />
+      <meta name="theme-color" content="#FFFF00">
 
-  <link rel="manifest" href="manifest.json">
-  <meta name="viewport" content="width = device-width,initial-scale = 1.0" />
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style"
-        content="black-translucent" />
-  <meta name="theme-color" content="#FFFF00">
-
-  <link rel="apple-touch-icon" sizes="57x57" href="images/apple-icon-57x57.png">
-  <link rel="apple-touch-icon" sizes="60x60" href="images/apple-icon-60x60.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="images/apple-icon-72x72.png">
-  <link rel="apple-touch-icon" sizes="76x76" href="images/apple-icon-76x76.png">
-  <link rel="apple-touch-icon" sizes="114x114"
-        href="images/apple-icon-114x114.png">
-  <link rel="apple-touch-icon" sizes="120x120"
-        href="images/apple-icon-120x120.png">
-  <link rel="apple-touch-icon" sizes="144x144"
-        href="images/apple-icon-144x144.png">
-  <link rel="apple-touch-icon" sizes="152x152"
-        href="images/apple-icon-152x152.png">
-  <link rel="apple-touch-icon" sizes="180x180"
-        href="images/apple-icon-180x180.png">
-  <link rel="apple-touch-icon" href="images/icons-192.png">
-  <link rel="icon" type="image/png" sizes="192x192"
-        href="images/android-icon-192x192.png">
-  <link rel="icon" type="image/png" sizes="32x32"
-        href="images/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="96x96"
-        href="images/favicon-96x96.png">
-  <link rel="icon" type="image/png" sizes="16x16"
-        href="images/favicon-16x16.png">
-  <link rel="icon" type="image/png" href="images/icons-512.png" sizes="512x512">
-  <meta name="msapplication-TileColor" content="#FFFF00">
-  <meta name="msapplication-TileImage" content="images/ms-icon-144x144.png">
+      <link rel="apple-touch-icon" sizes="57x57"
+            href="images/apple-icon-57x57.png">
+      <link rel="apple-touch-icon" sizes="60x60"
+            href="images/apple-icon-60x60.png">
+      <link rel="apple-touch-icon" sizes="72x72"
+            href="images/apple-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="76x76"
+            href="images/apple-icon-76x76.png">
+      <link rel="apple-touch-icon" sizes="114x114"
+            href="images/apple-icon-114x114.png">
+      <link rel="apple-touch-icon" sizes="120x120"
+            href="images/apple-icon-120x120.png">
+      <link rel="apple-touch-icon" sizes="144x144"
+            href="images/apple-icon-144x144.png">
+      <link rel="apple-touch-icon" sizes="152x152"
+            href="images/apple-icon-152x152.png">
+      <link rel="apple-touch-icon" sizes="180x180"
+            href="images/apple-icon-180x180.png">
+      <link rel="apple-touch-icon" href="images/icons-192.png">
+      <link rel="icon" type="image/png" sizes="192x192"
+            href="images/android-icon-192x192.png">
+      <link rel="icon" type="image/png" sizes="32x32"
+            href="images/favicon-32x32.png">
+      <link rel="icon" type="image/png" sizes="96x96"
+            href="images/favicon-96x96.png">
+      <link rel="icon" type="image/png" sizes="16x16"
+            href="images/favicon-16x16.png">
+      <link rel="icon" type="image/png" href="images/icons-512.png"
+            sizes="512x512">
+      <meta name="msapplication-TileColor" content="#FFFF00">
+      <meta name="msapplication-TileImage" content="images/ms-icon-144x144.png">
 
 </head>
 
 <body>
-  <!--
-    I disable this while debugging
-  <script src="start_service_worker.js"></script>
-  -->
-  <noscript>
-    <h2>
-      !!!???!!!<br>
-      This game <br>
-      cannot work <br>
-      without javascript<br>
-      enabled<br>
-      !!!???!!!</h2>
-  </noscript>
-  <div id="div_for_virtual_dom">
-    <h2>
-      Waiting to<br>
-      download <br>
-      the game...<br>
-      This is <br>
-      very quick on fast<br>
-      networks...<br>
-    </h2>
-  </div>
-  <script type="module">
-    import init from "./pkg/mem6.js";
-    init("./pkg/mem6_bg.wasm");
-  </script>
+      <script src="start_service_worker.js"></script>
+
+      <noscript>
+            <h2>
+                  !!!???!!!<br>
+                  This game <br>
+                  cannot work <br>
+                  without javascript<br>
+                  enabled<br>
+                  !!!???!!!</h2>
+      </noscript>
+      <div id="div_for_virtual_dom">
+            <h2>
+                  Waiting to<br>
+                  download <br>
+                  the game...<br>
+                  This is <br>
+                  very quick on fast<br>
+                  networks...<br>
+            </h2>
+      </div>
+      <script type="module">
+            import init from "./pkg/mem6.js";
+            init("./pkg/mem6_bg.wasm");
+      </script>
 </body>
 
 </html>

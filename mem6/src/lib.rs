@@ -318,8 +318,7 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     logmod::debug_write(&format!("wasm app version: {}", env!("CARGO_PKG_VERSION")));
 
     // Get the document's container to render the virtual Dom component.
-    let window = unwrap!(web_sys::window());
-    let document = unwrap!(window.document());
+    let document = unwrap!(utilsmod::window().document());
     let div_for_virtual_dom = unwrap!(document.get_element_by_id("div_for_virtual_dom"));
 
     //my_ws_uid is random generated on the client and sent to
@@ -334,21 +333,7 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     //from now on, I don't want it mutable (variable shadowing).
     let my_ws_uid = my_ws_uid;
 
-    //find out URL
-    let mut location_href = unwrap!(window.location().href(), "href not known");
-    //without /index.html
-    location_href = location_href.to_lowercase().replace("index.html", "");
-    logmod::debug_write(&format!("location_href: {}", &location_href));
-
-    //split it ba # hash
-    let cl = location_href.clone();
-    let mut spl = cl.split('#');
-    location_href = unwrap!(spl.next()).to_string();
-    let href_hash = spl.next().unwrap_or("");
-
-    logmod::debug_write(&format!("location_href: {}", &location_href));
-    logmod::debug_write(&format!("href_hash: {}", &href_hash));
-
+    let (location_href, href_hash) = get_url_and_hash();
     //WebSocket connection
     let players_ws_uid = "[]".to_string(); //empty vector in json
     let ws = websocketcommunicationmod::setup_ws_connection(
@@ -382,4 +367,23 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     vdom.forget();
 
     Ok(())
+}
+
+/// get url and hash from window.location
+pub fn get_url_and_hash() -> (String, String) {
+    //find out URL
+    let mut location_href = unwrap!(utilsmod::window().location().href());
+    //without /index.html
+    location_href = location_href.to_lowercase().replace("index.html", "");
+    logmod::debug_write(&format!("location_href: {}", &location_href));
+
+    //split it by # hash
+    let cl = location_href.clone();
+    let mut spl = cl.split('#');
+    location_href = unwrap!(spl.next()).to_string();
+    let href_hash = spl.next().unwrap_or("").to_string();
+
+    logmod::debug_write(&format!("location_href: {}", &location_href));
+    logmod::debug_write(&format!("href_hash: {}", &href_hash));
+    return (location_href, href_hash);
 }

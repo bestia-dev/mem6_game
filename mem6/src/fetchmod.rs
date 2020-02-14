@@ -9,7 +9,7 @@
 //endregion
 
 //region: use
-//use crate::*;
+use crate::*;
 
 use unwrap::unwrap;
 use wasm_bindgen::{JsValue, JsCast};
@@ -24,8 +24,8 @@ pub async fn async_spwloc_fetch_text(url: String) -> String {
     let mut opts = RequestInit::new();
     opts.method("GET");
     let request = unwrap!(Request::new_with_str_and_init(&url, &opts));
-    let window = unwrap!(web_sys::window());
-    let resp_jsvalue = unwrap!(JsFuture::from(window.fetch_with_request(&request)).await);
+    let resp_jsvalue =
+        unwrap!(JsFuture::from(utilsmod::window().fetch_with_request(&request)).await);
     let resp: Response = unwrap!(resp_jsvalue.dyn_into());
     let resp_body_text = unwrap!(JsFuture::from(unwrap!(resp.text())).await);
     //logmod::debug_write(&unwrap!(JsValue::as_string(&resp_body_text)));
@@ -40,9 +40,9 @@ pub async fn fetch_response(url: String) -> String {
     let mut opts = RequestInit::new();
     opts.method("GET");
     let request = unwrap!(Request::new_with_str_and_init(&url, &opts));
-    let window = unwrap!(web_sys::window());
     //log1("before fetch");
-    let resp_jsvalue = unwrap!(JsFuture::from(window.fetch_with_request(&request)).await);
+    let resp_jsvalue =
+        unwrap!(JsFuture::from(utilsmod::window().fetch_with_request(&request)).await);
     //log1("after fetch");
     let resp: Response = unwrap!(resp_jsvalue.dyn_into());
     //log1("before text()");
@@ -59,7 +59,6 @@ pub async fn fetch_only(url: String) {
     let mut opts = RequestInit::new();
     opts.method("GET");
     let request = unwrap!(Request::new_with_str_and_init(&url, &opts));
-    let window = unwrap!(web_sys::window());
     //log1("before fetch");
-    unwrap!(JsFuture::from(window.fetch_with_request(&request)).await);
+    unwrap!(JsFuture::from(utilsmod::window().fetch_with_request(&request)).await);
 }

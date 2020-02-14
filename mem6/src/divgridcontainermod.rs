@@ -387,8 +387,7 @@ pub fn max_grid_size(rrc: &RootRenderingComponent) -> Size2d {
 /// return window inner height
 /// the size of  the visible part of the window
 pub fn usize_window_inner_height() -> usize {
-    let window = unwrap!(web_sys::window(), "error: web_sys::window");
-    let jsvalue_inner_height = unwrap!(window.inner_height(), "window.inner_height");
+    let jsvalue_inner_height = unwrap!(utilsmod::window().inner_height(), "window.inner_height");
 
     let f64_inner_height = unwrap!(
         jsvalue_inner_height.as_f64(),
@@ -402,9 +401,7 @@ pub fn usize_window_inner_height() -> usize {
 /// return window inner width
 /// the size of  the visible part of the window
 pub fn usize_window_inner_width() -> usize {
-    let window = unwrap!(web_sys::window(), "error: web_sys::window");
-
-    let jsvalue_inner_width = unwrap!(window.inner_width(), "window.inner_width");
+    let jsvalue_inner_width = unwrap!(utilsmod::window().inner_width(), "window.inner_width");
 
     let f64_inner_width = unwrap!(
         jsvalue_inner_width.as_f64(),

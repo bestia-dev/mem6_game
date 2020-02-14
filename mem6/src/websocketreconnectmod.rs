@@ -38,7 +38,6 @@ pub fn div_reconnect<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<
             move |root, vdom, _event| {
             let rrc = root.unwrap_mut::<RootRenderingComponent>();
             //the old ws and closures are now a memory leak, but small
-            let window = unwrap!(web_sys::window(), "error: web_sys::window");
             let href = rrc.game_data.href.clone();
             //usize is Copy(), so I don't need clone()
             let my_ws_uid = rrc.game_data.my_ws_uid;

@@ -232,8 +232,7 @@ pub fn game_type_left_onclick(rrc: &mut RootRenderingComponent, vdom: &dodrio::V
 
 /// get value form input html element by id
 fn get_input_value(id: &str) -> String {
-    let window = unwrap!(web_sys::window());
-    let document = unwrap!(window.document(), "document");
+    let document = unwrap!(utilsmod::window().document(), "document");
     //logmod::debug_write(&format!("before get_element_by_id: {}", id));
     let input_el = unwrap!(document.get_element_by_id(id));
     //logmod::debug_write("before dyn_into");
@@ -244,34 +243,40 @@ fn get_input_value(id: &str) -> String {
 
 /// fn open new local page with # window.location.set_hash
 pub fn open_new_local_page(hash: &str) {
-    let window = unwrap!(web_sys::window());
-    let _x = window.location().replace(hash);
+    let (_location_href, href_hash) = get_url_and_hash();
+    if href_hash.is_empty() {
+        //put the url without the hash in the history
+        let _x = utilsmod::window().location().assign(hash);
+    } else {
+        //doesn't put url with hash in history
+        let _x = utilsmod::window().location().replace(hash);
+    }
 }
 
 /// fn open new tab
 pub fn open_new_tab(url: &str) {
-    let window = unwrap!(web_sys::window());
-    let _w = window.open_with_url_and_target(url, "_blank");
+    let _w = utilsmod::window().open_with_url_and_target(url, "_blank");
 }
 
 /// return the text for html template replace
+/// empty if there is no group_id
 pub fn group_id_joined(rrc: &RootRenderingComponent) -> String {
     //if the first players is not yet pushed
-    let mut group_id = match rrc.game_data.players.get(0) {
+    let group_id = match rrc.game_data.players.get(0) {
         Some(ggg) => ggg.ws_uid,
         None => 0,
     };
     //the  first player cannot join himself
-    if group_id == rrc.game_data.my_ws_uid {
-        group_id = 0;
+    if group_id == 0 || group_id == rrc.game_data.my_ws_uid {
+        return String::from("");
+    } else {
+        return format!("{}", group_id);
     }
-    let group_id = format!("{}", group_id);
-    group_id
 }
 
 /// if there is already a group_id don't blink
 pub fn blink_or_not_group_id(rrc: &RootRenderingComponent) -> String {
-    if group_id_joined(rrc) == "0" {
+    if group_id_joined(rrc) == "" {
         "blink".to_owned()
     } else {
         "".to_owned()
