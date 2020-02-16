@@ -6,9 +6,9 @@
 )]
 //region: lmake_readme insert "readme.md"
 //! # mem6_common
-//! 
+//!
 //! version: 2020.208.1139  
-//! 
+//!
 //! **commons for mem6 wasm and server**  
 //! Learning to code Rust for a http + WebSocket.  
 //! Here are just the structures, that are in common between frontend and backend.  
@@ -107,6 +107,8 @@ pub enum WsMessage {
         game_config: String,
         /// game name
         game_name: String,
+        /// player turn to start game
+        player_turn: usize,
     },
     ///player click
     MsgClick1stCard {
@@ -194,7 +196,7 @@ pub enum WsMessage {
         card_index_of_first_click: usize,
         ///have to send all the state of the game
         card_index_of_second_click: usize,
-        ///player turn
+        ///whose turn is now:  player 1,2,3,...
         player_turn: usize,
         ///game status
         game_status: GameStatus,

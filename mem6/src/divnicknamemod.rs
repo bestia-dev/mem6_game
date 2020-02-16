@@ -38,7 +38,7 @@ pub fn save_nickname_to_localstorage(rrc: &mut RootRenderingComponent) {
     unwrap!(rrc
         .game_data
         .players
-        .get_mut(rrc.game_data.my_player_number - 1))
+        .get_mut(unwrap!(rrc.game_data.my_player_number.checked_sub(1))))
     .nickname = nickname_string;
 }
 

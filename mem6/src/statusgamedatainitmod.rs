@@ -12,8 +12,11 @@ use unwrap::unwrap;
 pub fn on_click_start_game(rrc: &mut RootRenderingComponent) {
     rrc.game_data.prepare_random_data();
     rrc.game_data.game_status = GameStatus::Status1stCard;
-    //TODO: random start player_turn
-    rrc.game_data.player_turn = 1;
+    //random start player_turn. So is not always the first player to start
+    //gen_range is lower inclusive, upper exclusive
+    let mut rng = SmallRng::from_entropy();
+    rrc.game_data.player_turn =
+        rng.gen_range(1, unwrap!(rrc.game_data.players.len().checked_add(1)));
 
     websocketcommunicationmod::ws_send_msg(
         &rrc.game_data.ws,
@@ -24,6 +27,7 @@ pub fn on_click_start_game(rrc: &mut RootRenderingComponent) {
             card_grid_data: unwrap!(serde_json::to_string(&rrc.game_data.card_grid_data)),
             game_config: unwrap!(serde_json::to_string(&rrc.game_data.game_config)),
             game_name: rrc.game_data.game_name.to_string(),
+            player_turn: rrc.game_data.player_turn,
         },
     );
 }
@@ -35,10 +39,11 @@ pub fn on_msg_start_game(
     game_config: &str,
     players: &str,
     game_name: &str,
+    player_turn: usize,
 ) {
     //logmod::debug_write(&format!("on_msg_start_game {}", players));
     rrc.game_data.game_status = GameStatus::Status1stCard;
-    rrc.game_data.player_turn = 1;
+    rrc.game_data.player_turn = player_turn;
     rrc.game_data.game_name = game_name.to_string();
 
     rrc.game_data.game_config = unwrap!(

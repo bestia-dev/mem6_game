@@ -85,6 +85,7 @@ pub fn send_msg_for_resync(rrc: &RootRenderingComponent, _my_ws_uid: usize) {
             card_grid_data: unwrap!(serde_json::to_string(&rrc.game_data.card_grid_data)),
             card_index_of_first_click: rrc.game_data.card_index_of_first_click,
             card_index_of_second_click: rrc.game_data.card_index_of_second_click,
+            ///whose turn is now:  player 1,2,3,...
             player_turn: rrc.game_data.player_turn,
             ///game status
             game_status: rrc.game_data.game_status.clone(),
@@ -100,6 +101,7 @@ pub fn on_msg_all_game_data(
     card_grid_data: String,
     card_index_of_first_click: usize,
     card_index_of_second_click: usize,
+    //whose turn is now:  player 1,2,3,...
     player_turn: usize,
     game_status: GameStatus,
 ) {

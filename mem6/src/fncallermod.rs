@@ -252,11 +252,13 @@ pub fn get_input_value(id: &str) -> String {
 /// fn open new local page with # window.location.set_hash
 pub fn open_new_local_page(hash: &str) {
     let (_location_href, href_hash) = get_url_and_hash();
-    if href_hash.is_empty() {
-        //put the url without the hash in the history
+    if href_hash.is_empty() || href_hash.starts_with("#p03.") {
+        //put the first url in the history
+        //the first player first url is without hash
+        //the joined players first url is #p03.xxxx
         let _x = utilsmod::window().location().assign(hash);
     } else {
-        //doesn't put url with hash in history
+        //don't put other url in history
         let _x = utilsmod::window().location().replace(hash);
     }
 }
@@ -276,7 +278,7 @@ pub fn group_id_joined(rrc: &RootRenderingComponent) -> String {
     };
     //the  first player cannot join himself
     if group_id == 0 || group_id == rrc.game_data.my_ws_uid {
-        return String::from("");
+        String::from("")
     } else {
         return format!("{}", group_id);
     }

@@ -171,6 +171,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                     game_config,
                                     players,
                                     game_name,
+                                    player_turn,
                                 } => {
                                     let vdom = vdom.clone();
                                     statusgamedatainitmod::on_msg_start_game(
@@ -179,6 +180,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                         &game_config,
                                         &players,
                                         &game_name,
+                                        player_turn,
                                     );
                                     fncallermod::open_new_local_page("#p11");
                                     vdom.schedule_render();

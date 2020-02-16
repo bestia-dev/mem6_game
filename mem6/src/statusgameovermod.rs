@@ -34,7 +34,7 @@ pub fn div_game_over<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'
                             },
                         );
                         rrc.reset_for_play_again();
-                        fncallermod::open_new_local_page("#p02");
+                        fncallermod::open_new_local_page("#p05");
                     }}>
                 <h2 class="h2_user_can_click">
                         {vec![text(
