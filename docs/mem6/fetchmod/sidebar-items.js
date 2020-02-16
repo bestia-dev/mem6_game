@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["async_spwloc_fetch_text","fetch in Rust with async await for executor spawn_local() return the response as JsValue. Any error will panic."],["fetch_only","fetch only, so it goes in cache"],["fetch_response","fetch in Rust with async await for executor spawn_local() return the response as String. Any error will panic."]]});

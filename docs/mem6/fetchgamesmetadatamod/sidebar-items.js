@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["fetch_games_metadata_request","async fetch for gamesmetadata.json"],["set_game_metadata_from_json","update a field in the struct"]]});

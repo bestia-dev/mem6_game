@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["on_load_joined","group_id is the ws_uid of the first player"],["on_msg_joined","msg joined"]]});

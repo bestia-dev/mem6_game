@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["div_reconnect","render reconnect"],["on_msg_all_game_data","after reconnect receive all the data from other player"],["send_msg_for_resync","send all data to resync gamedata"]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["div_on_1st_card","render div"],["flip_back","flip back any not permanent card"],["on_click_1st_card","on click"],["on_msg_ack_click_1st_card","on msg ack"],["on_msg_click_1st_card","on msg"],["update_on_1st_card","update game data"]]});

@@ -6,9 +6,9 @@
 )]
 //region: lmake_readme insert "readme.md"
 //! # mem6_common
-//!
-//! version: 19.10.21-20.7  
-//!
+//! 
+//! version: 2020.208.1139  
+//! 
 //! **commons for mem6 wasm and server**  
 //! Learning to code Rust for a http + WebSocket.  
 //! Here are just the structures, that are in common between frontend and backend.  

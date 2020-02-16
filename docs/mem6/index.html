@@ -1,0 +1,177 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `mem6` crate."><meta name="keywords" content="rust, rustlang, rust-lang, mem6"><title>mem6 - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../dark.css"><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script src="../storage.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="shortcut icon" href="https://github.com/LucianoBestia/mem6_game/raw/master/webfolder/mem6/images/icons-16.png"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../mem6/index.html'><div class='logo-container'><img src='https://github.com/LucianoBestia/mem6_game/raw/master/webfolder/mem6/images/icons-192.png' alt='logo'></div></a><p class='location'>Crate mem6</p><div class="sidebar-elems"><a id='all-types' href='all.html'><p>See all mem6's items</p></a><div class="block items"><ul><li><a href="#modules">Modules</a></li><li><a href="#functions">Functions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'mem6', ty: 'mod', relpath: '../'};</script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/mem6/lib.rs.html#1-371' title='goto source code'>[src]</a></span><span class='in-band'>Crate <a class="mod" href=''>mem6</a></span></h1><div class='docblock'><h1 id="unforgettable--development-name-mem6" class="section-header"><a href="#unforgettable--development-name-mem6">&quot;unForGetTable&quot;  (development name: mem6)</a></h1>
+<p>version: 2020.214.1939</p>
+<p>mem6 is a simple drinking game to lose memory. It is made primarily for learning the Rust programming language and Wasm/WebAssembly with Virtual Dom Dodrio, WebSocket communication and PWA (Progressive Web App).</p>
+<h2 id="idea" class="section-header"><a href="#idea">Idea</a></h2>
+<p>Playing the memory game alone is boring.<br />
+Playing it with friends is better. Playing with drinking friends is even better. More friends - more fun.<br />
+I hope you have at least 3 or 4 friends now and all of you are around the same table.<br />
+The first player opens bestia.dev/mem6 and starts the group. Other players scan the QR code and join the same group. Then put all phones on the table near to each other. It will look as a &quot;big&quot; board game.<br />
+The game is hyper simple: every player opens 2 cards. If the cards are the same, you drink. If not you don't drink. Then the next player opens 2 cards. And so on...</p>
+<h2 id="rust-and-wasmwebassembly" class="section-header"><a href="#rust-and-wasmwebassembly">Rust and Wasm/WebAssembly</a></h2>
+<p>Rust is a pretty new language created by Mozilla for really low level programming.<br />
+It is a step forward from the C language with functionality and features that are best practice today.<br />
+It is pretty hard to learn. Some concepts are so different from other languages it makes it
+hard for beginners. Lifetimes are the strangest and most confusing concept.<br />
+The Rust language has been made from the ground up with an ecosystem that makes it productive.<br />
+The language and most of the libraries are Open Source. That is good and bad, but mostly good.<br />
+Rust is the best language today to compile into Wasm/WebAssembly.<br />
+That compiled code works inside a browser directly with the JavaScript engine.<br />
+So finally no need for JavaScript to make cross-platform applications inside browsers.<br />
+I have a lot of hope here.</p>
+<h2 id="virtual-dom" class="section-header"><a href="#virtual-dom">Virtual DOM</a></h2>
+<p>Constructing a HTML page with Virtual DOM (vdom) is easier because it is scheduled to render completely on the next tick (animation frame). We can use the term here &quot;state machine&quot;. The rendering depends only on the state of the data and not on the history of the changes.<br />
+Sometimes is very complex what should change in the UI when some data changes.<br />
+The data can change from many different events and very chaotically (asynchronously).<br />
+It is easier to think how to render the complete DOM for a given state of data.<br />
+The Rust Dodrio library has ticks, time intervals when it does something. If a rendering is scheduled, it will be done on the next tick. If a rendering is not scheduled I believe nothing happens.<br />
+This enables asynchronous changing of data and rendering. They cannot happen theoretically in the
+same exact moment. So, no data race here.<br />
+When GameData change and we know it will affect the DOM, then rendering must be scheduled.<br />
+The main component of the Dodrio Virtual Dom is the Root Rendering Component (rrc).<br />
+It is the component that renders the complete user interface (HTML) and contains all the data state.</p>
+<h2 id="gamedata" class="section-header"><a href="#gamedata">GameData</a></h2>
+<p>All the game data state are in this simple struct inside the Root Rendering Component.</p>
+<h2 id="websocket-communication" class="section-header"><a href="#websocket-communication">WebSocket communication</a></h2>
+<p>HTML5 has finally bring a true stateful bidirectional communication.<br />
+Most of the programming problems are more easily and effectively solved this way.<br />
+The old unidirectional stateless communication is very good for static html pages, but is terrible for any dynamic page. The WebSocket is very rudimental and often the communication breaks for many different reasons. The programmer must deal with it inside the application.<br />
+I send simple structs text messages in json format between the players. They are all in the WsMsg enum and therefore easy to use by the server and client.<br />
+The WebSocket server is coded especially for this game and recognizes the players string that has a vector of ws_uid to whom send the message.</p>
+<h2 id="websockets-is-not-reliable" class="section-header"><a href="#websockets-is-not-reliable">WebSockets is not reliable</a></h2>
+<p>Simple messaging is not reliable. On mobiles it is even worse. There is a lot of possibilities that something goes wrong and the message doesn't reach the destination. The protocol has nothing that can be used to deal with reconnections or lost messages.<br />
+That means that I need additional work on the application level - always reply one acknowledgement &quot;ack&quot; message.<br />
+Workflow:</p>
+<ul>
+<li>
+<p>sender sends one message to more players (more ws_uid) with one random number msg_id
+push to a vector (msg queue) more items with ws_uid and msg_id
+blocks the continuation of the workflow until receives all ACK from all players</p>
+</li>
+<li>
+<p>receiver on receive send the ACK acknowledge msg with his ws_uid and msg_id</p>
+</li>
+<li>
+<p>the sender receives the ACK and removes one item from the vector
+if there is no more items for that msg_id, the workflow can continue.
+TODO: if after 3 seconds the ACK is not received and error message is shown to the player.</p>
+</li>
+</ul>
+<p>This is very similar to a message queue...</p>
+<h2 id="grpc-webrtc-datachannel" class="section-header"><a href="#grpc-webrtc-datachannel">gRPC, WebRTC datachannel</a></h2>
+<p>The new shiny protocol gRPC for web communication is great for server-to-server communication. But it is still very limited inside the browser. When it eventually becomes stable I would like to change WebSockets for gRPC.<br />
+The WebRTC datachannel sounds great for peer-to-peer communication. Very probably the players will be all on the same wifi network, this solves all latency issues.<br />
+TODO: try to add this to version 6.</p>
+<h2 id="the-game-flow" class="section-header"><a href="#the-game-flow">The game flow</a></h2>
+<p>In a few words:<br />
+Playing player : Status1 - user action - send msg - await for ack msgs - update game data - Status2<br />
+Other players: Status1 - receive WsMessage - send ack msg - update game data - Status2</p>
+<p>In one moment the game is in a one Game Status for all players.<br />
+One player is the playing player and all others are awaiting.<br />
+The active user then makes an action on the GUI.
+This action will eventually change the GameData and the GameStatus. But before that there is communication.<br />
+A message is sent to other players so they can also change their local GameData and GameStatus.<br />
+Because of unreliable networks there must be an acknowledge ack msg to confirm, that the msg is received to continue the game.<br />
+The rendering is scheduled and it will happen shortly (async).</p>
+<h2 id="futures-and-promises-rust-and-javascript" class="section-header"><a href="#futures-and-promises-rust-and-javascript">Futures and Promises, Rust and JavaScript</a></h2>
+<p>JavaScript is all asynchronous. Wasm is nothing else then a shortcut to the JavaScript engine.<br />
+So everything is asynchronous too. This is pretty hard to grasp. Everything is Promises and Futures. Fortunately lately there is async/await for Rust and it is great for dealing with javascript.<br />
+JavaScript does not have a good idea of Rust datatypes. All there is is a generic JSValue type.<br />
+The library <code>wasm-bindgen</code> has made a fantastic job of giving Rust the ability to call
+anything JavaScript can call, but the way of doing it is sometimes cumbersome.</p>
+<h2 id="html-templating" class="section-header"><a href="#html-templating">Html templating</a></h2>
+<p>In the past I wrote html inside Rust code with the macro <code>html!</code> from the <code>crate typed-html</code><br />
+<a href="https://github.com/bodil/typed-html">https://github.com/bodil/typed-html</a><br />
+It has also a macro <code>dodrio!</code> created exclusively for the dodrio vdom.<br />
+I had two main problems with this approach:</p>
+<ol>
+<li>Any change to the html required a recompiling. And that is very slow in Rust.</li>
+<li>I could not add new html elements, that the macro don't recognize. I wanted to use SVG. There was not support for that.</li>
+</ol>
+<p>I reinvented &quot;html templating&quot;.<br />
+First a graphical designer makes a html/css page that looks nice. No javascript, nothing is dynamic. It is just a graphical template.<br />
+Then I insert in it html comments and &quot;data-&quot; attributes that I can later replace in my code.<br />
+The html is not changed graphically because of it. So both the graphical designer and the programmer are still happy.<br />
+In my code I parse the html template as a microXml file. Basically they are the same with small effort. When I find a comment or &quot;data-&quot; attribute then the value of the next node is replaced.<br />
+I can replace attributes, strings and entire nodes. And I can insert event for behavior with &quot;data-t&quot;.<br />
+When developing, the html template is loaded and parsed and a dodrio node is created. That is not very fast. But I can change the html in real time and see it rendered without compiling the Rust code. This is super efficient for development.<br />
+I have in plans to add a Rust code generator, that creates the Rust code for the dodrio node before compile time. In that case nothing is parsed in runtime and I expect great speeds. But the flexibility of easily changing the html template is gone. For every change I must recompile the Rust code.</p>
+<h2 id="browser-console" class="section-header"><a href="#browser-console">Browser console</a></h2>
+<p>At least in modern browsers (Firefox and Chrome) we have the developer tools F12 and there is a
+console we can output to. So we can debug what is going on with our Wasm program.
+But not on smartphones !! I save the error and log messages in sessionStorage and this is displayed on the screen.</p>
+<h2 id="safari-on-ios-and-fullscreen" class="section-header"><a href="#safari-on-ios-and-fullscreen">Safari on iOS and FullScreen</a></h2>
+<p>Apple is very restrictive and does not allow fullscreen Safari on iPhones.<br />
+The workaround is to <code>Add to HomeScreen</code> the webapp.</p>
+<h2 id="pwa-progressive-web-app" class="section-header"><a href="#pwa-progressive-web-app">PWA (Progressive Web App)</a></h2>
+<p>On both android and iPhone is possible to use PWA.<br />
+To be 100% PWA it must be secured with TLS and must have a service worker.<br />
+I added also the PWA manifest and png images for icons and now the game is a full PWA.</p>
+<p><strong>Very important :</strong>
+On Android Chrome to <code>Clear &amp; reset</code> the cached data of the website you must click on the icon of the URL address (the lock) and choose <code>Site Settings</code>.<br />
+Sometimes even that does not work. Than I go in the Menu to Settings - Privacy - Clear browser data and delete all. Very aggressive, but the only way I found that works.</p>
+<h2 id="modules" class="section-header"><a href="#modules">Modules</a></h2>
+<p>Rust code is splitted into modules. They are not exactly like classes, but can be similar.<br />
+Rust has much more freedom to group code in different ways. So that is best suits the problem.<br />
+I splitted the rendering pages and that into sub-components.<br />
+And then I splitted the User Actions by the Status1 to easy follow the flow of the game.<br />
+I try to use the philosophy od &quot;state machine&quot; because is easier to follow.</p>
+<h2 id="clippy" class="section-header"><a href="#clippy">Clippy</a></h2>
+<p>Clippy is very useful to teach us how to program Rust in a better way.<br />
+These are not syntax errors, but hints how to do it in a more Rusty way (idiomatic).<br />
+Some lints are problematic and they are explicitly allowed here.</p>
+<h2 id="font-size" class="section-header"><a href="#font-size">font-size</a></h2>
+<p>Browsers have 2 types of zoom:</p>
+<ul>
+<li>zoom everything proportionally (I like this.)</li>
+<li>zoom only the text (I hate this: it breaks the layout completely.)</li>
+</ul>
+<p>When the font-size in android is increased (accessibility) it applies somehow also to the browser rendering.<br />
+I have tried many different things, but it looks this cannot be overridden from the css or javascript. Only the user can change this setting in his phone.</p>
+<h2 id="svg" class="section-header"><a href="#svg">SVG</a></h2>
+<p>This is why I chose to use SVG for my html templates. Svg promises that the user cannot ruin the layout completely. But also SVG has its set of complication small and big.<br />
+It is annoying that SVG must use namespaces for all the elements and subelements.<br />
+I will use percents to define x, y, width and height. Because for the game is only logical to be always full screen.</p>
+<h2 id="font-family" class="section-header"><a href="#font-family">font-family</a></h2>
+<p>The size of the font depends a lot of the font-family. Every browser show different fonts
+even when they call them the same. I need to use a third-party web font. Google seems to
+be a good source of free fonts. I choose Roboto. Having them download every time from google is time consuming. So I will download them and host them locally on my website.<br />
+I use the <a href="https://google-webfonts-helper.herokuapp.com">https://google-webfonts-helper.herokuapp.com</a> to download fonts.</p>
+<h2 id="faviconico" class="section-header"><a href="#faviconico">favicon.ico</a></h2>
+<p>Crazy stuff. I used the website <a href="https://www.favicon-generator.org/">https://www.favicon-generator.org/</a> to generate
+all the different imgs, sizes and code. And than add all this into index.html. There is more lines for icons than anything else now. Just crazy world.  </p>
+</div><h2 id='modules-1' class='section-header'><a href="#modules-1">Modules</a></h2>
+<table><tr class='module-item'><td><a class="mod" href="ackmsgmod/index.html" title='mem6::ackmsgmod mod'>ackmsgmod</a></td><td class='docblock-short'><p>acknowledge msg</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="divfordebuggingmod/index.html" title='mem6::divfordebuggingmod mod'>divfordebuggingmod</a></td><td class='docblock-short'><p>information for debugging</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="divgridcontainermod/index.html" title='mem6::divgridcontainermod mod'>divgridcontainermod</a></td><td class='docblock-short'><p>renders the grid container with the images
+and most important the on click event</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="divnicknamemod/index.html" title='mem6::divnicknamemod mod'>divnicknamemod</a></td><td class='docblock-short'><p>load and save nickname</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="divplayeractionsmod/index.html" title='mem6::divplayeractionsmod mod'>divplayeractionsmod</a></td><td class='docblock-short'><p>renders the div to inform player what to do next
+and get a click action from the user</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="fetchallimgsforcachemod/index.html" title='mem6::fetchallimgsforcachemod mod'>fetchallimgsforcachemod</a></td><td class='docblock-short'><p>fetch all imgs for cache</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="fetchgameconfigmod/index.html" title='mem6::fetchgameconfigmod mod'>fetchgameconfigmod</a></td><td class='docblock-short'><p>fetch game_config</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="fetchgamesmetadatamod/index.html" title='mem6::fetchgamesmetadatamod mod'>fetchgamesmetadatamod</a></td><td class='docblock-short'><p>fetch the names of all games</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="fetchmod/index.html" title='mem6::fetchmod mod'>fetchmod</a></td><td class='docblock-short'><p>Async world</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="fncallermod/index.html" title='mem6::fncallermod mod'>fncallermod</a></td><td class='docblock-short'><p>fncallermod  </p>
+</td></tr><tr class='module-item'><td><a class="mod" href="gamedatamod/index.html" title='mem6::gamedatamod mod'>gamedatamod</a></td><td class='docblock-short'><p>structs and methods around game data</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="htmltemplatemod/index.html" title='mem6::htmltemplatemod mod'>htmltemplatemod</a></td><td class='docblock-short'><p><strong>htmltemplatemod</strong><br />
+html templating for dodrio</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="logmod/index.html" title='mem6::logmod mod'>logmod</a></td><td class='docblock-short'><p>logging in wasm</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="rootrenderingcomponentmod/index.html" title='mem6::rootrenderingcomponentmod mod'>rootrenderingcomponentmod</a></td><td class='docblock-short'><p>renders the web page</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="routermod/index.html" title='mem6::routermod mod'>routermod</a></td><td class='docblock-short'><p>A simple <code>#</code>-fragment router for dodrio.</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="sessionstoragemod/index.html" title='mem6::sessionstoragemod mod'>sessionstoragemod</a></td><td class='docblock-short'><p>for debugging texts accessible everywhere</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="status1stcardmod/index.html" title='mem6::status1stcardmod mod'>status1stcardmod</a></td><td class='docblock-short'><p>code flow from this status</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="status2ndcardmod/index.html" title='mem6::status2ndcardmod mod'>status2ndcardmod</a></td><td class='docblock-short'><p>code flow from this status</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="statusdrinkmod/index.html" title='mem6::statusdrinkmod mod'>statusdrinkmod</a></td><td class='docblock-short'><p>code flow from this status</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="statusgamedatainitmod/index.html" title='mem6::statusgamedatainitmod mod'>statusgamedatainitmod</a></td><td class='docblock-short'><p>code flow from this status</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="statusgameovermod/index.html" title='mem6::statusgameovermod mod'>statusgameovermod</a></td><td class='docblock-short'><p>code flow from this status</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="statusjoinedmod/index.html" title='mem6::statusjoinedmod mod'>statusjoinedmod</a></td><td class='docblock-short'><p>code flow for this status</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="statustaketurnmod/index.html" title='mem6::statustaketurnmod mod'>statustaketurnmod</a></td><td class='docblock-short'><p>code flow from this status</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="statuswaitingackmsgmod/index.html" title='mem6::statuswaitingackmsgmod mod'>statuswaitingackmsgmod</a></td><td class='docblock-short'><p>code flow from this status</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="utilsmod/index.html" title='mem6::utilsmod mod'>utilsmod</a></td><td class='docblock-short'><p>small generic helper functions</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="websocketcommunicationmod/index.html" title='mem6::websocketcommunicationmod mod'>websocketcommunicationmod</a></td><td class='docblock-short'><p>module that cares about WebSocket communication</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="websocketreconnectmod/index.html" title='mem6::websocketreconnectmod mod'>websocketreconnectmod</a></td><td class='docblock-short'><p>reconnection for websocket must be part of the application.</p>
+</td></tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table><tr class='module-item'><td><a class="fn" href="fn.__wasm_bindgen_generated_wasm_bindgen_start.html" title='mem6::__wasm_bindgen_generated_wasm_bindgen_start fn'>__wasm_bindgen_generated_wasm_bindgen_start</a></td><td class='docblock-short'><p>To start the Wasm application, wasm_bindgen runs this functions</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.get_url_and_hash.html" title='mem6::get_url_and_hash fn'>get_url_and_hash</a></td><td class='docblock-short'><p>get url and hash from window.location</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.wasm_bindgen_start.html" title='mem6::wasm_bindgen_start fn'>wasm_bindgen_start</a></td><td class='docblock-short'><p>To start the Wasm application, wasm_bindgen runs this functions</p>
+</td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../";window.currentCrate = "mem6";</script><script src="../aliases.js"></script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>

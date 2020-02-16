@@ -44,7 +44,7 @@ skip_core_tasks = true
 
     [tasks.doc]
     description = "build the `/target/docs` folder and copy to the `/docs` folder"
-    workspace = false
+    workspace = true
     clear=true
     dependencies = [
         "cargo_doc",
@@ -126,14 +126,6 @@ clear=true
 private=true
 command = "cargo"
 args = ["make","audit"]
-
-[tasks.cargo_doc]
-description = "cargo make doc for every workspace member"
-workspace = true
-clear=true
-private=false
-command = "cargo"
-args = ["make","doc"]
 
 [tasks.cargo_docs_copy]
 description = "copy folder `/target/doc` to /docs folder (github standard)"

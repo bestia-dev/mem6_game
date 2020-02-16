@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["on_msg_drink_end","on msg"]]});

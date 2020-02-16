@@ -16,3 +16,7 @@ There is a nginx server reverse proxy that accepts https http2 on 443 and relay 
 Nginx also redirects all http 80 to https 443.  
 You can play the game here (hosted on google cloud platform):  
 <https://bestia.dev/mem6>  
+
+## new version of Warp
+
+The new version looks nice, but I had the problem when a user disconnects the websocket without handshake. It happens only on Android Chrome.  

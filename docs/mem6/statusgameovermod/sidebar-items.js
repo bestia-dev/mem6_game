@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["div_game_over","play again"],["on_msg_game_over","on msg game over"],["on_msg_play_again","on msg play again"]]});

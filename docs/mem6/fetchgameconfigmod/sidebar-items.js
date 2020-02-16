@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["async_fetch_game_config_request","async fetch for gameconfig.json"],["set_game_config_from_json","update a field in the struct"]]});

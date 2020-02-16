@@ -1,12 +1,7 @@
 # mem6 TODO
 
-- does not save the nickname
-- can I have font on my web server, not on googles?
-- group name is ws uid of first player. the other players write and join.
 - webRTC instead of WebSockets 1st version with a web server
 - STUN server for NAT traversal <https://github.com/sile/rustun>
-- free to try  
-- always full screen, no scroll, ever. It is a game.
 - async await
 - webRTC instead of WebSockets 1st version with a web server
 - webRTC 2nd version on local network with QR code
@@ -15,4 +10,3 @@
 - tokei lines of code could change the numbers in readme.md  
 - editor to add new images, words and audio (with size, resolution limitations)  
 - idea for hostels: photos of guests and names. So it is easy to remember the names.  
-- start with status "take your turn" so other players that are less experienced can learn from the first player who is usually more experienced.

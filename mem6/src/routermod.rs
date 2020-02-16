@@ -118,7 +118,7 @@ pub fn push_first_player_as_group_id(rrc: &mut RootRenderingComponent, group_id:
 /// Fetch the html_template and save it in rrc.html_template  
 /// The async fn for executor spawn_local.  
 /// example how to use it in on_click:  
-/// '''
+/// ```
 /// .on("click", |_root, vdom, _event| {
 ///     let v2 = vdom;
 ///     //async executor spawn_local is the recommended for wasm

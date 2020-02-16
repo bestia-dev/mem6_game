@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["blink_or_not_nickname","if there is already a nickname don't blink"],["group_id_onkeyup","group id key stroke"],["load_nickname","load nickname from local storage"],["nickname_onkeyup","save on every key stroke"],["save_nickname_to_localstorage","save nickname from html input elements to local storage and rrc"]]});
