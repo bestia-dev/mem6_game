@@ -1,34 +1,39 @@
 {
-	"vec_game_metadata":[
+	"vec_game_metadata": [
 		{
 			"folder": "alphabet",
 			"name": "alphabet",
-			"description":"alphabet"
+			"description": "alphabet"
 		},
 		{
 			"folder": "animals",
 			"name": "animals",
-			"description":"animals"
+			"description": "animals"
+		},
+		{
+			"folder": "colors",
+			"name": "colors",
+			"description": "colors"
 		},
 		{
 			"folder": "morsecode",
 			"name": "morsecode",
-			"description":"morsecode"
+			"description": "morsecode"
 		},
 		{
 			"folder": "numbers",
 			"name": "numbers",
-			"description":"numbers"
+			"description": "numbers"
 		},
 		{
 			"folder": "playingcards",
 			"name": "playingcards",
-			"description":"playingcards"
+			"description": "playingcards"
 		},
 		{
 			"folder": "triestine",
 			"name": "triestine",
-			"description":"triestine"
+			"description": "triestine"
 		}
 	]
 }
