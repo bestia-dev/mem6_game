@@ -59,6 +59,10 @@ pub fn start_router(vdom: VdomWeak) {
                                     rrc.local_route = "p08_instructions.html".to_owned();
                                 } else if local_route == "#p11" {
                                     rrc.local_route = "p11_gameboard.html".to_owned();
+                                } else if local_route == "#p21" {
+                                    rrc.local_route = "p21_menu.html".to_owned();
+                                } else if local_route == "#p31" {
+                                    rrc.local_route = "p31_debug_text.html".to_owned();
                                 } else {
                                     rrc.local_route = "p01_start.html".to_owned();
                                 }

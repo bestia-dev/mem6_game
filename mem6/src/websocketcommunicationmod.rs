@@ -273,10 +273,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                     my_ws_uid: _,
                                     players_ws_uid: _,
                                 } => {
-                                    websocketreconnectmod::send_msg_for_resync(
-                                        rrc,
-                                        rrc.game_data.my_ws_uid,
-                                    );
+                                    websocketreconnectmod::send_msg_for_resync(rrc);
                                     vdom.schedule_render();
                                 }
                                 WsMessage::MsgAllGameData {

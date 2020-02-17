@@ -71,13 +71,13 @@ pub fn div_reconnect<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<
 }
 
 ///send all data to resync gamedata
-pub fn send_msg_for_resync(rrc: &RootRenderingComponent, _my_ws_uid: usize) {
+pub fn send_msg_for_resync(rrc: &RootRenderingComponent) {
     logmod::debug_write("send_msg_for_resync MsgAllGameData");
     websocketcommunicationmod::ws_send_msg(
         &rrc.game_data.ws,
         &WsMessage::MsgAllGameData {
             my_ws_uid: rrc.game_data.my_ws_uid,
-            ///only the players that recconected
+            ///only the players that resync
             players_ws_uid: rrc.game_data.players_ws_uid.clone(),
             ///json of vector of players with nicknames and order data
             players: unwrap!(serde_json::to_string(&rrc.game_data.players)),

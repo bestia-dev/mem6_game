@@ -26,6 +26,8 @@ pub fn call_function_string(rrc: &RootRenderingComponent, sx: &str) -> String {
         "game_name" => rrc.game_data.game_name.to_string(),
         "group_id_joined" => group_id_joined(rrc),
         "url_to_join" => format!("bestia.dev/mem6/#p03.{}", rrc.game_data.my_ws_uid),
+        "cargo_pkg_version" => env!("CARGO_PKG_VERSION").to_string(),
+        "debug_text" => sessionstoragemod::get_debug_text(),
         "gameboard_btn" => {
             //different class depend on status
             "btn".to_owned()
@@ -98,10 +100,22 @@ pub fn call_listener(
         "open_youtube2" => {
             open_new_tab("https://www.youtube.com/watch?v=2RT9AzqEfLo");
         }
+        "open_menu" => {
+            open_new_local_page("#p21");
+        }
+        "rejoin_resync" => {
+            websocketreconnectmod::send_msg_for_resync(rrc);
+        }
+        "back_to_game" => {
+            open_new_local_page("#p11");
+        }
         "open_instructions" => {
             open_new_tab("#p08");
         }
-        "start_a_group_onclick" => {
+        "debug_log" => {
+            open_new_tab("#p31");
+        }
+        "start_a_group_onclick" | "restart_game" => {
             open_new_local_page("#p02");
         }
         "join_a_group_onclick" => {
