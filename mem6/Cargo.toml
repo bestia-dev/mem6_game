@@ -1,6 +1,6 @@
 [package]
 name = "mem6"
-version = "2020.216.1934"
+version = "2020.217.1634"
 authors = ["Luciano Furlan <Luciano.Bestia@gmail.com>"]
 edition = "2018"
 description = "Learning Rust Wasm/WebAssembly with Virtual Dom Dodrio"
@@ -17,7 +17,8 @@ crate-type = ["cdylib"]
 [dependencies]
 unwrap = "1.2.1"
 mem6_common = { path = "../mem6_common" }
-qrcode53bytes = { path = "../../qrcode53bytes" }
+#qrcode53bytes = { path = "../../qrcode53bytes" }
+qrcode53bytes ="1.0.0"
 #dodrio =  { git = "https://github.com/fitzgen/dodrio", branch = "master" }
 dodrio = {path = "../../dodrio"}
 wasm-bindgen = { version = "0.2.58", features = ["serde-serialize"] }
