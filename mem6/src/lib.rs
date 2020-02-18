@@ -271,6 +271,7 @@ mod utilsmod;
 mod websocketcommunicationmod;
 mod websocketreconnectmod;
 mod routermod;
+mod routersettingsmod;
 mod fncallermod;
 mod htmltemplatemod;
 //endregion
@@ -340,9 +341,10 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     let v2 = vdom.weak();
     fetchgamesmetadatamod::fetch_games_metadata_request(location_href, v2);
 
-    // Start the URL router.
+    // Start the URL router. Send a reference to the functions with router settings.
+    //To keep separate modules for generic router code and specific router code.
     let v3 = vdom.weak();
-    routermod::start_router(v3);
+    routermod::start_router(v3, &routersettingsmod::fill_rrc_local_route);
 
     // Run the component forever. Forget to drop the memory.
     vdom.forget();

@@ -219,7 +219,10 @@ pub fn svg_qrcode_to_node<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> N
         rrc,
         bump,
         &svg_template,
-        htmltemplatemod::HtmlOrSvg::Svg
+        htmltemplatemod::HtmlOrSvg::Svg,
+        &fncallermod::call_function_string,
+        &fncallermod::call_function_node,
+        &fncallermod::call_listener
     ))
 }
 

@@ -1,18 +1,27 @@
-//! A simple `#`-fragment router for dodrio.
+//! routermod - A simple `#`-fragment router for dodrio html templating  
+//! This is the generic module. All the specifics for a website are isolated in the  
+//! function &fill_rrc_local_route() passed as a parameter to start_router().  
+//! The RootRenderingComponent struct must have the fields:  
+//! rrc.local_route - fill_rrc_local_route() will fills this field.
+//!        It will be the name of the html template file to fetch  
+//! rrc.html_template - a string where the html_template is fetched from the server  
 
 use crate::*;
-
-use mem6_common::*;
 
 use dodrio::VdomWeak;
 use wasm_bindgen::{prelude::*, JsCast};
 use wasm_bindgen_futures::spawn_local;
 use unwrap::unwrap;
 
-/// Start the router.
-pub fn start_router(vdom: VdomWeak) {
-    // Callback fired whenever the URL hash fragment changes. Keeps the rrc.local_route
-    // in sync with the `#` fragment.
+/// Start the router. The second parameter is a reference to a function that
+/// deals with the specific routes. So the generic route code is isolated from the specific
+/// and can be made a library.
+pub fn start_router(
+    vdom: VdomWeak,
+    fill_rrc_local_route: &'static dyn Fn(String, &mut RootRenderingComponent, &dodrio::VdomWeak),
+) {
+    // Callback fired whenever the URL hash fragment changes.
+    // Keeps the rrc.local_route in sync with the `#` fragment.
     let on_hash_change = move || {
         let location = utilsmod::window().location();
         let mut local_route = unwrap!(location.hash());
@@ -33,42 +42,9 @@ pub fn start_router(vdom: VdomWeak) {
                             // don't match, then we need to update the rrc' local_route
                             // and re-render.
                             if rrc.local_route != local_route {
-                                if local_route == "#p02" {
-                                    let vdom = vdom.clone();
-                                    fetchgameconfigmod::async_fetch_game_config_request(rrc, &vdom);
-                                    rrc.local_route = "p02_start_a_group.html".to_owned();
-                                } else if local_route.starts_with("#p03") {
-                                    if local_route.contains('.') {
-                                        let group_id =
-                                            get_url_param_in_hash_after_dot(&local_route);
-                                        push_first_player_as_group_id(rrc, group_id);
-                                    }
-                                    rrc.local_route = "p03_join_a_group.html".to_owned();
-                                } else if local_route.starts_with("#p04") {
-                                    let group_id = get_url_param_in_hash_after_dot(&local_route);
-                                    push_first_player_as_group_id(rrc, group_id);
-                                    statusjoinedmod::on_load_joined(rrc);
-                                    rrc.local_route = "p04_wait_to_start.html".to_owned();
-                                } else if local_route == "#p05" {
-                                    rrc.local_route = "p05_choose_game.html".to_owned();
-                                } else if local_route == "#p06" {
-                                    rrc.local_route = "p06_drink.html".to_owned();
-                                } else if local_route == "#p07" {
-                                    rrc.local_route = "p07_do_not_drink.html".to_owned();
-                                } else if local_route == "#p08" {
-                                    rrc.local_route = "p08_instructions.html".to_owned();
-                                } else if local_route == "#p11" {
-                                    rrc.local_route = "p11_gameboard.html".to_owned();
-                                } else if local_route == "#p21" {
-                                    rrc.local_route = "p21_menu.html".to_owned();
-                                } else if local_route == "#p31" {
-                                    rrc.local_route = "p31_debug_text.html".to_owned();
-                                } else {
-                                    rrc.local_route = "p01_start.html".to_owned();
-                                }
-
+                                //all the specific routes are separated from the generic routing code
+                                fill_rrc_local_route(local_route, rrc, &vdom);
                                 let url = rrc.local_route.to_string();
-
                                 //I cannot simply await here because this closure is not async
                                 spawn_local(async_fetch_and_write_to_rrc_html_template(url, vdom));
                             }
@@ -97,26 +73,10 @@ pub fn start_router(vdom: VdomWeak) {
 
 /// get the first param after hash in local route after dot
 /// example &p04.1234 -> 1234
-fn get_url_param_in_hash_after_dot(local_route: &str) -> &str {
+pub fn get_url_param_in_hash_after_dot(local_route: &str) -> &str {
     let mut spl = local_route.split('.');
     unwrap!(spl.next());
     unwrap!(spl.next())
-}
-
-/// add the first player as group_id so the msg can be sent to him
-pub fn push_first_player_as_group_id(rrc: &mut RootRenderingComponent, group_id: &str) {
-    let ws_uid = unwrap!(group_id.parse::<usize>());
-    rrc.game_data.players.clear();
-    rrc.game_data.players.push(Player {
-        ws_uid,
-        nickname: "FirstPlayer".to_string(),
-        points: 0,
-    });
-    rrc.game_data.players_ws_uid = gamedatamod::prepare_players_ws_uid(&rrc.game_data.players);
-    logmod::debug_write(&format!(
-        "players_ws_uid: {}",
-        &rrc.game_data.players_ws_uid
-    ));
 }
 
 /// Fetch the html_template and save it in rrc.html_template  

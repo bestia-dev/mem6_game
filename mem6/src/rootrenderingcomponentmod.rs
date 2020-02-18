@@ -59,7 +59,10 @@ impl Render for RootRenderingComponent {
                 self,
                 bump,
                 &self.html_template,
-                htmltemplatemod::HtmlOrSvg::Html
+                htmltemplatemod::HtmlOrSvg::Html,
+                &fncallermod::call_function_string,
+                &fncallermod::call_function_node,
+                &fncallermod::call_listener,
             ))
         }
     }
