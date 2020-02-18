@@ -30,7 +30,7 @@ pub trait HtmlTemplating {
     fn set_html_template(&mut self, html_template: &str);
     fn call_function_string(&self, sx: &str) -> String;
     //fn call_function_node<'a>(&mut self, bump: &mut RenderContext<'a>, sx: &str) -> Node<'a>;
-    //fn call_listener(&mut self, vdom: dodrio::VdomWeak, sx: String, event: web_sys::Event);
+    fn call_listener(&mut self, vdom: dodrio::VdomWeak, sx: &str, event: web_sys::Event);
 }
 
 /// get root element Node.   
@@ -47,12 +47,6 @@ pub fn get_root_element<'a>(
         &'t0 str,
     ) -> Node<'s>
                   + 'static),
-    call_listener: &'static dyn Fn(
-        &dodrio::VdomWeak,
-        &mut RootRenderingComponent,
-        &str,
-        web_sys::Event,
-    ),
 ) -> Result<Node<'a>, String> {
     let mut reader_for_microxml = ReaderForMicroXml::new(html_template);
     let mut dom_path = Vec::new();
@@ -81,7 +75,6 @@ pub fn get_root_element<'a>(
                 html_or_svg_local,
                 &mut dom_path,
                 call_function_node,
-                call_listener,
             ) {
                 //the methods are move, so I have to return the moved value
                 Ok(new_root_element) => root_element = new_root_element,
@@ -123,12 +116,6 @@ fn fill_element_builder<'a>(
         &'t0 str,
     ) -> Node<'s>
                   + 'static),
-    call_listener: &'static dyn Fn(
-        &dodrio::VdomWeak,
-        &mut RootRenderingComponent,
-        &str,
-        web_sys::Event,
-    ),
 ) -> Result<
     ElementBuilder<
         'a,
@@ -173,7 +160,6 @@ fn fill_element_builder<'a>(
                     html_or_svg_local,
                     dom_path,
                     call_function_node,
-                    call_listener,
                 )?;
                 if let Some(repl_node) = replace_node {
                     //logmod::debug_write(&format!("child is repl_node {}", ""));
@@ -188,7 +174,7 @@ fn fill_element_builder<'a>(
                     //the rest of the name does not matter.
                     //The replace_string will always be applied to the next attribute.
                     let fn_name = value;
-                    let repl_txt = rrc.call_function_string( fn_name);
+                    let repl_txt = rrc.call_function_string(fn_name);
                     replace_string = Some(repl_txt);
                 } else if name.starts_with("data-on-") {
                     // Only one listener for now because the api does not give me other method.
@@ -201,7 +187,8 @@ fn fill_element_builder<'a>(
                         let rrc = root.unwrap_mut::<RootRenderingComponent>();
                         //call a function from string
                         //logmod::debug_write(&format!("fn_name {}", fn_name));
-                        call_listener(&vdom, rrc, &fn_name, event);
+                        let vdom = vdom.clone();
+                        rrc.call_listener(vdom, &fn_name, event);
                     });
                 } else {
                     let name = bumpalo::format!(in bump, "{}",name).into_bump_str();
@@ -241,7 +228,7 @@ fn fill_element_builder<'a>(
                 // it must look like <!--t=get_text-->
                 if txt.starts_with("t=") {
                     let fn_name = unwrap!(txt.get(2..));
-                    let repl_txt = rrc.call_function_string( fn_name);
+                    let repl_txt = rrc.call_function_string(fn_name);
                     replace_string = Some(repl_txt);
                 } else if txt.starts_with("n=") {
                     let fn_name = unwrap!(txt.get(2..));

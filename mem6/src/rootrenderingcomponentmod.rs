@@ -61,7 +61,6 @@ impl Render for RootRenderingComponent {
                 &self.html_template,
                 htmltemplatemod::HtmlOrSvg::Html,
                 &fncallermod::call_function_node,
-                &fncallermod::call_listener,
             ))
         }
     }
