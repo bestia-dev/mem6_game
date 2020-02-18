@@ -1,6 +1,6 @@
 [package]
 name = "mem6"
-version = "2020.218.2050"
+version = "2020.218.2107"
 authors = ["Luciano Furlan <Luciano.Bestia@gmail.com>"]
 edition = "2018"
 description = "Learning Rust Wasm/WebAssembly with Virtual Dom Dodrio"

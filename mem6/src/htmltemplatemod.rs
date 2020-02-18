@@ -28,8 +28,9 @@ pub trait HtmlTemplating {
     fn set_local_route(&mut self, local_route: &str);
     fn get_html_template(&self) -> String;
     fn set_html_template(&mut self, html_template: &str);
+    //while rendering, cannot mut rrc
     fn call_function_string(&self, sx: &str) -> String;
-    //fn call_function_node<'a>(&mut self, bump: &mut RenderContext<'a>, sx: &str) -> Node<'a>;
+    fn call_function_node<'a>(&self, bump: &mut RenderContext<'a>, sx: &str) -> Node<'a>;
     fn call_listener(&mut self, vdom: dodrio::VdomWeak, sx: &str, event: web_sys::Event);
 }
 
@@ -41,12 +42,6 @@ pub fn get_root_element<'a>(
     cx: &mut RenderContext<'a>,
     html_template: &str,
     html_or_svg_parent: HtmlOrSvg,
-    call_function_node: &'static (dyn for<'r, 's, 't0> Fn(
-        &'r RootRenderingComponent,
-        &mut RenderContext<'s>,
-        &'t0 str,
-    ) -> Node<'s>
-                  + 'static),
 ) -> Result<Node<'a>, String> {
     let mut reader_for_microxml = ReaderForMicroXml::new(html_template);
     let mut dom_path = Vec::new();
@@ -74,7 +69,6 @@ pub fn get_root_element<'a>(
                 cx,
                 html_or_svg_local,
                 &mut dom_path,
-                call_function_node,
             ) {
                 //the methods are move, so I have to return the moved value
                 Ok(new_root_element) => root_element = new_root_element,
@@ -109,13 +103,6 @@ fn fill_element_builder<'a>(
     cx: &mut RenderContext<'a>,
     html_or_svg_parent: HtmlOrSvg,
     dom_path: &mut Vec<String>,
-
-    call_function_node: &'static (dyn for<'r, 's, 't0> Fn(
-        &'r RootRenderingComponent,
-        &mut RenderContext<'s>,
-        &'t0 str,
-    ) -> Node<'s>
-                  + 'static),
 ) -> Result<
     ElementBuilder<
         'a,
@@ -159,7 +146,6 @@ fn fill_element_builder<'a>(
                     cx,
                     html_or_svg_local,
                     dom_path,
-                    call_function_node,
                 )?;
                 if let Some(repl_node) = replace_node {
                     //logmod::debug_write(&format!("child is repl_node {}", ""));
@@ -232,7 +218,7 @@ fn fill_element_builder<'a>(
                     replace_string = Some(repl_txt);
                 } else if txt.starts_with("n=") {
                     let fn_name = unwrap!(txt.get(2..));
-                    let repl_node = fncallermod::call_function_node(rrc, cx, fn_name);
+                    let repl_node = rrc.call_function_node(cx, fn_name);
                     //logmod::debug_write(&format!("n= {:?}", &repl_node));
                     replace_node = Some(repl_node);
                 } else {

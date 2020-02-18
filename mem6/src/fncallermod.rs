@@ -190,38 +190,34 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             }
         }
     }
-}
 
-/// html_templating functions that return a Node
-#[allow(clippy::needless_return)]
-pub fn call_function_node<'a>(
-    rrc: &RootRenderingComponent,
-    cx: &mut RenderContext<'a>,
-    sx: &str,
-) -> Node<'a> {
-    let bump = cx.bump;
-    //logmod::debug_write(&format!("call_function_node: {}", &sx));
-    match sx {
-        "div_grid_container" => {
-            //what is the game_status now?
-            //logmod::debug_write(&format!("game status: {}", rrc.game_data.game_status));
-            let max_grid_size = divgridcontainermod::max_grid_size(rrc);
-            return divgridcontainermod::div_grid_container(rrc, bump, &max_grid_size);
-        }
-        "div_player_action" => {
-            let node = divplayeractionsmod::div_player_actions_from_game_status(rrc, bump);
-            return node;
-        }
-        "svg_qrcode" => {
-            return svg_qrcode_to_node(rrc, cx);
-        }
-        _ => {
-            let node = dodrio!(bump,
-            <h2  >
-                {vec![text(bumpalo::format!(in bump, "Error: Unrecognized call_function_node: {}", sx).into_bump_str())]}
-            </h2>
-            );
-            return node;
+    /// html_templating functions that return a Node
+    #[allow(clippy::needless_return)]
+    fn call_function_node<'a>(&self, cx: &mut RenderContext<'a>, sx: &str) -> Node<'a> {
+        let bump = cx.bump;
+        //logmod::debug_write(&format!("call_function_node: {}", &sx));
+        match sx {
+            "div_grid_container" => {
+                //what is the game_status now?
+                //logmod::debug_write(&format!("game status: {}", self.game_data.game_status));
+                let max_grid_size = divgridcontainermod::max_grid_size(self);
+                return divgridcontainermod::div_grid_container(self, bump, &max_grid_size);
+            }
+            "div_player_action" => {
+                let node = divplayeractionsmod::div_player_actions_from_game_status(self, bump);
+                return node;
+            }
+            "svg_qrcode" => {
+                return svg_qrcode_to_node(self, cx);
+            }
+            _ => {
+                let node = dodrio!(bump,
+                <h2  >
+                    {vec![text(bumpalo::format!(in bump, "Error: Unrecognized call_function_node: {}", sx).into_bump_str())]}
+                </h2>
+                );
+                return node;
+            }
         }
     }
 }
@@ -240,7 +236,6 @@ pub fn svg_qrcode_to_node<'a>(
         cx,
         &svg_template,
         htmltemplatemod::HtmlOrSvg::Svg,
-        &fncallermod::call_function_node,
     ))
 }
 
@@ -258,6 +253,7 @@ pub fn game_type_right_onclick(rrc: &mut RootRenderingComponent, vdom: &dodrio::
     }
     fetchgameconfigmod::async_fetch_game_config_request(rrc, vdom);
 }
+
 /// left arrow button
 pub fn game_type_left_onclick(rrc: &mut RootRenderingComponent, vdom: &dodrio::VdomWeak) {
     let gmd = &unwrap!(rrc.game_data.games_metadata.as_ref()).vec_game_metadata;

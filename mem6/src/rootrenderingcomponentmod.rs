@@ -60,7 +60,6 @@ impl Render for RootRenderingComponent {
                 cx,
                 &self.html_template,
                 htmltemplatemod::HtmlOrSvg::Html,
-                &fncallermod::call_function_node,
             ))
         }
     }
