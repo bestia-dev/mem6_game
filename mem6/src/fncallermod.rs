@@ -8,25 +8,39 @@ use unwrap::unwrap;
 use wasm_bindgen::JsCast; //don't remove this. It is needed for dyn_into.
 use dodrio::{
     RenderContext,
-    bumpalo::{self, Bump},
+    bumpalo::{self},
     Node,
     builder::*,
 };
 use typed_html::dodrio;
 
+impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
+    fn get_local_route(&self) -> String {
+        self.local_route.to_string()
+    }
+    fn set_local_route(&mut self, local_route: &str) {
+        self.local_route = local_route.to_string();
+    }
+    fn get_html_template(&self) -> String {
+        self.html_template.to_string()
+    }
+    fn set_html_template(&mut self, html_template: &str) {
+        self.html_template = html_template.to_string();
+    }
 /// html_templating functions that return a String
 #[allow(clippy::needless_return, clippy::integer_arithmetic)]
-pub fn call_function_string(rrc: &RootRenderingComponent, sx: &str) -> String {
+fn call_function_string(&self, sx: &str) -> String {
     //logmod::debug_write(&format!("call_function_string: {}", &sx));
+    
     match sx {
-        "my_nickname" => rrc.game_data.my_nickname.to_owned(),
-        "blink_or_not_nickname" => divnicknamemod::blink_or_not_nickname(rrc),
-        "blink_or_not_group_id" => blink_or_not_group_id(rrc),
-        "my_ws_uid" => format!("{}", rrc.game_data.my_ws_uid),
-        "players_count" => format!("{} ", rrc.game_data.players.len() - 1),
-        "game_name" => rrc.game_data.game_name.to_string(),
-        "group_id_joined" => group_id_joined(rrc),
-        "url_to_join" => format!("bestia.dev/mem6/#p03.{}", rrc.game_data.my_ws_uid),
+        "my_nickname" => self.game_data.my_nickname.to_owned(),
+        "blink_or_not_nickname" => divnicknamemod::blink_or_not_nickname(self),
+        "blink_or_not_group_id" => blink_or_not_group_id(self),
+        "my_ws_uid" => format!("{}", self.game_data.my_ws_uid),
+        "players_count" => format!("{} ", self.game_data.players.len() - 1),
+        "game_name" => self.game_data.game_name.to_string(),
+        "group_id_joined" => group_id_joined(self),
+        "url_to_join" => format!("bestia.dev/mem6/#p03.{}", self.game_data.my_ws_uid),
         "cargo_pkg_version" => env!("CARGO_PKG_VERSION").to_string(),
         "debug_text" => sessionstoragemod::get_debug_text(),
         "gameboard_btn" => {
@@ -34,25 +48,25 @@ pub fn call_function_string(rrc: &RootRenderingComponent, sx: &str) -> String {
             "btn".to_owned()
         }
         "card_moniker_first" => {
-            return unwrap!(unwrap!(rrc.game_data.game_config.as_ref())
+            return unwrap!(unwrap!(self.game_data.game_config.as_ref())
                 .card_moniker
                 .get(
-                    unwrap!(rrc
+                    unwrap!(self
                         .game_data
                         .card_grid_data
-                        .get(rrc.game_data.card_index_of_first_click))
+                        .get(self.game_data.card_index_of_first_click))
                     .card_number_and_img_src
                 ))
             .to_string();
         }
         "card_moniker_second" => {
-            return unwrap!(unwrap!(rrc.game_data.game_config.as_ref())
+            return unwrap!(unwrap!(self.game_data.game_config.as_ref())
                 .card_moniker
                 .get(
-                    unwrap!(rrc
+                    unwrap!(self
                         .game_data
                         .card_grid_data
-                        .get(rrc.game_data.card_index_of_second_click))
+                        .get(self.game_data.card_index_of_second_click))
                     .card_number_and_img_src
                 ))
             .to_string();
@@ -60,15 +74,15 @@ pub fn call_function_string(rrc: &RootRenderingComponent, sx: &str) -> String {
         "my_points" => {
             return format!(
                 "{} ",
-                unwrap!(rrc
+                unwrap!(self
                     .game_data
                     .players
-                    .get(rrc.game_data.my_player_number - 1))
+                    .get(self.game_data.my_player_number - 1))
                 .points,
             );
         }
         "player_turn" => {
-            return unwrap!(rrc.game_data.players.get(rrc.game_data.player_turn - 1))
+            return unwrap!(self.game_data.players.get(self.game_data.player_turn - 1))
                 .nickname
                 .to_string();
         }
@@ -79,6 +93,8 @@ pub fn call_function_string(rrc: &RootRenderingComponent, sx: &str) -> String {
         }
     }
 }
+}
+
 /// html_templating functions for listeners
 /// get a clone of the VdomWeak
 pub fn call_listener(
@@ -229,7 +245,6 @@ pub fn svg_qrcode_to_node<'a>(
         cx,
         &svg_template,
         htmltemplatemod::HtmlOrSvg::Svg,
-        &fncallermod::call_function_string,
         &fncallermod::call_function_node,
         &fncallermod::call_listener
     ))

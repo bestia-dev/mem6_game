@@ -7,7 +7,7 @@ use reader_for_microxml::*;
 
 use dodrio::{
     Node, Listener, Attribute, RenderContext,
-    bumpalo::{self, Bump},
+    bumpalo::{self},
     builder::*,
 };
 use unwrap::unwrap;
@@ -21,6 +21,18 @@ pub enum HtmlOrSvg {
     Svg,
 }
 
+/// the RootRenderingComponent struct must implement this trait
+/// it must have the local_route and html_template fields
+pub trait HtmlTemplating {
+    fn get_local_route(&self) -> String;
+    fn set_local_route(&mut self, local_route: &str);
+    fn get_html_template(&self) -> String;
+    fn set_html_template(&mut self, html_template: &str);
+    fn call_function_string(&self, sx: &str) -> String;
+    //fn call_function_node<'a>(&mut self, bump: &mut RenderContext<'a>, sx: &str) -> Node<'a>;
+    //fn call_listener(&mut self, vdom: dodrio::VdomWeak, sx: String, event: web_sys::Event);
+}
+
 /// get root element Node.   
 /// I wanted to use dodrio::Node, but it has only private methods.  
 /// I must use dodrio element_builder.  
@@ -29,7 +41,6 @@ pub fn get_root_element<'a>(
     cx: &mut RenderContext<'a>,
     html_template: &str,
     html_or_svg_parent: HtmlOrSvg,
-    call_function_string: &'static dyn Fn(&RootRenderingComponent, &str) -> String,
     call_function_node: &'static (dyn for<'r, 's, 't0> Fn(
         &'r RootRenderingComponent,
         &mut RenderContext<'s>,
@@ -69,7 +80,6 @@ pub fn get_root_element<'a>(
                 cx,
                 html_or_svg_local,
                 &mut dom_path,
-                call_function_string,
                 call_function_node,
                 call_listener,
             ) {
@@ -106,7 +116,7 @@ fn fill_element_builder<'a>(
     cx: &mut RenderContext<'a>,
     html_or_svg_parent: HtmlOrSvg,
     dom_path: &mut Vec<String>,
-    call_function_string: &'static dyn Fn(&RootRenderingComponent, &str) -> String,
+
     call_function_node: &'static (dyn for<'r, 's, 't0> Fn(
         &'r RootRenderingComponent,
         &mut RenderContext<'s>,
@@ -162,7 +172,6 @@ fn fill_element_builder<'a>(
                     cx,
                     html_or_svg_local,
                     dom_path,
-                    call_function_string,
                     call_function_node,
                     call_listener,
                 )?;
@@ -179,7 +188,7 @@ fn fill_element_builder<'a>(
                     //the rest of the name does not matter.
                     //The replace_string will always be applied to the next attribute.
                     let fn_name = value;
-                    let repl_txt = call_function_string(rrc, fn_name);
+                    let repl_txt = rrc.call_function_string( fn_name);
                     replace_string = Some(repl_txt);
                 } else if name.starts_with("data-on-") {
                     // Only one listener for now because the api does not give me other method.
@@ -232,7 +241,7 @@ fn fill_element_builder<'a>(
                 // it must look like <!--t=get_text-->
                 if txt.starts_with("t=") {
                     let fn_name = unwrap!(txt.get(2..));
-                    let repl_txt = call_function_string(rrc, fn_name);
+                    let repl_txt = rrc.call_function_string( fn_name);
                     replace_string = Some(repl_txt);
                 } else if txt.starts_with("n=") {
                     let fn_name = unwrap!(txt.get(2..));

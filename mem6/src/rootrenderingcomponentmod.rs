@@ -49,7 +49,7 @@ impl RootRenderingComponent {
 ///Only when render is scheduled after some change id the game data.
 impl Render for RootRenderingComponent {
     fn render<'a>(&self, cx: &mut RenderContext<'a>) -> Node<'a> {
-        let bump = cx.bump;
+        //let bump = cx.bump;
         //return
         // html fragment from html_template defined in # local_route
         if self.html_template.is_empty() {
@@ -60,7 +60,6 @@ impl Render for RootRenderingComponent {
                 cx,
                 &self.html_template,
                 htmltemplatemod::HtmlOrSvg::Html,
-                &fncallermod::call_function_string,
                 &fncallermod::call_function_node,
                 &fncallermod::call_listener,
             ))
