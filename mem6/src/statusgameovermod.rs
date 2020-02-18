@@ -34,7 +34,7 @@ pub fn div_game_over<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'
                             },
                         );
                         rrc.reset_for_play_again();
-                        fncallermod::open_new_local_page("#p05");
+                        htmltemplateimplmod::open_new_local_page("#p05");
                     }}>
                 <h2 class="h2_user_can_click">
                         {vec![text(
@@ -67,6 +67,6 @@ pub fn on_msg_play_again(rrc: &mut RootRenderingComponent) {
     //The first players can choose Play again and send to others.
     rrc.game_data.game_status = GameStatus::StatusJoined;
     rrc.reset_for_play_again();
-    let group_id = fncallermod::group_id_joined(rrc);
-    fncallermod::open_new_local_page(&format!("#p04.{}", group_id));
+    let group_id = htmltemplateimplmod::group_id_joined(rrc);
+    htmltemplateimplmod::open_new_local_page(&format!("#p04.{}", group_id));
 }

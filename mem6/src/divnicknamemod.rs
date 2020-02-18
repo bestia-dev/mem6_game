@@ -66,7 +66,7 @@ pub fn nickname_onkeyup(rrc: &mut RootRenderingComponent, event: web_sys::Event)
     //logmod::debug_write(&keyboard_event.key());
     if keyboard_event.key() == "Enter" {
         //open page start group
-        fncallermod::open_new_local_page("#p02");
+        htmltemplateimplmod::open_new_local_page("#p02");
     } else {
         save_nickname_to_localstorage(rrc);
     }
@@ -80,7 +80,7 @@ pub fn group_id_onkeyup(event: web_sys::Event) {
     //logmod::debug_write(&keyboard_event.key());
     if keyboard_event.key() == "Enter" {
         //open page start group
-        let group_id = fncallermod::get_input_value("input_group_id");
-        fncallermod::open_new_local_page(&format!("#p04.{}", group_id));
+        let group_id = htmltemplateimplmod::get_input_value("input_group_id");
+        htmltemplateimplmod::open_new_local_page(&format!("#p04.{}", group_id));
     }
 }

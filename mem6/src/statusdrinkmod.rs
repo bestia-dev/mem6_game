@@ -13,5 +13,5 @@ pub fn on_msg_drink_end(
     _msg_sender_ws_uid: usize,
     _vdom: &dodrio::VdomWeak,
 ) {
-    fncallermod::open_new_local_page("#p11");
+    htmltemplateimplmod::open_new_local_page("#p11");
 }

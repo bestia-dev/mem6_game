@@ -1,5 +1,7 @@
 //! **htmltemplatemod**  
-//! html templating for dodrio
+//! Html templating for dodrio, generic code for a standalone library.
+//! The implementation is in another file where RootRenderingComponents
+//! implement the trait HtmlTemplating
 
 use crate::*;
 
@@ -22,12 +24,8 @@ pub enum HtmlOrSvg {
 }
 
 /// the RootRenderingComponent struct must implement this trait
-/// it must have the local_route and html_template fields
+/// it must have the fields for local_route and html_template fields
 pub trait HtmlTemplating {
-    fn get_local_route(&self) -> String;
-    fn set_local_route(&mut self, local_route: &str);
-    fn get_html_template(&self) -> String;
-    fn set_html_template(&mut self, html_template: &str);
     //while rendering, cannot mut rrc
     fn call_function_string(&self, sx: &str) -> String;
     fn call_function_node<'a>(&self, bump: &mut RenderContext<'a>, sx: &str) -> Node<'a>;
@@ -38,7 +36,7 @@ pub trait HtmlTemplating {
 /// I wanted to use dodrio::Node, but it has only private methods.  
 /// I must use dodrio element_builder.  
 pub fn get_root_element<'a>(
-    rrc: &RootRenderingComponent,
+    htrrc: &dyn HtmlTemplating,
     cx: &mut RenderContext<'a>,
     html_template: &str,
     html_or_svg_parent: HtmlOrSvg,
@@ -63,7 +61,7 @@ pub fn get_root_element<'a>(
             }
             // recursive function can return error
             match fill_element_builder(
-                rrc,
+                htrrc,
                 &mut reader_for_microxml,
                 root_element,
                 cx,
@@ -92,7 +90,7 @@ pub fn get_root_element<'a>(
 /// It makes the code less readable. It is only good for chaining and type changing.  
 #[allow(clippy::too_many_lines, clippy::type_complexity)]
 fn fill_element_builder<'a>(
-    rrc: &RootRenderingComponent,
+    htrrc: &dyn HtmlTemplating,
     reader_for_microxml: &mut ReaderForMicroXml,
     mut element: ElementBuilder<
         'a,
@@ -140,7 +138,7 @@ fn fill_element_builder<'a>(
                     html_or_svg_local = HtmlOrSvg::Html;
                 }
                 child_element = fill_element_builder(
-                    rrc,
+                    htrrc,
                     reader_for_microxml,
                     child_element,
                     cx,
@@ -160,7 +158,7 @@ fn fill_element_builder<'a>(
                     //the rest of the name does not matter.
                     //The replace_string will always be applied to the next attribute.
                     let fn_name = value;
-                    let repl_txt = rrc.call_function_string(fn_name);
+                    let repl_txt = htrrc.call_function_string(fn_name);
                     replace_string = Some(repl_txt);
                 } else if name.starts_with("data-on-") {
                     // Only one listener for now because the api does not give me other method.
@@ -170,11 +168,11 @@ fn fill_element_builder<'a>(
                     //logmod::debug_write(&format!("create listener {}", &fn_name));
                     element = element.on(event_to_listen, move |root, vdom, event| {
                         let fn_name = fn_name.clone();
-                        let rrc = root.unwrap_mut::<RootRenderingComponent>();
+                        let htrrc = root.unwrap_mut::<RootRenderingComponent>();
                         //call a function from string
                         //logmod::debug_write(&format!("fn_name {}", fn_name));
                         let vdom = vdom.clone();
-                        rrc.call_listener(vdom, &fn_name, event);
+                        htrrc.call_listener(vdom, &fn_name, event);
                     });
                 } else {
                     let name = bumpalo::format!(in bump, "{}",name).into_bump_str();
@@ -214,11 +212,11 @@ fn fill_element_builder<'a>(
                 // it must look like <!--t=get_text-->
                 if txt.starts_with("t=") {
                     let fn_name = unwrap!(txt.get(2..));
-                    let repl_txt = rrc.call_function_string(fn_name);
+                    let repl_txt = htrrc.call_function_string(fn_name);
                     replace_string = Some(repl_txt);
                 } else if txt.starts_with("n=") {
                     let fn_name = unwrap!(txt.get(2..));
-                    let repl_node = rrc.call_function_node(cx, fn_name);
+                    let repl_node = htrrc.call_function_node(cx, fn_name);
                     //logmod::debug_write(&format!("n= {:?}", &repl_node));
                     replace_node = Some(repl_node);
                 } else {

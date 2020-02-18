@@ -132,10 +132,10 @@ pub fn update_click_2nd_card_point(rrc: &mut RootRenderingComponent, is_point: b
 
         if rrc.game_data.my_player_number == player_for_point + 1 {
             //drink
-            fncallermod::open_new_local_page("#p06");
+            htmltemplateimplmod::open_new_local_page("#p06");
         } else {
             //do not drink
-            fncallermod::open_new_local_page("#p07");
+            htmltemplateimplmod::open_new_local_page("#p07");
         }
     }
 }

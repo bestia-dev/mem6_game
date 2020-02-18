@@ -182,7 +182,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                         &game_name,
                                         player_turn,
                                     );
-                                    fncallermod::open_new_local_page("#p11");
+                                    htmltemplateimplmod::open_new_local_page("#p11");
                                     vdom.schedule_render();
                                 }
                                 WsMessage::MsgClick1stCard {

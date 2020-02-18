@@ -1,4 +1,4 @@
-//! fncallermod  
+//! htmltemplateimplmod  
 
 use crate::*;
 use mem6_common::*;
@@ -15,23 +15,10 @@ use dodrio::{
 use typed_html::dodrio;
 
 impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
-    fn get_local_route(&self) -> String {
-        self.local_route.to_string()
-    }
-    fn set_local_route(&mut self, local_route: &str) {
-        self.local_route = local_route.to_string();
-    }
-    fn get_html_template(&self) -> String {
-        self.html_template.to_string()
-    }
-    fn set_html_template(&mut self, html_template: &str) {
-        self.html_template = html_template.to_string();
-    }
     /// html_templating functions that return a String
     #[allow(clippy::needless_return, clippy::integer_arithmetic)]
     fn call_function_string(&self, sx: &str) -> String {
         //logmod::debug_write(&format!("call_function_string: {}", &sx));
-
         match sx {
             "my_nickname" => self.game_data.my_nickname.to_owned(),
             "blink_or_not_nickname" => divnicknamemod::blink_or_not_nickname(self),
