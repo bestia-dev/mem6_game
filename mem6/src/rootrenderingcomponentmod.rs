@@ -57,7 +57,7 @@ impl Render for RootRenderingComponent {
         } else {
             unwrap!(htmltemplatemod::get_root_element(
                 self,
-                bump,
+                cx,
                 &self.html_template,
                 htmltemplatemod::HtmlOrSvg::Html,
                 &fncallermod::call_function_string,

@@ -26,11 +26,15 @@ pub enum HtmlOrSvg {
 /// I must use dodrio element_builder.  
 pub fn get_root_element<'a>(
     rrc: &RootRenderingComponent,
-    bump: &'a Bump,
+    cx: &mut RenderContext<'a>,
     html_template: &str,
     html_or_svg_parent: HtmlOrSvg,
     call_function_string: &'static dyn Fn(&RootRenderingComponent, &str) -> String,
-    call_function_node: &'static (dyn for<'r, 's, 't0> Fn(&'r RootRenderingComponent, &'s Bump, &'t0 str) -> Node<'s>
+    call_function_node: &'static (dyn for<'r, 's, 't0> Fn(
+        &'r RootRenderingComponent,
+        &mut RenderContext<'s>,
+        &'t0 str,
+    ) -> Node<'s>
                   + 'static),
     call_listener: &'static dyn Fn(
         &dodrio::VdomWeak,
@@ -43,6 +47,7 @@ pub fn get_root_element<'a>(
     let mut dom_path = Vec::new();
     let mut root_element;
     let mut html_or_svg_local = html_or_svg_parent;
+    let bump = cx.bump;
     #[allow(clippy::single_match_else, clippy::wildcard_enum_match_arm)]
     match reader_for_microxml.read_event() {
         Event::StartElement(name) => {
@@ -61,7 +66,7 @@ pub fn get_root_element<'a>(
                 rrc,
                 &mut reader_for_microxml,
                 root_element,
-                bump,
+                cx,
                 html_or_svg_local,
                 &mut dom_path,
                 call_function_string,
@@ -98,11 +103,15 @@ fn fill_element_builder<'a>(
         bumpalo::collections::Vec<'a, Attribute<'a>>,
         bumpalo::collections::Vec<'a, Node<'a>>,
     >,
-    bump: &'a Bump,
+    cx: &mut RenderContext<'a>,
     html_or_svg_parent: HtmlOrSvg,
     dom_path: &mut Vec<String>,
     call_function_string: &'static dyn Fn(&RootRenderingComponent, &str) -> String,
-    call_function_node: &'static (dyn for<'r, 's, 't0> Fn(&'r RootRenderingComponent, &'s Bump, &'t0 str) -> Node<'s>
+    call_function_node: &'static (dyn for<'r, 's, 't0> Fn(
+        &'r RootRenderingComponent,
+        &mut RenderContext<'s>,
+        &'t0 str,
+    ) -> Node<'s>
                   + 'static),
     call_listener: &'static dyn Fn(
         &dodrio::VdomWeak,
@@ -122,6 +131,7 @@ fn fill_element_builder<'a>(
     let mut replace_string: Option<String> = None;
     let mut replace_node: Option<Node> = None;
     let mut html_or_svg_local;
+    let bump = cx.bump;
     //loop through all the siblings in this iteration
     loop {
         // the children inherits html_or_svg from the parent, but cannot change the parent
@@ -149,7 +159,7 @@ fn fill_element_builder<'a>(
                     rrc,
                     reader_for_microxml,
                     child_element,
-                    bump,
+                    cx,
                     html_or_svg_local,
                     dom_path,
                     call_function_string,
@@ -226,7 +236,7 @@ fn fill_element_builder<'a>(
                     replace_string = Some(repl_txt);
                 } else if txt.starts_with("n=") {
                     let fn_name = unwrap!(txt.get(2..));
-                    let repl_node = fncallermod::call_function_node(rrc, bump, fn_name);
+                    let repl_node = fncallermod::call_function_node(rrc, cx, fn_name);
                     //logmod::debug_write(&format!("n= {:?}", &repl_node));
                     replace_node = Some(repl_node);
                 } else {

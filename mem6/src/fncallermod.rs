@@ -7,6 +7,7 @@ use mem6_common::*;
 use unwrap::unwrap;
 use wasm_bindgen::JsCast; //don't remove this. It is needed for dyn_into.
 use dodrio::{
+    RenderContext,
     bumpalo::{self, Bump},
     Node,
     builder::*,
@@ -182,7 +183,12 @@ pub fn call_listener(
 
 /// html_templating functions that return a Node
 #[allow(clippy::needless_return)]
-pub fn call_function_node<'a>(rrc: &RootRenderingComponent, bump: &'a Bump, sx: &str) -> Node<'a> {
+pub fn call_function_node<'a>(
+    rrc: &RootRenderingComponent,
+    cx: &mut RenderContext<'a>,
+    sx: &str,
+) -> Node<'a> {
+    let bump = cx.bump;
     //logmod::debug_write(&format!("call_function_node: {}", &sx));
     match sx {
         "div_grid_container" => {
@@ -196,7 +202,7 @@ pub fn call_function_node<'a>(rrc: &RootRenderingComponent, bump: &'a Bump, sx: 
             return node;
         }
         "svg_qrcode" => {
-            return svg_qrcode_to_node(rrc, bump);
+            return svg_qrcode_to_node(rrc, cx);
         }
         _ => {
             let node = dodrio!(bump,
@@ -210,14 +216,17 @@ pub fn call_function_node<'a>(rrc: &RootRenderingComponent, bump: &'a Bump, sx: 
 }
 
 /// qrcode svg
-pub fn svg_qrcode_to_node<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
+pub fn svg_qrcode_to_node<'a>(
+    rrc: &RootRenderingComponent,
+    cx: &mut RenderContext<'a>,
+) -> Node<'a> {
     let link = format!("https://bestia.dev/mem6/#p03.{}", rrc.game_data.my_ws_uid);
     let qr = unwrap!(qrcode53bytes::Qr::new(&link));
     let svg_template = qrcode53bytes::SvgDodrioRenderer::new(222, 222).render(&qr);
 
     unwrap!(htmltemplatemod::get_root_element(
         rrc,
-        bump,
+        cx,
         &svg_template,
         htmltemplatemod::HtmlOrSvg::Svg,
         &fncallermod::call_function_string,
