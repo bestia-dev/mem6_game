@@ -1,4 +1,4 @@
-//! routersettingsmod
+//! routerimplmod
 //! The fill_rrc_local_route() function has specific code to route from the url hash part to a
 //! html_template file to fetch. The file name is written to rrc.local_route.  
 //! A reference to the function &fill_rrc_local_route() is passed to start_route().
@@ -16,13 +16,20 @@ pub fn fill_rrc_local_route(
         fetchgameconfigmod::async_fetch_game_config_request(rrc, &vdom);
         rrc.local_route = "p02_start_a_group.html".to_owned();
     } else if local_route.starts_with("#p03") {
-        if local_route.contains('.') {
-            let group_id = routermod::get_url_param_in_hash_after_dot(&local_route);
-            utilsmod::push_first_player_as_group_id(rrc, group_id);
-        }
+        rrc.game_data.my_player_number = 2;
+        let group_id = if local_route.contains('.') {
+            let gr = routermod::get_url_param_in_hash_after_dot(&local_route);
+            divnicknamemod::save_group_id_string_to_localstorage(rrc, gr.to_string());
+            gr.to_string()
+        } else {
+            divnicknamemod::load_group_id()
+        };
+        utilsmod::push_first_player_as_group_id(rrc, &group_id);
         rrc.local_route = "p03_join_a_group.html".to_owned();
     } else if local_route.starts_with("#p04") {
+        rrc.game_data.my_player_number = 2;
         let group_id = routermod::get_url_param_in_hash_after_dot(&local_route);
+        divnicknamemod::save_group_id_string_to_localstorage(rrc, group_id.to_string());
         utilsmod::push_first_player_as_group_id(rrc, group_id);
         statusjoinedmod::on_load_joined(rrc);
         rrc.local_route = "p04_wait_to_start.html".to_owned();

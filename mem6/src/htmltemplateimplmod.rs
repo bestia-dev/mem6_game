@@ -91,6 +91,25 @@ const VIDEOS: &[&str] = &[
 ];
 
 impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
+    /// html_templating boolean id the next node is rendered or not
+    fn call_function_boolean(&self, sx: &str) -> bool {
+        logmod::debug_write(&format!("call_function_boolean: {}", &sx));
+        match sx {
+            "is_first_player" => {
+                if self.game_data.my_player_number == 1 {
+                    true
+                } else {
+                    false
+                }
+            }
+            _ => {
+                let x = format!("Error: Unrecognized call_function_boolean: {}", sx);
+                logmod::debug_write(&x);
+                true
+            }
+        }
+    }
+
     /// html_templating functions that return a String
     #[allow(clippy::needless_return, clippy::integer_arithmetic)]
     fn call_function_string(&self, sx: &str) -> String {
@@ -166,7 +185,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 divnicknamemod::nickname_onkeyup(self, event);
             }
             "group_id_onkeyup" => {
-                divnicknamemod::group_id_onkeyup(event);
+                divnicknamemod::group_id_onkeyup(self, event);
             }
             "open_youtube" => {
                 //randomly choose a link from VIDEOS
@@ -190,6 +209,8 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 open_new_tab("#p31");
             }
             "start_a_group_onclick" | "restart_game" => {
+                //send a msg to others to open #p04.{}
+                statusgameovermod::on_msg_play_again(self);
                 open_new_local_page("#p02");
             }
             "join_a_group_onclick" => {

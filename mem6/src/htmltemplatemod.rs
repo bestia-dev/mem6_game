@@ -28,7 +28,8 @@ pub enum HtmlOrSvg {
 pub trait HtmlTemplating {
     //while rendering, cannot mut rrc
     fn call_function_string(&self, sx: &str) -> String;
-    fn call_function_node<'a>(&self, bump: &mut RenderContext<'a>, sx: &str) -> Node<'a>;
+    fn call_function_boolean<'a>(&self, sx: &str) -> bool;
+    fn call_function_node<'a>(&self, cx: &mut RenderContext<'a>, sx: &str) -> Node<'a>;
     fn call_listener(&mut self, vdom: dodrio::VdomWeak, sx: &str, event: web_sys::Event);
 }
 
@@ -112,6 +113,7 @@ fn fill_element_builder<'a>(
 > {
     let mut replace_string: Option<String> = None;
     let mut replace_node: Option<Node> = None;
+    let mut replace_boolean: Option<bool> = None;
     let mut html_or_svg_local;
     let bump = cx.bump;
     //loop through all the siblings in this iteration
@@ -145,12 +147,18 @@ fn fill_element_builder<'a>(
                     html_or_svg_local,
                     dom_path,
                 )?;
-                if let Some(repl_node) = replace_node {
-                    //logmod::debug_write(&format!("child is repl_node {}", ""));
-                    element = element.child(repl_node);
-                    replace_node = None;
-                } else {
-                    element = element.child(child_element.finish());
+                //if the boolean is empty or true then render the next node
+                if replace_boolean.unwrap_or(true) {
+                    if let Some(repl_node) = replace_node {
+                        //logmod::debug_write(&format!("child is repl_node {}", ""));
+                        element = element.child(repl_node);
+                        replace_node = None;
+                    } else {
+                        element = element.child(child_element.finish());
+                    }
+                }
+                if replace_boolean.is_some() {
+                    replace_boolean = None;
                 }
             }
             Event::Attribute(name, value) => {
@@ -220,6 +228,10 @@ fn fill_element_builder<'a>(
                     let repl_node = htrrc.call_function_node(cx, fn_name);
                     //logmod::debug_write(&format!("n= {:?}", &repl_node));
                     replace_node = Some(repl_node);
+                } else if txt.starts_with("b=") {
+                    //boolean if this is true than render the next node, else don't render
+                    let fn_name = unwrap!(txt.get(2..));
+                    replace_boolean = Some(htrrc.call_function_boolean(fn_name));
                 } else {
                     //nothing. it is really a comment
                 }

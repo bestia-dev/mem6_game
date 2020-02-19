@@ -271,7 +271,7 @@ mod utilsmod;
 mod websocketcommunicationmod;
 mod websocketreconnectmod;
 mod routermod;
-mod routersettingsmod;
+mod routerimplmod;
 mod htmltemplateimplmod;
 mod htmltemplatemod;
 //endregion
@@ -344,7 +344,7 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     // Start the URL router. Send a reference to the functions with router settings.
     //To keep separate modules for generic router code and specific router code.
     let v3 = vdom.weak();
-    routermod::start_router(v3, &routersettingsmod::fill_rrc_local_route);
+    routermod::start_router(v3, &routerimplmod::fill_rrc_local_route);
 
     // Run the component forever. Forget to drop the memory.
     vdom.forget();

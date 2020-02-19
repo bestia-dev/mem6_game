@@ -12,6 +12,7 @@ pub fn window() -> web_sys::Window {
 
 /// add the first player as group_id so the msg can be sent to him
 pub fn push_first_player_as_group_id(rrc: &mut RootRenderingComponent, group_id: &str) {
+    let group_id = if group_id.is_empty() { "0" } else { group_id };
     let ws_uid = unwrap!(group_id.parse::<usize>());
     rrc.game_data.players.clear();
     rrc.game_data.players.push(Player {

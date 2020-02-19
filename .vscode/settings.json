@@ -42,7 +42,7 @@
         "playingcards",
         "rootrenderingcomponentmod",
         "routermod",
-        "routersettingsmod",
+        "routerimplmod",
         "sessionstoragemod",
         "spwloc",
         "startindex",
