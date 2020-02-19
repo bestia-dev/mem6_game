@@ -169,6 +169,7 @@ fn fill_element_builder<'a>(
                     element = element.on(event_to_listen, move |root, vdom, event| {
                         let fn_name = fn_name.clone();
                         let htrrc = root.unwrap_mut::<RootRenderingComponent>();
+                        /* self.as_any_mut().downcast_mut::<R>()*/
                         //call a function from string
                         //logmod::debug_write(&format!("fn_name {}", fn_name));
                         let vdom = vdom.clone();
