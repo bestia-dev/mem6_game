@@ -142,7 +142,19 @@ Rust code is splitted into modules. They are not exactly like classes, but can b
 Rust has much more freedom to group code in different ways. So that is best suits the problem.  
 I splitted the rendering pages and that into sub-components.  
 And then I splitted the User Actions by the Status1 to easy follow the flow of the game.  
-I try to use the philosophy od "state machine" because is easier to follow.  
+
+## State machine
+
+I try to use the philosophy of "state machine" because it is easier to follow.  
+All is dependent on the state of the data and not on the chronological events.  
+Any event can change the state/data. Then another piece of code will do the rest
+based on the state/data. The data can come from different places: user input, fetch from
+web, url/hash, localstorage. It doesn't matter. All the data must first go into the state/data.  
+Then some other code makes decision based on the state/data.  
+The app is divided in 2 ways:
+
+- visually it is divided in pages and page components
+- behaviorally is divided into pages and game_state
 
 ## Clippy
 

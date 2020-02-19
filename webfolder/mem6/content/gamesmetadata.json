@@ -11,6 +11,11 @@
 			"description": "animals"
 		},
 		{
+			"folder": "bottles",
+			"name": "bottles",
+			"description": "bottles"
+		},
+		{
 			"folder": "colors",
 			"name": "colors",
 			"description": "colors"
