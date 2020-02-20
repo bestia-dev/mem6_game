@@ -35,11 +35,13 @@ pub fn save_nickname_to_localstorage(rrc: &mut RootRenderingComponent) {
     //it will be executed at the next tick to avoid concurrent data races.
     rrc.game_data.my_nickname = nickname_string.clone();
     //change it also in players
-    unwrap!(rrc
-        .game_data
-        .players
-        .get_mut(unwrap!(rrc.game_data.my_player_number.checked_sub(1))))
-    .nickname = nickname_string;
+    if rrc.game_data.my_player_number == 1 {
+        unwrap!(rrc
+            .game_data
+            .players
+            .get_mut(unwrap!(rrc.game_data.my_player_number.checked_sub(1))))
+        .nickname = nickname_string;
+    }
 }
 
 ///save group_id from html input elements to local storage and rrc
