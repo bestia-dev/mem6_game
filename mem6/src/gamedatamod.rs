@@ -100,6 +100,8 @@ pub struct GameData {
     pub my_nickname: String,
     ///What player am I
     pub my_player_number: usize,
+    ///group_id is the ws_uid of the first player
+    pub group_id: usize,
     ///web socket. used it to send message onclick.
     pub ws: WebSocket,
     ///players data as vector of player struct
@@ -266,6 +268,7 @@ impl GameData {
             ws,
             my_ws_uid,
             my_nickname,
+            group_id: 0,
             players,
             players_ws_uid,
             game_status: GameStatus::StatusStartPage,

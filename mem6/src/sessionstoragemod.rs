@@ -9,7 +9,7 @@ use unwrap::unwrap;
 
 ///add to begin of debug text
 pub fn add_to_begin_of_debug_text(text: &str) {
-    let ls = unwrap!(unwrap!(utilsmod::window().session_storage()));
+    let ls = unwrap!(unwrap!(windowmod::window().session_storage()));
     let mut debug_text = format!("{}: {}\n{}", logmod::now_string(), text, get_debug_text());
     utf8_truncate(&mut debug_text, 800);
     let _x = ls.set_item("debug_text", &debug_text);
@@ -34,7 +34,7 @@ fn utf8_truncate(input: &mut String, maxsize: usize) {
 
 ///get debug text from session storage
 pub fn get_debug_text() -> String {
-    let ls = unwrap!(unwrap!(utilsmod::window().session_storage()));
+    let ls = unwrap!(unwrap!(windowmod::window().session_storage()));
     let empty1 = "".to_string();
     //return
     unwrap!(ls.get_item("debug_text")).unwrap_or(empty1)
@@ -43,14 +43,14 @@ pub fn get_debug_text() -> String {
 ///save my_ws_uid to session storage
 pub fn save_my_ws_uid(my_ws_uid: usize) {
     //save it only on smartphones. The desktop browser I use for debugging in multiple tabs.
-    let ls = unwrap!(unwrap!(utilsmod::window().session_storage()));
+    let ls = unwrap!(unwrap!(windowmod::window().session_storage()));
     //sessionstorage saves only strings
     let _x = ls.set_item("my_ws_uid", &format!("{}", my_ws_uid));
 }
 
 ///load my_ws_uid from session storage
 pub fn load_my_ws_uid() -> usize {
-    let ls = unwrap!(unwrap!(utilsmod::window().session_storage()));
+    let ls = unwrap!(unwrap!(windowmod::window().session_storage()));
     //sessionstorage saves only strings
     let str_uid = unwrap!(ls.get_item("my_ws_uid")).unwrap_or_else(|| "0".to_string());
     //return my_ws_uid

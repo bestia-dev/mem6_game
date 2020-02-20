@@ -274,6 +274,7 @@ mod routermod;
 mod routerimplmod;
 mod htmltemplateimplmod;
 mod htmltemplatemod;
+mod windowmod;
 //endregion
 
 //region: use statements
@@ -300,7 +301,7 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     logmod::debug_write(&format!("wasm app version: {}", env!("CARGO_PKG_VERSION")));
 
     // Get the document's container to render the virtual Dom component.
-    let document = unwrap!(utilsmod::window().document());
+    let document = unwrap!(windowmod::window().document());
     let div_for_virtual_dom = unwrap!(document.get_element_by_id("div_for_virtual_dom"));
 
     //my_ws_uid is random generated on the client and sent to
@@ -356,7 +357,7 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
 #[must_use]
 pub fn get_url_and_hash() -> (String, String) {
     //find out URL
-    let mut location_href = unwrap!(utilsmod::window().location().href());
+    let mut location_href = unwrap!(windowmod::window().location().href());
     //without /index.html
     location_href = location_href.to_lowercase().replace("index.html", "");
     logmod::debug_write(&format!("location_href: {}", &location_href));

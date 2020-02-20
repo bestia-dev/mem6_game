@@ -13,7 +13,7 @@ use wasm_bindgen::JsCast; //don't remove this. It is needed for dyn_into.
 
 ///save nickname from html input elements to local storage and rrc
 pub fn save_nickname_to_localstorage(rrc: &mut RootRenderingComponent) {
-    let document = unwrap!(utilsmod::window().document(), "document");
+    let document = unwrap!(windowmod::window().document(), "document");
 
     //logmod::debug_write("before get_element_by_id");
     let input_nickname = unwrap!(document.get_element_by_id("input_nickname"));
@@ -28,7 +28,7 @@ pub fn save_nickname_to_localstorage(rrc: &mut RootRenderingComponent) {
     let nickname = nickname_string.as_str();
     //logmod::debug_write(nickname);
 
-    let ls = unwrap!(unwrap!(utilsmod::window().local_storage()));
+    let ls = unwrap!(unwrap!(windowmod::window().local_storage()));
     let _x = ls.set_item("nickname", nickname);
 
     //To change the data in rrc I must use the future `vdom.with_component`
@@ -46,7 +46,7 @@ pub fn save_nickname_to_localstorage(rrc: &mut RootRenderingComponent) {
 
 ///save group_id from html input elements to local storage and rrc
 pub fn save_group_id_to_localstorage(rrc: &mut RootRenderingComponent) {
-    let document = unwrap!(utilsmod::window().document(), "document");
+    let document = unwrap!(windowmod::window().document(), "document");
 
     //logmod::debug_write("before get_element_by_id");
     let input_group_id = unwrap!(document.get_element_by_id("input_group_id"));
@@ -69,7 +69,7 @@ pub fn save_group_id_string_to_localstorage(
     let group_id = group_id_string.as_str();
     //logmod::debug_write(nickname);
 
-    let ls = unwrap!(unwrap!(utilsmod::window().local_storage()));
+    let ls = unwrap!(unwrap!(windowmod::window().local_storage()));
     let _x = ls.set_item("group_id", group_id);
 
     //change it also in players[0]
@@ -78,7 +78,7 @@ pub fn save_group_id_string_to_localstorage(
 
 ///load nickname from local storage
 pub fn load_nickname() -> String {
-    let ls = unwrap!(unwrap!(utilsmod::window().local_storage()));
+    let ls = unwrap!(unwrap!(windowmod::window().local_storage()));
     let empty1 = "".to_string();
     //return nickname
     unwrap!(ls.get_item("nickname")).unwrap_or(empty1)
@@ -86,7 +86,7 @@ pub fn load_nickname() -> String {
 
 ///load nickname from local storage
 pub fn load_group_id() -> String {
-    let ls = unwrap!(unwrap!(utilsmod::window().local_storage()));
+    let ls = unwrap!(unwrap!(windowmod::window().local_storage()));
     let empty1 = "".to_string();
     //return nickname
     unwrap!(ls.get_item("group_id")).unwrap_or(empty1)

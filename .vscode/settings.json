@@ -31,6 +31,7 @@
         "gamesmetadata",
         "gamestatus",
         "groupmod",
+        "htmltemplateimplmod",
         "htmltemplatemod",
         "instructionsmod",
         "javascriptimportmod",
@@ -41,8 +42,8 @@
         "nicknamemod",
         "playingcards",
         "rootrenderingcomponentmod",
-        "routermod",
         "routerimplmod",
+        "routermod",
         "sessionstoragemod",
         "spwloc",
         "startindex",
@@ -62,6 +63,7 @@
         "utilsmod",
         "websocketcommunication",
         "websocketcommunicationmod",
-        "websocketreconnectmod"
+        "websocketreconnectmod",
+        "windowmod"
     ]
 }

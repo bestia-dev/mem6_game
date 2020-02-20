@@ -41,6 +41,13 @@ skip_core_tasks = true
         "copy_pkg_to_webfolder",
     ]
 
+    [tasks.check]
+    description = "cargo check"
+    clear = true
+    command = "cargo"
+    args = ["check"]
+
+
     [tasks.audit]
     description = "cargo audit - for warning dependencies"
     clear = true

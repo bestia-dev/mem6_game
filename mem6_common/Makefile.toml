@@ -26,6 +26,12 @@ skip_core_tasks = true
         "lmake_version_from_date",
         "build-release"]
     
+    [tasks.check]
+    description = "cargo check"
+    clear = true
+    command = "cargo"
+    args = ["check"]
+
     [tasks.audit]
     description = "cargo audit - for warning dependencies"
     clear = true

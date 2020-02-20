@@ -355,7 +355,7 @@ pub fn game_type_left_onclick(rrc: &mut RootRenderingComponent, vdom: &dodrio::V
 
 /// get value form input html element by id
 pub fn get_input_value(id: &str) -> String {
-    let document = unwrap!(utilsmod::window().document(), "document");
+    let document = unwrap!(windowmod::window().document(), "document");
     //logmod::debug_write(&format!("before get_element_by_id: {}", id));
     let input_el = unwrap!(document.get_element_by_id(id));
     //logmod::debug_write("before dyn_into");
@@ -371,16 +371,16 @@ pub fn open_new_local_page(hash: &str) {
         //put the first url in the history
         //the first player first url is without hash
         //the joined players first url is #p03.xxxx
-        let _x = utilsmod::window().location().assign(hash);
+        let _x = windowmod::window().location().assign(hash);
     } else {
         //don't put other url in history
-        let _x = utilsmod::window().location().replace(hash);
+        let _x = windowmod::window().location().replace(hash);
     }
 }
 
 /// fn open new tab
 pub fn open_new_tab(url: &str) {
-    let _w = utilsmod::window().open_with_url_and_target(url, "_blank");
+    let _w = windowmod::window().open_with_url_and_target(url, "_blank");
 }
 
 /// return the text for html template replace

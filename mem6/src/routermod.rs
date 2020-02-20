@@ -23,7 +23,7 @@ pub fn start_router(
     // Callback fired whenever the URL hash fragment changes.
     // Keeps the rrc.local_route in sync with the `#` fragment.
     let on_hash_change = move || {
-        let location = utilsmod::window().location();
+        let location = windowmod::window().location();
         let mut local_route = unwrap!(location.hash());
         if local_route.is_empty() {
             local_route = "index".to_owned();
@@ -65,7 +65,7 @@ pub fn start_router(
     // up after ourselves.
     #[allow(clippy::as_conversions)]
     let on_hash_change = Closure::wrap(Box::new(on_hash_change) as Box<dyn FnMut()>);
-    utilsmod::window()
+    windowmod::window()
         .add_event_listener_with_callback("hashchange", on_hash_change.as_ref().unchecked_ref())
         .unwrap_throw();
     on_hash_change.forget();

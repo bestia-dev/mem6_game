@@ -26,6 +26,13 @@ skip_core_tasks = true
     command = "cargo"
     args = ["make","release"]
 
+    [tasks.check]
+    description = "cargo make check for every workspace member"
+    workspace = true
+    clear=true
+    command = "cargo"
+    args = ["make","check"]
+
     [tasks.audit]
     description = "cargo audit warnings about dependencies"
     workspace = true

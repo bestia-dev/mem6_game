@@ -30,6 +30,12 @@ skip_core_tasks = true
         "post_build_release",
     ]
 
+    [tasks.check]
+    description = "cargo check"
+    clear = true
+    command = "cargo"
+    args = ["check"]
+
     [tasks.audit]
     description = "cargo audit - for warning dependencies"
     clear = true
