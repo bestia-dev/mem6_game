@@ -11,3 +11,4 @@
 - editor to add new images, words and audio (with size, resolution limitations)  
 - idea for hostels: photos of guests and names. So it is easy to remember the names.  
 - some pages can go into history, other must not
+- p04 does not need parameter group_id, because now p03 has it

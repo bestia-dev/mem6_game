@@ -126,7 +126,7 @@
 //!
 //! At least in modern browsers (Firefox and Chrome) we have the developer tools F12 and there is a
 //! console we can output to. So we can debug what is going on with our Wasm program.
-//! But not on smartphones !! I save the error and log messages in sessionStorage and this is displayed on the screen.  
+//! But not on smartphones !! I save the error and log messages in session_storage and this is displayed on the screen.  
 //!
 //! ## Safari on iOS and FullScreen
 //!
@@ -255,7 +255,6 @@ mod fetchgamesmetadatamod;
 mod fetchgameconfigmod;
 mod fetchallimgsforcachemod;
 mod gamedatamod;
-mod divnicknamemod;
 mod logmod;
 mod rootrenderingcomponentmod;
 mod sessionstoragemod;
@@ -277,19 +276,12 @@ mod htmltemplatemod;
 mod windowmod;
 //endregion
 
-//region: use statements
 // this are then used in all the mods if I have there use crate::*;
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::gamedatamod::*;
 
 use unwrap::unwrap;
-use rand::rngs::SmallRng;
-use rand::SeedableRng;
-use rand::Rng;
-//use wasm_bindgen::JsCast; //don't remove this. It is needed for dyn_into.
 use wasm_bindgen::prelude::*;
-//use conv::{ConvUtil};
-//endregion
 
 #[wasm_bindgen(start)]
 #[allow(clippy::shadow_same)]
@@ -300,21 +292,11 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
 
     logmod::debug_write(&format!("wasm app version: {}", env!("CARGO_PKG_VERSION")));
 
-    // Get the document's container to render the virtual Dom component.
-    let document = unwrap!(windowmod::window().document());
-    let div_for_virtual_dom = unwrap!(document.get_element_by_id("div_for_virtual_dom"));
+    // Get the container to render the virtual Dom component.
+    let div_for_virtual_dom = windowmod::get_element_by_id("div_for_virtual_dom");
 
-    //my_ws_uid is random generated on the client and sent to
-    //WebSocket server with an url param. It is saved locally to allow reconnection
-    //if there are connection problems.
-    let mut my_ws_uid: usize = sessionstoragemod::load_my_ws_uid();
-    if my_ws_uid == 0 {
-        let mut rng = SmallRng::from_entropy();
-        my_ws_uid = rng.gen_range(1, 9999);
-        sessionstoragemod::save_my_ws_uid(my_ws_uid);
-    }
-    //from now on, I don't want it mutable (variable shadowing).
-    let my_ws_uid = my_ws_uid;
+    //load from storage or get random (and then save)
+    let my_ws_uid = websocketcommunicationmod::load_or_random_ws_uid();
 
     let (location_href, href_hash) = get_url_and_hash();
     //WebSocket connection
@@ -343,7 +325,7 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     fetchgamesmetadatamod::fetch_games_metadata_request(location_href, v2);
 
     // Start the URL router. Send a reference to the functions with router settings.
-    //To keep separate modules for generic router code and specific router code.
+    // To keep separate modules for generic router code and specific router code.
     let v3 = vdom.weak();
     routermod::start_router(v3, &routerimplmod::fill_rrc_local_route);
 

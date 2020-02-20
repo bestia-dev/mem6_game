@@ -15,7 +15,7 @@ use dodrio::{
 use typed_html::dodrio;
 //endregion
 
-///information for debugging
+/// information for debugging
 #[allow(dead_code)]
 pub fn div_for_debugging<'a>(rrc: &'a RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
     if rrc.game_data.show_debug_info {

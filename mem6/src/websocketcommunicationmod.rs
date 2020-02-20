@@ -419,3 +419,17 @@ pub fn on_response_ws_uid(rrc: &mut RootRenderingComponent, your_ws_uid: usize) 
         rrc.game_data.error_text = "my_ws_uid is incorrect!".to_string();
     }
 }
+
+/// my_ws_uid is random generated on the client and sent to
+/// WebSocket server with an url param.
+/// It is saved locally to allow reconnection
+/// if there are connection problems.
+pub fn load_or_random_ws_uid() -> usize {
+    let mut my_ws_uid: usize = sessionstoragemod::load_my_ws_uid();
+    if my_ws_uid == 0 {
+        my_ws_uid = windowmod::get_random(1, 9999);
+        sessionstoragemod::save_my_ws_uid(my_ws_uid);
+    }
+    //return
+    my_ws_uid
+}

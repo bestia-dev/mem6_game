@@ -17,20 +17,14 @@ pub fn fill_rrc_local_route(
         rrc.local_route = "p02_start_a_group.html".to_owned();
     } else if local_route.starts_with("#p03") {
         rrc.game_data.my_player_number = 2;
-        let group_id = if local_route.contains('.') {
+        if local_route.contains('.') {
             let gr = routermod::get_url_param_in_hash_after_dot(&local_route);
-            divnicknamemod::save_group_id_string_to_localstorage(rrc, gr.to_string());
-            gr.to_string()
+            storagemod::save_group_id_string_to_local_storage(rrc, gr.to_string());
         } else {
-            divnicknamemod::load_group_id()
-        };
-        utilsmod::push_first_player_as_group_id(rrc, &group_id);
+            storagemod::load_group_id_string(rrc);
+        }
         rrc.local_route = "p03_join_a_group.html".to_owned();
-    } else if local_route.starts_with("#p04") {
-        rrc.game_data.my_player_number = 2;
-        let group_id = routermod::get_url_param_in_hash_after_dot(&local_route);
-        divnicknamemod::save_group_id_string_to_localstorage(rrc, group_id.to_string());
-        utilsmod::push_first_player_as_group_id(rrc, group_id);
+    } else if local_route == "#p04" {
         statusjoinedmod::on_load_joined(rrc);
         rrc.local_route = "p04_wait_to_start.html".to_owned();
     } else if local_route == "#p05" {

@@ -119,7 +119,7 @@ I have in plans to add a Rust code generator, that creates the Rust code for the
 
 At least in modern browsers (Firefox and Chrome) we have the developer tools F12 and there is a
 console we can output to. So we can debug what is going on with our Wasm program.
-But not on smartphones !! I save the error and log messages in sessionStorage and this is displayed on the screen.  
+But not on smartphones !! I save the error and log messages in session_storage and this is displayed on the screen.  
 
 ## Safari on iOS and FullScreen
 
@@ -149,7 +149,7 @@ I try to use the philosophy of "state machine" because it is easier to follow.
 All is dependent on the state of the data and not on the chronological events.  
 Any event can change the state/data. Then another piece of code will do the rest
 based on the state/data. The data can come from different places: user input, fetch from
-web, url/hash, localstorage. It doesn't matter. All the data must first go into the state/data.  
+web, url/hash, local_storage. It doesn't matter. All the data must first go into the state/data.  
 Then some other code makes decision based on the state/data.  
 The app is divided in 2 ways:
 

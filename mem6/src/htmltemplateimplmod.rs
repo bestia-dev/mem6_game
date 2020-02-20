@@ -5,7 +5,6 @@ use mem6_common::*;
 //use qrcode53bytes::*;
 
 use unwrap::unwrap;
-use wasm_bindgen::JsCast; //don't remove this. It is needed for dyn_into.
 use dodrio::{
     RenderContext,
     bumpalo::{self},
@@ -13,7 +12,6 @@ use dodrio::{
     builder::*,
 };
 use typed_html::dodrio;
-use rand::{Rng, rngs::SmallRng, SeedableRng};
 
 const VIDEOS: &[&str] = &[
     "VQdhDw-hE8s",
@@ -116,12 +114,12 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
         //logmod::debug_write(&format!("call_function_string: {}", &sx));
         match sx {
             "my_nickname" => self.game_data.my_nickname.to_owned(),
-            "blink_or_not_nickname" => divnicknamemod::blink_or_not_nickname(self),
+            "blink_or_not_nickname" => storagemod::blink_or_not_nickname(self),
             "blink_or_not_group_id" => blink_or_not_group_id(self),
             "my_ws_uid" => format!("{}", self.game_data.my_ws_uid),
             "players_count" => format!("{} ", self.game_data.players.len() - 1),
             "game_name" => self.game_data.game_name.to_string(),
-            "group_id_joined" => group_id_joined(self),
+            "group_id" => self.game_data.group_id.to_string(),
             "url_to_join" => format!("bestia.dev/mem6/#p03.{}", self.game_data.my_ws_uid),
             "cargo_pkg_version" => env!("CARGO_PKG_VERSION").to_string(),
             "debug_text" => sessionstoragemod::get_debug_text(),
@@ -182,25 +180,25 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
         //logmod::debug_write(&format!("call_listener: {}", &sx));
         match sx {
             "nickname_onkeyup" => {
-                divnicknamemod::nickname_onkeyup(self, event);
+                storagemod::nickname_onkeyup(self, event);
             }
             "group_id_onkeyup" => {
-                divnicknamemod::group_id_onkeyup(self, event);
+                storagemod::group_id_onkeyup(self, event);
             }
             "open_youtube" => {
                 //randomly choose a link from VIDEOS
-                let mut rng = SmallRng::from_entropy();
-                let num = rng.gen_range(0, VIDEOS.len());
+                let num = windowmod::get_random(0, VIDEOS.len());
                 open_new_tab(&format!("https://www.youtube.com/watch?v={}", VIDEOS[num]));
             }
             "open_menu" => {
-                open_new_local_page("#p21");
+                open_new_local_page_push_to_history("#p21");
             }
             "rejoin_resync" => {
                 websocketreconnectmod::send_msg_for_resync(self);
             }
             "back_to_game" => {
-                open_new_local_page("#p11");
+                let h = unwrap!(windowmod::window().history());
+                let _x = h.back();
             }
             "open_instructions" => {
                 open_new_tab("#p08");
@@ -209,12 +207,12 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 open_new_tab("#p31");
             }
             "start_a_group_onclick" | "restart_game" => {
-                //send a msg to others to open #p04.{}
+                //send a msg to others to open #p04
                 statusgameovermod::on_msg_play_again(self);
                 open_new_local_page("#p02");
             }
             "join_a_group_onclick" => {
-                open_new_local_page("#p03");
+                open_new_local_page_push_to_history("#p03");
             }
             "choose_a_game_onclick" => {
                 open_new_local_page("#p05");
@@ -235,9 +233,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 game_type_left_onclick(self, &vdom);
             }
             "join_group_on_click" => {
-                //find the group_id input element
-                let group_id = get_input_value("input_group_id");
-                open_new_local_page(&format!("#p04.{}", group_id));
+                open_new_local_page("#p04");
             }
             "drink_end" => {
                 //send a msg to end drinking to all players
@@ -353,29 +349,28 @@ pub fn game_type_left_onclick(rrc: &mut RootRenderingComponent, vdom: &dodrio::V
     fetchgameconfigmod::async_fetch_game_config_request(rrc, vdom);
 }
 
-/// get value form input html element by id
-pub fn get_input_value(id: &str) -> String {
-    let document = unwrap!(windowmod::window().document(), "document");
-    //logmod::debug_write(&format!("before get_element_by_id: {}", id));
-    let input_el = unwrap!(document.get_element_by_id(id));
-    //logmod::debug_write("before dyn_into");
-    let input_html_element = unwrap!(input_el.dyn_into::<web_sys::HtmlInputElement>(), "dyn_into");
-    //return
-    input_html_element.value()
-}
-
-/// fn open new local page with # window.location.set_hash
+/// fn open new local page with #
+/// does not push to history
 pub fn open_new_local_page(hash: &str) {
-    let (_location_href, href_hash) = get_url_and_hash();
-    if href_hash.is_empty() || href_hash.starts_with("#p03.") {
-        //put the first url in the history
-        //the first player first url is without hash
-        //the joined players first url is #p03.xxxx
-        let _x = windowmod::window().location().assign(hash);
+    //I want to put the first url in history.
+    //These are opened from outside my app and I cannot manage that differently.
+    //There are 2 of them:
+    //1. if the players starts without hash
+    //2. if the player scanned the qrcode and opened the p3 with group_id
+    //For links opened inside the app, I can call the open with or without history.
+    //For example for menu p21 I want to have a back button.
+    let (_old_location_href, old_href_hash) = get_url_and_hash();
+    if old_href_hash.is_empty() || old_href_hash.starts_with("#p03.") {
+        open_new_local_page_push_to_history(hash)
     } else {
-        //don't put other url in history
         let _x = windowmod::window().location().replace(hash);
     }
+}
+
+/// fn open new local page with #
+/// and push to history
+pub fn open_new_local_page_push_to_history(hash: &str) {
+    let _x = windowmod::window().location().assign(hash);
 }
 
 /// fn open new tab
@@ -383,25 +378,9 @@ pub fn open_new_tab(url: &str) {
     let _w = windowmod::window().open_with_url_and_target(url, "_blank");
 }
 
-/// return the text for html template replace
-/// empty if there is no group_id
-pub fn group_id_joined(rrc: &RootRenderingComponent) -> String {
-    //if the first players is not yet pushed
-    let group_id = match rrc.game_data.players.get(0) {
-        Some(ggg) => ggg.ws_uid,
-        None => 0,
-    };
-    //the  first player cannot join himself
-    if group_id == 0 || group_id == rrc.game_data.my_ws_uid {
-        String::from("")
-    } else {
-        return format!("{}", group_id);
-    }
-}
-
 /// if there is already a group_id don't blink
 pub fn blink_or_not_group_id(rrc: &RootRenderingComponent) -> String {
-    if group_id_joined(rrc) == "" {
+    if rrc.game_data.group_id == 0 {
         "blink".to_owned()
     } else {
         "".to_owned()

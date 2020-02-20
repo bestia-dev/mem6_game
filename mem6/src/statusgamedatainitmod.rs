@@ -14,9 +14,8 @@ pub fn on_click_start_game(rrc: &mut RootRenderingComponent) {
     rrc.game_data.game_status = GameStatus::Status1stCard;
     //random start player_turn. So is not always the first player to start
     //gen_range is lower inclusive, upper exclusive
-    let mut rng = SmallRng::from_entropy();
     rrc.game_data.player_turn =
-        rng.gen_range(1, unwrap!(rrc.game_data.players.len().checked_add(1)));
+        windowmod::get_random(1, unwrap!(rrc.game_data.players.len().checked_add(1)));
 
     websocketcommunicationmod::ws_send_msg(
         &rrc.game_data.ws,

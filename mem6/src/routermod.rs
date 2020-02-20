@@ -72,7 +72,7 @@ pub fn start_router(
 }
 
 /// get the first param after hash in local route after dot
-/// example &p04.1234 -> 1234
+/// example &p03.1234 -> 1234
 pub fn get_url_param_in_hash_after_dot(local_route: &str) -> &str {
     let mut spl = local_route.split('.');
     unwrap!(spl.next());

@@ -32,6 +32,7 @@ impl RootRenderingComponent {
             game_data,
         }
     }
+
     ///reset the data to play again the game
     pub fn reset_for_play_again(&mut self) {
         self.game_data.card_index_of_first_click = 0;

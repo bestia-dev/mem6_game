@@ -20,7 +20,7 @@ pub fn log1_jsvalue(x: &JsValue) {
 }
 */
 
-/// debug write into sessionstorage
+/// debug write into session_storage
 pub fn debug_write(text: &str) {
     //writing to the console is futile for mobile phones
     //I must write it on the UI.

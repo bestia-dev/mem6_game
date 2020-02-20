@@ -15,7 +15,6 @@ use unwrap::unwrap;
 /// group_id is the ws_uid of the first player
 pub fn on_load_joined(rrc: &mut RootRenderingComponent) {
     rrc.game_data.game_status = GameStatus::StatusJoined;
-    let _group_id = format!("{}", unwrap!(rrc.game_data.players.get(0)).ws_uid);
     logmod::debug_write(&format!(
         "StatusJoined send {}",
         rrc.game_data.players_ws_uid
