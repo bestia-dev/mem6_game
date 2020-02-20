@@ -44,7 +44,7 @@
         "rootrenderingcomponentmod",
         "routerimplmod",
         "routermod",
-        "sessionstoragemod",
+        "storagemod",
         "spwloc",
         "startindex",
         "statusdrinkmod",

@@ -8,7 +8,7 @@ use unwrap::unwrap;
 use wasm_bindgen_futures::spawn_local;
 //endregion
 
-///async fetch for gameconfig.json
+/// async fetch for gameconfig.json
 pub fn async_fetch_game_config_request(
     rrc: &mut RootRenderingComponent,
     vdom_weak: &dodrio::VdomWeak,
@@ -26,7 +26,7 @@ pub fn async_fetch_game_config_request(
 pub async fn set_game_config_from_json(url_config: String, vdom: dodrio::VdomWeak) {
     let respbody = fetchmod::fetch_response(url_config).await;
     let json = unwrap!(serde_json::from_str(respbody.as_str()));
-    //logmod::debug_write(format!("respbody: {}", respbody).as_str());
+    // logmod::debug_write(format!("respbody: {}", respbody).as_str());
     unwrap!(
         vdom.with_component({
             move |root| {

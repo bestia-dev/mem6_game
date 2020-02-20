@@ -17,16 +17,16 @@ use unwrap::unwrap;
 /// Svg elements are different because they have a namespace
 #[derive(Clone, Copy)]
 pub enum HtmlOrSvg {
-    /// html element
+    // / html element
     Html,
-    /// svg element
+    // / svg element
     Svg,
 }
 
 /// the RootRenderingComponent struct must implement this trait
 /// it must have the fields for local_route and html_template fields
 pub trait HtmlTemplating {
-    //while rendering, cannot mut rrc
+    // while rendering, cannot mut rrc
     fn call_function_string(&self, sx: &str) -> String;
     fn call_function_boolean<'a>(&self, sx: &str) -> bool;
     fn call_function_node<'a>(&self, cx: &mut RenderContext<'a>, sx: &str) -> Node<'a>;
@@ -57,7 +57,7 @@ pub fn get_root_element<'a>(
                 html_or_svg_local = HtmlOrSvg::Svg;
             }
             if let HtmlOrSvg::Svg = html_or_svg_local {
-                //svg elements have this namespace
+                // svg elements have this namespace
                 root_element = root_element.namespace(Some("http://www.w3.org/2000/svg"));
             }
             // recursive function can return error
@@ -69,7 +69,7 @@ pub fn get_root_element<'a>(
                 html_or_svg_local,
                 &mut dom_path,
             ) {
-                //the methods are move, so I have to return the moved value
+                // the methods are move, so I have to return the moved value
                 Ok(new_root_element) => root_element = new_root_element,
                 Err(err) => {
                     return Err(err);
@@ -77,11 +77,11 @@ pub fn get_root_element<'a>(
             }
         }
         _ => {
-            //return error
+            // return error
             return Err("Error: no root element".to_owned());
         }
     }
-    //return
+    // return
     Ok(root_element.finish())
 }
 
@@ -116,27 +116,27 @@ fn fill_element_builder<'a>(
     let mut replace_boolean: Option<bool> = None;
     let mut html_or_svg_local;
     let bump = cx.bump;
-    //loop through all the siblings in this iteration
+    // loop through all the siblings in this iteration
     loop {
         // the children inherits html_or_svg from the parent, but cannot change the parent
         html_or_svg_local = html_or_svg_parent;
         match reader_for_microxml.read_event() {
             Event::StartElement(name) => {
                 dom_path.push(name.to_owned());
-                //construct a child element and fill it (recursive)
+                // construct a child element and fill it (recursive)
                 let name = bumpalo::format!(in bump, "{}",name).into_bump_str();
                 let mut child_element = ElementBuilder::new(bump, name);
                 if name == "svg" {
-                    //this tagname changes to svg now
+                    // this tagname changes to svg now
                     html_or_svg_local = HtmlOrSvg::Svg;
                 }
                 if let HtmlOrSvg::Svg = html_or_svg_local {
-                    //this is the
-                    //svg elements have this namespace
+                    // this is the
+                    // svg elements have this namespace
                     child_element = child_element.namespace(Some("http://www.w3.org/2000/svg"));
                 }
                 if name == "foreignObject" {
-                    //this tagname changes to html for children, not for this element
+                    // this tagname changes to html for children, not for this element
                     html_or_svg_local = HtmlOrSvg::Html;
                 }
                 child_element = fill_element_builder(
@@ -147,10 +147,10 @@ fn fill_element_builder<'a>(
                     html_or_svg_local,
                     dom_path,
                 )?;
-                //if the boolean is empty or true then render the next node
+                // if the boolean is empty or true then render the next node
                 if replace_boolean.unwrap_or(true) {
                     if let Some(repl_node) = replace_node {
-                        //logmod::debug_write(&format!("child is repl_node {}", ""));
+                        // logmod::debug_write(&format!("child is repl_node {}", ""));
                         element = element.child(repl_node);
                         replace_node = None;
                     } else {
@@ -163,8 +163,8 @@ fn fill_element_builder<'a>(
             }
             Event::Attribute(name, value) => {
                 if name.starts_with("data-t-") {
-                    //the rest of the name does not matter.
-                    //The replace_string will always be applied to the next attribute.
+                    // the rest of the name does not matter.
+                    // The replace_string will always be applied to the next attribute.
                     let fn_name = value;
                     let repl_txt = htrrc.call_function_string(fn_name);
                     replace_string = Some(repl_txt);
@@ -173,13 +173,13 @@ fn fill_element_builder<'a>(
                     let fn_name = value.to_string();
                     let event_to_listen =
                         bumpalo::format!(in bump, "{}",&unwrap!(name.get(8..))).into_bump_str();
-                    //logmod::debug_write(&format!("create listener {}", &fn_name));
+                    // logmod::debug_write(&format!("create listener {}", &fn_name));
                     element = element.on(event_to_listen, move |root, vdom, event| {
                         let fn_name = fn_name.clone();
                         let htrrc = root.unwrap_mut::<RootRenderingComponent>();
                         /* self.as_any_mut().downcast_mut::<R>()*/
-                        //call a function from string
-                        //logmod::debug_write(&format!("fn_name {}", fn_name));
+                        // call a function from string
+                        // logmod::debug_write(&format!("fn_name {}", fn_name));
                         let vdom = vdom.clone();
                         htrrc.call_listener(vdom, &fn_name, event);
                     });
@@ -190,7 +190,7 @@ fn fill_element_builder<'a>(
                         value2 =
                             bumpalo::format!(in bump, "{}",decode_5_xml_control_characters(&repl))
                                 .into_bump_str();
-                        //empty the replace_string for the next node
+                        // empty the replace_string for the next node
                         replace_string = None;
                     } else {
                         value2 =
@@ -205,7 +205,7 @@ fn fill_element_builder<'a>(
                 if let Some(repl) = replace_string {
                     txt2 = bumpalo::format!(in bump, "{}",decode_5_xml_control_characters(&repl))
                         .into_bump_str();
-                    //empty the replace_string for the next node
+                    // empty the replace_string for the next node
                     replace_string = None;
                 } else {
                     txt2 = bumpalo::format!(in bump, "{}",decode_5_xml_control_characters(txt))
@@ -216,8 +216,8 @@ fn fill_element_builder<'a>(
                 element = element.child(text(txt2));
             }
             Event::Comment(txt) => {
-                //the main goal of comments is to change the value of the next text node
-                //with the result of a function
+                // the main goal of comments is to change the value of the next text node
+                // with the result of a function
                 // it must look like <!--t=get_text-->
                 if txt.starts_with("t=") {
                     let fn_name = unwrap!(txt.get(2..));
@@ -226,19 +226,19 @@ fn fill_element_builder<'a>(
                 } else if txt.starts_with("n=") {
                     let fn_name = unwrap!(txt.get(2..));
                     let repl_node = htrrc.call_function_node(cx, fn_name);
-                    //logmod::debug_write(&format!("n= {:?}", &repl_node));
+                    // logmod::debug_write(&format!("n= {:?}", &repl_node));
                     replace_node = Some(repl_node);
                 } else if txt.starts_with("b=") {
-                    //boolean if this is true than render the next node, else don't render
+                    // boolean if this is true than render the next node, else don't render
                     let fn_name = unwrap!(txt.get(2..));
                     replace_boolean = Some(htrrc.call_function_boolean(fn_name));
                 } else {
-                    //nothing. it is really a comment
+                    // nothing. it is really a comment
                 }
             }
             Event::EndElement(name) => {
                 let last_name = unwrap!(dom_path.pop());
-                //it can be also auto-closing element
+                // it can be also auto-closing element
                 if last_name == name || name == "" {
                     return Ok(element);
                 } else {
@@ -269,7 +269,7 @@ pub fn empty_div<'a>(cx: &mut RenderContext<'a>) -> Node<'a> {
 /// because all others characters can be written as utf-8 characters.
 /// https://www.tutorialspoint.com/html5/html5_entities.htm  
 pub fn decode_5_xml_control_characters(input: &str) -> String {
-    //I don't know how slow is replace, but I have really small texts.
+    // I don't know how slow is replace, but I have really small texts.
     let control_character_symbols = vec!["\"", "'", "&", "<", ">"];
     let control_character_names = vec!["&quot;", "&apos;", "&amp;", "&lt;", "&gt;"];
     let mut output = input.to_owned();
@@ -279,6 +279,6 @@ pub fn decode_5_xml_control_characters(input: &str) -> String {
             unwrap!(control_character_symbols.get(i)),
         )
     }
-    //return
+    // return
     output
 }

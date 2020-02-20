@@ -1,6 +1,6 @@
 [package]
 name = "mem6_common"
-version = "2020.216.1759" #no need for semver if it is not a library
+version = "2020.220.1716" #no need for semver if it is not a library
 description = "commons for mem6 wasm and server"
 authors = ["Luciano Bestia"]
 edition = "2018"

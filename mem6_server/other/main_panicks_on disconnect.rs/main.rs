@@ -33,24 +33,24 @@
     clippy::pedantic,
     clippy::nursery,
     clippy::cargo,
-    //variable shadowing is idiomatic to Rust, but unnatural to me.
+    // variable shadowing is idiomatic to Rust, but unnatural to me.
     clippy::shadow_reuse,
     clippy::shadow_same,
     clippy::shadow_unrelated,
 )]
 #![allow(
-    //library from dependencies have this clippy warnings. Not my code.
+    // library from dependencies have this clippy warnings. Not my code.
     clippy::cargo_common_metadata,
     clippy::multiple_crate_versions,
     clippy::wildcard_dependencies,
-    //Rust is more idiomatic without return statement
+    // Rust is more idiomatic without return statement
     clippy::implicit_return,
-    //I have private function inside a function. Self does not work there.
-    //clippy::use_self,
-    //Cannot add #[inline] to the start function with #[wasm_bindgen(start)]
-    //because then wasm-pack build --target no-modules returns an error: export `run` not found 
-    //clippy::missing_inline_in_public_items
-    //Why is this bad : Doc is good. rustc has a MISSING_DOCS allowed-by-default lint for public members, but has no way to enforce documentation of private items. This lint fixes that.
+    // I have private function inside a function. Self does not work there.
+    // clippy::use_self,
+    // Cannot add #[inline] to the start function with #[wasm_bindgen(start)]
+    // because then wasm-pack build --target no-modules returns an error: export `run` not found 
+    // clippy::missing_inline_in_public_items
+    // Why is this bad : Doc is good. rustc has a MISSING_DOCS allowed-by-default lint for public members, but has no way to enforce documentation of private items. This lint fixes that.
     clippy::doc_markdown,
 )]
 //endregion
@@ -86,22 +86,22 @@ type Users = Arc<Mutex<HashMap<usize, mpsc::UnboundedSender<Result<Message, warp
 
 //endregion
 
-///main function of the binary
+/// main function of the binary
 #[tokio::main]
 async fn main() {
-    //region: env_logger log text to stdout depend on ENV variable
+    // region: env_logger log text to stdout depend on ENV variable
 
-    //pretty_env_logger::init();
-    //in Linux : RUST_LOG=info ./mem6_server.exe
-    //in Windows I don't know yet.
-    //default for env variable info
+    // pretty_env_logger::init();
+    // in Linux : RUST_LOG=info ./mem6_server.exe
+    // in Windows I don't know yet.
+    // default for env variable info
     let mut builder = env_logger::from_env(Env::default().default_filter_or("info"));
-    //nano seconds in the logger
+    // nano seconds in the logger
     builder.format_timestamp_nanos();
     builder.init();
-    //endregion
+    // endregion
 
-    //region: cmdline parameters
+    // region: cmdline parameters
     let matches = App::new(env!("CARGO_PKG_NAME"))
         .version(env!("CARGO_PKG_VERSION"))
         .author(env!("CARGO_PKG_AUTHORS"))
@@ -120,7 +120,7 @@ async fn main() {
         )
         .get_matches();
 
-    //from string parameters to strong types
+    // from string parameters to strong types
     let fnl_prm_ip = unwrap!(matches.value_of("prm_ip")).to_lowercase();
     let fnl_prm_port = unwrap!(matches.value_of("prm_port")).to_lowercase();
 
@@ -132,14 +132,14 @@ async fn main() {
         "mem6 http server listening on {} and WebSocket on /mem6ws/",
         ansi_term::Colour::Red.paint(local_addr.to_string())
     );
-    //endregion
+    // endregion
 
     // Keep track of all connected users, key is usize, value
     // is a WebSocket sender.
     let users = Arc::new(Mutex::new(HashMap::new()));
     // Turn our "state" into a new Filter...
-    //let users = warp::any().map(move || users.clone());
-    //Clippy recommends this craziness instead of just users.clone()
+    // let users = warp::any().map(move || users.clone());
+    // Clippy recommends this craziness instead of just users.clone()
     let users = warp::any().map(move || {
         Arc::<
             std::sync::Mutex<
@@ -153,7 +153,7 @@ async fn main() {
         >::clone(&users)
     });
 
-    //WebSocket server
+    // WebSocket server
     // GET from route /mem6ws/ -> WebSocket upgrade
     let websocket = warp::path("mem6ws")
         // The `ws2()` filter will prepare WebSocket handshake...
@@ -168,7 +168,7 @@ async fn main() {
             })
         });
 
-    //static file server
+    // static file server
     // GET files of route / -> are from folder /mem6/
     let fileserver = warp::fs::dir("./mem6/");
 
@@ -180,18 +180,18 @@ async fn main() {
 //a reference instead a value
 #[allow(clippy::needless_pass_by_value)]
 //region: WebSocket callbacks: connect, msg, disconnect
-///new user connects
+/// new user connects
 fn user_connected(
     ws: WebSocket,
     users: Users,
     url_param: String,
 ) -> impl Future<Output = Result<(), ()>> {
-    //the client sends his ws_uid in url_param. it is a random number.
+    // the client sends his ws_uid in url_param. it is a random number.
     info!("user_connect() url_param: {}", url_param);
-    //convert string to usize
-    //hahahahaha syntax 'turbofish' ::<>
+    // convert string to usize
+    // hahahahaha syntax 'turbofish' ::<>
     let my_id = unwrap!(url_param.parse::<usize>());
-    //if uid already exists, it is an error
+    // if uid already exists, it is an error
     let mut user_exist = false;
     for (&uid, ..) in unwrap!(users.lock()).iter() {
         if uid == my_id {
@@ -201,7 +201,7 @@ fn user_connected(
     }
 
     if user_exist {
-        //disconnect the old user
+        // disconnect the old user
         info!("user_disconnected for reconnect: {}", my_id);
         user_disconnected(my_id, &users);
     }
@@ -225,7 +225,7 @@ fn user_connected(
     // this specific user's connection.
     // Make an extra clone to give to our disconnection handler...
     let users2 = users.clone();
-    //Clippy recommends this craziness instead of users.clone()
+    // Clippy recommends this craziness instead of users.clone()
 
     user_ws_rx
         // Every time the user sends a message, broadcast it to
@@ -242,7 +242,7 @@ fn user_connected(
         })
 }
 
-///on receive WebSocket message
+/// on receive WebSocket message
 fn user_message(ws_uid_of_message: usize, message: Message, users: &Users) {
     // Skip any non-Text messages...
     let msg = if let Ok(s) = message.to_str() {
@@ -252,11 +252,11 @@ fn user_message(ws_uid_of_message: usize, message: Message, users: &Users) {
     };
 
     let new_msg = msg.to_string();
-    //info!("msg: {}", new_msg);
+    // info!("msg: {}", new_msg);
 
-    //There are different messages coming from the mem6 wasm app
-    //MsgInvite must be broadcasted to all users
-    //all others must be forwarded to exactly the other player.
+    // There are different messages coming from the mem6 wasm app
+    // MsgInvite must be broadcasted to all users
+    // all others must be forwarded to exactly the other player.
 
     let msg: WsMessage = serde_json::from_str(&new_msg).unwrap_or_else(|_x| WsMessage::MsgDummy {
         dummy: String::from("error"),
@@ -279,14 +279,14 @@ fn user_message(ws_uid_of_message: usize, message: Message, users: &Users) {
                 Ok(()) => (),
                 Err(_disconnected) => {}
             }
-            //send to other users for reconnect. Do nothing if there is not yet other users.
+            // send to other users for reconnect. Do nothing if there is not yet other users.
             send_to_other_players(users, ws_uid_of_message, &new_msg, &players_ws_uid)
         }
         WsMessage::MsgPing { msg_id } => {
-            //info!("MsgPing: {}", msg_id);
+            // info!("MsgPing: {}", msg_id);
 
             let j = unwrap!(serde_json::to_string(&WsMessage::MsgPong { msg_id }));
-            //info!("send MsgPong: {}", j);
+            // info!("send MsgPong: {}", j);
             match unwrap!(unwrap!(users.lock()).get(&ws_uid_of_message)).send(Ok(Message::text(j)))
             {
                 Ok(()) => (),
@@ -315,14 +315,14 @@ fn user_message(ws_uid_of_message: usize, message: Message, users: &Users) {
     }
 }
 
-///New message from this user send to all other players except sender.
+/// New message from this user send to all other players except sender.
 fn send_to_other_players(
     users: &Users,
     ws_uid_of_message: usize,
     new_msg: &str,
     players_ws_uid: &str,
 ) {
-    //info!("send_to_other_players: {}", new_msg);
+    // info!("send_to_other_players: {}", new_msg);
 
     let vec_players_ws_uid: Vec<usize> = unwrap!(serde_json::from_str(players_ws_uid));
 
@@ -348,7 +348,7 @@ fn send_to_other_players(
     }
 }
 
-///disconnect user
+/// disconnect user
 fn user_disconnected(my_id: usize, users: &Users) {
     info!("good bye user: {}", my_id);
 

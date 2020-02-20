@@ -12,17 +12,17 @@ use web_sys::WebSocket;
 /// Root Rendering Component has all
 /// the data needed for play logic and rendering
 pub struct RootRenderingComponent {
-    /// local # hash route
+    // / local # hash route
     pub local_route: String,
-    /// downloaded html template
+    // / downloaded html template
     pub html_template: String,
-    ///game data will be inside of Root
+    // / game data will be inside of Root
     pub game_data: gamedatamod::GameData,
 }
 
-///methods
+/// methods
 impl RootRenderingComponent {
-    /// Construct a new `RootRenderingComponent` at the beginning only once.
+    // / Construct a new `RootRenderingComponent` at the beginning only once.
     pub fn new(ws: WebSocket, my_ws_uid: usize) -> Self {
         let game_data = gamedatamod::GameData::new(ws, my_ws_uid);
 
@@ -33,11 +33,11 @@ impl RootRenderingComponent {
         }
     }
 
-    ///reset the data to play again the game
+    // / reset the data to play again the game
     pub fn reset_for_play_again(&mut self) {
         self.game_data.card_index_of_first_click = 0;
         self.game_data.card_index_of_second_click = 0;
-        //reset points
+        // reset points
         for x in &mut self.game_data.players {
             x.points = 0;
         }
@@ -46,12 +46,12 @@ impl RootRenderingComponent {
 //endregion
 
 //region: `Render` trait implementation on RootRenderingComponent struct
-///It is called for every Dodrio animation frame to render the vdom.
-///Only when render is scheduled after some change id the game data.
+/// It is called for every Dodrio animation frame to render the vdom.
+/// Only when render is scheduled after some change id the game data.
 impl Render for RootRenderingComponent {
     fn render<'a>(&self, cx: &mut RenderContext<'a>) -> Node<'a> {
-        //let bump = cx.bump;
-        //return
+        // let bump = cx.bump;
+        // return
         // html fragment from html_template defined in # local_route
         if self.html_template.is_empty() {
             htmltemplatemod::empty_div(cx)

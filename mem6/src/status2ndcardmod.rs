@@ -17,17 +17,17 @@ use dodrio::{
 use typed_html::dodrio;
 //endregion
 
-///on second click
-///The on click event passed by JavaScript executes all the logic
-///and changes only the fields of the Card Grid struct.
-///That struct is the only permanent data storage for later render the virtual dom.
+/// on second click
+/// The on click event passed by JavaScript executes all the logic
+/// and changes only the fields of the Card Grid struct.
+/// That struct is the only permanent data storage for later render the virtual dom.
 pub fn on_click_2nd_card(
     rrc: &mut RootRenderingComponent,
     vdom: &dodrio::VdomWeak,
     this_click_card_index: usize,
 ) {
     rrc.game_data.card_index_of_second_click = this_click_card_index;
-    //flip the card up
+    // flip the card up
     unwrap!(
         rrc.game_data
             .card_grid_data
@@ -36,9 +36,9 @@ pub fn on_click_2nd_card(
     )
     .status = CardStatusCardFace::UpTemporary;
     divgridcontainermod::play_sound(rrc, this_click_card_index);
-    //2 possible outcomes: 1) Next Player 2) end game/play again
-    //that changes: game status,CardStatusCardFace, points or/and player_turn
-    //if the cards match, player get one point, but it is the next player turn.
+    // 2 possible outcomes: 1) Next Player 2) end game/play again
+    // that changes: game status,CardStatusCardFace, points or/and player_turn
+    // if the cards match, player get one point, but it is the next player turn.
     let is_point = get_is_point(rrc);
     if is_point {
         update_click_2nd_card_flip_permanently(rrc, is_point);
@@ -57,7 +57,7 @@ pub fn on_click_2nd_card(
 /// is all card permanently on
 pub fn is_all_permanently(rrc: &mut RootRenderingComponent) -> bool {
     let mut is_all_permanently = true;
-    //the zero element is exceptional, but the iterator uses it
+    // the zero element is exceptional, but the iterator uses it
     unwrap!(rrc.game_data.card_grid_data.get_mut(0)).status = CardStatusCardFace::UpPermanently;
 
     for x in &rrc.game_data.card_grid_data {
@@ -69,7 +69,7 @@ pub fn is_all_permanently(rrc: &mut RootRenderingComponent) -> bool {
             }
         }
     }
-    //return
+    // return
     is_all_permanently
 }
 
@@ -86,7 +86,7 @@ pub fn get_is_point(rrc: &RootRenderingComponent) -> bool {
             .get(rrc.game_data.card_index_of_second_click))
         .card_number_and_img_src
 }
-///msg player click
+/// msg player click
 pub fn on_msg_click_2nd_card(
     rrc: &mut RootRenderingComponent,
     msg_sender_ws_uid: usize,
@@ -100,7 +100,7 @@ pub fn on_msg_click_2nd_card(
     update_click_2nd_card_point(rrc, is_point);
 }
 
-///on msg ack player click2nd card
+/// on msg ack player click2nd card
 pub fn on_msg_ack_player_click2nd_card(
     rrc: &mut RootRenderingComponent,
     player_ws_uid: usize,
@@ -111,36 +111,36 @@ pub fn on_msg_ack_player_click2nd_card(
         let is_point = get_is_point(rrc);
         update_click_2nd_card_point(rrc, is_point);
         if is_point {
-            //nothing because all happens after the Drink/no drink dialog
+            // nothing because all happens after the Drink/no drink dialog
         } else {
             logmod::debug_write("no");
             statustaketurnmod::on_click_take_turn(rrc, vdom);
         }
     }
-    //TODO: timer if after 3 seconds the ack is not received resend the msg
-    //do this 3 times and then hard error
+    // TODO: timer if after 3 seconds the ack is not received resend the msg
+    // do this 3 times and then hard error
 }
 
-///msg player click
+/// msg player click
 #[allow(clippy::integer_arithmetic)] // points +1 is not going to overflow ever
 pub fn update_click_2nd_card_point(rrc: &mut RootRenderingComponent, is_point: bool) {
     if is_point {
         rrc.game_data.game_status = GameStatus::StatusDrink;
         let player_for_point = unwrap!(rrc.game_data.player_turn.checked_sub(1));
-        //give points
+        // give points
         unwrap!(rrc.game_data.players.get_mut(player_for_point)).points += 1;
 
         if rrc.game_data.my_player_number == player_for_point + 1 {
-            //drink
+            // drink
             htmltemplateimplmod::open_new_local_page("#p06");
         } else {
-            //do not drink
+            // do not drink
             htmltemplateimplmod::open_new_local_page("#p07");
         }
     }
 }
 
-///msg player click
+/// msg player click
 #[allow(clippy::integer_arithmetic)] // points +1 is not going to overflow ever
 pub fn update_click_2nd_card_flip_permanently(rrc: &mut RootRenderingComponent, is_point: bool) {
     if is_point {
@@ -154,7 +154,7 @@ pub fn update_click_2nd_card_flip_permanently(rrc: &mut RootRenderingComponent, 
     }
 }
 
-///render Play or Wait
+/// render Play or Wait
 #[allow(clippy::integer_arithmetic)]
 pub fn div_click_2nd_card<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
     if rrc.game_data.my_player_number == rrc.game_data.player_turn {
@@ -168,7 +168,7 @@ pub fn div_click_2nd_card<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> N
         </div>
         )
     } else {
-        //return wait for the other player
+        // return wait for the other player
         dodrio!(bump,
         <h2 class="h2_user_must_wait">
             {vec![text(bumpalo::format!(in bump, "Wait for {}",

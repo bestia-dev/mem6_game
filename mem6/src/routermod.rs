@@ -28,7 +28,7 @@ pub fn start_router(
         if local_route.is_empty() {
             local_route = "index".to_owned();
         }
-        //logmod::debug_write("after .hash");
+        // logmod::debug_write("after .hash");
         wasm_bindgen_futures::spawn_local({
             let vdom = vdom.clone();
             async move {
@@ -42,10 +42,10 @@ pub fn start_router(
                             // don't match, then we need to update the rrc' local_route
                             // and re-render.
                             if rrc.local_route != local_route {
-                                //all the specific routes are separated from the generic routing code
+                                // all the specific routes are separated from the generic routing code
                                 fill_rrc_local_route(local_route, rrc, &vdom);
                                 let url = rrc.local_route.to_string();
-                                //I cannot simply await here because this closure is not async
+                                // I cannot simply await here because this closure is not async
                                 spawn_local(async_fetch_and_write_to_rrc_html_template(url, vdom));
                             }
                         }
@@ -85,9 +85,9 @@ pub fn get_url_param_in_hash_after_dot(local_route: &str) -> &str {
 /// ```
 /// .on("click", |_root, vdom, _event| {
 ///     let v2 = vdom;
-///     //async executor spawn_local is the recommended for wasm
+///     // async executor spawn_local is the recommended for wasm
 ///     let url = "t1.html".to_owned();
-///     //this will change the rrc.html_template eventually
+///     // this will change the rrc.html_template eventually
 ///     spawn_local(async_fetch_and_write_to_rrc_html_template(url, v2));
 /// })
 /// ```
@@ -101,7 +101,7 @@ pub async fn async_fetch_and_write_to_rrc_html_template(url: String, vdom: VdomW
             vdom.with_component({
                 move |root| {
                     let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                    //only the html inside the <body> </body>
+                    // only the html inside the <body> </body>
                     let pos1 = resp_body_text.find("<body>").unwrap_or(0);
                     let pos2 = resp_body_text.find("</body>").unwrap_or(0);
                     if pos1 != 0 {
@@ -111,7 +111,7 @@ pub async fn async_fetch_and_write_to_rrc_html_template(url: String, vdom: VdomW
                                 unwrap!(resp_body_text.get(pos1 + 6..pos2)).to_string();
                         }
                     }
-                    //logmod::debug_write(&format!("body: {}", resp_body_text));
+                    // logmod::debug_write(&format!("body: {}", resp_body_text));
                     rrc.html_template = resp_body_text;
                 }
             })

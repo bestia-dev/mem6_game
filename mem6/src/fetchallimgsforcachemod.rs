@@ -8,7 +8,7 @@ use unwrap::unwrap;
 use wasm_bindgen_futures::spawn_local;
 //endregion
 
-///fetch all imgs for the cache
+/// fetch all imgs for the cache
 #[allow(clippy::needless_pass_by_value)]
 pub fn fetch_all_img_for_cache_request(rrc: &mut RootRenderingComponent) {
     for x in &rrc.game_data.card_grid_data {
@@ -20,8 +20,8 @@ pub fn fetch_all_img_for_cache_request(rrc: &mut RootRenderingComponent) {
                     .img_filename
                     .get(x.card_number_and_img_src))
             );
-            //logmod::debug_write(&url_img);
-            //this is async, so I don't care how much it takes
+            // logmod::debug_write(&url_img);
+            // this is async, so I don't care how much it takes
             spawn_local(fetchmod::fetch_only(url_img));
         }
     }

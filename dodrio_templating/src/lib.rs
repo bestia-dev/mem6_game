@@ -5,4 +5,4 @@ mod logmod;
 mod routermod;
 mod htmltemplatemod;
 mod utilsmod;
-mod sessionstoragemod;
+mod storagemod;

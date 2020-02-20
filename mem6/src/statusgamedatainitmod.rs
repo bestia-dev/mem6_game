@@ -8,12 +8,12 @@ use mem6_common::*;
 use unwrap::unwrap;
 //endregion
 
-///prepares the game data
+/// prepares the game data
 pub fn on_click_start_game(rrc: &mut RootRenderingComponent) {
     rrc.game_data.prepare_random_data();
     rrc.game_data.game_status = GameStatus::Status1stCard;
-    //random start player_turn. So is not always the first player to start
-    //gen_range is lower inclusive, upper exclusive
+    // random start player_turn. So is not always the first player to start
+    // gen_range is lower inclusive, upper exclusive
     rrc.game_data.player_turn =
         windowmod::get_random(1, unwrap!(rrc.game_data.players.len().checked_add(1)));
 
@@ -31,7 +31,7 @@ pub fn on_click_start_game(rrc: &mut RootRenderingComponent) {
     );
 }
 
-///on game data init
+/// on game data init
 pub fn on_msg_start_game(
     rrc: &mut RootRenderingComponent,
     card_grid_data: &str,
@@ -40,7 +40,7 @@ pub fn on_msg_start_game(
     game_name: &str,
     player_turn: usize,
 ) {
-    //logmod::debug_write(&format!("on_msg_start_game {}", players));
+    // logmod::debug_write(&format!("on_msg_start_game {}", players));
     rrc.game_data.game_status = GameStatus::Status1stCard;
     rrc.game_data.player_turn = player_turn;
     rrc.game_data.game_name = game_name.to_string();
@@ -55,7 +55,7 @@ pub fn on_msg_start_game(
         "error serde_json::from_str(card_grid_data)"
     );
 
-    //async fetch all imgs and put them in service worker cache
+    // async fetch all imgs and put them in service worker cache
     fetchallimgsforcachemod::fetch_all_img_for_cache_request(rrc);
 
     rrc.game_data.players = unwrap!(
@@ -65,7 +65,7 @@ pub fn on_msg_start_game(
 
     rrc.game_data.players_ws_uid = gamedatamod::prepare_players_ws_uid(&rrc.game_data.players);
 
-    //find my player number
+    // find my player number
     for index in 0..rrc.game_data.players.len() {
         if unwrap!(
             rrc.game_data.players.get_mut(index),

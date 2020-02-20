@@ -78,7 +78,7 @@ skip_core_tasks = true
 
     [tasks.publish]
     description = "publish the webfolder to google vm"
-    # Firt copies the content of /mem6_game/webfolder to //googlecloud/ folder and then to google vm with use of sshagent."
+    # Firt copies the content of /mem6_game/webfolder to // googlecloud/ folder and then to google vm with use of sshagent."
     workspace = false
     clear = true
     # backslash is the escape character for all other special characters.

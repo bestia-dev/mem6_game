@@ -8,7 +8,7 @@ use crate::*;
 
 use mem6_common::*;
 
-use unwrap::unwrap;
+//use unwrap::unwrap;
 
 //endregion
 
@@ -19,6 +19,7 @@ pub fn on_load_joined(rrc: &mut RootRenderingComponent) {
         "StatusJoined send {}",
         rrc.game_data.players_ws_uid
     ));
+
     websocketcommunicationmod::ws_send_msg(
         &rrc.game_data.ws,
         &WsMessage::MsgJoin {
@@ -29,11 +30,11 @@ pub fn on_load_joined(rrc: &mut RootRenderingComponent) {
     );
 }
 
-///msg joined
+/// msg joined
 pub fn on_msg_joined(rrc: &mut RootRenderingComponent, his_ws_uid: usize, his_nickname: String) {
-    //logmod::debug_write(&format!("on_msg_joined {}",his_ws_uid));
+    // logmod::debug_write(&format!("on_msg_joined {}",his_ws_uid));
     if rrc.game_data.my_player_number == 1 {
-        //push if not exists
+        // push if not exists
         let mut ws_uid_exists = false;
         for x in &rrc.game_data.players {
             if x.ws_uid == his_ws_uid {

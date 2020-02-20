@@ -16,9 +16,9 @@ use dodrio::{
 use typed_html::dodrio;
 //endregion
 
-///play again
+/// play again
 pub fn div_game_over<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
-    //game over
+    // game over
     // only the first player can choose Play again?
     // other players are already joined to the group
     if rrc.game_data.my_player_number == 1 {
@@ -56,15 +56,15 @@ pub fn div_game_over<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'
     }
 }
 
-///on msg game over
+/// on msg game over
 pub fn on_msg_game_over(rrc: &mut RootRenderingComponent) {
-    //The game is over.
+    // The game is over.
     rrc.game_data.game_status = GameStatus::StatusGameOver;
 }
 
-///on msg play again
+/// on msg play again
 pub fn on_msg_play_again(rrc: &mut RootRenderingComponent) {
-    //The first players can choose Play again and send to others.
+    // The first players can choose Play again and send to others.
     rrc.game_data.game_status = GameStatus::StatusJoined;
     rrc.reset_for_play_again();
     htmltemplateimplmod::open_new_local_page("#p04");

@@ -20,7 +20,7 @@ use wasm_bindgen_futures::{JsFuture};
 /// fetch in Rust with async await for executor spawn_local()
 /// return the response as JsValue. Any error will panic.
 pub async fn async_spwloc_fetch_text(url: String) -> String {
-    //Request init
+    // Request init
     let mut opts = RequestInit::new();
     opts.method("GET");
     let request = unwrap!(Request::new_with_str_and_init(&url, &opts));
@@ -28,37 +28,37 @@ pub async fn async_spwloc_fetch_text(url: String) -> String {
         unwrap!(JsFuture::from(windowmod::window().fetch_with_request(&request)).await);
     let resp: Response = unwrap!(resp_jsvalue.dyn_into());
     let resp_body_text = unwrap!(JsFuture::from(unwrap!(resp.text())).await);
-    //logmod::debug_write(&unwrap!(JsValue::as_string(&resp_body_text)));
-    //returns response as String
+    // logmod::debug_write(&unwrap!(JsValue::as_string(&resp_body_text)));
+    // returns response as String
     unwrap!(JsValue::as_string(&resp_body_text))
 }
 
 /// fetch in Rust with async await for executor spawn_local()
 /// return the response as String. Any error will panic.
 pub async fn fetch_response(url: String) -> String {
-    //Request init
+    // Request init
     let mut opts = RequestInit::new();
     opts.method("GET");
     let request = unwrap!(Request::new_with_str_and_init(&url, &opts));
-    //log1("before fetch");
+    // log1("before fetch");
     let resp_jsvalue =
         unwrap!(JsFuture::from(windowmod::window().fetch_with_request(&request)).await);
-    //log1("after fetch");
+    // log1("after fetch");
     let resp: Response = unwrap!(resp_jsvalue.dyn_into());
-    //log1("before text()");
+    // log1("before text()");
     let text_jsvalue = unwrap!(JsFuture::from(unwrap!(resp.text())).await);
     let txt_response: String = unwrap!(text_jsvalue.as_string());
-    //logmod::debug_write(&txt_response);
-    //returns response as String
+    // logmod::debug_write(&txt_response);
+    // returns response as String
     txt_response
 }
 
 /// fetch only, so it goes in cache
 pub async fn fetch_only(url: String) {
-    //Request init
+    // Request init
     let mut opts = RequestInit::new();
     opts.method("GET");
     let request = unwrap!(Request::new_with_str_and_init(&url, &opts));
-    //log1("before fetch");
+    // log1("before fetch");
     unwrap!(JsFuture::from(windowmod::window().fetch_with_request(&request)).await);
 }

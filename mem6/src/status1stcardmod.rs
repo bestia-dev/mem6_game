@@ -23,9 +23,9 @@ pub fn on_click_1st_card(
     vdom: &dodrio::VdomWeak,
     this_click_card_index: usize,
 ) {
-    //logmod::debug_write("on_click_1st_card");
+    // logmod::debug_write("on_click_1st_card");
     flip_back(rrc);
-    //change card status and game status
+    // change card status and game status
     rrc.game_data.card_index_of_first_click = this_click_card_index;
 
     let msg_id = ackmsgmod::prepare_for_ack_msg_waiting(rrc, vdom);
@@ -36,9 +36,9 @@ pub fn on_click_1st_card(
         msg_id,
     };
     ackmsgmod::send_msg_and_write_in_queue(rrc, &msg, msg_id);
-    //logmod::debug_write(&format!("send_msg_and_write_in_queue: {}", msg_id));
+    // logmod::debug_write(&format!("send_msg_and_write_in_queue: {}", msg_id));
     divgridcontainermod::play_sound(rrc, this_click_card_index);
-    //after ack for this message call on_msg_click_1st_card(rrc, this_click_card_index);
+    // after ack for this message call on_msg_click_1st_card(rrc, this_click_card_index);
 }
 
 /// flip back any not permanent card
@@ -52,7 +52,7 @@ pub fn flip_back(rrc: &mut RootRenderingComponent) {
     rrc.game_data.card_index_of_second_click = 0;
 }
 
-///on msg
+/// on msg
 pub fn on_msg_click_1st_card(
     rrc: &mut RootRenderingComponent,
     vdom: &dodrio::VdomWeak,
@@ -62,43 +62,43 @@ pub fn on_msg_click_1st_card(
 ) {
     flip_back(rrc);
     ackmsgmod::send_ack(rrc, msg_sender_ws_uid, msg_id, MsgAckKind::MsgClick1stCard);
-    //it can happen that 2 smartphones send the msg click1st simultaneosly.
-    //This is a conflict.
-    //Only one Player can be the judge and I choosen the Player 1 to resolve it.
+    // it can happen that 2 smartphones send the msg click1st simultaneosly.
+    // This is a conflict.
+    // Only one Player can be the judge and I choosen the Player 1 to resolve it.
     if rrc.game_data.my_player_number == 1 && GameStatus::Status1stCard != rrc.game_data.game_status
     {
         logmod::debug_write("CONFLICT on_msg_click_1st_card");
-        //do the whole click1st process
+        // do the whole click1st process
         on_click_1st_card(rrc, vdom, rrc.game_data.card_index_of_first_click);
-        //do the whole click2nd process
+        // do the whole click2nd process
         status2ndcardmod::on_click_2nd_card(rrc, vdom, card_index_of_first_click)
     } else {
-        //logmod::debug_write("on_msg_click_1st_card");
+        // logmod::debug_write("on_msg_click_1st_card");
         rrc.game_data.card_index_of_first_click = card_index_of_first_click;
         update_on_1st_card(rrc);
     }
 }
 
-///on msg ack
+/// on msg ack
 pub fn on_msg_ack_click_1st_card(
     rrc: &mut RootRenderingComponent,
     player_ws_uid: usize,
     msg_id: usize,
 ) {
-    //logmod::debug_write("on_msg_ack_click_1st_card");
-    //logmod::debug_write(&format!("remove_ack_msg_from_queue: {} {}",player_ws_uid, msg_id));
+    // logmod::debug_write("on_msg_ack_click_1st_card");
+    // logmod::debug_write(&format!("remove_ack_msg_from_queue: {} {}",player_ws_uid, msg_id));
     if ackmsgmod::remove_ack_msg_from_queue(rrc, player_ws_uid, msg_id) {
-        //logmod::debug_write("update_on_1st_card (rrc)");
+        // logmod::debug_write("update_on_1st_card (rrc)");
         update_on_1st_card(rrc);
     }
-    //TODO: timer if after 3 seconds the ack is not received resend the msg
-    //do this 3 times and then hard error
+    // TODO: timer if after 3 seconds the ack is not received resend the msg
+    // do this 3 times and then hard error
 }
 
-///update game data
+/// update game data
 pub fn update_on_1st_card(rrc: &mut RootRenderingComponent) {
     logmod::debug_write("update_on_1st_card");
-    //flip the card up
+    // flip the card up
     unwrap!(rrc
         .game_data
         .card_grid_data
@@ -107,7 +107,7 @@ pub fn update_on_1st_card(rrc: &mut RootRenderingComponent) {
     rrc.game_data.game_status = GameStatus::Status2ndCard;
 }
 
-///render div
+/// render div
 #[allow(clippy::integer_arithmetic)]
 pub fn div_on_1st_card<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
     if rrc.game_data.my_player_number == rrc.game_data.player_turn {
@@ -121,7 +121,7 @@ pub fn div_on_1st_card<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node
         </div>
         )
     } else {
-        //return wait for the other player
+        // return wait for the other player
         dodrio!(bump,
         <h2 class="h2_user_must_wait">
             {vec![text(bumpalo::format!(in bump, "Wait for {}",

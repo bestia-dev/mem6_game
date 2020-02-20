@@ -89,7 +89,7 @@ const VIDEOS: &[&str] = &[
 ];
 
 impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
-    /// html_templating boolean id the next node is rendered or not
+    // / html_templating boolean id the next node is rendered or not
     fn call_function_boolean(&self, sx: &str) -> bool {
         logmod::debug_write(&format!("call_function_boolean: {}", &sx));
         match sx {
@@ -108,10 +108,10 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
         }
     }
 
-    /// html_templating functions that return a String
+    // / html_templating functions that return a String
     #[allow(clippy::needless_return, clippy::integer_arithmetic)]
     fn call_function_string(&self, sx: &str) -> String {
-        //logmod::debug_write(&format!("call_function_string: {}", &sx));
+        // logmod::debug_write(&format!("call_function_string: {}", &sx));
         match sx {
             "my_nickname" => self.game_data.my_nickname.to_owned(),
             "blink_or_not_nickname" => storagemod::blink_or_not_nickname(self),
@@ -122,9 +122,9 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             "group_id" => self.game_data.group_id.to_string(),
             "url_to_join" => format!("bestia.dev/mem6/#p03.{}", self.game_data.my_ws_uid),
             "cargo_pkg_version" => env!("CARGO_PKG_VERSION").to_string(),
-            "debug_text" => sessionstoragemod::get_debug_text(),
+            "debug_text" => storagemod::get_debug_text(),
             "gameboard_btn" => {
-                //different class depend on status
+                // different class depend on status
                 "btn".to_owned()
             }
             "card_moniker_first" => {
@@ -174,10 +174,10 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
         }
     }
 
-    /// html_templating functions for listeners
-    /// get a clone of the VdomWeak
+    // / html_templating functions for listeners
+    // / get a clone of the VdomWeak
     fn call_listener(&mut self, vdom: dodrio::VdomWeak, sx: &str, event: web_sys::Event) {
-        //logmod::debug_write(&format!("call_listener: {}", &sx));
+        // logmod::debug_write(&format!("call_listener: {}", &sx));
         match sx {
             "nickname_onkeyup" => {
                 storagemod::nickname_onkeyup(self, event);
@@ -186,7 +186,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 storagemod::group_id_onkeyup(self, event);
             }
             "open_youtube" => {
-                //randomly choose a link from VIDEOS
+                // randomly choose a link from VIDEOS
                 let num = windowmod::get_random(0, VIDEOS.len());
                 open_new_tab(&format!("https://www.youtube.com/watch?v={}", VIDEOS[num]));
             }
@@ -207,7 +207,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 open_new_tab("#p31");
             }
             "start_a_group_onclick" | "restart_game" => {
-                //send a msg to others to open #p04
+                // send a msg to others to open #p04
                 statusgameovermod::on_msg_play_again(self);
                 open_new_local_page("#p02");
             }
@@ -219,11 +219,11 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             }
             "start_game_onclick" => {
                 statusgamedatainitmod::on_click_start_game(self);
-                //async fetch all imgs and put them in service worker cache
+                // async fetch all imgs and put them in service worker cache
                 fetchallimgsforcachemod::fetch_all_img_for_cache_request(self);
-                //endregion
+                // endregion
                 vdom.schedule_render();
-                //logmod::debug_write(&format!("start_game_onclick players: {:?}",self.game_data.players));
+                // logmod::debug_write(&format!("start_game_onclick players: {:?}",self.game_data.players));
                 open_new_local_page("#p11");
             }
             "game_type_right_onclick" => {
@@ -236,7 +236,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 open_new_local_page("#p04");
             }
             "drink_end" => {
-                //send a msg to end drinking to all players
+                // send a msg to end drinking to all players
                 logmod::debug_write(&format!("MsgDrinkEnd send{}", ""));
                 websocketcommunicationmod::ws_send_msg(
                     &self.game_data.ws,
@@ -245,12 +245,12 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                         players_ws_uid: self.game_data.players_ws_uid.to_string(),
                     },
                 );
-                //if all the cards are permanently up, this is the end of the game
-                //logmod::debug_write("if is_all_permanently(self)");
+                // if all the cards are permanently up, this is the end of the game
+                // logmod::debug_write("if is_all_permanently(self)");
                 if status2ndcardmod::is_all_permanently(self) {
                     logmod::debug_write("yes");
                     statusgameovermod::on_msg_game_over(self);
-                    //send message
+                    // send message
                     websocketcommunicationmod::ws_send_msg(
                         &self.game_data.ws,
                         &WsMessage::MsgGameOver {
@@ -261,7 +261,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 } else {
                     statustaketurnmod::on_click_take_turn(self, &vdom);
                 }
-                //end the drink dialog
+                // end the drink dialog
                 open_new_local_page("#p11");
             }
             _ => {
@@ -271,15 +271,15 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
         }
     }
 
-    /// html_templating functions that return a Node
+    // / html_templating functions that return a Node
     #[allow(clippy::needless_return)]
     fn call_function_node<'a>(&self, cx: &mut RenderContext<'a>, sx: &str) -> Node<'a> {
         let bump = cx.bump;
-        //logmod::debug_write(&format!("call_function_node: {}", &sx));
+        // logmod::debug_write(&format!("call_function_node: {}", &sx));
         match sx {
             "div_grid_container" => {
-                //what is the game_status now?
-                //logmod::debug_write(&format!("game status: {}", self.game_data.game_status));
+                // what is the game_status now?
+                // logmod::debug_write(&format!("game status: {}", self.game_data.game_status));
                 let max_grid_size = divgridcontainermod::max_grid_size(self);
                 return divgridcontainermod::div_grid_container(self, bump, &max_grid_size);
             }
@@ -352,13 +352,13 @@ pub fn game_type_left_onclick(rrc: &mut RootRenderingComponent, vdom: &dodrio::V
 /// fn open new local page with #
 /// does not push to history
 pub fn open_new_local_page(hash: &str) {
-    //I want to put the first url in history.
-    //These are opened from outside my app and I cannot manage that differently.
-    //There are 2 of them:
-    //1. if the players starts without hash
-    //2. if the player scanned the qrcode and opened the p3 with group_id
-    //For links opened inside the app, I can call the open with or without history.
-    //For example for menu p21 I want to have a back button.
+    // I want to put the first url in history.
+    // These are opened from outside my app and I cannot manage that differently.
+    // There are 2 of them:
+    // 1. if the players starts without hash
+    // 2. if the player scanned the qrcode and opened the p3 with group_id
+    // For links opened inside the app, I can call the open with or without history.
+    // For example for menu p21 I want to have a back button.
     let (_old_location_href, old_href_hash) = get_url_and_hash();
     if old_href_hash.is_empty() || old_href_hash.starts_with("#p03.") {
         open_new_local_page_push_to_history(hash)

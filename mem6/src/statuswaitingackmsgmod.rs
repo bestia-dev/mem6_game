@@ -15,7 +15,7 @@ use dodrio::{
 use typed_html::dodrio;
 //endregion
 
-///waiting ack msg
+/// waiting ack msg
 pub fn div_waiting_ack_msg<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
     dodrio!(bump,
     <div>

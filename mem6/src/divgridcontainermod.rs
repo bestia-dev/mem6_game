@@ -15,16 +15,16 @@ use dodrio::{
     bumpalo::{self, Bump},
     Node,
 };
-use wasm_bindgen::JsCast; //don't remove this. It is needed for dyn_into.
+use wasm_bindgen::JsCast; // don't remove this. It is needed for dyn_into.
 use typed_html::dodrio;
 //use wasm_bindgen::prelude::*;
 //use web_sys::console;
 
-///fixed filename for card face down
+/// fixed filename for card face down
 const SRC_FOR_CARD_FACE_DOWN: &str = "img/mem_cardfacedown.png";
 //endregion
 
-///prepare the grid container
+/// prepare the grid container
 pub fn div_grid_container<'a>(
     rrc: &RootRenderingComponent,
     bump: &'a Bump,
@@ -60,26 +60,26 @@ pub fn div_grid_container<'a>(
             {div_grid_items(rrc, bump)}
         </div>
     );
-    //return
+    // return
     grid_container
 }
 
-///prepare a vector<Node> for the Virtual Dom for 'css grid' item with <img>
-///the grid container needs only grid items. There is no need for rows and columns in 'css grid'.
+/// prepare a vector<Node> for the Virtual Dom for 'css grid' item with <img>
+/// the grid container needs only grid items. There is no need for rows and columns in 'css grid'.
 #[allow(clippy::integer_arithmetic)] // end_index-1 will not overflow
 pub fn div_grid_items<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Vec<Node<'a>> {
-    //this game_data mutable reference is dropped on the end of the function
+    // this game_data mutable reference is dropped on the end of the function
     let game_data = &rrc.game_data;
 
     let mut vec_grid_items: Vec<Node<'a>> = Vec::new();
     if game_data.game_config.is_some() {
-        //The format 4x4 was too small for the game with multiple smartphones on the table.
-        //Now I can choose different sizes gx x gy
-        //grid_width x grid_height is wh cards. index goes from PlayerNUmber-1*wh+1 to Player
-        //the count of cards can now be not divisible with 2 for card pairs.
-        //so I need to make a different last card that is not clickable.
+        // The format 4x4 was too small for the game with multiple smartphones on the table.
+        // Now I can choose different sizes gx x gy
+        // grid_width x grid_height is wh cards. index goes from PlayerNUmber-1*wh+1 to Player
+        // the count of cards can now be not divisible with 2 for card pairs.
+        // so I need to make a different last card that is not clickable.
 
-        //((game_data.my_player_number - 1) * grid_width*grid_height) + 1
+        // ((game_data.my_player_number - 1) * grid_width*grid_height) + 1
         let start_index = unwrap!(unwrap!((unwrap!(game_data.my_player_number.checked_sub(1)))
             .checked_mul(unwrap!(unwrap!(game_data.game_config.as_ref())
                 .grid_items_hor
@@ -92,14 +92,14 @@ pub fn div_grid_items<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Vec<N
                     .grid_items_hor
                     .checked_mul(unwrap!(game_data.game_config.as_ref()).grid_items_ver))));
 
-        //the count of cards can now be not divisible with 2 for card pairs.
-        //so I need to make a different last card that is not clickable.
+        // the count of cards can now be not divisible with 2 for card pairs.
+        // so I need to make a different last card that is not clickable.
         if end_index >= game_data.card_grid_data.len() {
             end_index -= 1;
         }
 
         /*
-                //logmod::debug_write(&format!(
+                // logmod::debug_write(&format!(
                     "div_grid_items: my_player_number {} start_index {} end_index {} card_grid_data.len {}",
                     &rrc.game_data.my_player_number,
                     start_index,
@@ -110,7 +110,7 @@ pub fn div_grid_items<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Vec<N
 
         for x in start_index..=end_index {
             let index: usize = x;
-            //region: prepare variables and closures for inserting into vdom
+            // region: prepare variables and closures for inserting into vdom
             let img_src = match unwrap!(
                 game_data.card_grid_data.get(index),
                 "match game_data.card_grid_data.get(index) {} startindex {} endindex {} vec_card.len {}",
@@ -151,18 +151,18 @@ pub fn div_grid_items<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Vec<N
             } else {
                 bumpalo::format!(in bump, "opacity:{}", 1).into_bump_str()
             };
-            //endregion
+            // endregion
 
-            //creating grid_width*grid_height <div> in loop
+            // creating grid_width*grid_height <div> in loop
             let grid_item_bump = div_grid_item(rrc, bump, img_src, img_id, opacity);
             vec_grid_items.push(grid_item_bump);
         }
     }
 
-    //return
+    // return
     vec_grid_items
 }
-///on click is the most important part and here is more or less isolated
+/// on click is the most important part and here is more or less isolated
 pub fn div_grid_item<'a>(
     rrc: &RootRenderingComponent,
     bump: &'a Bump,
@@ -175,7 +175,7 @@ pub fn div_grid_item<'a>(
             dodrio!(bump,
             <div class= "grid_item">
             <img class= "grid_item_img" src={img_src} id={img_id} style={opacity} onclick={move |root, vdom, event| {
-                //logmod::debug_write("img click");
+                // logmod::debug_write("img click");
                 let rrc = root.unwrap_mut::<RootRenderingComponent>();
                 // If the event's target is our image...
                 let img = match event
@@ -183,15 +183,15 @@ pub fn div_grid_item<'a>(
                     .and_then(|t| t.dyn_into::<web_sys::HtmlImageElement>().ok())
                 {
                     None => return,
-                    //?? Don't understand what this does. The original was written for Input element.
+                    // ?? Don't understand what this does. The original was written for Input element.
                     Some(input) => input,
                 };
-                //id attribute of image html element is prefixed with img ex. "img12"
+                // id attribute of image html element is prefixed with img ex. "img12"
                 let this_click_card_index = unwrap!(
                     (unwrap!(img.id().get(3..), "error slicing")).parse::<usize>(),
                     "error parse img id to usize"
                 );
-                //click is useful only on facedown cards
+                // click is useful only on facedown cards
                 if unwrap!(
                     rrc.game_data.card_grid_data.get(this_click_card_index),
                     "error this_click_card_index"
@@ -216,15 +216,15 @@ pub fn div_grid_item<'a>(
                     .and_then(|t| t.dyn_into::<web_sys::HtmlImageElement>().ok())
                 {
                     None => return,
-                    //?? Don't understand what this does. The original was written for Input element.
+                    // ?? Don't understand what this does. The original was written for Input element.
                     Some(input) => input,
                 };
-                //id attribute of image html element is prefixed with img ex. "img12"
+                // id attribute of image html element is prefixed with img ex. "img12"
                 let this_click_card_index = unwrap!(
                     (unwrap!(img.id().get(3..), "error slicing")).parse::<usize>(),
                     "error parse img id to usize"
                 );
-                //click is useful only on facedown cards
+                // click is useful only on facedown cards
                 if unwrap!(
                     rrc.game_data.card_grid_data.get(this_click_card_index),
                     "error this_click_card_index"
@@ -255,7 +255,7 @@ pub fn div_grid_item<'a>(
 
 /// play sound mp3
 pub fn play_sound(rrc: &RootRenderingComponent, this_click_card_index: usize) {
-    //prepare the audio element with src filename of mp3
+    // prepare the audio element with src filename of mp3
     let audio_element = web_sys::HtmlAudioElement::new_with_src(
         format!(
             "content/{}/sound/{}",
@@ -273,19 +273,19 @@ pub fn play_sound(rrc: &RootRenderingComponent, this_click_card_index: usize) {
         .as_str(),
     );
 
-    //play() return a Promise in JSValue. That is too hard for me to deal with now.
+    // play() return a Promise in JSValue. That is too hard for me to deal with now.
     let _x = unwrap!(
         unwrap!(audio_element, "Error: HtmlAudioElement new.").play(),
         "Error: HtmlAudioElement.play() "
     );
 }
 
-///grid width in pixels
+/// grid width in pixels
 pub fn grid_width() -> usize {
-    //the size of  the visible part of the window
+    // the size of  the visible part of the window
     let usize_inner_width = usize_window_inner_width();
-    //width min: 300px, max: 600 px in between width=visible width
-    //3 columnsdelimiter 5px wide
+    // width min: 300px, max: 600 px in between width=visible width
+    // 3 columnsdelimiter 5px wide
     let grid_width: usize;
     if usize_inner_width < 300 {
         grid_width = 300;
@@ -297,13 +297,13 @@ pub fn grid_width() -> usize {
     grid_width
 }
 
-///grid height in pixels
+/// grid height in pixels
 pub fn grid_height() -> usize {
-    //the size of  the visible part of the window
+    // the size of  the visible part of the window
     let usize_inner_height = usize_window_inner_height();
 
-    //height minimum 300, max 1000, else 0.8*visible height
-    //3 row separators 5px wide
+    // height minimum 300, max 1000, else 0.8*visible height
+    // 3 row separators 5px wide
     let grid_height: usize;
     if usize_inner_height < 300 {
         grid_height = 300;
@@ -316,25 +316,25 @@ pub fn grid_height() -> usize {
     grid_height
 }
 
-///calculate max with and height for a grid in pixels
+/// calculate max with and height for a grid in pixels
 pub fn max_grid_size(rrc: &RootRenderingComponent) -> Size2d {
-    //if the game_config is None, then return full screen
+    // if the game_config is None, then return full screen
     if rrc.game_data.game_config.is_none() {
         Size2d {
             hor: usize_window_inner_width_but_max_600(),
             ver: usize_window_inner_height(),
         }
     } else {
-        //grid_container width and height
+        // grid_container width and height
         let mut max_grid_width = grid_width();
         let mut max_grid_height = grid_height();
         /*
-        //logmod::debug_write(&format!(
+        // logmod::debug_write(&format!(
             "inner_width {} inner_height {}",
             max_grid_width, max_grid_height
         ));
         */
-        //default if not chosen
+        // default if not chosen
         let mut card_width = 115;
         let mut card_height = 115;
         match &rrc.game_data.game_config {
@@ -345,12 +345,12 @@ pub fn max_grid_size(rrc: &RootRenderingComponent) -> Size2d {
             }
         }
         /*
-        //logmod::debug_write(&format!(
+        // logmod::debug_write(&format!(
             "card_width {} card_height {}",
             card_width, card_height
         ));
         */
-        //ratio between width and height must stay the same
+        // ratio between width and height must stay the same
         let ratio = (unwrap!(card_height.approx_as::<f64>())
             * unwrap!(unwrap!(rrc.game_data.game_config.as_ref())
                 .grid_items_ver
@@ -370,13 +370,13 @@ pub fn max_grid_size(rrc: &RootRenderingComponent) -> Size2d {
                 unwrap!((unwrap!(max_grid_width.approx_as::<f64>()) * ratio).approx_as::<usize>());
         }
         /*
-        //logmod::debug_write(&format!(
+        // logmod::debug_write(&format!(
             "max_grid_width {} max_grid_height {}",
             max_grid_width, max_grid_height
         ));
         */
 
-        //return
+        // return
         Size2d {
             hor: max_grid_width,
             ver: max_grid_height,
@@ -394,7 +394,7 @@ pub fn usize_window_inner_height() -> usize {
         "jsValue_inner_height.as_f64()"
     );
     let usize_inner_height: usize = unwrap!(f64_inner_height.approx());
-    //return
+    // return
     usize_inner_height
 }
 
@@ -408,7 +408,7 @@ pub fn usize_window_inner_width() -> usize {
         "jsValue_inner_width.as_string()"
     );
     let usize_inner_width: usize = unwrap!(f64_inner_width.approx());
-    //return
+    // return
     usize_inner_width
 }
 
@@ -417,10 +417,10 @@ pub fn usize_window_inner_width() -> usize {
 pub fn usize_window_inner_width_but_max_600() -> usize {
     let x = usize_window_inner_width();
     if x > 600 {
-        //return
+        // return
         600
     } else {
-        //return
+        // return
         x
     }
 }

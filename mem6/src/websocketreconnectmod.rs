@@ -25,7 +25,7 @@ use dodrio::{
 use typed_html::dodrio;
 //endregion
 
-///render reconnect
+/// render reconnect
 pub fn div_reconnect<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
     dodrio!(bump,
     <div>
@@ -37,17 +37,17 @@ pub fn div_reconnect<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<
         <div class="div_clickable" onclick={
             move |root, vdom, _event| {
             let rrc = root.unwrap_mut::<RootRenderingComponent>();
-            //the old ws and closures are now a memory leak, but small
+            // the old ws and closures are now a memory leak, but small
             let href = rrc.game_data.href.clone();
-            //usize is Copy(), so I don't need clone()
+            // usize is Copy(), so I don't need clone()
             let my_ws_uid = rrc.game_data.my_ws_uid;
             logmod::debug_write(&format!(
                 "href {}  my_ws_uid {}",
                 href,
                 my_ws_uid,
             ));
-            //logmod::debug_write(&"before reconnect");
-            //first disconnect if is possible, than recconect
+            // logmod::debug_write(&"before reconnect");
+            // first disconnect if is possible, than recconect
             let _x = rrc.game_data.ws.close();
 
             let players_ws_uid = rrc.game_data.players_ws_uid.clone();
@@ -55,13 +55,13 @@ pub fn div_reconnect<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<
             websocketcommunicationmod::setup_all_ws_events(&ws,vdom.clone());
 
             rrc.game_data.ws=ws;
-            //logmod::debug_write(&"before game_data.is_reconnect = false and schedule_render");
+            // logmod::debug_write(&"before game_data.is_reconnect = false and schedule_render");
             rrc.game_data.is_reconnect = false;
             vdom.schedule_render();
         }}>
             <h2 class="h2_user_can_click">
                 {vec![text(
-                //StatusReconnect?
+                // StatusReconnect?
                 bumpalo::format!(in bump, "Resync{}", "").into_bump_str(),
                 )]}
             </h2>
@@ -70,30 +70,30 @@ pub fn div_reconnect<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<
     )
 }
 
-///send all data to resync gamedata
+/// send all data to resync gamedata
 pub fn send_msg_for_resync(rrc: &RootRenderingComponent) {
     logmod::debug_write("send_msg_for_resync MsgAllGameData");
     websocketcommunicationmod::ws_send_msg(
         &rrc.game_data.ws,
         &WsMessage::MsgAllGameData {
             my_ws_uid: rrc.game_data.my_ws_uid,
-            ///only the players that resync
+            // / only the players that resync
             players_ws_uid: rrc.game_data.players_ws_uid.clone(),
-            ///json of vector of players with nicknames and order data
+            // / json of vector of players with nicknames and order data
             players: unwrap!(serde_json::to_string(&rrc.game_data.players)),
-            ///vector of cards status
+            // / vector of cards status
             card_grid_data: unwrap!(serde_json::to_string(&rrc.game_data.card_grid_data)),
             card_index_of_first_click: rrc.game_data.card_index_of_first_click,
             card_index_of_second_click: rrc.game_data.card_index_of_second_click,
-            ///whose turn is now:  player 1,2,3,...
+            // / whose turn is now:  player 1,2,3,...
             player_turn: rrc.game_data.player_turn,
-            ///game status
+            // / game status
             game_status: rrc.game_data.game_status.clone(),
         },
     );
 }
 
-///after reconnect receive all the data from other player
+/// after reconnect receive all the data from other player
 #[allow(clippy::needless_pass_by_value)]
 pub fn on_msg_all_game_data(
     rrc: &mut RootRenderingComponent,
@@ -101,13 +101,13 @@ pub fn on_msg_all_game_data(
     card_grid_data: String,
     card_index_of_first_click: usize,
     card_index_of_second_click: usize,
-    //whose turn is now:  player 1,2,3,...
+    // whose turn is now:  player 1,2,3,...
     player_turn: usize,
     game_status: GameStatus,
 ) {
     logmod::debug_write("on_msg_all_game_data");
-    //only the first message is processed
-    //if rrc.game_data.is_reconnect {
+    // only the first message is processed
+    // if rrc.game_data.is_reconnect {
     rrc.game_data.is_reconnect = false;
     rrc.game_data.players = unwrap!(serde_json::from_str(&players));
     rrc.game_data.card_grid_data = unwrap!(serde_json::from_str(&card_grid_data));
@@ -116,5 +116,5 @@ pub fn on_msg_all_game_data(
     rrc.game_data.player_turn = player_turn;
     rrc.game_data.game_status = game_status;
     rrc.game_data.msgs_waiting_ack.retain(|_x| false);
-    //}
+    // }
 }
