@@ -22,7 +22,7 @@ pub fn div_player_actions_from_game_status<'a>(
 ) -> Node<'a> {
     // if rrc.game_data.is_status_start_page() {
     /*
-        && (rrc.game_data.is_reconnect || rrc.game_data.ws.ready_state() != 1)
+        && (rrc.web_communication.is_reconnect || rrc.web_communication.ws.ready_state() != 1)
     {
         // ready_state: 0	CONNECTING, 1	OPEN, 2	CLOSING, 3	CLOSED
         websocketreconnectmod::div_reconnect(rrc, bump)

@@ -10,139 +10,109 @@ use serde_derive::{Serialize, Deserialize};
 use unwrap::unwrap;
 use rand::{rngs::SmallRng, seq::SliceRandom, SeedableRng, Rng};
 use strum_macros::AsRefStr;
-use web_sys::WebSocket;
 //endregion
 
 //region: struct, enum
 /// 2d size (any UM -pixel, items, percent)
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Size2d {
-    // / horizontal
+    /// horizontal
     pub hor: usize,
-    // / vertical
+    /// vertical
     pub ver: usize,
 }
 /// game metadata (for the vector)
 #[derive(Serialize, Deserialize, Clone)]
 pub struct GameMetadata {
-    // / folder
+    /// folder
     pub folder: String,
-    // / name
+    /// name
     pub name: String,
-    // / description
+    /// description
     pub description: String,
 }
 
 /// games metadata vector
 #[derive(Serialize, Deserialize, Clone)]
 pub struct GamesMetadata {
-    // / vec game_metadata
+    /// vec game_metadata
     pub vec_game_metadata: Vec<GameMetadata>,
 }
 
 /// game config
 #[derive(Serialize, Deserialize, Clone)]
 pub struct GameConfig {
-    // / card moniker - the text/name of the card
-    // / the zero element is card face down or empty, example alphabet begins with index 01 : A
+    /// card moniker - the text/name of the card
+    /// the zero element is card face down or empty, example alphabet begins with index 01 : A
     pub card_moniker: Vec<String>,
-    // / img filenames
+    /// img filenames
     pub img_filename: Vec<String>,
-    // / sound filenames
+    /// sound filenames
     pub sound_filename: Vec<String>,
-    // / card image width
+    /// card image width
     pub card_width: usize,
-    // / card image height
+    /// card image height
     pub card_height: usize,
-    // / number of cards horizontally
+    /// number of cards horizontally
     pub grid_items_hor: usize,
-    // / number of card vertically
+    /// number of card vertically
     pub grid_items_ver: usize,
 }
 
 /// the 3 possible statuses of one card
 #[derive(Serialize, Deserialize, AsRefStr)]
 pub enum CardStatusCardFace {
-    // / card face down
+    /// card face down
     Down,
-    // / card face Up Temporary
+    /// card face Up Temporary
     UpTemporary,
-    // / card face up Permanently
+    /// card face up Permanently
     UpPermanently,
 }
 /// all the data for one card
 #[derive(Serialize, Deserialize)]
 pub struct Card {
-    // / card status
+    /// card status
     pub status: CardStatusCardFace,
-    // / field for src attribute for HTML element image and filename of card image
+    /// field for src attribute for HTML element image and filename of card image
     pub card_number_and_img_src: usize,
-    // / field for id attribute for HTML element image contains the card index
+    /// field for id attribute for HTML element image contains the card index
     pub card_index_and_id: usize,
-}
-
-/// save the message in queue to resend it if timeout expires
-#[derive(Serialize, Deserialize)]
-pub struct MsgInQueue {
-    // / the player that must ack the msg
-    pub player_ws_uid: usize,
-    // / the msg id is a random number
-    pub msg_id: usize,
-    // / the content of the message if it needs to be resend
-    pub msg: WsMessage,
 }
 
 /// game data
 pub struct GameData {
-    // / my ws client instance unique id. To not listen the echo to yourself.
-    pub my_ws_uid: usize,
-    // / my nickname
+    /// my nickname
     pub my_nickname: String,
-    // / What player am I
+    /// What player am I
     pub my_player_number: usize,
-    // / group_id is the ws_uid of the first player
+    /// group_id is the ws_uid of the first player
     pub group_id: usize,
-    // / web socket. used it to send message onclick.
-    pub ws: WebSocket,
-    // / players data as vector of player struct
+    /// players data as vector of player struct
     pub players: Vec<Player>,
-    // / the json string for the ws server to send msgs to other players only
-    pub msg_receivers: String,
-    // / game status: StatusStartPage,Player1,Player2
+    /// game status: StatusStartPage,Player1,Player2
     pub game_status: GameStatus,
-    // / vector of cards
+    /// vector of cards
     pub card_grid_data: Vec<Card>,
-    // / card index of first click
+    /// card index of first click
     pub card_index_of_first_click: usize,
-    // / card index of second click
+    /// card index of second click
     pub card_index_of_second_click: usize,
-    // / content folder name
+    /// content folder name
     pub game_name: String,
-    // / whose turn is now:  player 1,2,3,...
+    /// whose turn is now:  player 1,2,3,...
     pub player_turn: usize,
-    // / content folders vector
+    /// content folders vector
     pub content_folders: Vec<String>,
-    // / games meta data
+    /// games meta data
     pub games_metadata: Option<GamesMetadata>,
-    // / game_configs
+    /// game_configs
     pub game_config: Option<GameConfig>,
-    // / error text
-    pub error_text: String,
-    // / href
-    pub href: String,
-    // / href hash the local page #
-    pub href_hash: String,
-    // / is reconnect
-    pub is_reconnect: bool,
-    // / vector of msgs waiting for ack. If the 3 sec timeout passes it resends the same msg.
-    pub msgs_waiting_ack: Vec<MsgInQueue>,
-    // / show debug info on the smartphone screen
-    pub show_debug_info: bool,
 }
 //endregion
 
 impl GameData {
-    // / prepare new random data
+    /// prepare new random data
     pub fn prepare_random_data(&mut self) {
         let item_count_minus_one = unwrap!(unwrap!(self.game_config.as_ref())
             .card_moniker
@@ -234,7 +204,7 @@ impl GameData {
         ));
         */
     }
-    // / associated function: before join, there are not random numbers, just default cards.
+    /// associated function: before join, there are not random numbers, just default cards.
     pub fn prepare_for_empty() -> Vec<Card> {
         // prepare 32 empty cards. The random is calculated only on MsgJoin.
         let mut card_grid_data = Vec::new();
@@ -249,8 +219,8 @@ impl GameData {
         }
         card_grid_data
     }
-    // / constructor of game data
-    pub fn new(ws: WebSocket, my_ws_uid: usize) -> Self {
+    /// constructor of game data
+    pub fn new(my_ws_uid: usize) -> Self {
         let my_nickname = storagemod::load_nickname();
         let mut players = Vec::new();
         players.push(Player {
@@ -258,19 +228,15 @@ impl GameData {
             nickname: my_nickname.to_string(),
             points: 0,
         });
-        let msg_receivers = prepare_msg_receivers(&players);
 
         // return from constructor
         GameData {
             card_grid_data: Self::prepare_for_empty(),
             card_index_of_first_click: 0,
             card_index_of_second_click: 0,
-            ws,
-            my_ws_uid,
             my_nickname,
             group_id: 0,
             players,
-            msg_receivers,
             game_status: GameStatus::StatusStartPage,
             game_name: "alphabet".to_string(),
             my_player_number: 1,
@@ -278,24 +244,8 @@ impl GameData {
             content_folders: vec![String::from("alphabet")],
             game_config: None,
             games_metadata: None,
-            error_text: "".to_string(),
-            href: "".to_string(),
-            href_hash: "".to_string(),
-            is_reconnect: false,
-            msgs_waiting_ack: vec![],
-            show_debug_info: false,
         }
     }
-    /*
-    // / check only if status StatusStartPage
-    pub fn is_status_start_page(&self) -> bool {
-        #[allow(clippy::wildcard_enum_match_arm)]
-        match self.game_status {
-            GameStatus::StatusStartPage => true,
-            _ => false,
-        }
-    }
-    */
 }
 
 /// from the vector of players prepare a json string for the ws server

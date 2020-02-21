@@ -16,8 +16,8 @@ pub fn on_click_take_turn(rrc: &mut RootRenderingComponent, vdom: &dodrio::VdomW
     let msg_id = ackmsgmod::prepare_for_ack_msg_waiting(rrc, vdom);
 
     let msg = WsMessage::MsgTakeTurn {
-        my_ws_uid: rrc.game_data.my_ws_uid,
-        msg_receivers: rrc.game_data.msg_receivers.to_string(),
+        my_ws_uid: rrc.web_communication.my_ws_uid,
+        msg_receivers: rrc.web_communication.msg_receivers.to_string(),
         msg_id,
     };
     ackmsgmod::send_msg_and_write_in_queue(rrc, &msg, msg_id);

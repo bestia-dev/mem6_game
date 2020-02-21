@@ -270,13 +270,14 @@ mod routermod;
 mod routerimplmod;
 mod htmltemplateimplmod;
 mod htmltemplatemod;
+mod webcommunicationmod;
 //endregion
 
 // this are then used in all the mods if I have there use crate::*;
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::gamedatamod::*;
 
-use unwrap::unwrap;
+//use unwrap::unwrap;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
@@ -294,7 +295,7 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     // load from storage or get random (and then save)
     let my_ws_uid = websocketcommunicationmod::load_or_random_ws_uid();
 
-    let (location_href, href_hash) = get_url_and_hash();
+    let (location_href, href_hash) = websysmod::get_url_and_hash();
     // WebSocket connection
     let msg_receivers = "[]".to_string(); // empty vector in json
     let ws = websocketcommunicationmod::setup_ws_connection(
@@ -309,8 +310,8 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     // I added ws_c so that I can send messages on WebSocket
 
     let mut rrc = RootRenderingComponent::new(ws_c, my_ws_uid);
-    rrc.game_data.href = location_href.to_string();
-    rrc.game_data.href_hash = href_hash;
+    rrc.web_communication.href = location_href.to_string();
+    rrc.web_communication.href_hash = href_hash;
     // Mount the component to the `<div id="div_for_virtual_dom">`.
     let vdom = dodrio::Vdom::new(&div_for_virtual_dom, rrc);
 
@@ -329,24 +330,4 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     vdom.forget();
 
     Ok(())
-}
-
-/// get url and hash from window.location
-#[must_use]
-pub fn get_url_and_hash() -> (String, String) {
-    // find out URL
-    let mut location_href = unwrap!(websysmod::window().location().href());
-    // without /index.html
-    location_href = location_href.to_lowercase().replace("index.html", "");
-    logmod::debug_write(&format!("location_href: {}", &location_href));
-
-    // split it by # hash
-    let cl = location_href.clone();
-    let mut spl = cl.split('#');
-    location_href = unwrap!(spl.next()).to_string();
-    let href_hash = spl.next().unwrap_or("").to_string();
-
-    logmod::debug_write(&format!("location_href: {}", &location_href));
-    logmod::debug_write(&format!("href_hash: {}", &href_hash));
-    (location_href, href_hash)
 }

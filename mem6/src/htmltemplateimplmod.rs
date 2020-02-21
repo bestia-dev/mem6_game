@@ -89,7 +89,7 @@ const VIDEOS: &[&str] = &[
 ];
 
 impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
-    // / html_templating boolean id the next node is rendered or not
+    /// html_templating boolean id the next node is rendered or not
     fn call_function_boolean(&self, sx: &str) -> bool {
         logmod::debug_write(&format!("call_function_boolean: {}", &sx));
         match sx {
@@ -108,7 +108,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
         }
     }
 
-    // / html_templating functions that return a String
+    /// html_templating functions that return a String
     #[allow(clippy::needless_return, clippy::integer_arithmetic)]
     fn call_function_string(&self, sx: &str) -> String {
         // logmod::debug_write(&format!("call_function_string: {}", &sx));
@@ -116,11 +116,11 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             "my_nickname" => self.game_data.my_nickname.to_owned(),
             "blink_or_not_nickname" => storagemod::blink_or_not_nickname(self),
             "blink_or_not_group_id" => blink_or_not_group_id(self),
-            "my_ws_uid" => format!("{}", self.game_data.my_ws_uid),
+            "my_ws_uid" => format!("{}", self.web_communication.my_ws_uid),
             "players_count" => format!("{} ", self.game_data.players.len() - 1),
             "game_name" => self.game_data.game_name.to_string(),
             "group_id" => self.game_data.group_id.to_string(),
-            "url_to_join" => format!("bestia.dev/mem6/#p03.{}", self.game_data.my_ws_uid),
+            "url_to_join" => format!("bestia.dev/mem6/#p03.{}", self.web_communication.my_ws_uid),
             "cargo_pkg_version" => env!("CARGO_PKG_VERSION").to_string(),
             "debug_text" => storagemod::get_debug_text(),
             "gameboard_btn" => {
@@ -174,8 +174,8 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
         }
     }
 
-    // / html_templating functions for listeners
-    // / get a clone of the VdomWeak
+    /// html_templating functions for listeners
+    /// get a clone of the VdomWeak
     fn call_listener(&mut self, vdom: dodrio::VdomWeak, sx: &str, event: web_sys::Event) {
         // logmod::debug_write(&format!("call_listener: {}", &sx));
         match sx {
@@ -239,10 +239,10 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 // send a msg to end drinking to all players
                 logmod::debug_write(&format!("MsgDrinkEnd send{}", ""));
                 websocketcommunicationmod::ws_send_msg(
-                    &self.game_data.ws,
+                    &self.web_communication.ws,
                     &WsMessage::MsgDrinkEnd {
-                        my_ws_uid: self.game_data.my_ws_uid,
-                        msg_receivers: self.game_data.msg_receivers.to_string(),
+                        my_ws_uid: self.web_communication.my_ws_uid,
+                        msg_receivers: self.web_communication.msg_receivers.to_string(),
                     },
                 );
                 // if all the cards are permanently up, this is the end of the game
@@ -252,10 +252,10 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     statusgameovermod::on_msg_game_over(self);
                     // send message
                     websocketcommunicationmod::ws_send_msg(
-                        &self.game_data.ws,
+                        &self.web_communication.ws,
                         &WsMessage::MsgGameOver {
-                            my_ws_uid: self.game_data.my_ws_uid,
-                            msg_receivers: self.game_data.msg_receivers.to_string(),
+                            my_ws_uid: self.web_communication.my_ws_uid,
+                            msg_receivers: self.web_communication.msg_receivers.to_string(),
                         },
                     );
                 } else {
@@ -271,7 +271,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
         }
     }
 
-    // / html_templating functions that return a Node
+    /// html_templating functions that return a Node
     #[allow(clippy::needless_return)]
     fn call_function_node<'a>(&self, cx: &mut RenderContext<'a>, sx: &str) -> Node<'a> {
         let bump = cx.bump;
@@ -307,7 +307,10 @@ pub fn svg_qrcode_to_node<'a>(
     rrc: &RootRenderingComponent,
     cx: &mut RenderContext<'a>,
 ) -> Node<'a> {
-    let link = format!("https://bestia.dev/mem6/#p03.{}", rrc.game_data.my_ws_uid);
+    let link = format!(
+        "https://bestia.dev/mem6/#p03.{}",
+        rrc.web_communication.my_ws_uid
+    );
     let qr = unwrap!(qrcode53bytes::Qr::new(&link));
     let svg_template = qrcode53bytes::SvgDodrioRenderer::new(222, 222).render(&qr);
 
@@ -359,7 +362,7 @@ pub fn open_new_local_page(hash: &str) {
     // 2. if the player scanned the qrcode and opened the p3 with group_id
     // For links opened inside the app, I can call the open with or without history.
     // For example for menu p21 I want to have a back button.
-    let (_old_location_href, old_href_hash) = get_url_and_hash();
+    let (_old_location_href, old_href_hash) = websysmod::get_url_and_hash();
     if old_href_hash.is_empty() || old_href_hash.starts_with("#p03.") {
         open_new_local_page_push_to_history(hash)
     } else {

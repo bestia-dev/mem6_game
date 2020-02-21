@@ -38,9 +38,9 @@ pub fn div_reconnect<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<
             move |root, vdom, _event| {
             let rrc = root.unwrap_mut::<RootRenderingComponent>();
             // the old ws and closures are now a memory leak, but small
-            let href = rrc.game_data.href.clone();
+            let href = rrc.web_communication.href.clone();
             // usize is Copy(), so I don't need clone()
-            let my_ws_uid = rrc.game_data.my_ws_uid;
+            let my_ws_uid = rrc.web_communication.my_ws_uid;
             logmod::debug_write(&format!(
                 "href {}  my_ws_uid {}",
                 href,
@@ -48,15 +48,15 @@ pub fn div_reconnect<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<
             ));
             // logmod::debug_write(&"before reconnect");
             // first disconnect if is possible, than recconect
-            let _x = rrc.game_data.ws.close();
+            let _x = rrc.web_communication.ws.close();
 
-            let msg_receivers = rrc.game_data.msg_receivers.clone();
+            let msg_receivers = rrc.web_communication.msg_receivers.clone();
             let ws = websocketcommunicationmod::setup_ws_connection(href, my_ws_uid,msg_receivers);
             websocketcommunicationmod::setup_all_ws_events(&ws,vdom.clone());
 
-            rrc.game_data.ws=ws;
-            // logmod::debug_write(&"before game_data.is_reconnect = false and schedule_render");
-            rrc.game_data.is_reconnect = false;
+            rrc.web_communication.ws=ws;
+            // logmod::debug_write(&"before game_data.web_communication.is_reconnect = false and schedule_render");
+            rrc.web_communication.is_reconnect = false;
             vdom.schedule_render();
         }}>
             <h2 class="h2_user_can_click">
@@ -74,20 +74,20 @@ pub fn div_reconnect<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<
 pub fn send_msg_for_resync(rrc: &RootRenderingComponent) {
     logmod::debug_write("send_msg_for_resync MsgAllGameData");
     websocketcommunicationmod::ws_send_msg(
-        &rrc.game_data.ws,
+        &rrc.web_communication.ws,
         &WsMessage::MsgAllGameData {
-            my_ws_uid: rrc.game_data.my_ws_uid,
-            // / only the players that resync
-            msg_receivers: rrc.game_data.msg_receivers.clone(),
-            // / json of vector of players with nicknames and order data
+            my_ws_uid: rrc.web_communication.my_ws_uid,
+            /// only the players that resync
+            msg_receivers: rrc.web_communication.msg_receivers.clone(),
+            /// json of vector of players with nicknames and order data
             players: unwrap!(serde_json::to_string(&rrc.game_data.players)),
-            // / vector of cards status
+            /// vector of cards status
             card_grid_data: unwrap!(serde_json::to_string(&rrc.game_data.card_grid_data)),
             card_index_of_first_click: rrc.game_data.card_index_of_first_click,
             card_index_of_second_click: rrc.game_data.card_index_of_second_click,
-            // / whose turn is now:  player 1,2,3,...
+            /// whose turn is now:  player 1,2,3,...
             player_turn: rrc.game_data.player_turn,
-            // / game status
+            /// game status
             game_status: rrc.game_data.game_status.clone(),
         },
     );
@@ -107,14 +107,14 @@ pub fn on_msg_all_game_data(
 ) {
     logmod::debug_write("on_msg_all_game_data");
     // only the first message is processed
-    // if rrc.game_data.is_reconnect {
-    rrc.game_data.is_reconnect = false;
+    // if rrc.game_data.web_communication.is_reconnect {
+    rrc.web_communication.is_reconnect = false;
     rrc.game_data.players = unwrap!(serde_json::from_str(&players));
     rrc.game_data.card_grid_data = unwrap!(serde_json::from_str(&card_grid_data));
     rrc.game_data.card_index_of_first_click = card_index_of_first_click;
     rrc.game_data.card_index_of_second_click = card_index_of_second_click;
     rrc.game_data.player_turn = player_turn;
     rrc.game_data.game_status = game_status;
-    rrc.game_data.msgs_waiting_ack.retain(|_x| false);
+    rrc.web_communication.msgs_waiting_ack.retain(|_x| false);
     // }
 }

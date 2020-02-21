@@ -2,9 +2,9 @@
 //! This is the generic module. All the specifics for a website are isolated in the  
 //! function &fill_rrc_local_route() passed as a parameter to start_router().  
 //! The RootRenderingComponent struct must have the fields:  
-//! rrc.local_route - fill_rrc_local_route() will fills this field.
+//! rrc.web_communication.local_route - fill_rrc_local_route() will fills this field.
 //!        It will be the name of the html template file to fetch  
-//! rrc.html_template - a string where the html_template is fetched from the server  
+//! rrc.web_communication.html_template - a string where the html_template is fetched from the server  
 
 use crate::*;
 
@@ -21,7 +21,7 @@ pub fn start_router(
     fill_rrc_local_route: &'static dyn Fn(String, &mut RootRenderingComponent, &dodrio::VdomWeak),
 ) {
     // Callback fired whenever the URL hash fragment changes.
-    // Keeps the rrc.local_route in sync with the `#` fragment.
+    // Keeps the rrc.web_communication.local_route in sync with the `#` fragment.
     let on_hash_change = move || {
         let location = websysmod::window().location();
         let mut local_route = unwrap!(location.hash());
@@ -41,10 +41,10 @@ pub fn start_router(
                             // local_route, then there is nothing to do (ha). If they
                             // don't match, then we need to update the rrc' local_route
                             // and re-render.
-                            if rrc.local_route != local_route {
+                            if rrc.web_communication.local_route != local_route {
                                 // all the specific routes are separated from the generic routing code
                                 fill_rrc_local_route(local_route, rrc, &vdom);
-                                let url = rrc.local_route.to_string();
+                                let url = rrc.web_communication.local_route.to_string();
                                 // I cannot simply await here because this closure is not async
                                 spawn_local(async_fetch_and_write_to_rrc_html_template(url, vdom));
                             }
@@ -79,7 +79,7 @@ pub fn get_url_param_in_hash_after_dot(local_route: &str) -> &str {
     unwrap!(spl.next())
 }
 
-/// Fetch the html_template and save it in rrc.html_template  
+/// Fetch the html_template and save it in rrc.web_communication.html_template  
 /// The async fn for executor spawn_local.  
 /// example how to use it in on_click:  
 /// ```
@@ -87,7 +87,7 @@ pub fn get_url_param_in_hash_after_dot(local_route: &str) -> &str {
 ///     let v2 = vdom;
 ///     // async executor spawn_local is the recommended for wasm
 ///     let url = "t1.html".to_owned();
-///     // this will change the rrc.html_template eventually
+///     // this will change the rrc.web_communication.html_template eventually
 ///     spawn_local(async_fetch_and_write_to_rrc_html_template(url, v2));
 /// })
 /// ```
@@ -112,7 +112,7 @@ pub async fn async_fetch_and_write_to_rrc_html_template(url: String, vdom: VdomW
                         }
                     }
                     // logmod::debug_write(&format!("body: {}", resp_body_text));
-                    rrc.html_template = resp_body_text;
+                    rrc.web_communication.html_template = resp_body_text;
                 }
             })
             .await

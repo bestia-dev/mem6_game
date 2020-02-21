@@ -18,13 +18,13 @@ pub fn remove_ack_msg_from_queue(
 ) -> bool {
     // remove the waiting msg from the queue
     // I use the opposite method "retain" because there is not a method "remove"
-    rrc.game_data
+    rrc.web_communication
         .msgs_waiting_ack
         .retain(|x| !(x.player_ws_uid == player_ws_uid && x.msg_id == msg_id));
 
     // if there is no more items with this msg_id, then proceed
     let mut has_msg_id = false;
-    for x in &rrc.game_data.msgs_waiting_ack {
+    for x in &rrc.web_communication.msgs_waiting_ack {
         if x.msg_id == msg_id {
             has_msg_id = true;
             break;
@@ -54,18 +54,18 @@ pub fn send_msg_and_write_in_queue(
 ) {
     // write the msgs in the queue
     for player in &rrc.game_data.players {
-        if player.ws_uid != rrc.game_data.my_ws_uid {
+        if player.ws_uid != rrc.web_communication.my_ws_uid {
             let msg_for_loop = msg.clone();
-            rrc.game_data
+            rrc.web_communication
                 .msgs_waiting_ack
-                .push(gamedatamod::MsgInQueue {
+                .push(webcommunicationmod::MsgInQueue {
                     player_ws_uid: player.ws_uid,
                     msg_id,
                     msg: msg_for_loop,
                 });
         }
     }
-    websocketcommunicationmod::ws_send_msg(&rrc.game_data.ws, msg);
+    websocketcommunicationmod::ws_send_msg(&rrc.web_communication.ws, msg);
 }
 
 /// send ack
@@ -78,9 +78,9 @@ pub fn send_ack(
     // logmod::debug_write(&format!("send_ack players: {:?}", rrc.game_data.players));
     // send back the ACK msg to the sender
     websocketcommunicationmod::ws_send_msg(
-        &rrc.game_data.ws,
+        &rrc.web_communication.ws,
         &WsMessage::MsgAck {
-            my_ws_uid: rrc.game_data.my_ws_uid,
+            my_ws_uid: rrc.web_communication.my_ws_uid,
             msg_receivers: unwrap!(serde_json::to_string(&vec![msg_sender_ws_uid])),
             msg_id,
             msg_ack_kind,

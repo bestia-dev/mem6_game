@@ -18,7 +18,7 @@ use typed_html::dodrio;
 /// information for debugging
 #[allow(dead_code)]
 pub fn div_for_debugging<'a>(rrc: &'a RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
-    if rrc.game_data.show_debug_info {
+    if rrc.web_communication.show_debug_info {
         dodrio!(bump,
         <div >
             <pre style="color: white; white-space: pre-wrap; word-break: break-all;">
@@ -37,7 +37,7 @@ pub fn div_for_debugging<'a>(rrc: &'a RootRenderingComponent, bump: &'a Bump) ->
         <div>
             <div class="div_clickable" onclick={move |root, vdom, _event| {
                 let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                rrc.game_data.show_debug_info=true;
+                rrc.web_communication.show_debug_info=true;
                 vdom.schedule_render();
             }}>
                 <h5 style="color:orange">

@@ -17,9 +17,9 @@ use unwrap::unwrap;
 /// Svg elements are different because they have a namespace
 #[derive(Clone, Copy)]
 pub enum HtmlOrSvg {
-    // / html element
+    /// html element
     Html,
-    // / svg element
+    /// svg element
     Svg,
 }
 

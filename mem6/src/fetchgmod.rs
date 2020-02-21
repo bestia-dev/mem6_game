@@ -16,7 +16,7 @@ pub fn async_fetch_game_config_request(
 ) {
     let url_config = format!(
         "{}/content/{}/game_config.json",
-        rrc.game_data.href, rrc.game_data.game_name
+        rrc.web_communication.href, rrc.game_data.game_name
     );
     let vdom_weak = vdom_weak.clone();
     spawn_local(set_game_config_from_json(url_config, vdom_weak));

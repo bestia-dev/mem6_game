@@ -145,6 +145,7 @@ pub fn set_group_id(rrc: &mut RootRenderingComponent, group_id_string: &str) {
     // change it also in players[0]
     unwrap!(rrc.game_data.players.get_mut(0)).ws_uid = rrc.game_data.group_id;
     // on any change in players the msg_receivers must be constructed
-    rrc.game_data.msg_receivers = gamedatamod::prepare_msg_receivers(&rrc.game_data.players);
+    rrc.web_communication.msg_receivers =
+        gamedatamod::prepare_msg_receivers(&rrc.game_data.players);
 }
 //endregion: group_id
