@@ -250,10 +250,8 @@ mod ackmsgmod;
 mod divfordebuggingmod;
 mod divgridcontainermod;
 mod divplayeractionsmod;
-mod fetchmod;
-mod fetchgamesmetadatamod;
-mod fetchgameconfigmod;
-mod fetchallimgsforcachemod;
+mod websysmod;
+mod fetchgmod;
 mod gamedatamod;
 mod logmod;
 mod rootrenderingcomponentmod;
@@ -266,14 +264,12 @@ mod status2ndcardmod;
 mod statusdrinkmod;
 mod statustaketurnmod;
 mod statuswaitingackmsgmod;
-mod utilsmod;
 mod websocketcommunicationmod;
 mod websocketreconnectmod;
 mod routermod;
 mod routerimplmod;
 mod htmltemplateimplmod;
 mod htmltemplatemod;
-mod windowmod;
 //endregion
 
 // this are then used in all the mods if I have there use crate::*;
@@ -293,18 +289,18 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     logmod::debug_write(&format!("wasm app version: {}", env!("CARGO_PKG_VERSION")));
 
     // Get the container to render the virtual Dom component.
-    let div_for_virtual_dom = windowmod::get_element_by_id("div_for_virtual_dom");
+    let div_for_virtual_dom = websysmod::get_element_by_id("div_for_virtual_dom");
 
     // load from storage or get random (and then save)
     let my_ws_uid = websocketcommunicationmod::load_or_random_ws_uid();
 
     let (location_href, href_hash) = get_url_and_hash();
     // WebSocket connection
-    let players_ws_uid = "[]".to_string(); // empty vector in json
+    let msg_receivers = "[]".to_string(); // empty vector in json
     let ws = websocketcommunicationmod::setup_ws_connection(
         location_href.clone(),
         my_ws_uid,
-        players_ws_uid,
+        msg_receivers,
     );
     // I don't know why is needed to clone the WebSocket connection
     let ws_c = ws.clone();
@@ -322,7 +318,7 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
 
     // async fetch_response() for gamesmetadata.json
     let v2 = vdom.weak();
-    fetchgamesmetadatamod::fetch_games_metadata_request(location_href, v2);
+    fetchgmod::fetch_games_metadata_request(location_href, v2);
 
     // Start the URL router. Send a reference to the functions with router settings.
     // To keep separate modules for generic router code and specific router code.
@@ -339,7 +335,7 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
 #[must_use]
 pub fn get_url_and_hash() -> (String, String) {
     // find out URL
-    let mut location_href = unwrap!(windowmod::window().location().href());
+    let mut location_href = unwrap!(websysmod::window().location().href());
     // without /index.html
     location_href = location_href.to_lowercase().replace("index.html", "");
     logmod::debug_write(&format!("location_href: {}", &location_href));

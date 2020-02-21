@@ -6,7 +6,7 @@
 //But the new service worker will not be activated until all 
 //tabs with this webapp are closed.
 
-const CACHE_NAME = '2020.220.1732';
+const CACHE_NAME = '2020.221.1017';
 
 self.addEventListener('install', event => {
     console.log('event install ', CACHE_NAME);

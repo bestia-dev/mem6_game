@@ -1,8 +1,7 @@
 //! dodrio_templating
 
-mod fetchmod;
+mod websysmod;
 mod logmod;
 mod routermod;
 mod htmltemplatemod;
-mod utilsmod;
 mod storagemod;

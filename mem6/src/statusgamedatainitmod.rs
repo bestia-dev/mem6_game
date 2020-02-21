@@ -15,13 +15,13 @@ pub fn on_click_start_game(rrc: &mut RootRenderingComponent) {
     // random start player_turn. So is not always the first player to start
     // gen_range is lower inclusive, upper exclusive
     rrc.game_data.player_turn =
-        windowmod::get_random(1, unwrap!(rrc.game_data.players.len().checked_add(1)));
+        websysmod::get_random(1, unwrap!(rrc.game_data.players.len().checked_add(1)));
 
     websocketcommunicationmod::ws_send_msg(
         &rrc.game_data.ws,
         &WsMessage::MsgStartGame {
             my_ws_uid: rrc.game_data.my_ws_uid,
-            players_ws_uid: rrc.game_data.players_ws_uid.to_string(),
+            msg_receivers: rrc.game_data.msg_receivers.to_string(),
             players: unwrap!(serde_json::to_string(&rrc.game_data.players)),
             card_grid_data: unwrap!(serde_json::to_string(&rrc.game_data.card_grid_data)),
             game_config: unwrap!(serde_json::to_string(&rrc.game_data.game_config)),
@@ -56,14 +56,14 @@ pub fn on_msg_start_game(
     );
 
     // async fetch all imgs and put them in service worker cache
-    fetchallimgsforcachemod::fetch_all_img_for_cache_request(rrc);
+    fetchgmod::fetch_all_img_for_cache_request(rrc);
 
     rrc.game_data.players = unwrap!(
         serde_json::from_str(players),
         "error serde_json::from_str(players)"
     );
 
-    rrc.game_data.players_ws_uid = gamedatamod::prepare_players_ws_uid(&rrc.game_data.players);
+    rrc.game_data.msg_receivers = gamedatamod::prepare_msg_receivers(&rrc.game_data.players);
 
     // find my player number
     for index in 0..rrc.game_data.players.len() {

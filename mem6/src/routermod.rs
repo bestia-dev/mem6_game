@@ -23,7 +23,7 @@ pub fn start_router(
     // Callback fired whenever the URL hash fragment changes.
     // Keeps the rrc.local_route in sync with the `#` fragment.
     let on_hash_change = move || {
-        let location = windowmod::window().location();
+        let location = websysmod::window().location();
         let mut local_route = unwrap!(location.hash());
         if local_route.is_empty() {
             local_route = "index".to_owned();
@@ -65,7 +65,7 @@ pub fn start_router(
     // up after ourselves.
     #[allow(clippy::as_conversions)]
     let on_hash_change = Closure::wrap(Box::new(on_hash_change) as Box<dyn FnMut()>);
-    windowmod::window()
+    websysmod::window()
         .add_event_listener_with_callback("hashchange", on_hash_change.as_ref().unchecked_ref())
         .unwrap_throw();
     on_hash_change.forget();
@@ -93,7 +93,7 @@ pub fn get_url_param_in_hash_after_dot(local_route: &str) -> &str {
 /// ```
 pub async fn async_fetch_and_write_to_rrc_html_template(url: String, vdom: VdomWeak) {
     logmod::debug_write(&format!("fetch {}", &url));
-    let mut resp_body_text: String = fetchmod::async_spwloc_fetch_text(url).await;
+    let mut resp_body_text: String = websysmod::async_spwloc_fetch_text(url).await;
     // update values in rrc is async.
     // I can await a fn call or an async block.
     async {

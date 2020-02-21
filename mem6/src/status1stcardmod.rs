@@ -31,7 +31,7 @@ pub fn on_click_1st_card(
     let msg_id = ackmsgmod::prepare_for_ack_msg_waiting(rrc, vdom);
     let msg = WsMessage::MsgClick1stCard {
         my_ws_uid: rrc.game_data.my_ws_uid,
-        players_ws_uid: rrc.game_data.players_ws_uid.to_string(),
+        msg_receivers: rrc.game_data.msg_receivers.to_string(),
         card_index_of_first_click: this_click_card_index,
         msg_id,
     };

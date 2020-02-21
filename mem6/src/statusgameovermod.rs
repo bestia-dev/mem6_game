@@ -30,7 +30,7 @@ pub fn div_game_over<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'
                             &rrc.game_data.ws,
                             &WsMessage::MsgPlayAgain {
                                 my_ws_uid: rrc.game_data.my_ws_uid,
-                                players_ws_uid: rrc.game_data.players_ws_uid.to_string(),
+                                msg_receivers: rrc.game_data.msg_receivers.to_string(),
                             },
                         );
                         rrc.reset_for_play_again();

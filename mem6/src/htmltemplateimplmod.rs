@@ -187,7 +187,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             }
             "open_youtube" => {
                 // randomly choose a link from VIDEOS
-                let num = windowmod::get_random(0, VIDEOS.len());
+                let num = websysmod::get_random(0, VIDEOS.len());
                 open_new_tab(&format!("https://www.youtube.com/watch?v={}", VIDEOS[num]));
             }
             "open_menu" => {
@@ -197,7 +197,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 websocketreconnectmod::send_msg_for_resync(self);
             }
             "back_to_game" => {
-                let h = unwrap!(windowmod::window().history());
+                let h = unwrap!(websysmod::window().history());
                 let _x = h.back();
             }
             "open_instructions" => {
@@ -220,7 +220,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             "start_game_onclick" => {
                 statusgamedatainitmod::on_click_start_game(self);
                 // async fetch all imgs and put them in service worker cache
-                fetchallimgsforcachemod::fetch_all_img_for_cache_request(self);
+                fetchgmod::fetch_all_img_for_cache_request(self);
                 // endregion
                 vdom.schedule_render();
                 // logmod::debug_write(&format!("start_game_onclick players: {:?}",self.game_data.players));
@@ -242,7 +242,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     &self.game_data.ws,
                     &WsMessage::MsgDrinkEnd {
                         my_ws_uid: self.game_data.my_ws_uid,
-                        players_ws_uid: self.game_data.players_ws_uid.to_string(),
+                        msg_receivers: self.game_data.msg_receivers.to_string(),
                     },
                 );
                 // if all the cards are permanently up, this is the end of the game
@@ -255,7 +255,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                         &self.game_data.ws,
                         &WsMessage::MsgGameOver {
                             my_ws_uid: self.game_data.my_ws_uid,
-                            players_ws_uid: self.game_data.players_ws_uid.to_string(),
+                            msg_receivers: self.game_data.msg_receivers.to_string(),
                         },
                     );
                 } else {
@@ -331,7 +331,7 @@ pub fn game_type_right_onclick(rrc: &mut RootRenderingComponent, vdom: &dodrio::
         }
         last_name = x.name.to_string();
     }
-    fetchgameconfigmod::async_fetch_game_config_request(rrc, vdom);
+    fetchgmod::async_fetch_game_config_request(rrc, vdom);
 }
 
 /// left arrow button
@@ -346,7 +346,7 @@ pub fn game_type_left_onclick(rrc: &mut RootRenderingComponent, vdom: &dodrio::V
         }
         last_name = x.name.to_string();
     }
-    fetchgameconfigmod::async_fetch_game_config_request(rrc, vdom);
+    fetchgmod::async_fetch_game_config_request(rrc, vdom);
 }
 
 /// fn open new local page with #
@@ -363,19 +363,19 @@ pub fn open_new_local_page(hash: &str) {
     if old_href_hash.is_empty() || old_href_hash.starts_with("#p03.") {
         open_new_local_page_push_to_history(hash)
     } else {
-        let _x = windowmod::window().location().replace(hash);
+        let _x = websysmod::window().location().replace(hash);
     }
 }
 
 /// fn open new local page with #
 /// and push to history
 pub fn open_new_local_page_push_to_history(hash: &str) {
-    let _x = windowmod::window().location().assign(hash);
+    let _x = websysmod::window().location().assign(hash);
 }
 
 /// fn open new tab
 pub fn open_new_tab(url: &str) {
-    let _w = windowmod::window().open_with_url_and_target(url, "_blank");
+    let _w = websysmod::window().open_with_url_and_target(url, "_blank");
 }
 
 /// if there is already a group_id don't blink

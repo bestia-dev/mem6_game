@@ -13,7 +13,7 @@ pub fn fill_rrc_local_route(
 ) {
     if local_route == "#p02" {
         let vdom = vdom.clone();
-        fetchgameconfigmod::async_fetch_game_config_request(rrc, &vdom);
+        fetchgmod::async_fetch_game_config_request(rrc, &vdom);
         rrc.local_route = "p02_start_a_group.html".to_owned();
     } else if local_route.starts_with("#p03") {
         rrc.game_data.my_player_number = 2;

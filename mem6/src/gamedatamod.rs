@@ -107,7 +107,7 @@ pub struct GameData {
     // / players data as vector of player struct
     pub players: Vec<Player>,
     // / the json string for the ws server to send msgs to other players only
-    pub players_ws_uid: String,
+    pub msg_receivers: String,
     // / game status: StatusStartPage,Player1,Player2
     pub game_status: GameStatus,
     // / vector of cards
@@ -258,7 +258,7 @@ impl GameData {
             nickname: my_nickname.to_string(),
             points: 0,
         });
-        let players_ws_uid = prepare_players_ws_uid(&players);
+        let msg_receivers = prepare_msg_receivers(&players);
 
         // return from constructor
         GameData {
@@ -270,7 +270,7 @@ impl GameData {
             my_nickname,
             group_id: 0,
             players,
-            players_ws_uid,
+            msg_receivers,
             game_status: GameStatus::StatusStartPage,
             game_name: "alphabet".to_string(),
             my_player_number: 1,
@@ -300,11 +300,11 @@ impl GameData {
 
 /// from the vector of players prepare a json string for the ws server
 /// so that it can send the msgs only to the players
-pub fn prepare_players_ws_uid(players: &[Player]) -> String {
-    let mut players_ws_uid = Vec::new();
+pub fn prepare_msg_receivers(players: &[Player]) -> String {
+    let mut msg_receivers = Vec::new();
     for pl in players {
-        players_ws_uid.push(pl.ws_uid);
+        msg_receivers.push(pl.ws_uid);
     }
     // return
-    unwrap!(serde_json::to_string(&players_ws_uid))
+    unwrap!(serde_json::to_string(&msg_receivers))
 }

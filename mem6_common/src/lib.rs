@@ -64,7 +64,7 @@ pub enum WsMessage {
         // / ws client instance unique id. To not listen the echo to yourself.
         my_ws_uid: usize,
         // / json of vector of players for the server to know whom to send msg
-        players_ws_uid: String,
+        msg_receivers: String,
     },
     // / response from WebSocket server for first message
     MsgResponseWsUid {
@@ -88,7 +88,7 @@ pub enum WsMessage {
         // / ws client instance unique id. To not listen the echo to yourself.
         my_ws_uid: usize,
         // / json of vector of players for the server to know whom to send msg
-        players_ws_uid: String,
+        msg_receivers: String,
         // / my nickname
         my_nickname: String,
     },
@@ -98,7 +98,7 @@ pub enum WsMessage {
         // / ws client instance unique id. To not listen the echo to yourself.
         my_ws_uid: usize,
         // / json of vector of players for the server to know whom to send msg
-        players_ws_uid: String,
+        msg_receivers: String,
         // / json of vector of players with nicknames and order data
         players: String,
         // / vector of cards status
@@ -115,7 +115,7 @@ pub enum WsMessage {
         // / this identifies the smartphone, but not the player-in-turn
         my_ws_uid: usize,
         // / all players for the server to know whom to send msg
-        players_ws_uid: String,
+        msg_receivers: String,
         // / have to send all the state of the game
         card_index_of_first_click: usize,
         // / msg id (random)
@@ -126,7 +126,7 @@ pub enum WsMessage {
         // / this identifies the smartphone, but not the player-in-turn
         my_ws_uid: usize,
         // / all players for the server to know whom to send msg
-        players_ws_uid: String,
+        msg_receivers: String,
         // / have to send all the state of the game
         card_index_of_second_click: usize,
         // / is point
@@ -139,28 +139,28 @@ pub enum WsMessage {
         // / this identifies the smartphone, but not the player-in-turn
         my_ws_uid: usize,
         // / all players for the server to know whom to send msg
-        players_ws_uid: String,
+        msg_receivers: String,
     },
     // / Game Over
     MsgGameOver {
         // / this identifies the smartphone, but not the player-in-turn
         my_ws_uid: usize,
         // / all players for the server to know whom to send msg
-        players_ws_uid: String,
+        msg_receivers: String,
     },
     // / Play Again
     MsgPlayAgain {
         // / this identifies the smartphone, but not the player-in-turn
         my_ws_uid: usize,
         // / all players for the server to know whom to send msg
-        players_ws_uid: String,
+        msg_receivers: String,
     },
     // / player change
     MsgTakeTurn {
         // / ws client instance unique id. To not listen the echo to yourself.
         my_ws_uid: usize,
         // / all players for the server to know whom to send msg
-        players_ws_uid: String,
+        msg_receivers: String,
         // / msg id (random)
         msg_id: usize,
     },
@@ -169,7 +169,7 @@ pub enum WsMessage {
         // / msg sender uid
         my_ws_uid: usize,
         // / send msg to this players
-        players_ws_uid: String,
+        msg_receivers: String,
         // / msg id (random)
         msg_id: usize,
         // / kind of ack msg
@@ -180,14 +180,14 @@ pub enum WsMessage {
         // / msg sender uid
         my_ws_uid: usize,
         // / send msg to this players
-        players_ws_uid: String,
+        msg_receivers: String,
     },
     // / all game data
     MsgAllGameData {
         // / ws client instance unique id. To not listen the echo to yourself.
         my_ws_uid: usize,
         // / only the players that reconnected
-        players_ws_uid: String,
+        msg_receivers: String,
         // / json of vector of players with nicknames and order data
         players: String,
         // / vector of cards status

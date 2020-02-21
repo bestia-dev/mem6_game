@@ -17,14 +17,14 @@ pub fn on_load_joined(rrc: &mut RootRenderingComponent) {
     rrc.game_data.game_status = GameStatus::StatusJoined;
     logmod::debug_write(&format!(
         "StatusJoined send {}",
-        rrc.game_data.players_ws_uid
+        rrc.game_data.msg_receivers
     ));
 
     websocketcommunicationmod::ws_send_msg(
         &rrc.game_data.ws,
         &WsMessage::MsgJoin {
             my_ws_uid: rrc.game_data.my_ws_uid,
-            players_ws_uid: rrc.game_data.players_ws_uid.to_string(),
+            msg_receivers: rrc.game_data.msg_receivers.to_string(),
             my_nickname: rrc.game_data.my_nickname.clone(),
         },
     );
@@ -48,8 +48,8 @@ pub fn on_msg_joined(rrc: &mut RootRenderingComponent, his_ws_uid: usize, his_ni
                 nickname: his_nickname,
                 points: 0,
             });
-            rrc.game_data.players_ws_uid =
-                gamedatamod::prepare_players_ws_uid(&rrc.game_data.players);
+            rrc.game_data.msg_receivers =
+                gamedatamod::prepare_msg_receivers(&rrc.game_data.players);
         }
     }
 }

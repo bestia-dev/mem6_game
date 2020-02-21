@@ -39,7 +39,7 @@ pub fn prepare_for_ack_msg_waiting(
     rrc: &mut RootRenderingComponent,
     vdom: &dodrio::VdomWeak,
 ) -> usize {
-    let msg_id = windowmod::get_random(1, 0xFFFF_FFFF);
+    let msg_id = websysmod::get_random(1, 0xFFFF_FFFF);
     rrc.game_data.game_status = GameStatus::StatusWaitingAckMsg;
     vdom.schedule_render();
     // return
@@ -81,7 +81,7 @@ pub fn send_ack(
         &rrc.game_data.ws,
         &WsMessage::MsgAck {
             my_ws_uid: rrc.game_data.my_ws_uid,
-            players_ws_uid: unwrap!(serde_json::to_string(&vec![msg_sender_ws_uid])),
+            msg_receivers: unwrap!(serde_json::to_string(&vec![msg_sender_ws_uid])),
             msg_id,
             msg_ack_kind,
         },

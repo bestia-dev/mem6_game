@@ -23,9 +23,9 @@
         "divrulesanddescriptionmod",
         "endindex",
         "errormod",
-        "fetchallimgsforcachemod",
-        "fetchgameconfigmod",
-        "fetchgamesmetadatamod",
+        "fetchgmod",
+        "fetchgmod",
+        "fetchgmod",
         "gamedatamod",
         "gamemod",
         "gamesmetadata",
@@ -64,6 +64,6 @@
         "websocketcommunication",
         "websocketcommunicationmod",
         "websocketreconnectmod",
-        "windowmod"
+        "websysmod"
     ]
 }
