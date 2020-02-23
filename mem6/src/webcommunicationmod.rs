@@ -2,8 +2,7 @@
 //! structs and methods around web and communication
 
 //region: use
-use crate::*;
-
+//use crate::*;
 use mem6_common::*;
 
 use web_sys::WebSocket;
@@ -11,6 +10,7 @@ use serde_derive::{Serialize, Deserialize};
 //use unwrap::unwrap;
 //endregion
 
+//region: structs
 /// save the message in queue to resend it if timeout expires
 #[derive(Serialize, Deserialize)]
 pub struct MsgInQueue {

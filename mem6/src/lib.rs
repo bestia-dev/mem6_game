@@ -253,7 +253,6 @@ mod divplayeractionsmod;
 mod websysmod;
 mod fetchgmod;
 mod gamedatamod;
-mod logmod;
 mod rootrenderingcomponentmod;
 mod storagemod;
 mod statusgamedatainitmod;
@@ -264,8 +263,8 @@ mod status2ndcardmod;
 mod statusdrinkmod;
 mod statustaketurnmod;
 mod statuswaitingackmsgmod;
-mod websocketcommunicationmod;
-mod websocketreconnectmod;
+mod websocketmod;
+mod statusreconnectmod;
 mod routermod;
 mod routerimplmod;
 mod htmltemplateimplmod;
@@ -287,22 +286,18 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     // Initialize debugging for when/if something goes wrong.
     console_error_panic_hook::set_once();
 
-    logmod::debug_write(&format!("wasm app version: {}", env!("CARGO_PKG_VERSION")));
+    websysmod::debug_write(&format!("wasm app version: {}", env!("CARGO_PKG_VERSION")));
 
     // Get the container to render the virtual Dom component.
     let div_for_virtual_dom = websysmod::get_element_by_id("div_for_virtual_dom");
 
     // load from storage or get random (and then save)
-    let my_ws_uid = websocketcommunicationmod::load_or_random_ws_uid();
+    let my_ws_uid = websocketmod::load_or_random_ws_uid();
 
     let (location_href, href_hash) = websysmod::get_url_and_hash();
     // WebSocket connection
     let msg_receivers = "[]".to_string(); // empty vector in json
-    let ws = websocketcommunicationmod::setup_ws_connection(
-        location_href.clone(),
-        my_ws_uid,
-        msg_receivers,
-    );
+    let ws = websocketmod::setup_ws_connection(location_href.clone(), my_ws_uid, msg_receivers);
     // I don't know why is needed to clone the WebSocket connection
     let ws_c = ws.clone();
 
@@ -315,7 +310,7 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     // Mount the component to the `<div id="div_for_virtual_dom">`.
     let vdom = dodrio::Vdom::new(&div_for_virtual_dom, rrc);
 
-    websocketcommunicationmod::setup_all_ws_events(&ws, vdom.weak());
+    websocketmod::setup_all_ws_events(&ws, vdom.weak());
 
     // async fetch_response() for gamesmetadata.json
     let v2 = vdom.weak();

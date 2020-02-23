@@ -1,4 +1,4 @@
-// websocketreconnectmod.rs
+// statusreconnectmod.rs
 //! reconnection for websocket must be part of the application.
 
 // Websocket has a lot of problems with maintaining a stable connection.
@@ -41,21 +41,21 @@ pub fn div_reconnect<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<
             let href = rrc.web_communication.href.clone();
             // usize is Copy(), so I don't need clone()
             let my_ws_uid = rrc.web_communication.my_ws_uid;
-            logmod::debug_write(&format!(
+            websysmod::debug_write(&format!(
                 "href {}  my_ws_uid {}",
                 href,
                 my_ws_uid,
             ));
-            // logmod::debug_write(&"before reconnect");
+            // websysmod::debug_write(&"before reconnect");
             // first disconnect if is possible, than recconect
             let _x = rrc.web_communication.ws.close();
 
             let msg_receivers = rrc.web_communication.msg_receivers.clone();
-            let ws = websocketcommunicationmod::setup_ws_connection(href, my_ws_uid,msg_receivers);
-            websocketcommunicationmod::setup_all_ws_events(&ws,vdom.clone());
+            let ws = websocketmod::setup_ws_connection(href, my_ws_uid,msg_receivers);
+            websocketmod::setup_all_ws_events(&ws,vdom.clone());
 
             rrc.web_communication.ws=ws;
-            // logmod::debug_write(&"before game_data.web_communication.is_reconnect = false and schedule_render");
+            // websysmod::debug_write(&"before game_data.web_communication.is_reconnect = false and schedule_render");
             rrc.web_communication.is_reconnect = false;
             vdom.schedule_render();
         }}>
@@ -72,8 +72,8 @@ pub fn div_reconnect<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<
 
 /// send all data to resync gamedata
 pub fn send_msg_for_resync(rrc: &RootRenderingComponent) {
-    logmod::debug_write("send_msg_for_resync MsgAllGameData");
-    websocketcommunicationmod::ws_send_msg(
+    websysmod::debug_write("send_msg_for_resync MsgAllGameData");
+    websocketmod::ws_send_msg(
         &rrc.web_communication.ws,
         &WsMessage::MsgAllGameData {
             my_ws_uid: rrc.web_communication.my_ws_uid,
@@ -105,7 +105,7 @@ pub fn on_msg_all_game_data(
     player_turn: usize,
     game_status: GameStatus,
 ) {
-    logmod::debug_write("on_msg_all_game_data");
+    websysmod::debug_write("on_msg_all_game_data");
     // only the first message is processed
     // if rrc.game_data.web_communication.is_reconnect {
     rrc.web_communication.is_reconnect = false;

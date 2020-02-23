@@ -29,7 +29,7 @@ pub fn div_for_debugging<'a>(rrc: &'a RootRenderingComponent, bump: &'a Bump) ->
                         ).into_bump_str()
                 )]}
             </pre>
-            {vec![websocketreconnectmod::div_reconnect(rrc, bump)]}
+            {vec![statusreconnectmod::div_reconnect(rrc, bump)]}
         </div>
         )
     } else {

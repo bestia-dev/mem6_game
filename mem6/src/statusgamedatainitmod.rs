@@ -17,7 +17,7 @@ pub fn on_click_start_game(rrc: &mut RootRenderingComponent) {
     rrc.game_data.player_turn =
         websysmod::get_random(1, unwrap!(rrc.game_data.players.len().checked_add(1)));
 
-    websocketcommunicationmod::ws_send_msg(
+    websocketmod::ws_send_msg(
         &rrc.web_communication.ws,
         &WsMessage::MsgStartGame {
             my_ws_uid: rrc.web_communication.my_ws_uid,
@@ -40,7 +40,7 @@ pub fn on_msg_start_game(
     game_name: &str,
     player_turn: usize,
 ) {
-    // logmod::debug_write(&format!("on_msg_start_game {}", players));
+    // websysmod::debug_write(&format!("on_msg_start_game {}", players));
     rrc.game_data.game_status = GameStatus::Status1stCard;
     rrc.game_data.player_turn = player_turn;
     rrc.game_data.game_name = game_name.to_string();
@@ -63,8 +63,7 @@ pub fn on_msg_start_game(
         "error serde_json::from_str(players)"
     );
 
-    rrc.web_communication.msg_receivers =
-        gamedatamod::prepare_msg_receivers(&rrc.game_data.players);
+    rrc.web_communication.msg_receivers = rrc.game_data.prepare_msg_receivers();
 
     // find my player number
     for index in 0..rrc.game_data.players.len() {

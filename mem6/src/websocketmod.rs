@@ -1,4 +1,4 @@
-// websocketcommunication.rs
+// websocketmod.rs
 //! module that cares about WebSocket communication
 
 #![allow(clippy::panic)]
@@ -32,19 +32,19 @@ pub fn setup_ws_connection(
         .replace("https://", "wss://");
     // Only for debugging in the development environment
     // let mut loc_href = String::from("ws://192.168.1.57:80/");
-    logmod::debug_write(&loc_href);
+    websysmod::debug_write(&loc_href);
     // remove the hash at the end
     if let Some(pos) = loc_href.find('#') {
         loc_href = unwrap!(loc_href.get(..pos)).to_string();
     }
-    logmod::debug_write(&loc_href);
+    websysmod::debug_write(&loc_href);
     loc_href.push_str("mem6ws/");
 
     // send the client ws id as url_param for the first connect
     // and reconnect on lost connection
     loc_href.push_str(client_ws_id.to_string().as_str());
     /*
-        logmod::debug_write(&format!(
+        websysmod::debug_write(&format!(
             "location_href {}  loc_href {} client_ws_id {}",
             location_href, loc_href, client_ws_id
         ));
@@ -59,7 +59,7 @@ pub fn setup_ws_connection(
     // It looks that the first send is in some way a handshake and is part of the connection
     // it will be execute on open as a closure
     let open_handler = Box::new(move || {
-        // logmod::debug_write("Connection opened, sending MsgRequestWsUid to server");
+        // websysmod::debug_write("Connection opened, sending MsgRequestWsUid to server");
         unwrap!(
             ws_c.send_with_str(&unwrap!(serde_json::to_string(
                 &WsMessage::MsgRequestWsUid {
@@ -76,7 +76,7 @@ pub fn setup_ws_connection(
             let u32_size = u32_size();
             let msg = WsMessage::MsgPing { msg_id: u32_size };
             ws_send_msg(ws2.as_ref(), &msg);
-            // logmod::console_log(format!("gloo timer: {}", u32_size).as_str());
+            // websysmod::console_log(format!("gloo timer: {}", u32_size).as_str());
         });
         // Since we don't plan on cancelling the timeout, call `forget`.
         timeout.forget();
@@ -112,7 +112,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
         let data = unwrap!(data.as_string());
         // don't log ping pong there are too much
         if !(data.to_string().contains("MsgPing") || data.to_string().contains("MsgPong")) {
-            // logmod::debug_write(&data);
+            // websysmod::debug_write(&data);
         }
         // serde_json can find out the variant of WsMessage
         // parse json and put data in the enum
@@ -135,25 +135,25 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                             match msg {
                                 // I don't know why I need a dummy, but is entertaining to have one.
                                 WsMessage::MsgDummy { dummy } => {
-                                    logmod::debug_write(dummy.as_str())
+                                    websysmod::debug_write(dummy.as_str())
                                 }
                                 WsMessage::MsgPing { msg_id: _ } => {
                                     unreachable!("mem6 wasm must not receive MsgPing");
                                 }
                                 WsMessage::MsgPong { msg_id: _ } => {
-                                    // logmod::debug_write(format!("MsgPong {}", msg_id).as_str())
+                                    // websysmod::debug_write(format!("MsgPong {}", msg_id).as_str())
                                 }
                                 WsMessage::MsgRequestWsUid {
                                     my_ws_uid,
                                     msg_receivers: _,
-                                } => logmod::debug_write(
+                                } => websysmod::debug_write(
                                     format!("MsgRequestWsUid {}", my_ws_uid).as_str(),
                                 ),
                                 WsMessage::MsgResponseWsUid {
                                     your_ws_uid,
                                     server_version: _,
                                 } => {
-                                    // logmod::debug_write(&format!("MsgResponseWsUid: {}  ", your_ws_uid));
+                                    // websysmod::debug_write(&format!("MsgResponseWsUid: {}  ", your_ws_uid));
                                     on_response_ws_uid(rrc, your_ws_uid);
                                 }
                                 WsMessage::MsgJoin {
@@ -273,7 +273,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                     my_ws_uid: _,
                                     msg_receivers: _,
                                 } => {
-                                    websocketreconnectmod::send_msg_for_resync(rrc);
+                                    statusreconnectmod::send_msg_for_resync(rrc);
                                     vdom.schedule_render();
                                 }
                                 WsMessage::MsgAllGameData {
@@ -286,7 +286,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                     player_turn,
                                     game_status,
                                 } => {
-                                    websocketreconnectmod::on_msg_all_game_data(
+                                    statusreconnectmod::on_msg_all_game_data(
                                         rrc,
                                         players,
                                         card_grid_data,
@@ -318,7 +318,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
 pub fn setup_ws_onerror(ws: &WebSocket, vdom: dodrio::VdomWeak) {
     let onerror_callback = Closure::wrap(Box::new(move |e: ErrorEvent| {
         let err_text = format!("error event {:?}", e);
-        // logmod::debug_write(&err_text);
+        // websysmod::debug_write(&err_text);
         {
             spawn_local({
                 let vdom = vdom.clone();
@@ -346,7 +346,7 @@ pub fn setup_ws_onerror(ws: &WebSocket, vdom: dodrio::VdomWeak) {
 pub fn setup_ws_onclose(ws: &WebSocket, vdom: dodrio::VdomWeak) {
     let onclose_callback = Closure::wrap(Box::new(move |e: ErrorEvent| {
         let err_text = format!("ws_onclose {:?}", e);
-        logmod::debug_write(&format!("onclose_callback {}", &err_text));
+        websysmod::debug_write(&format!("onclose_callback {}", &err_text));
         {
             spawn_local({
                 let vdom = vdom.clone();
@@ -392,7 +392,7 @@ pub fn ws_send_msg(ws: &WebSocket, ws_message: &WsMessage) {
             async move {
                 let mut retries: usize = 1;
                 while retries <= 10 {
-                    logmod::debug_write(&format!("send retries: {}", retries));
+                    websysmod::debug_write(&format!("send retries: {}", retries));
                     // Wait 100 ms
                     TimeoutFuture::new(100).await;
                     let x = ws.send_with_str(&unwrap!(serde_json::to_string(&ws_message)));

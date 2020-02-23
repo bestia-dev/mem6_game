@@ -1,6 +1,8 @@
 //! htmltemplateimplmod  
 
 use crate::*;
+use crate::htmltemplatemod::HtmlTemplating;
+
 use mem6_common::*;
 //use qrcode53bytes::*;
 
@@ -91,7 +93,7 @@ const VIDEOS: &[&str] = &[
 impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
     /// html_templating boolean id the next node is rendered or not
     fn call_function_boolean(&self, sx: &str) -> bool {
-        logmod::debug_write(&format!("call_function_boolean: {}", &sx));
+        websysmod::debug_write(&format!("call_function_boolean: {}", &sx));
         match sx {
             "is_first_player" => {
                 if self.game_data.my_player_number == 1 {
@@ -102,7 +104,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             }
             _ => {
                 let x = format!("Error: Unrecognized call_function_boolean: {}", sx);
-                logmod::debug_write(&x);
+                websysmod::debug_write(&x);
                 true
             }
         }
@@ -111,7 +113,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
     /// html_templating functions that return a String
     #[allow(clippy::needless_return, clippy::integer_arithmetic)]
     fn call_function_string(&self, sx: &str) -> String {
-        // logmod::debug_write(&format!("call_function_string: {}", &sx));
+        // websysmod::debug_write(&format!("call_function_string: {}", &sx));
         match sx {
             "my_nickname" => self.game_data.my_nickname.to_owned(),
             "blink_or_not_nickname" => storagemod::blink_or_not_nickname(self),
@@ -168,7 +170,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             }
             _ => {
                 let x = format!("Error: Unrecognized call_function_string: {}", sx);
-                logmod::debug_write(&x);
+                websysmod::debug_write(&x);
                 x
             }
         }
@@ -177,7 +179,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
     /// html_templating functions for listeners
     /// get a clone of the VdomWeak
     fn call_listener(&mut self, vdom: dodrio::VdomWeak, sx: &str, event: web_sys::Event) {
-        // logmod::debug_write(&format!("call_listener: {}", &sx));
+        // websysmod::debug_write(&format!("call_listener: {}", &sx));
         match sx {
             "nickname_onkeyup" => {
                 storagemod::nickname_onkeyup(self, event);
@@ -194,7 +196,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 open_new_local_page_push_to_history("#p21");
             }
             "rejoin_resync" => {
-                websocketreconnectmod::send_msg_for_resync(self);
+                statusreconnectmod::send_msg_for_resync(self);
             }
             "back_to_game" => {
                 let h = unwrap!(websysmod::window().history());
@@ -223,7 +225,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 fetchgmod::fetch_all_img_for_cache_request(self);
                 // endregion
                 vdom.schedule_render();
-                // logmod::debug_write(&format!("start_game_onclick players: {:?}",self.game_data.players));
+                // websysmod::debug_write(&format!("start_game_onclick players: {:?}",self.game_data.players));
                 open_new_local_page("#p11");
             }
             "game_type_right_onclick" => {
@@ -237,8 +239,8 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             }
             "drink_end" => {
                 // send a msg to end drinking to all players
-                logmod::debug_write(&format!("MsgDrinkEnd send{}", ""));
-                websocketcommunicationmod::ws_send_msg(
+                websysmod::debug_write(&format!("MsgDrinkEnd send{}", ""));
+                websocketmod::ws_send_msg(
                     &self.web_communication.ws,
                     &WsMessage::MsgDrinkEnd {
                         my_ws_uid: self.web_communication.my_ws_uid,
@@ -246,12 +248,12 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     },
                 );
                 // if all the cards are permanently up, this is the end of the game
-                // logmod::debug_write("if is_all_permanently(self)");
+                // websysmod::debug_write("if is_all_permanently(self)");
                 if status2ndcardmod::is_all_permanently(self) {
-                    logmod::debug_write("yes");
+                    websysmod::debug_write("yes");
                     statusgameovermod::on_msg_game_over(self);
                     // send message
-                    websocketcommunicationmod::ws_send_msg(
+                    websocketmod::ws_send_msg(
                         &self.web_communication.ws,
                         &WsMessage::MsgGameOver {
                             my_ws_uid: self.web_communication.my_ws_uid,
@@ -266,7 +268,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             }
             _ => {
                 let x = format!("Error: Unrecognized call_listener: {}", sx);
-                logmod::debug_write(&x);
+                websysmod::debug_write(&x);
             }
         }
     }
@@ -275,11 +277,11 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
     #[allow(clippy::needless_return)]
     fn call_function_node<'a>(&self, cx: &mut RenderContext<'a>, sx: &str) -> Node<'a> {
         let bump = cx.bump;
-        // logmod::debug_write(&format!("call_function_node: {}", &sx));
+        // websysmod::debug_write(&format!("call_function_node: {}", &sx));
         match sx {
             "div_grid_container" => {
                 // what is the game_status now?
-                // logmod::debug_write(&format!("game status: {}", self.game_data.game_status));
+                // websysmod::debug_write(&format!("game status: {}", self.game_data.game_status));
                 let max_grid_size = divgridcontainermod::max_grid_size(self);
                 return divgridcontainermod::div_grid_container(self, bump, &max_grid_size);
             }
@@ -313,13 +315,8 @@ pub fn svg_qrcode_to_node<'a>(
     );
     let qr = unwrap!(qrcode53bytes::Qr::new(&link));
     let svg_template = qrcode53bytes::SvgDodrioRenderer::new(222, 222).render(&qr);
-
-    unwrap!(htmltemplatemod::get_root_element(
-        rrc,
-        cx,
-        &svg_template,
-        htmltemplatemod::HtmlOrSvg::Svg,
-    ))
+    //I added use crate::htmltemplatemod::HtmlTemplating; to make the function get_root_element in scope.
+    unwrap!(rrc.get_root_element(cx, &svg_template, htmltemplatemod::HtmlOrSvg::Svg,))
 }
 
 /// the arrow to the right

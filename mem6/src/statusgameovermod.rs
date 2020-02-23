@@ -26,14 +26,14 @@ pub fn div_game_over<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'
             <div class="div_clickable" onclick={
                         move |root, vdom, _event| {
                         let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                        websocketcommunicationmod::ws_send_msg(
+                        websocketmod::ws_send_msg(
                             &rrc.web_communication.ws,
                             &WsMessage::MsgPlayAgain {
                                 my_ws_uid: rrc.web_communication.my_ws_uid,
                                 msg_receivers: rrc.web_communication.msg_receivers.to_string(),
                             },
                         );
-                        rrc.reset_for_play_again();
+                        rrc.game_data.reset_for_play_again();
                         htmltemplateimplmod::open_new_local_page("#p05");
                     }}>
                 <h2 class="h2_user_can_click">
@@ -66,6 +66,6 @@ pub fn on_msg_game_over(rrc: &mut RootRenderingComponent) {
 pub fn on_msg_play_again(rrc: &mut RootRenderingComponent) {
     // The first players can choose Play again and send to others.
     rrc.game_data.game_status = GameStatus::StatusJoined;
-    rrc.reset_for_play_again();
+    rrc.game_data.reset_for_play_again();
     htmltemplateimplmod::open_new_local_page("#p04");
 }

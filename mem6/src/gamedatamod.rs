@@ -3,14 +3,13 @@
 
 //region: use
 use crate::*;
-
 use mem6_common::*;
 
 use serde_derive::{Serialize, Deserialize};
 use unwrap::unwrap;
 use rand::{rngs::SmallRng, seq::SliceRandom, SeedableRng, Rng};
 use strum_macros::AsRefStr;
-//endregion
+//endregion: use
 
 //region: struct, enum
 /// 2d size (any UM -pixel, items, percent)
@@ -112,6 +111,42 @@ pub struct GameData {
 //endregion
 
 impl GameData {
+    /// constructor of game data
+    pub fn new(my_ws_uid: usize) -> Self {
+        let my_nickname = storagemod::load_nickname();
+        let mut players = Vec::new();
+        players.push(Player {
+            ws_uid: my_ws_uid,
+            nickname: my_nickname.to_string(),
+            points: 0,
+        });
+
+        // return from constructor
+        GameData {
+            card_grid_data: Self::prepare_for_empty(),
+            card_index_of_first_click: 0,
+            card_index_of_second_click: 0,
+            my_nickname,
+            group_id: 0,
+            players,
+            game_status: GameStatus::StatusStartPage,
+            game_name: "alphabet".to_string(),
+            my_player_number: 1,
+            player_turn: 0,
+            content_folders: vec![String::from("alphabet")],
+            game_config: None,
+            games_metadata: None,
+        }
+    }
+    /// reset the data to play again the game
+    pub fn reset_for_play_again(&mut self) {
+        self.card_index_of_first_click = 0;
+        self.card_index_of_second_click = 0;
+        // reset points
+        for x in &mut self.players {
+            x.points = 0;
+        }
+    }
     /// prepare new random data
     pub fn prepare_random_data(&mut self) {
         let item_count_minus_one = unwrap!(unwrap!(self.game_config.as_ref())
@@ -133,7 +168,7 @@ impl GameData {
             unwrap!(random_count.checked_sub(unwrap!(item_count_minus_one.checked_mul(multiple))));
 
         /*
-                // logmod::debug_write(&format!(
+                // websysmod::debug_write(&format!(
                     "item_count_minus_one {}  players_count {} cards_count {} random_count {} multiple {} rest {}",
                     item_count_minus_one,players_count,cards_count,random_count,multiple,
                     rest,
@@ -197,7 +232,7 @@ impl GameData {
         // endregion
         self.card_grid_data = card_grid_data;
         /*
-        // logmod::debug_write(&format!(
+        // websysmod::debug_write(&format!(
             "vec_of_random_numbers.len {} card_grid_data.len {}",
             vec_of_random_numbers.len(),
             self.card_grid_data.len()
@@ -219,42 +254,14 @@ impl GameData {
         }
         card_grid_data
     }
-    /// constructor of game data
-    pub fn new(my_ws_uid: usize) -> Self {
-        let my_nickname = storagemod::load_nickname();
-        let mut players = Vec::new();
-        players.push(Player {
-            ws_uid: my_ws_uid,
-            nickname: my_nickname.to_string(),
-            points: 0,
-        });
-
-        // return from constructor
-        GameData {
-            card_grid_data: Self::prepare_for_empty(),
-            card_index_of_first_click: 0,
-            card_index_of_second_click: 0,
-            my_nickname,
-            group_id: 0,
-            players,
-            game_status: GameStatus::StatusStartPage,
-            game_name: "alphabet".to_string(),
-            my_player_number: 1,
-            player_turn: 0,
-            content_folders: vec![String::from("alphabet")],
-            game_config: None,
-            games_metadata: None,
+    /// from the vector of players prepare a json string for the ws server
+    /// so that it can send the msgs only to the players
+    pub fn prepare_msg_receivers(&self) -> String {
+        let mut msg_receivers = Vec::new();
+        for pl in &self.players {
+            msg_receivers.push(pl.ws_uid);
         }
+        // return
+        unwrap!(serde_json::to_string(&msg_receivers))
     }
-}
-
-/// from the vector of players prepare a json string for the ws server
-/// so that it can send the msgs only to the players
-pub fn prepare_msg_receivers(players: &[Player]) -> String {
-    let mut msg_receivers = Vec::new();
-    for pl in players {
-        msg_receivers.push(pl.ws_uid);
-    }
-    // return
-    unwrap!(serde_json::to_string(&msg_receivers))
 }

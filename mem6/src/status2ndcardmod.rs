@@ -113,7 +113,7 @@ pub fn on_msg_ack_player_click2nd_card(
         if is_point {
             // nothing because all happens after the Drink/no drink dialog
         } else {
-            logmod::debug_write("no");
+            websysmod::debug_write("no");
             statustaketurnmod::on_click_take_turn(rrc, vdom);
         }
     }

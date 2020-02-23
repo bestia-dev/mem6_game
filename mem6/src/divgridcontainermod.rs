@@ -99,7 +99,7 @@ pub fn div_grid_items<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Vec<N
         }
 
         /*
-                // logmod::debug_write(&format!(
+                // websysmod::debug_write(&format!(
                     "div_grid_items: my_player_number {} start_index {} end_index {} card_grid_data.len {}",
                     &rrc.game_data.my_player_number,
                     start_index,
@@ -175,7 +175,7 @@ pub fn div_grid_item<'a>(
             dodrio!(bump,
             <div class= "grid_item">
             <img class= "grid_item_img" src={img_src} id={img_id} style={opacity} onclick={move |root, vdom, event| {
-                // logmod::debug_write("img click");
+                // websysmod::debug_write("img click");
                 let rrc = root.unwrap_mut::<RootRenderingComponent>();
                 // If the event's target is our image...
                 let img = match event
@@ -322,7 +322,7 @@ pub fn max_grid_size(rrc: &RootRenderingComponent) -> Size2d {
         let mut max_grid_width = grid_width();
         let mut max_grid_height = grid_height();
         /*
-        // logmod::debug_write(&format!(
+        // websysmod::debug_write(&format!(
             "inner_width {} inner_height {}",
             max_grid_width, max_grid_height
         ));
@@ -338,7 +338,7 @@ pub fn max_grid_size(rrc: &RootRenderingComponent) -> Size2d {
             }
         }
         /*
-        // logmod::debug_write(&format!(
+        // websysmod::debug_write(&format!(
             "card_width {} card_height {}",
             card_width, card_height
         ));
@@ -363,7 +363,7 @@ pub fn max_grid_size(rrc: &RootRenderingComponent) -> Size2d {
                 unwrap!((unwrap!(max_grid_width.approx_as::<f64>()) * ratio).approx_as::<usize>());
         }
         /*
-        // logmod::debug_write(&format!(
+        // websysmod::debug_write(&format!(
             "max_grid_width {} max_grid_height {}",
             max_grid_width, max_grid_height
         ));

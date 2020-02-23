@@ -11,7 +11,7 @@ use unwrap::unwrap;
 
 /// on click
 pub fn on_click_take_turn(rrc: &mut RootRenderingComponent, vdom: &dodrio::VdomWeak) {
-    // logmod::debug_write(&format!("on_click_take_turn {}", ""));
+    // websysmod::debug_write(&format!("on_click_take_turn {}", ""));
 
     let msg_id = ackmsgmod::prepare_for_ack_msg_waiting(rrc, vdom);
 
@@ -44,7 +44,7 @@ pub fn on_msg_ack_take_turn(rrc: &mut RootRenderingComponent, player_ws_uid: usi
 
 /// update game data
 pub fn update_on_take_turn(rrc: &mut RootRenderingComponent) {
-    logmod::debug_write(&format!(
+    websysmod::debug_write(&format!(
         "update_on_take_turn: player_turn {}  my_player_number {}",
         &rrc.game_data.player_turn, &rrc.game_data.my_player_number
     ));

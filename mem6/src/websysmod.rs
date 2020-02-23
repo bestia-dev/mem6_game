@@ -1,13 +1,17 @@
-//websysmod.rs
+// websysmod.rs
 //! helper functions for web_sys, window, document, dom and web_sys
 
-use crate::*;
+//region: use
+//use crate::*;
+use crate::{storagemod};
 //use mem6_common::*;
+use web_sys::console;
 use unwrap::unwrap;
 use rand::{Rng, rngs::SmallRng, SeedableRng};
 use wasm_bindgen::{JsValue, JsCast};
 use web_sys::{Request, RequestInit, Response};
 use wasm_bindgen_futures::{JsFuture};
+//endregion: use
 
 /// return window object
 pub fn window() -> web_sys::Window {
@@ -16,39 +20,39 @@ pub fn window() -> web_sys::Window {
 
 /// get element by id
 pub fn get_element_by_id(element_id: &str) -> web_sys::Element {
-    let document = unwrap!(websysmod::window().document());
+    let document = unwrap!(window().document());
     unwrap!(document.get_element_by_id(element_id))
 }
 
 /// get input element value string by id
 pub fn get_input_element_value_string_by_id(element_id: &str) -> String {
-    // logmod::debug_write("before get_element_by_id");
+    // debug_write("before get_element_by_id");
     let input_element = get_element_by_id(element_id);
-    // logmod::debug_write("before dyn_into");
+    // debug_write("before dyn_into");
     let input_html_element = unwrap!(
         input_element.dyn_into::<web_sys::HtmlInputElement>(),
         "dyn_into"
     );
-    // logmod::debug_write("before value()");
+    // debug_write("before value()");
     input_html_element.value()
 }
 
 /// save to local storage
 pub fn save_to_local_storage(name: &str, value: &str) {
-    let ls = unwrap!(unwrap!(websysmod::window().local_storage()));
+    let ls = unwrap!(unwrap!(window().local_storage()));
     let _x = ls.set_item(name, value);
 }
 
 /// load string from local_storage
 pub fn load_string_from_local_storage(name: &str, default_value: &str) -> String {
-    let ls = unwrap!(unwrap!(websysmod::window().local_storage()));
+    let ls = unwrap!(unwrap!(window().local_storage()));
     // return nickname
     unwrap!(ls.get_item(name)).unwrap_or(default_value.to_string())
 }
 
 /// load string from session_storage
 pub fn load_string_from_session_storage(name: &str, default_value: &str) -> String {
-    let ls = unwrap!(unwrap!(websysmod::window().session_storage()));
+    let ls = unwrap!(unwrap!(window().session_storage()));
     let default_value_string = default_value.to_string();
     // return
     unwrap!(ls.get_item(name)).unwrap_or(default_value_string)
@@ -56,7 +60,7 @@ pub fn load_string_from_session_storage(name: &str, default_value: &str) -> Stri
 
 /// save string to session storage
 pub fn save_string_to_session_storage(name: &str, value: &str) {
-    let ls = unwrap!(unwrap!(websysmod::window().session_storage()));
+    let ls = unwrap!(unwrap!(window().session_storage()));
     // session_storage saves only strings
     let _x = ls.set_item(name, value);
 }
@@ -76,11 +80,10 @@ pub async fn async_spwloc_fetch_text(url: String) -> String {
     let mut opts = RequestInit::new();
     opts.method("GET");
     let request = unwrap!(Request::new_with_str_and_init(&url, &opts));
-    let resp_jsvalue =
-        unwrap!(JsFuture::from(websysmod::window().fetch_with_request(&request)).await);
+    let resp_jsvalue = unwrap!(JsFuture::from(window().fetch_with_request(&request)).await);
     let resp: Response = unwrap!(resp_jsvalue.dyn_into());
     let resp_body_text = unwrap!(JsFuture::from(unwrap!(resp.text())).await);
-    // logmod::debug_write(&unwrap!(JsValue::as_string(&resp_body_text)));
+    // debug_write(&unwrap!(JsValue::as_string(&resp_body_text)));
     // returns response as String
     unwrap!(JsValue::as_string(&resp_body_text))
 }
@@ -93,14 +96,13 @@ pub async fn fetch_response(url: String) -> String {
     opts.method("GET");
     let request = unwrap!(Request::new_with_str_and_init(&url, &opts));
     // log1("before fetch");
-    let resp_jsvalue =
-        unwrap!(JsFuture::from(websysmod::window().fetch_with_request(&request)).await);
+    let resp_jsvalue = unwrap!(JsFuture::from(window().fetch_with_request(&request)).await);
     // log1("after fetch");
     let resp: Response = unwrap!(resp_jsvalue.dyn_into());
     // log1("before text()");
     let text_jsvalue = unwrap!(JsFuture::from(unwrap!(resp.text())).await);
     let txt_response: String = unwrap!(text_jsvalue.as_string());
-    // logmod::debug_write(&txt_response);
+    // debug_write(&txt_response);
     // returns response as String
     txt_response
 }
@@ -112,7 +114,7 @@ pub async fn fetch_only(url: String) {
     opts.method("GET");
     let request = unwrap!(Request::new_with_str_and_init(&url, &opts));
     // log1("before fetch");
-    unwrap!(JsFuture::from(websysmod::window().fetch_with_request(&request)).await);
+    unwrap!(JsFuture::from(window().fetch_with_request(&request)).await);
 }
 
 //endregion:fetch
@@ -121,10 +123,10 @@ pub async fn fetch_only(url: String) {
 #[must_use]
 pub fn get_url_and_hash() -> (String, String) {
     // find out URL
-    let mut location_href = unwrap!(websysmod::window().location().href());
+    let mut location_href = unwrap!(window().location().href());
     // without /index.html
     location_href = location_href.to_lowercase().replace("index.html", "");
-    logmod::debug_write(&format!("location_href: {}", &location_href));
+    debug_write(&format!("location_href: {}", &location_href));
 
     // split it by # hash
     let cl = location_href.clone();
@@ -132,8 +134,8 @@ pub fn get_url_and_hash() -> (String, String) {
     location_href = unwrap!(spl.next()).to_string();
     let href_hash = spl.next().unwrap_or("").to_string();
 
-    logmod::debug_write(&format!("location_href: {}", &location_href));
-    logmod::debug_write(&format!("href_hash: {}", &href_hash));
+    debug_write(&format!("location_href: {}", &location_href));
+    debug_write(&format!("href_hash: {}", &href_hash));
     (location_href, href_hash)
 }
 
@@ -141,4 +143,25 @@ pub fn get_url_and_hash() -> (String, String) {
 pub fn play_sound(src: &str) {
     let audio_element = unwrap!(web_sys::HtmlAudioElement::new_with_src(src));
     let _x = unwrap!(audio_element.play());
+}
+
+/// debug write into session_storage
+pub fn debug_write(text: &str) {
+    // writing to the console is futile for mobile phones
+    // I must write it on the UI.
+    // so I must access this string from the UI rendere
+    storagemod::add_to_begin_of_debug_text(text);
+    console::log_1(&JsValue::from_str(text));
+}
+
+/// string of now time
+pub fn now_string() -> String {
+    let now = js_sys::Date::new_0();
+    // return
+    format!(
+        "{:02}:{:02}.{:03}",
+        now.get_minutes(),
+        now.get_seconds(),
+        now.get_milliseconds()
+    )
 }

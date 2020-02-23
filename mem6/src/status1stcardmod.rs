@@ -23,7 +23,7 @@ pub fn on_click_1st_card(
     vdom: &dodrio::VdomWeak,
     this_click_card_index: usize,
 ) {
-    // logmod::debug_write("on_click_1st_card");
+    // websysmod::debug_write("on_click_1st_card");
     flip_back(rrc);
     // change card status and game status
     rrc.game_data.card_index_of_first_click = this_click_card_index;
@@ -36,7 +36,7 @@ pub fn on_click_1st_card(
         msg_id,
     };
     ackmsgmod::send_msg_and_write_in_queue(rrc, &msg, msg_id);
-    // logmod::debug_write(&format!("send_msg_and_write_in_queue: {}", msg_id));
+    // websysmod::debug_write(&format!("send_msg_and_write_in_queue: {}", msg_id));
     divgridcontainermod::play_sound(rrc, this_click_card_index);
     // after ack for this message call on_msg_click_1st_card(rrc, this_click_card_index);
 }
@@ -67,13 +67,13 @@ pub fn on_msg_click_1st_card(
     // Only one Player can be the judge and I choosen the Player 1 to resolve it.
     if rrc.game_data.my_player_number == 1 && GameStatus::Status1stCard != rrc.game_data.game_status
     {
-        logmod::debug_write("CONFLICT on_msg_click_1st_card");
+        websysmod::debug_write("CONFLICT on_msg_click_1st_card");
         // do the whole click1st process
         on_click_1st_card(rrc, vdom, rrc.game_data.card_index_of_first_click);
         // do the whole click2nd process
         status2ndcardmod::on_click_2nd_card(rrc, vdom, card_index_of_first_click)
     } else {
-        // logmod::debug_write("on_msg_click_1st_card");
+        // websysmod::debug_write("on_msg_click_1st_card");
         rrc.game_data.card_index_of_first_click = card_index_of_first_click;
         update_on_1st_card(rrc);
     }
@@ -85,10 +85,10 @@ pub fn on_msg_ack_click_1st_card(
     player_ws_uid: usize,
     msg_id: usize,
 ) {
-    // logmod::debug_write("on_msg_ack_click_1st_card");
-    // logmod::debug_write(&format!("remove_ack_msg_from_queue: {} {}",player_ws_uid, msg_id));
+    // websysmod::debug_write("on_msg_ack_click_1st_card");
+    // websysmod::debug_write(&format!("remove_ack_msg_from_queue: {} {}",player_ws_uid, msg_id));
     if ackmsgmod::remove_ack_msg_from_queue(rrc, player_ws_uid, msg_id) {
-        // logmod::debug_write("update_on_1st_card (rrc)");
+        // websysmod::debug_write("update_on_1st_card (rrc)");
         update_on_1st_card(rrc);
     }
     // TODO: timer if after 3 seconds the ack is not received resend the msg
@@ -97,7 +97,7 @@ pub fn on_msg_ack_click_1st_card(
 
 /// update game data
 pub fn update_on_1st_card(rrc: &mut RootRenderingComponent) {
-    logmod::debug_write("update_on_1st_card");
+    websysmod::debug_write("update_on_1st_card");
     // flip the card up
     unwrap!(rrc
         .game_data

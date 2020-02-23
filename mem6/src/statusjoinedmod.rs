@@ -15,12 +15,12 @@ use mem6_common::*;
 /// group_id is the ws_uid of the first player
 pub fn on_load_joined(rrc: &mut RootRenderingComponent) {
     rrc.game_data.game_status = GameStatus::StatusJoined;
-    logmod::debug_write(&format!(
+    websysmod::debug_write(&format!(
         "StatusJoined send {}",
         rrc.web_communication.msg_receivers
     ));
 
-    websocketcommunicationmod::ws_send_msg(
+    websocketmod::ws_send_msg(
         &rrc.web_communication.ws,
         &WsMessage::MsgJoin {
             my_ws_uid: rrc.web_communication.my_ws_uid,
@@ -32,7 +32,7 @@ pub fn on_load_joined(rrc: &mut RootRenderingComponent) {
 
 /// msg joined
 pub fn on_msg_joined(rrc: &mut RootRenderingComponent, his_ws_uid: usize, his_nickname: String) {
-    // logmod::debug_write(&format!("on_msg_joined {}",his_ws_uid));
+    // websysmod::debug_write(&format!("on_msg_joined {}",his_ws_uid));
     if rrc.game_data.my_player_number == 1 {
         // push if not exists
         let mut ws_uid_exists = false;
@@ -48,8 +48,7 @@ pub fn on_msg_joined(rrc: &mut RootRenderingComponent, his_ws_uid: usize, his_ni
                 nickname: his_nickname,
                 points: 0,
             });
-            rrc.web_communication.msg_receivers =
-                gamedatamod::prepare_msg_receivers(&rrc.game_data.players);
+            rrc.web_communication.msg_receivers = rrc.game_data.prepare_msg_receivers();
         }
     }
 }

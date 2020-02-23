@@ -28,7 +28,7 @@ pub fn start_router(
         if local_route.is_empty() {
             local_route = "index".to_owned();
         }
-        // logmod::debug_write("after .hash");
+        // websysmod::debug_write("after .hash");
         wasm_bindgen_futures::spawn_local({
             let vdom = vdom.clone();
             async move {
@@ -92,7 +92,7 @@ pub fn get_url_param_in_hash_after_dot(local_route: &str) -> &str {
 /// })
 /// ```
 pub async fn async_fetch_and_write_to_rrc_html_template(url: String, vdom: VdomWeak) {
-    logmod::debug_write(&format!("fetch {}", &url));
+    websysmod::debug_write(&format!("fetch {}", &url));
     let mut resp_body_text: String = websysmod::async_spwloc_fetch_text(url).await;
     // update values in rrc is async.
     // I can await a fn call or an async block.
@@ -111,7 +111,7 @@ pub async fn async_fetch_and_write_to_rrc_html_template(url: String, vdom: VdomW
                                 unwrap!(resp_body_text.get(pos1 + 6..pos2)).to_string();
                         }
                     }
-                    // logmod::debug_write(&format!("body: {}", resp_body_text));
+                    // websysmod::debug_write(&format!("body: {}", resp_body_text));
                     rrc.web_communication.html_template = resp_body_text;
                 }
             })

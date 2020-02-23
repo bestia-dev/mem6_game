@@ -25,7 +25,7 @@ pub fn div_player_actions_from_game_status<'a>(
         && (rrc.web_communication.is_reconnect || rrc.web_communication.ws.ready_state() != 1)
     {
         // ready_state: 0	CONNECTING, 1	OPEN, 2	CLOSING, 3	CLOSED
-        websocketreconnectmod::div_reconnect(rrc, bump)
+        statusreconnectmod::div_reconnect(rrc, bump)
     */
     if let GameStatus::Status1stCard = rrc.game_data.game_status {
         status1stcardmod::div_on_1st_card(rrc, bump)

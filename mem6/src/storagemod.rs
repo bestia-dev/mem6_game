@@ -9,7 +9,12 @@ use unwrap::unwrap;
 //region: debug_text
 /// add to begin of debug text
 pub fn add_to_begin_of_debug_text(text: &str) {
-    let mut debug_text = format!("{}: {}\n{}", logmod::now_string(), text, get_debug_text());
+    let mut debug_text = format!(
+        "{}: {}\n{}",
+        websysmod::now_string(),
+        text,
+        get_debug_text()
+    );
     utf8_truncate(&mut debug_text, 800);
     websysmod::save_string_to_session_storage("debug_text", &debug_text);
 }
@@ -56,9 +61,9 @@ pub fn load_my_ws_uid() -> usize {
 //region: nickname
 /// save on every key stroke
 pub fn nickname_onkeyup(rrc: &mut RootRenderingComponent, event: web_sys::Event) {
-    // logmod::debug_write("on key up");
+    // websysmod::debug_write("on key up");
     let keyboard_event = unwrap!(event.dyn_into::<web_sys::KeyboardEvent>());
-    // logmod::debug_write(&keyboard_event.key());
+    // websysmod::debug_write(&keyboard_event.key());
     if keyboard_event.key() == "Enter" {
         // open page start group
         htmltemplateimplmod::open_new_local_page("#p02");
@@ -104,9 +109,9 @@ pub fn blink_or_not_nickname(rrc: &RootRenderingComponent) -> String {
 //region: group_id
 /// group id key stroke
 pub fn group_id_onkeyup(rrc: &mut RootRenderingComponent, event: web_sys::Event) {
-    // logmod::debug_write("on key up");
+    // websysmod::debug_write("on key up");
     let keyboard_event = unwrap!(event.dyn_into::<web_sys::KeyboardEvent>());
-    // logmod::debug_write(&keyboard_event.key());
+    // websysmod::debug_write(&keyboard_event.key());
     if keyboard_event.key() == "Enter" {
         // open page start group
         htmltemplateimplmod::open_new_local_page("#p04");
@@ -145,7 +150,6 @@ pub fn set_group_id(rrc: &mut RootRenderingComponent, group_id_string: &str) {
     // change it also in players[0]
     unwrap!(rrc.game_data.players.get_mut(0)).ws_uid = rrc.game_data.group_id;
     // on any change in players the msg_receivers must be constructed
-    rrc.web_communication.msg_receivers =
-        gamedatamod::prepare_msg_receivers(&rrc.game_data.players);
+    rrc.web_communication.msg_receivers = rrc.game_data.prepare_msg_receivers();
 }
 //endregion: group_id
