@@ -124,7 +124,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             "group_id" => self.game_data.group_id.to_string(),
             "url_to_join" => format!("bestia.dev/mem6/#p03.{}", self.web_communication.my_ws_uid),
             "cargo_pkg_version" => env!("CARGO_PKG_VERSION").to_string(),
-            "debug_text" => storagemod::get_debug_text(),
+            "debug_text" => websysmod::get_debug_text(),
             "gameboard_btn" => {
                 // different class depend on status
                 "btn".to_owned()

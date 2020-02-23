@@ -25,7 +25,7 @@ pub fn div_for_debugging<'a>(rrc: &'a RootRenderingComponent, bump: &'a Bump) ->
                 {vec![text(
                     bumpalo::format!(in bump, "debug info {}:\n{}",
                         env!("CARGO_PKG_VERSION"),
-                        storagemod::get_debug_text()
+                        websysmod::get_debug_text()
                         ).into_bump_str()
                 )]}
             </pre>

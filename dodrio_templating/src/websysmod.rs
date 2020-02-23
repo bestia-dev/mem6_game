@@ -3,7 +3,7 @@
 
 //region: use
 //use crate::*;
-use crate::{storagemod};
+//use crate::{storagemod};
 //use mem6_common::*;
 use web_sys::console;
 use unwrap::unwrap;
@@ -150,7 +150,7 @@ pub fn debug_write(text: &str) {
     // writing to the console is futile for mobile phones
     // I must write it on the UI.
     // so I must access this string from the UI rendere
-    storagemod::add_to_begin_of_debug_text(text);
+    add_to_begin_of_debug_text(text);
     console::log_1(&JsValue::from_str(text));
 }
 
@@ -176,3 +176,33 @@ pub fn open_new_local_page_push_to_history(hash: &str) {
 pub fn open_new_tab(url: &str) {
     let _w = window().open_with_url_and_target(url, "_blank");
 }
+//region: debug_text
+/// get debug text from session storage
+pub fn get_debug_text() -> String {
+    load_string_from_session_storage("debug_text", "")
+}
+
+/// add to begin of debug text
+pub fn add_to_begin_of_debug_text(text: &str) {
+    let mut debug_text = format!("{}: {}\n{}", now_string(), text, get_debug_text());
+    utf8_truncate(&mut debug_text, 800);
+    save_string_to_session_storage("debug_text", &debug_text);
+}
+
+/// utf8 truncate
+fn utf8_truncate(input: &mut String, max_size: usize) {
+    let mut utf8_max_size = input.len();
+    if utf8_max_size >= max_size {
+        {
+            let mut char_iter = input.char_indices();
+            while utf8_max_size >= max_size {
+                utf8_max_size = match char_iter.next_back() {
+                    Some((index, _)) => index,
+                    None => 0,
+                };
+            }
+        } // Extra {} wrap to limit the immutable borrow of char_indices()
+        input.truncate(utf8_max_size);
+    }
+}
+//endregion: debug_text

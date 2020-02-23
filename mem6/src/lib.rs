@@ -250,7 +250,6 @@ mod ackmsgmod;
 mod divfordebuggingmod;
 mod divgridcontainermod;
 mod divplayeractionsmod;
-mod websysmod;
 mod fetchgmod;
 mod gamedatamod;
 mod rootrenderingcomponentmod;
@@ -275,6 +274,8 @@ mod webcommunicationmod;
 // this are then used in all the mods if I have there use crate::*;
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::gamedatamod::*;
+
+use dodrio_templating::*;
 
 //use unwrap::unwrap;
 use wasm_bindgen::prelude::*;
