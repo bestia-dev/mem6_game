@@ -26,11 +26,29 @@ pub enum HtmlOrSvg {
 
 /// the RootRenderingComponent struct must implement this trait
 /// it must have the fields for local_route and html_template fields
-pub trait HtmlTemplating: dodrio::Render + dodrio::RootRender {
+pub trait HtmlTemplating {
     // specific code. while rendering, cannot mut rrc
     fn call_function_string(&self, sx: &str) -> String;
     fn call_function_boolean<'a>(&self, sx: &str) -> bool;
     fn call_function_node<'a>(&self, cx: &mut RenderContext<'a>, sx: &str) -> Node<'a>;
+    //fn get_closure_code();
+    fn add_element_for_event_listener<'a>(
+        &self,
+        cx: &mut RenderContext<'a>,
+        event_to_listen: String,
+        fn_name: String,
+        element: ElementBuilder<
+            'a,
+            bumpalo::collections::Vec<'a, Listener<'a>>,
+            bumpalo::collections::Vec<'a, Attribute<'a>>,
+            bumpalo::collections::Vec<'a, Node<'a>>,
+        >,
+    ) -> ElementBuilder<
+        'a,
+        bumpalo::collections::Vec<'a, Listener<'a>>,
+        bumpalo::collections::Vec<'a, Attribute<'a>>,
+        bumpalo::collections::Vec<'a, Node<'a>>,
+    >;
     fn call_listener(&mut self, vdom: dodrio::VdomWeak, sx: &str, event: web_sys::Event);
     //generic code
 
@@ -169,18 +187,14 @@ pub trait HtmlTemplating: dodrio::Render + dodrio::RootRender {
                     } else if name.starts_with("data-on-") {
                         // Only one listener for now because the api does not give me other method.
                         let fn_name = value.to_string();
-                        let event_to_listen =
-                            bumpalo::format!(in bump, "{}",&unwrap!(name.get(8..))).into_bump_str();
-                        // websysmod::debug_write(&format!("create listener {}", &fn_name));
-                        element = element.on(event_to_listen, move |root, vdom, event| {
-                            let fn_name = fn_name.clone();
-                            //Self is the concrete type. In this example it is RootRenderingComponent.
-                            //But now I have the problem, that the size is not known.
-                            let rrc = root.unwrap_mut::<&Self>();
-                            // websysmod::debug_write(&format!("fn_name {}", fn_name));
-                            let vdom = vdom.clone();
-                            rrc.call_listener(vdom, &fn_name, event);
-                        });
+                        let event_to_listen = unwrap!(name.get(8..)).to_string();
+                        //move and return element(because of the design of chained calls)
+                        element = self.add_element_for_event_listener(
+                            cx,
+                            event_to_listen,
+                            fn_name,
+                            element,
+                        );
                     } else {
                         let name = bumpalo::format!(in bump, "{}",name).into_bump_str();
                         let value2;

@@ -7,10 +7,10 @@ use mem6_common::*;
 //use qrcode53bytes::*;
 
 use unwrap::unwrap;
+
 use dodrio::{
-    RenderContext,
+    Node, Listener, Attribute, RenderContext,
     bumpalo::{self},
-    Node,
     builder::*,
 };
 use typed_html::dodrio;
@@ -175,7 +175,37 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             }
         }
     }
-
+    //fn get_closure_code(){};
+    fn add_element_for_event_listener<'a>(
+        &self,
+        cx: &mut RenderContext<'a>,
+        event_to_listen: String,
+        fn_name: String,
+        element: ElementBuilder<
+            'a,
+            bumpalo::collections::Vec<'a, Listener<'a>>,
+            bumpalo::collections::Vec<'a, Attribute<'a>>,
+            bumpalo::collections::Vec<'a, Node<'a>>,
+        >,
+    ) -> ElementBuilder<
+        'a,
+        bumpalo::collections::Vec<'a, Listener<'a>>,
+        bumpalo::collections::Vec<'a, Attribute<'a>>,
+        bumpalo::collections::Vec<'a, Node<'a>>,
+    > {
+        //TODO: if I could return only the Closure  move |root,....|{...}
+        //it would be much simpler
+        let bump = cx.bump;
+        let event_to_listen = bumpalo::format!(in bump, "{}",&event_to_listen).into_bump_str();
+        // websysmod::debug_write(&format!("create listener {}", &fn_name));
+        element.on(event_to_listen, move |root, vdom, event| {
+            let fn_name = fn_name.clone();
+            let rrc = root.unwrap_mut::<RootRenderingComponent>();
+            // websysmod::debug_write(&format!("fn_name {}", fn_name));
+            let vdom = vdom.clone();
+            rrc.call_listener(vdom, &fn_name, event);
+        })
+    }
     /// html_templating functions for listeners
     /// get a clone of the VdomWeak
     fn call_listener(&mut self, vdom: dodrio::VdomWeak, sx: &str, event: web_sys::Event) {
@@ -223,7 +253,6 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 statusgamedatainitmod::on_click_start_game(self);
                 // async fetch all imgs and put them in service worker cache
                 fetchgmod::fetch_all_img_for_cache_request(self);
-                // endregion
                 vdom.schedule_render();
                 // websysmod::debug_write(&format!("start_game_onclick players: {:?}",self.game_data.players));
                 open_new_local_page("#p11");
