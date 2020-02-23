@@ -2,5 +2,4 @@
 
 pub mod websysmod;
 //mod routermod;
-//mod htmltemplatemod;
-//mod storagemod;
+pub mod htmltemplatemod;

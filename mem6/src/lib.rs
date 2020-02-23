@@ -267,13 +267,13 @@ mod statusreconnectmod;
 mod routermod;
 mod routerimplmod;
 mod htmltemplateimplmod;
-mod htmltemplatemod;
 mod webcommunicationmod;
 //endregion
 
 // this are then used in all the mods if I have there use crate::*;
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::gamedatamod::*;
+use crate::routermod::Routing;
 
 use dodrio_templating::*;
 
@@ -326,4 +326,10 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     vdom.forget();
 
     Ok(())
+}
+
+impl routermod::Routing for dodrio::Vdom {
+    fn test() {
+        let _x = "aaa";
+    }
 }
