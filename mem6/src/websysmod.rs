@@ -165,3 +165,14 @@ pub fn now_string() -> String {
         now.get_milliseconds()
     )
 }
+
+/// fn open new local page with #
+/// and push to history
+pub fn open_new_local_page_push_to_history(hash: &str) {
+    let _x = window().location().assign(hash);
+}
+
+/// fn open new tab
+pub fn open_new_tab(url: &str) {
+    let _w = window().open_with_url_and_target(url, "_blank");
+}

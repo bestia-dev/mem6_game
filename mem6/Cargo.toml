@@ -1,6 +1,6 @@
 [package]
 name = "mem6"
-version = "2020.223.1223"
+version = "2020.223.1352"
 authors = ["Luciano Furlan <Luciano.Bestia@gmail.com>"]
 edition = "2018"
 description = "Learning Rust Wasm/WebAssembly with Virtual Dom Dodrio"
@@ -17,7 +17,7 @@ crate-type = ["cdylib"]
 [dependencies]
 unwrap = "1.2.1"
 mem6_common = { path = "../mem6_common" }
-#dodrio_templating = { path = "../dodrio_templating" }
+dodrio_templating = { path = "../dodrio_templating" }
 #qrcode53bytes = { path = "../../qrcode53bytes" }
 qrcode53bytes ="1.0.0"
 #dodrio =  { git = "https://github.com/fitzgen/dodrio", branch = "master" }

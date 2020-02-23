@@ -9,7 +9,7 @@ use mem6_common::*;
 use unwrap::unwrap;
 
 use dodrio::{
-    Node, Listener, Attribute, RenderContext,
+    Node, RenderContext, RootRender,
     bumpalo::{self},
     builder::*,
 };
@@ -92,8 +92,8 @@ const VIDEOS: &[&str] = &[
 
 impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
     /// html_templating boolean id the next node is rendered or not
-    fn call_function_boolean(&self, sx: &str) -> bool {
-        websysmod::debug_write(&format!("call_function_boolean: {}", &sx));
+    fn call_fn_boolean(&self, sx: &str) -> bool {
+        websysmod::debug_write(&format!("call_fn_boolean: {}", &sx));
         match sx {
             "is_first_player" => {
                 if self.game_data.my_player_number == 1 {
@@ -103,7 +103,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 }
             }
             _ => {
-                let x = format!("Error: Unrecognized call_function_boolean: {}", sx);
+                let x = format!("Error: Unrecognized call_fn_boolean: {}", sx);
                 websysmod::debug_write(&x);
                 true
             }
@@ -112,8 +112,8 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
 
     /// html_templating functions that return a String
     #[allow(clippy::needless_return, clippy::integer_arithmetic)]
-    fn call_function_string(&self, sx: &str) -> String {
-        // websysmod::debug_write(&format!("call_function_string: {}", &sx));
+    fn call_fn_string(&self, sx: &str) -> String {
+        // websysmod::debug_write(&format!("call_fn_string: {}", &sx));
         match sx {
             "my_nickname" => self.game_data.my_nickname.to_owned(),
             "blink_or_not_nickname" => storagemod::blink_or_not_nickname(self),
@@ -169,47 +169,31 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     .to_string();
             }
             _ => {
-                let x = format!("Error: Unrecognized call_function_string: {}", sx);
+                let x = format!("Error: Unrecognized call_fn_string: {}", sx);
                 websysmod::debug_write(&x);
                 x
             }
         }
     }
-    //fn get_closure_code(){};
-    fn add_element_for_event_listener<'a>(
+
+    /// return a closure for the listener.
+    /// This function is here in the impl (specific) part because
+    /// the trait (generic) part does not know about RootRenderingComponent type.
+    fn closure_for_listener(
         &self,
-        cx: &mut RenderContext<'a>,
-        event_to_listen: String,
         fn_name: String,
-        element: ElementBuilder<
-            'a,
-            bumpalo::collections::Vec<'a, Listener<'a>>,
-            bumpalo::collections::Vec<'a, Attribute<'a>>,
-            bumpalo::collections::Vec<'a, Node<'a>>,
-        >,
-    ) -> ElementBuilder<
-        'a,
-        bumpalo::collections::Vec<'a, Listener<'a>>,
-        bumpalo::collections::Vec<'a, Attribute<'a>>,
-        bumpalo::collections::Vec<'a, Node<'a>>,
-    > {
-        //TODO: if I could return only the Closure  move |root,....|{...}
-        //it would be much simpler
-        let bump = cx.bump;
-        let event_to_listen = bumpalo::format!(in bump, "{}",&event_to_listen).into_bump_str();
-        // websysmod::debug_write(&format!("create listener {}", &fn_name));
-        element.on(event_to_listen, move |root, vdom, event| {
-            let fn_name = fn_name.clone();
+    ) -> Box<dyn Fn(&mut dyn RootRender, dodrio::VdomWeak, web_sys::Event) + 'static> {
+        Box::new(move |root, vdom, event| {
             let rrc = root.unwrap_mut::<RootRenderingComponent>();
-            // websysmod::debug_write(&format!("fn_name {}", fn_name));
             let vdom = vdom.clone();
-            rrc.call_listener(vdom, &fn_name, event);
+            rrc.call_fn_listener(vdom, &fn_name, event);
         })
     }
+
     /// html_templating functions for listeners
     /// get a clone of the VdomWeak
-    fn call_listener(&mut self, vdom: dodrio::VdomWeak, sx: &str, event: web_sys::Event) {
-        // websysmod::debug_write(&format!("call_listener: {}", &sx));
+    fn call_fn_listener(&mut self, vdom: dodrio::VdomWeak, sx: &str, event: web_sys::Event) {
+        // websysmod::debug_write(&format!("call_fn_listener: {}", &sx));
         match sx {
             "nickname_onkeyup" => {
                 storagemod::nickname_onkeyup(self, event);
@@ -220,10 +204,13 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             "open_youtube" => {
                 // randomly choose a link from VIDEOS
                 let num = websysmod::get_random(0, VIDEOS.len());
-                open_new_tab(&format!("https://www.youtube.com/watch?v={}", VIDEOS[num]));
+                websysmod::open_new_tab(&format!(
+                    "https://www.youtube.com/watch?v={}",
+                    VIDEOS[num]
+                ));
             }
             "open_menu" => {
-                open_new_local_page_push_to_history("#p21");
+                websysmod::open_new_local_page_push_to_history("#p21");
             }
             "rejoin_resync" => {
                 statusreconnectmod::send_msg_for_resync(self);
@@ -233,10 +220,10 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 let _x = h.back();
             }
             "open_instructions" => {
-                open_new_tab("#p08");
+                websysmod::open_new_tab("#p08");
             }
             "debug_log" => {
-                open_new_tab("#p31");
+                websysmod::open_new_tab("#p31");
             }
             "start_a_group_onclick" | "restart_game" => {
                 // send a msg to others to open #p04
@@ -244,7 +231,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 open_new_local_page("#p02");
             }
             "join_a_group_onclick" => {
-                open_new_local_page_push_to_history("#p03");
+                websysmod::open_new_local_page_push_to_history("#p03");
             }
             "choose_a_game_onclick" => {
                 open_new_local_page("#p05");
@@ -296,7 +283,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 open_new_local_page("#p11");
             }
             _ => {
-                let x = format!("Error: Unrecognized call_listener: {}", sx);
+                let x = format!("Error: Unrecognized call_fn_listener: {}", sx);
                 websysmod::debug_write(&x);
             }
         }
@@ -304,9 +291,9 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
 
     /// html_templating functions that return a Node
     #[allow(clippy::needless_return)]
-    fn call_function_node<'a>(&self, cx: &mut RenderContext<'a>, sx: &str) -> Node<'a> {
+    fn call_fn_node<'a>(&self, cx: &mut RenderContext<'a>, sx: &str) -> Node<'a> {
         let bump = cx.bump;
-        // websysmod::debug_write(&format!("call_function_node: {}", &sx));
+        // websysmod::debug_write(&format!("call_fn_node: {}", &sx));
         match sx {
             "div_grid_container" => {
                 // what is the game_status now?
@@ -324,7 +311,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             _ => {
                 let node = dodrio!(bump,
                 <h2  >
-                    {vec![text(bumpalo::format!(in bump, "Error: Unrecognized call_function_node: {}", sx).into_bump_str())]}
+                    {vec![text(bumpalo::format!(in bump, "Error: Unrecognized call_fn_node: {}", sx).into_bump_str())]}
                 </h2>
                 );
                 return node;
@@ -344,8 +331,8 @@ pub fn svg_qrcode_to_node<'a>(
     );
     let qr = unwrap!(qrcode53bytes::Qr::new(&link));
     let svg_template = qrcode53bytes::SvgDodrioRenderer::new(222, 222).render(&qr);
-    //I added use crate::htmltemplatemod::HtmlTemplating; to make the function get_root_element in scope.
-    unwrap!(rrc.get_root_element(cx, &svg_template, htmltemplatemod::HtmlOrSvg::Svg,))
+    //I added use crate::htmltemplatemod::HtmlTemplating; to make the function get_root_node in scope.
+    unwrap!(rrc.get_root_node(cx, &svg_template, htmltemplatemod::HtmlOrSvg::Svg,))
 }
 
 /// the arrow to the right
@@ -390,21 +377,10 @@ pub fn open_new_local_page(hash: &str) {
     // For example for menu p21 I want to have a back button.
     let (_old_location_href, old_href_hash) = websysmod::get_url_and_hash();
     if old_href_hash.is_empty() || old_href_hash.starts_with("#p03.") {
-        open_new_local_page_push_to_history(hash)
+        websysmod::open_new_local_page_push_to_history(hash)
     } else {
         let _x = websysmod::window().location().replace(hash);
     }
-}
-
-/// fn open new local page with #
-/// and push to history
-pub fn open_new_local_page_push_to_history(hash: &str) {
-    let _x = websysmod::window().location().assign(hash);
-}
-
-/// fn open new tab
-pub fn open_new_tab(url: &str) {
-    let _w = websysmod::window().open_with_url_and_target(url, "_blank");
 }
 
 /// if there is already a group_id don't blink

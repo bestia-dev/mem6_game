@@ -13,7 +13,6 @@ publish = false
 
 [dependencies]
 unwrap = "1.2.1"
-mem6_common = { path = "../mem6_common" }
 #qrcode53bytes = { path = "../../qrcode53bytes" }
 qrcode53bytes ="1.0.0"
 #dodrio =  { git = "https://github.com/fitzgen/dodrio", branch = "master" }

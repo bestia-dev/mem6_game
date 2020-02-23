@@ -1,6 +1,7 @@
 [workspace]
 
 members = [
+    #"dodrio_templating",
     "mem6_common",
     "mem6",
     "mem6_server",

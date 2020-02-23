@@ -48,7 +48,7 @@ impl Render for RootRenderingComponent {
         } else {
             //I must add use crate::htmltemplatemod::HtmlTemplating;
             // to allow this trait to be used here on self
-            unwrap!(self.get_root_element(
+            unwrap!(self.get_root_node(
                 cx,
                 &self.web_communication.html_template,
                 htmltemplatemod::HtmlOrSvg::Html,

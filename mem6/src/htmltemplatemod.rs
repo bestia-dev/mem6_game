@@ -4,11 +4,9 @@
 //! implement the trait HtmlTemplating
 
 //region: use
-//use crate::*;
 use reader_for_microxml::*;
-
 use dodrio::{
-    Node, Listener, Attribute, RenderContext,
+    Node, Listener, Attribute, RenderContext, RootRender,
     bumpalo::{self},
     builder::*,
 };
@@ -27,35 +25,23 @@ pub enum HtmlOrSvg {
 /// the RootRenderingComponent struct must implement this trait
 /// it must have the fields for local_route and html_template fields
 pub trait HtmlTemplating {
-    // specific code. while rendering, cannot mut rrc
-    fn call_function_string(&self, sx: &str) -> String;
-    fn call_function_boolean<'a>(&self, sx: &str) -> bool;
-    fn call_function_node<'a>(&self, cx: &mut RenderContext<'a>, sx: &str) -> Node<'a>;
-    //fn get_closure_code();
-    fn add_element_for_event_listener<'a>(
+    //region: specific implementation code. while rendering, cannot mut rrc
+    fn call_fn_string(&self, sx: &str) -> String;
+    fn call_fn_boolean<'a>(&self, sx: &str) -> bool;
+    fn call_fn_node<'a>(&self, cx: &mut RenderContext<'a>, sx: &str) -> Node<'a>;
+    fn closure_for_listener(
         &self,
-        cx: &mut RenderContext<'a>,
-        event_to_listen: String,
         fn_name: String,
-        element: ElementBuilder<
-            'a,
-            bumpalo::collections::Vec<'a, Listener<'a>>,
-            bumpalo::collections::Vec<'a, Attribute<'a>>,
-            bumpalo::collections::Vec<'a, Node<'a>>,
-        >,
-    ) -> ElementBuilder<
-        'a,
-        bumpalo::collections::Vec<'a, Listener<'a>>,
-        bumpalo::collections::Vec<'a, Attribute<'a>>,
-        bumpalo::collections::Vec<'a, Node<'a>>,
-    >;
-    fn call_listener(&mut self, vdom: dodrio::VdomWeak, sx: &str, event: web_sys::Event);
-    //generic code
+    ) -> Box<dyn Fn(&mut dyn RootRender, dodrio::VdomWeak, web_sys::Event) + 'static>;
+    fn call_fn_listener(&mut self, vdom: dodrio::VdomWeak, sx: &str, event: web_sys::Event);
+    //endregion: specific implementation code
+
+    //region: generic code (in trait definition)
 
     /// get root element Node.   
     /// I wanted to use dodrio::Node, but it has only private methods.  
     /// I must use dodrio element_builder.  
-    fn get_root_element<'a>(
+    fn get_root_node<'a>(
         &self,
         cx: &mut RenderContext<'a>,
         html_template: &str,
@@ -182,19 +168,16 @@ pub trait HtmlTemplating {
                         // the rest of the name does not matter.
                         // The replace_string will always be applied to the next attribute.
                         let fn_name = value;
-                        let repl_txt = self.call_function_string(fn_name);
+                        let repl_txt = self.call_fn_string(fn_name);
                         replace_string = Some(repl_txt);
                     } else if name.starts_with("data-on-") {
                         // Only one listener for now because the api does not give me other method.
                         let fn_name = value.to_string();
                         let event_to_listen = unwrap!(name.get(8..)).to_string();
-                        //move and return element(because of the design of chained calls)
-                        element = self.add_element_for_event_listener(
-                            cx,
-                            event_to_listen,
-                            fn_name,
-                            element,
-                        );
+                        let event_to_listen =
+                            bumpalo::format!(in bump, "{}",&event_to_listen).into_bump_str();
+                        element =
+                            element.on(event_to_listen, self.closure_for_listener(fn_name));
                     } else {
                         let name = bumpalo::format!(in bump, "{}",name).into_bump_str();
                         let value2;
@@ -234,17 +217,17 @@ pub trait HtmlTemplating {
                     // it must look like <!--t=get_text-->
                     if txt.starts_with("t=") {
                         let fn_name = unwrap!(txt.get(2..));
-                        let repl_txt = self.call_function_string(fn_name);
+                        let repl_txt = self.call_fn_string(fn_name);
                         replace_string = Some(repl_txt);
                     } else if txt.starts_with("n=") {
                         let fn_name = unwrap!(txt.get(2..));
-                        let repl_node = self.call_function_node(cx, fn_name);
+                        let repl_node = self.call_fn_node(cx, fn_name);
                         // websysmod::debug_write(&format!("n= {:?}", &repl_node));
                         replace_node = Some(repl_node);
                     } else if txt.starts_with("b=") {
                         // boolean if this is true than render the next node, else don't render
                         let fn_name = unwrap!(txt.get(2..));
-                        replace_boolean = Some(self.call_function_boolean(fn_name));
+                        replace_boolean = Some(self.call_fn_boolean(fn_name));
                     } else {
                         // nothing. it is really a comment
                     }
@@ -270,11 +253,12 @@ pub trait HtmlTemplating {
             }
         }
     }
+    //endregion: generic code
 }
 
 /// get en empty div node
 pub fn empty_div<'a>(cx: &mut RenderContext<'a>) -> Node<'a> {
-    div(&cx).finish()
+    dodrio::builder::div(&cx).finish()
 }
 
 /// decode 5 xml control characters : " ' & < >  
@@ -283,9 +267,10 @@ pub fn empty_div<'a>(cx: &mut RenderContext<'a>) -> Node<'a> {
 /// because all others characters can be written as utf-8 characters.
 /// https://www.tutorialspoint.com/html5/html5_entities.htm  
 pub fn decode_5_xml_control_characters(input: &str) -> String {
-    // I don't know how slow is replace, but I have really small texts.
-    let control_character_symbols = vec!["\"", "'", "&", "<", ">"];
+    //TODO: I don't know how slow is replace(), but I have really small texts.
     let control_character_names = vec!["&quot;", "&apos;", "&amp;", "&lt;", "&gt;"];
+    let control_character_symbols = vec!["\"", "'", "&", "<", ">"];
+    
     let mut output = input.to_owned();
     for i in 0..control_character_symbols.len() {
         output = output.replace(
