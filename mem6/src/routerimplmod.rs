@@ -5,6 +5,52 @@
 //! This contains only generic code and can be made into a library.
 
 use crate::*;
+use unwrap::unwrap;
+use dodrio::VdomWeak;
+use wasm_bindgen::{prelude::*, JsCast};
+use wasm_bindgen_futures::spawn_local;
+
+pub fn closure_on_hash_change(
+    vdom: dodrio::VdomWeak,
+    fill_rrc_local_route: &'static dyn Fn(String, &mut RootRenderingComponent, &dodrio::VdomWeak),
+) -> Box<dyn FnMut()> {
+    // Callback fired whenever the URL hash fragment changes.
+    // Keeps the rrc.web_communication.local_route in sync with the `#` fragment.
+    Box::new(move || {
+        let location = websysmod::window().location();
+        let mut short_local_route = unwrap!(location.hash());
+        if short_local_route.is_empty() {
+            short_local_route = "index".to_owned();
+        }
+        // websysmod::debug_write("after .hash");
+        wasm_bindgen_futures::spawn_local({
+            let vdom = vdom.clone();
+            async move {
+                let _ = vdom
+                    .with_component({
+                        let vdom = vdom.clone();
+                        move |root| {
+                            let rrc = root.unwrap_mut::<RootRenderingComponent>();
+                            // If the rrc local_route already matches the event's
+                            // short_local_route, then there is nothing to do (ha). If they
+                            // don't match, then we need to update the rrc' local_route
+                            // and re-render.
+                            if rrc.web_communication.local_route != short_local_route {
+                                // all the specific routes are separated from the generic routing code
+                                fill_rrc_local_route(short_local_route, rrc, &vdom);
+                                let url = rrc.web_communication.local_route.to_string();
+                                // I cannot simply await here because this closure is not async
+                                spawn_local(routermod::async_fetch_and_write_to_rrc_html_template(
+                                    url, vdom,
+                                ));
+                            }
+                        }
+                    })
+                    .await;
+            }
+        });
+    })
+}
 
 pub fn fill_rrc_local_route(
     local_route: String,

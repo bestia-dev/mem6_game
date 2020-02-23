@@ -25,45 +25,9 @@ pub trait Routing {
 /// Start the router. The second parameter is a reference to a function that
 /// deals with the specific routes. So the generic route code is isolated from the specific
 /// and can be made a library.
-pub fn start_router(
-    vdom: VdomWeak,
-    fill_rrc_local_route: &'static dyn Fn(String, &mut RootRenderingComponent, &dodrio::VdomWeak),
-) {
+pub fn start_router(mut on_hash_change: Box<dyn FnMut()>) {
     // Callback fired whenever the URL hash fragment changes.
     // Keeps the rrc.web_communication.local_route in sync with the `#` fragment.
-    let on_hash_change = move || {
-        let location = websysmod::window().location();
-        let mut short_local_route = unwrap!(location.hash());
-        if short_local_route.is_empty() {
-            short_local_route = "index".to_owned();
-        }
-        // websysmod::debug_write("after .hash");
-        wasm_bindgen_futures::spawn_local({
-            let vdom = vdom.clone();
-            async move {
-                let _ = vdom
-                    .with_component({
-                        let vdom = vdom.clone();
-                        move |root| {
-                            let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                            // If the rrc local_route already matches the event's
-                            // short_local_route, then there is nothing to do (ha). If they
-                            // don't match, then we need to update the rrc' local_route
-                            // and re-render.
-                            if rrc.web_communication.local_route != short_local_route {
-                                // all the specific routes are separated from the generic routing code
-                                fill_rrc_local_route(short_local_route, rrc, &vdom);
-                                let url = rrc.web_communication.local_route.to_string();
-                                // I cannot simply await here because this closure is not async
-                                spawn_local(async_fetch_and_write_to_rrc_html_template(url, vdom));
-                            }
-                        }
-                    })
-                    .await;
-            }
-        });
-    };
-
     // Call it once to handle the initial `#` fragment.
     on_hash_change();
 
@@ -73,7 +37,7 @@ pub fn start_router(
     // provide a method for removing this router's event listener and cleaning
     // up after ourselves.
     #[allow(clippy::as_conversions)]
-    let on_hash_change = Closure::wrap(Box::new(on_hash_change) as Box<dyn FnMut()>);
+    let on_hash_change = Closure::wrap(on_hash_change);
     websysmod::window()
         .add_event_listener_with_callback("hashchange", on_hash_change.as_ref().unchecked_ref())
         .unwrap_throw();
