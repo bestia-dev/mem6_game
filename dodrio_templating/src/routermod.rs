@@ -22,6 +22,9 @@ pub trait Routing {
         vdom: dodrio::VdomWeak,
         short_local_route: String,
     ) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static>;
+    fn closure_fill_html_template(
+        resp_body_text: String,
+    ) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static>;
     //endregion: specific code
     //region:generic code (boilerplate)
     /// Start the router.
