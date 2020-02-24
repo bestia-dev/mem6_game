@@ -1,13 +1,6 @@
 //! routermod - A simple `#`-fragment router for dodrio html templating  
 //! This is the generic module. All the specifics for a website are isolated in the  
 //! module routerimplmod.  
-//! The RootRenderingComponent struct must have the fields:  
-//! rrc.web_communication.local_route - fill_rrc_local_route() will fills this field.
-//!        It will be the name of the html template file to fetch  
-//! rrc.web_communication.html_template - a string where the html_template is
-//!        fetched from the server  
-//! 2020-02-24 I tried to put away as much boilerplate as I could from routerimplmod
-//! , but some code is very difficult to split in Rust.
 
 use crate::*;
 
@@ -18,16 +11,16 @@ use wasm_bindgen_futures::spawn_local;
 
 /// trait intended to be added to VdomWeakWrapper
 pub trait Routing {
-    //region: specific code to be implemented
-    fn get_local_route(root: &mut dyn dodrio::RootRender) -> &str;
-    fn closure_fill_html_template(
-        resp_body_text: String,
-    ) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static>;
+    //region: specific code to be implemented on Router struct
+    fn get_rrc_local_route(root: &mut dyn dodrio::RootRender) -> &str;
     fn fill_rrc_local_route(
         local_route: String,
         root: &mut dyn dodrio::RootRender,
         vdom: VdomWeak,
     ) -> String;
+    fn fill_html_template(
+        resp_body_text: String,
+    ) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static>;
     //endregion: specific code
 
     //region:generic code (boilerplate)
@@ -56,7 +49,7 @@ pub trait Routing {
                                 // short_local_route, then there is nothing to do (ha). If they
                                 // don't match, then we need to update the rrc' local_route
                                 // and re-render.
-                                if Self::get_local_route(root) != short_local_route {
+                                if Self::get_rrc_local_route(root) != short_local_route {
                                     let v2 = vdom.clone();
                                     //the function that recognizes routes and urls
                                     let url =
@@ -69,7 +62,7 @@ pub trait Routing {
                                         // update values in rrc is async.
                                         unwrap!(
                                             vdom.with_component({
-                                                Self::closure_fill_html_template(resp_body_text)
+                                                Self::fill_html_template(resp_body_text)
                                             })
                                             .await
                                         );

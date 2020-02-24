@@ -1,10 +1,7 @@
 // websysmod.rs
-//! helper functions for web_sys, window, document, dom and web_sys
+//! helper functions for web_sys, window, document, dom
 
 //region: use
-//use crate::*;
-//use crate::{storagemod};
-//use mem6_common::*;
 use web_sys::console;
 use unwrap::unwrap;
 use rand::{Rng, rngs::SmallRng, SeedableRng};
