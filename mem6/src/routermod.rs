@@ -19,13 +19,13 @@ use unwrap::unwrap;
 pub trait Routing {
     //region: specific code to be implemented
     fn start_router(&self);
-    fn closure_2(
+    fn closure_specific_on_hash_change(
         vdom: dodrio::VdomWeak,
         short_local_route: String,
     ) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static>;
     //endregion: specific code
     //region:generic code (boilerplate)
-    fn closure_on_hash_change(vdom: dodrio::VdomWeak) -> Box<dyn FnMut()> {
+    fn closure_generic_on_hash_change(vdom: dodrio::VdomWeak) -> Box<dyn FnMut()> {
         // Callback fired whenever the URL hash fragment changes.
         // Keeps the rrc.web_communication.local_route in sync with the `#` fragment.
         Box::new(move || {
@@ -41,7 +41,7 @@ pub trait Routing {
                     let _ = vdom
                         .with_component({
                             let vdom = vdom.clone();
-                            Self::closure_2(vdom, short_local_route)
+                            Self::closure_specific_on_hash_change(vdom, short_local_route)
                         })
                         .await;
                 }
@@ -74,4 +74,19 @@ pub fn get_url_param_in_hash_after_dot(short_local_route: &str) -> &str {
     let mut spl = short_local_route.split('.');
     unwrap!(spl.next());
     unwrap!(spl.next())
+}
+
+/// only the html inside the <body> </body>
+pub fn between_body_tag(resp_body_text: &str) -> String {
+    let pos1 = resp_body_text.find("<body>").unwrap_or(0);
+    let pos2 = resp_body_text.find("</body>").unwrap_or(0);
+    //return
+    if pos1 != 0 {
+        #[allow(clippy::integer_arithmetic)]
+        {
+            unwrap!(resp_body_text.get(pos1 + 6..pos2)).to_string()
+        }
+    } else {
+        resp_body_text.to_string()
+    }
 }

@@ -10,18 +10,18 @@ use dodrio::VdomWeak;
 //use wasm_bindgen::{prelude::*, JsCast};
 use wasm_bindgen_futures::spawn_local;
 
-impl routermod::Routing for dodrio::VdomWeak {
+impl routermod::Routing for VdomWeak {
     /// Start the router. The second parameter is a reference to a function that
     /// deals with the specific routes. So the generic route code is isolated from the specific
     /// and can be made a library.
     fn start_router(&self) {
         let v3 = self.clone();
-        let on_hash_change = Self::closure_on_hash_change(v3);
+        let on_hash_change = VdomWeak::closure_generic_on_hash_change(v3);
         self.set_on_hash_change_callback(on_hash_change);
     }
 
-    fn closure_2(
-        vdom: dodrio::VdomWeak,
+    fn closure_specific_on_hash_change(
+        vdom: VdomWeak,
         short_local_route: String,
     ) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static> {
         // Callback fired whenever the URL hash fragment changes.
@@ -47,12 +47,10 @@ impl routermod::Routing for dodrio::VdomWeak {
 }
 
 /// the specific code to route short_local_route to actual filenames to download
-/// and later dodrio_templating replace
-pub fn fill_rrc_local_route(
-    local_route: String,
-    rrc: &mut RootRenderingComponent,
-    vdom: dodrio::VdomWeak,
-) {
+/// and later dodrio_templating replace.
+/// It cannot be a method because it has a parameter RootRenderingComponent, that is unknown in
+/// the trait definition.
+pub fn fill_rrc_local_route(local_route: String, rrc: &mut RootRenderingComponent, vdom: VdomWeak) {
     if local_route == "#p02" {
         let vdom = vdom.clone();
         fetchgmod::async_fetch_game_config_request(rrc, &vdom);
@@ -89,21 +87,10 @@ pub fn fill_rrc_local_route(
 }
 
 /// Fetch the html_template and save it in rrc.web_communication.html_template  
-/// The async fn for executor spawn_local.  
-/// example how to use it in on_click:  
-/// ```
-/// .on("click", |_root, vdom, _event| {
-///     let v2 = vdom;
-///     // async executor spawn_local is the recommended for wasm
-///     let url = "t1.html".to_owned();
-///     // this will change the rrc.web_communication.html_template eventually
-///     spawn_local(async_fetch_and_write_to_rrc_html_template(url, v2));
-/// })
-/// ```
 /// async fn cannot be trait fn as of 24.2.2020 cargo version 1.41.0
 pub async fn async_fetch_and_write_to_rrc_html_template(url: String, vdom: VdomWeak) {
-    websysmod::debug_write(&format!("fetch {}", &url));
-    let mut resp_body_text: String = websysmod::async_spwloc_fetch_text(url).await;
+    //websysmod::debug_write(&format!("fetch {}", &url));
+    let resp_body_text: String = websysmod::async_spwloc_fetch_text(url).await;
     // update values in rrc is async.
     // I can await a fn call or an async block.
     async {
@@ -112,17 +99,8 @@ pub async fn async_fetch_and_write_to_rrc_html_template(url: String, vdom: VdomW
                 move |root| {
                     let rrc = root.unwrap_mut::<RootRenderingComponent>();
                     // only the html inside the <body> </body>
-                    let pos1 = resp_body_text.find("<body>").unwrap_or(0);
-                    let pos2 = resp_body_text.find("</body>").unwrap_or(0);
-                    if pos1 != 0 {
-                        #[allow(clippy::integer_arithmetic)]
-                        {
-                            resp_body_text =
-                                unwrap!(resp_body_text.get(pos1 + 6..pos2)).to_string();
-                        }
-                    }
-                    // websysmod::debug_write(&format!("body: {}", resp_body_text));
-                    rrc.web_communication.html_template = resp_body_text;
+                    rrc.web_communication.html_template =
+                        routermod::between_body_tag(&resp_body_text);
                 }
             })
             .await

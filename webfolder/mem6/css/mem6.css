@@ -289,7 +289,6 @@ img.center{
 /*user must do something*/
 .h2_must_do_something{
     color:green;
-    animation: blinker 1s linear infinite;
 }
 
 .blink{
