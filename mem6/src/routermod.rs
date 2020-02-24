@@ -19,7 +19,12 @@ use unwrap::unwrap;
 pub trait Routing {
     //region: specific code to be implemented
     fn start_router(&self);
+    fn closure_2(
+        vdom: dodrio::VdomWeak,
+        short_local_route: String,
+    ) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static>;
     //endregion: specific code
+    //region:generic code (boilerplate)
     fn closure_on_hash_change(vdom: dodrio::VdomWeak) -> Box<dyn FnMut()> {
         // Callback fired whenever the URL hash fragment changes.
         // Keeps the rrc.web_communication.local_route in sync with the `#` fragment.
@@ -36,7 +41,7 @@ pub trait Routing {
                     let _ = vdom
                         .with_component({
                             let vdom = vdom.clone();
-                            routerimplmod::closure_2(vdom, short_local_route)
+                            Self::closure_2(vdom, short_local_route)
                         })
                         .await;
                 }
@@ -55,7 +60,6 @@ pub trait Routing {
         // Note that if we ever intended to unmount our app, we would want to
         // provide a method for removing this router's event listener and cleaning
         // up after ourselves.
-        #[allow(clippy::as_conversions)]
         let on_hash_change = Closure::wrap(on_hash_change);
         websysmod::window()
             .add_event_listener_with_callback("hashchange", on_hash_change.as_ref().unchecked_ref())
@@ -63,8 +67,6 @@ pub trait Routing {
         on_hash_change.forget();
     }
 }
-
-//region: generic trait code
 
 /// get the first param after hash in local route after dot
 /// example &p03.1234 -> 1234

@@ -19,6 +19,31 @@ impl routermod::Routing for dodrio::VdomWeak {
         let on_hash_change = Self::closure_on_hash_change(v3);
         self.set_on_hash_change_callback(on_hash_change);
     }
+
+    fn closure_2(
+        vdom: dodrio::VdomWeak,
+        short_local_route: String,
+    ) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static> {
+        // Callback fired whenever the URL hash fragment changes.
+        // Keeps the rrc.web_communication.local_route in sync with the `#` fragment.
+        Box::new(move |root| {
+            let short_local_route = short_local_route.clone();
+            let rrc = root.unwrap_mut::<RootRenderingComponent>();
+            // If the rrc local_route already matches the event's
+            // short_local_route, then there is nothing to do (ha). If they
+            // don't match, then we need to update the rrc' local_route
+            // and re-render.
+            if rrc.web_communication.local_route != short_local_route {
+                // all the specific routes are separated from the generic routing code
+                let v2 = vdom.clone();
+                fill_rrc_local_route(short_local_route, rrc, v2);
+                let url = rrc.web_communication.local_route.to_string();
+                // I cannot simply await here because this closure is not async
+                let v3 = vdom.clone();
+                spawn_local(async_fetch_and_write_to_rrc_html_template(url, v3));
+            }
+        })
+    }
 }
 
 /// the specific code to route short_local_route to actual filenames to download
@@ -61,31 +86,6 @@ pub fn fill_rrc_local_route(
     } else {
         rrc.web_communication.local_route = "p01_start.html".to_owned();
     }
-}
-
-pub fn closure_2(
-    vdom: dodrio::VdomWeak,
-    short_local_route: String,
-) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static> {
-    // Callback fired whenever the URL hash fragment changes.
-    // Keeps the rrc.web_communication.local_route in sync with the `#` fragment.
-    Box::new(move |root| {
-        let short_local_route = short_local_route.clone();
-        let rrc = root.unwrap_mut::<RootRenderingComponent>();
-        // If the rrc local_route already matches the event's
-        // short_local_route, then there is nothing to do (ha). If they
-        // don't match, then we need to update the rrc' local_route
-        // and re-render.
-        if rrc.web_communication.local_route != short_local_route {
-            // all the specific routes are separated from the generic routing code
-            let v2 = vdom.clone();
-            fill_rrc_local_route(short_local_route, rrc, v2);
-            let url = rrc.web_communication.local_route.to_string();
-            // I cannot simply await here because this closure is not async
-            let v3 = vdom.clone();
-            spawn_local(async_fetch_and_write_to_rrc_html_template(url, v3));
-        }
-    })
 }
 
 /// Fetch the html_template and save it in rrc.web_communication.html_template  
