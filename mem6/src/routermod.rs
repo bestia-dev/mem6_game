@@ -19,8 +19,7 @@ pub trait Routing {
     //region: specific code to be implemented
     fn test(&self);
     //endregion: specific code
-    fn start_router(&self, on_hash_change: Box<dyn FnMut()>);
-    fn fill_rrc_local_route(&self, local_route: String, rrc: &mut RootRenderingComponent);
+    fn start_router(&self);
 }
 
 //region: generic trait code
@@ -45,6 +44,7 @@ pub fn get_url_param_in_hash_after_dot(short_local_route: &str) -> &str {
 ///     spawn_local(async_fetch_and_write_to_rrc_html_template(url, v2));
 /// })
 /// ```
+/// async fn cannot be trait fn as of 24.2.2020 cargo version 1.41.0
 pub async fn async_fetch_and_write_to_rrc_html_template(url: String, vdom: VdomWeak) {
     websysmod::debug_write(&format!("fetch {}", &url));
     let mut resp_body_text: String = websysmod::async_spwloc_fetch_text(url).await;

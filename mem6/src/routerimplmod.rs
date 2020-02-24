@@ -17,7 +17,9 @@ impl routermod::Routing for dodrio::VdomWeak {
     /// Start the router. The second parameter is a reference to a function that
     /// deals with the specific routes. So the generic route code is isolated from the specific
     /// and can be made a library.
-    fn start_router(&self, mut on_hash_change: Box<dyn FnMut()>) {
+    fn start_router(&self) {
+        let v3 = self.clone();
+        let mut on_hash_change = routerimplmod::closure_on_hash_change(v3);
         // Callback fired whenever the URL hash fragment changes.
         // Keeps the rrc.web_communication.local_route in sync with the `#` fragment.
         // Call it once to handle the initial `#` fragment.
@@ -35,43 +37,47 @@ impl routermod::Routing for dodrio::VdomWeak {
             .unwrap_throw();
         on_hash_change.forget();
     }
+}
 
-    /// the specific code to route short_local_route to actual filenames to download
-    /// and later dodrio_templating replace
-    fn fill_rrc_local_route(&self, local_route: String, rrc: &mut RootRenderingComponent) {
-        if local_route == "#p02" {
-            let vdom = self.clone();
-            fetchgmod::async_fetch_game_config_request(rrc, &vdom);
-            rrc.web_communication.local_route = "p02_start_a_group.html".to_owned();
-        } else if local_route.starts_with("#p03") {
-            rrc.game_data.my_player_number = 2;
-            if local_route.contains('.') {
-                let gr = routermod::get_url_param_in_hash_after_dot(&local_route);
-                storagemod::save_group_id_string_to_local_storage(rrc, gr.to_string());
-            } else {
-                storagemod::load_group_id_string(rrc);
-            }
-            rrc.web_communication.local_route = "p03_join_a_group.html".to_owned();
-        } else if local_route == "#p04" {
-            statusjoinedmod::on_load_joined(rrc);
-            rrc.web_communication.local_route = "p04_wait_to_start.html".to_owned();
-        } else if local_route == "#p05" {
-            rrc.web_communication.local_route = "p05_choose_game.html".to_owned();
-        } else if local_route == "#p06" {
-            rrc.web_communication.local_route = "p06_drink.html".to_owned();
-        } else if local_route == "#p07" {
-            rrc.web_communication.local_route = "p07_do_not_drink.html".to_owned();
-        } else if local_route == "#p08" {
-            rrc.web_communication.local_route = "p08_instructions.html".to_owned();
-        } else if local_route == "#p11" {
-            rrc.web_communication.local_route = "p11_gameboard.html".to_owned();
-        } else if local_route == "#p21" {
-            rrc.web_communication.local_route = "p21_menu.html".to_owned();
-        } else if local_route == "#p31" {
-            rrc.web_communication.local_route = "p31_debug_text.html".to_owned();
+/// the specific code to route short_local_route to actual filenames to download
+/// and later dodrio_templating replace
+pub fn fill_rrc_local_route(
+    local_route: String,
+    rrc: &mut RootRenderingComponent,
+    vdom: dodrio::VdomWeak,
+) {
+    if local_route == "#p02" {
+        let vdom = vdom.clone();
+        fetchgmod::async_fetch_game_config_request(rrc, &vdom);
+        rrc.web_communication.local_route = "p02_start_a_group.html".to_owned();
+    } else if local_route.starts_with("#p03") {
+        rrc.game_data.my_player_number = 2;
+        if local_route.contains('.') {
+            let gr = routermod::get_url_param_in_hash_after_dot(&local_route);
+            storagemod::save_group_id_string_to_local_storage(rrc, gr.to_string());
         } else {
-            rrc.web_communication.local_route = "p01_start.html".to_owned();
+            storagemod::load_group_id_string(rrc);
         }
+        rrc.web_communication.local_route = "p03_join_a_group.html".to_owned();
+    } else if local_route == "#p04" {
+        statusjoinedmod::on_load_joined(rrc);
+        rrc.web_communication.local_route = "p04_wait_to_start.html".to_owned();
+    } else if local_route == "#p05" {
+        rrc.web_communication.local_route = "p05_choose_game.html".to_owned();
+    } else if local_route == "#p06" {
+        rrc.web_communication.local_route = "p06_drink.html".to_owned();
+    } else if local_route == "#p07" {
+        rrc.web_communication.local_route = "p07_do_not_drink.html".to_owned();
+    } else if local_route == "#p08" {
+        rrc.web_communication.local_route = "p08_instructions.html".to_owned();
+    } else if local_route == "#p11" {
+        rrc.web_communication.local_route = "p11_gameboard.html".to_owned();
+    } else if local_route == "#p21" {
+        rrc.web_communication.local_route = "p21_menu.html".to_owned();
+    } else if local_route == "#p31" {
+        rrc.web_communication.local_route = "p31_debug_text.html".to_owned();
+    } else {
+        rrc.web_communication.local_route = "p01_start.html".to_owned();
     }
 }
 
@@ -99,7 +105,8 @@ pub fn closure_on_hash_change(vdom: dodrio::VdomWeak) -> Box<dyn FnMut()> {
                             // and re-render.
                             if rrc.web_communication.local_route != short_local_route {
                                 // all the specific routes are separated from the generic routing code
-                                vdom.fill_rrc_local_route(short_local_route, rrc);
+                                let v2 = vdom.clone();
+                                fill_rrc_local_route(short_local_route, rrc, v2);
                                 let url = rrc.web_communication.local_route.to_string();
                                 // I cannot simply await here because this closure is not async
                                 spawn_local(routermod::async_fetch_and_write_to_rrc_html_template(
