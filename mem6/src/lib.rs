@@ -320,18 +320,12 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     // Start the URL router. Send a reference to the functions with router settings.
     // To keep separate modules for generic router code and specific router code.
     let v3 = vdom.weak();
-    let on_hash_change =
-        routerimplmod::closure_on_hash_change(v3, &routerimplmod::fill_rrc_local_route);
-    routermod::start_router(on_hash_change);
+    let on_hash_change = routerimplmod::closure_on_hash_change(v3);
+    let v4 = vdom.weak();
+    v4.start_router(on_hash_change);
 
     // Run the component forever. Forget to drop the memory.
     vdom.forget();
 
     Ok(())
-}
-
-impl routermod::Routing for dodrio::Vdom {
-    fn test() {
-        let _x = "aaa";
-    }
 }

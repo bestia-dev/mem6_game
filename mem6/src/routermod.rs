@@ -11,38 +11,20 @@
 use crate::*;
 
 use dodrio::VdomWeak;
-use wasm_bindgen::{prelude::*, JsCast};
-use wasm_bindgen_futures::spawn_local;
+//use wasm_bindgen::{prelude::*, JsCast};
+//use wasm_bindgen_futures::spawn_local;
 use unwrap::unwrap;
 
 pub trait Routing {
     //region: specific code to be implemented
-    fn test();
+    fn test(&self);
     //endregion: specific code
+    fn start_router(&self, on_hash_change: Box<dyn FnMut()>);
+    fn fill_rrc_local_route(&self, local_route: String, rrc: &mut RootRenderingComponent);
 }
 
 //region: generic trait code
-/// Start the router. The second parameter is a reference to a function that
-/// deals with the specific routes. So the generic route code is isolated from the specific
-/// and can be made a library.
-pub fn start_router(mut on_hash_change: Box<dyn FnMut()>) {
-    // Callback fired whenever the URL hash fragment changes.
-    // Keeps the rrc.web_communication.local_route in sync with the `#` fragment.
-    // Call it once to handle the initial `#` fragment.
-    on_hash_change();
 
-    // Now listen for hash changes forever.
-    //
-    // Note that if we ever intended to unmount our app, we would want to
-    // provide a method for removing this router's event listener and cleaning
-    // up after ourselves.
-    #[allow(clippy::as_conversions)]
-    let on_hash_change = Closure::wrap(on_hash_change);
-    websysmod::window()
-        .add_event_listener_with_callback("hashchange", on_hash_change.as_ref().unchecked_ref())
-        .unwrap_throw();
-    on_hash_change.forget();
-}
 /// get the first param after hash in local route after dot
 /// example &p03.1234 -> 1234
 pub fn get_url_param_in_hash_after_dot(short_local_route: &str) -> &str {
