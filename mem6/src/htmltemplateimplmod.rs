@@ -177,29 +177,21 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
     }
 
     /// return a closure for the listener.
-    /// This function is here in the impl (specific) part because
-    /// the trait (generic) part does not know about RootRenderingComponent type.
-    fn closure_for_listener(
-        &self,
-        fn_name: String,
-    ) -> Box<dyn Fn(&mut dyn RootRender, dodrio::VdomWeak, web_sys::Event) + 'static> {
+    fn call_fn_listener(&self, fn_name: String) 
+    -> Box<dyn Fn(&mut dyn RootRender, dodrio::VdomWeak, web_sys::Event) + 'static> {
+        
         Box::new(move |root, vdom, event| {
+            let fn_name=fn_name.clone();
+            let fn_name = fn_name.as_str();
             let rrc = root.unwrap_mut::<RootRenderingComponent>();
             let vdom = vdom.clone();
-            rrc.call_fn_listener(vdom, &fn_name, event);
-        })
-    }
-
-    /// html_templating functions for listeners
-    /// get a clone of the VdomWeak
-    fn call_fn_listener(&mut self, vdom: dodrio::VdomWeak, fn_name: &str, event: web_sys::Event) {
         // websysmod::debug_write(&format!("call_fn_listener: {}", &fn_name));
         match fn_name {
             "nickname_onkeyup" => {
-                storagemod::nickname_onkeyup(self, event);
+                storagemod::nickname_onkeyup(rrc, event);
             }
             "group_id_onkeyup" => {
-                storagemod::group_id_onkeyup(self, event);
+                storagemod::group_id_onkeyup(rrc, event);
             }
             "open_youtube" => {
                 // randomly choose a link from VIDEOS
@@ -213,7 +205,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 websysmod::open_new_local_page_push_to_history("#p21");
             }
             "rejoin_resync" => {
-                statusreconnectmod::send_msg_for_resync(self);
+                statusreconnectmod::send_msg_for_resync(rrc);
             }
             "back_to_game" => {
                 let h = unwrap!(websysmod::window().history());
@@ -227,7 +219,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             }
             "start_a_group_onclick" | "restart_game" => {
                 // send a msg to others to open #p04
-                statusgameovermod::on_msg_play_again(self);
+                statusgameovermod::on_msg_play_again(rrc);
                 open_new_local_page("#p02");
             }
             "join_a_group_onclick" => {
@@ -237,18 +229,18 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 open_new_local_page("#p05");
             }
             "start_game_onclick" => {
-                statusgamedatainitmod::on_click_start_game(self);
+                statusgamedatainitmod::on_click_start_game(rrc);
                 // async fetch all imgs and put them in service worker cache
-                fetchgmod::fetch_all_img_for_cache_request(self);
+                fetchgmod::fetch_all_img_for_cache_request(rrc);
                 vdom.schedule_render();
-                // websysmod::debug_write(&format!("start_game_onclick players: {:?}",self.game_data.players));
+                // websysmod::debug_write(&format!("start_game_onclick players: {:?}",rrc.game_data.players));
                 open_new_local_page("#p11");
             }
             "game_type_right_onclick" => {
-                game_type_right_onclick(self, &vdom);
+                game_type_right_onclick(rrc, &vdom);
             }
             "game_type_left_onclick" => {
-                game_type_left_onclick(self, &vdom);
+                game_type_left_onclick(rrc, &vdom);
             }
             "join_group_on_click" => {
                 open_new_local_page("#p04");
@@ -257,27 +249,27 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 // send a msg to end drinking to all players
                 websysmod::debug_write(&format!("MsgDrinkEnd send{}", ""));
                 websocketmod::ws_send_msg(
-                    &self.web_communication.ws,
+                    &rrc.web_communication.ws,
                     &WsMessage::MsgDrinkEnd {
-                        my_ws_uid: self.web_communication.my_ws_uid,
-                        msg_receivers: self.web_communication.msg_receivers.to_string(),
+                        my_ws_uid: rrc.web_communication.my_ws_uid,
+                        msg_receivers: rrc.web_communication.msg_receivers.to_string(),
                     },
                 );
                 // if all the cards are permanently up, this is the end of the game
-                // websysmod::debug_write("if is_all_permanently(self)");
-                if status2ndcardmod::is_all_permanently(self) {
+                // websysmod::debug_write("if is_all_permanently(rrc)");
+                if status2ndcardmod::is_all_permanently(rrc) {
                     websysmod::debug_write("yes");
-                    statusgameovermod::on_msg_game_over(self);
+                    statusgameovermod::on_msg_game_over(rrc);
                     // send message
                     websocketmod::ws_send_msg(
-                        &self.web_communication.ws,
+                        &rrc.web_communication.ws,
                         &WsMessage::MsgGameOver {
-                            my_ws_uid: self.web_communication.my_ws_uid,
-                            msg_receivers: self.web_communication.msg_receivers.to_string(),
+                            my_ws_uid: rrc.web_communication.my_ws_uid,
+                            msg_receivers: rrc.web_communication.msg_receivers.to_string(),
                         },
                     );
                 } else {
-                    statustaketurnmod::on_click_take_turn(self, &vdom);
+                    statustaketurnmod::on_click_take_turn(rrc, &vdom);
                 }
                 // end the drink dialog
                 open_new_local_page("#p11");
@@ -287,6 +279,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 websysmod::debug_write(&x);
             }
         }
+    })
     }
 
     /// html_templating functions that return a Node

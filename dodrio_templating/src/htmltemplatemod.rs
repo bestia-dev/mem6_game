@@ -29,11 +29,8 @@ pub trait HtmlTemplating {
     fn call_fn_string(&self, fn_name: &str) -> String;
     fn call_fn_boolean<'a>(&self, fn_name: &str) -> bool;
     fn call_fn_node<'a>(&self, cx: &mut RenderContext<'a>, fn_name: &str) -> Node<'a>;
-    fn closure_for_listener(
-        &self,
-        fn_name: String,
-    ) -> Box<dyn Fn(&mut dyn RootRender, dodrio::VdomWeak, web_sys::Event) + 'static>;
-    fn call_fn_listener(&mut self, vdom: dodrio::VdomWeak, fn_name: &str, event: web_sys::Event);
+    fn call_fn_listener(&self, fn_name: String) 
+    -> Box<dyn Fn(&mut dyn RootRender, dodrio::VdomWeak, web_sys::Event) + 'static>;
     //endregion: specific implementation code
 
     //region: generic code (in trait definition)
@@ -177,7 +174,7 @@ pub trait HtmlTemplating {
                         let event_to_listen =
                             bumpalo::format!(in bump, "{}",&event_to_listen).into_bump_str();
                         element =
-                            element.on(event_to_listen, self.closure_for_listener(fn_name));
+                            element.on(event_to_listen, self.call_fn_listener(fn_name));
                     } else {
                         let name = bumpalo::format!(in bump, "{}",name).into_bump_str();
                         let value2;
