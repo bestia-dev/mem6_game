@@ -18,6 +18,7 @@ use unwrap::unwrap;
 /// trait intended to be added to VdomWeakWrapper
 pub trait Routing {
     //region: specific code to be implemented
+    fn get_vdom_clone(&self) -> VdomWeak;
     fn closure_specific_on_hash_change(
         vdom: dodrio::VdomWeak,
         short_local_route: String,
@@ -27,7 +28,8 @@ pub trait Routing {
     /// Start the router. The second parameter is a reference to a function that
     /// deals with the specific routes. So the generic route code is isolated from the specific
     /// and can be made a library.
-    fn start_router(&self, vdom: VdomWeak) {
+    fn start_router(&self) {
+        let vdom: VdomWeak = self.get_vdom_clone();
         // Callback fired whenever the URL hash fragment changes.
         // Keeps the rrc.web_communication.local_route in sync with the `#` fragment.
         let on_hash_change = Box::new(move || {

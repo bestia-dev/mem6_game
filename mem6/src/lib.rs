@@ -319,9 +319,9 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     fetchgmod::fetch_games_metadata_request(location_href, v2);
 
     // Start the URL router.
-    let router = routerimplmod::Router {};
     let v4 = vdom.weak();
-    router.start_router(v4);
+    let router = routerimplmod::Router { vdom: v4 };
+    router.start_router();
 
     // Run the component forever. Forget to drop the memory.
     vdom.forget();
