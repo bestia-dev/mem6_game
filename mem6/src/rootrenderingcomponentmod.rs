@@ -14,7 +14,7 @@ use web_sys::WebSocket;
 /// the data needed for play logic and rendering
 pub struct RootRenderingComponent {
     /// data for web and communication
-    pub web_communication: webcommunicationmod::WebCommunication,
+    pub web_data: webdatamod::WebData,
     /// game data will be inside of Root
     pub game_data: gamedatamod::GameData,
 }
@@ -25,11 +25,11 @@ impl RootRenderingComponent {
     pub fn new(ws: WebSocket, my_ws_uid: usize) -> Self {
         let game_data = gamedatamod::GameData::new(my_ws_uid);
         let msg_receivers = game_data.prepare_msg_receivers();
-        let web_communication =
-            webcommunicationmod::WebCommunication::new(ws, my_ws_uid, msg_receivers);
+        let web_data =
+            webdatamod::WebData::new(ws, my_ws_uid, msg_receivers);
 
         RootRenderingComponent {
-            web_communication,
+            web_data,
             game_data,
         }
     }
@@ -43,14 +43,14 @@ impl Render for RootRenderingComponent {
         // let bump = cx.bump;
         // return
         // html fragment from html_template defined in # local_route
-        if self.web_communication.html_template.is_empty() {
+        if self.web_data.html_template.is_empty() {
             htmltemplatemod::empty_div(cx)
         } else {
             //I must add use crate::htmltemplatemod::HtmlTemplating;
             // to allow this trait to be used here on self
             unwrap!(self.get_root_node(
                 cx,
-                &self.web_communication.html_template,
+                &self.web_data.html_template,
                 htmltemplatemod::HtmlOrSvg::Html,
             ))
         }

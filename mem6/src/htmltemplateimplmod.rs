@@ -118,11 +118,11 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             "my_nickname" => self.game_data.my_nickname.to_owned(),
             "blink_or_not_nickname" => storagemod::blink_or_not_nickname(self),
             "blink_or_not_group_id" => blink_or_not_group_id(self),
-            "my_ws_uid" => format!("{}", self.web_communication.my_ws_uid),
+            "my_ws_uid" => format!("{}", self.web_data.my_ws_uid),
             "players_count" => format!("{} ", self.game_data.players.len() - 1),
             "game_name" => self.game_data.game_name.to_string(),
             "group_id" => self.game_data.group_id.to_string(),
-            "url_to_join" => format!("bestia.dev/mem6/#p03.{}", self.web_communication.my_ws_uid),
+            "url_to_join" => format!("bestia.dev/mem6/#p03.{}", self.web_data.my_ws_uid),
             "cargo_pkg_version" => env!("CARGO_PKG_VERSION").to_string(),
             "debug_text" => websysmod::get_debug_text(),
             "gameboard_btn" => {
@@ -249,10 +249,10 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 // send a msg to end drinking to all players
                 websysmod::debug_write(&format!("MsgDrinkEnd send{}", ""));
                 websocketmod::ws_send_msg(
-                    &rrc.web_communication.ws,
+                    &rrc.web_data.ws,
                     &WsMessage::MsgDrinkEnd {
-                        my_ws_uid: rrc.web_communication.my_ws_uid,
-                        msg_receivers: rrc.web_communication.msg_receivers.to_string(),
+                        my_ws_uid: rrc.web_data.my_ws_uid,
+                        msg_receivers: rrc.web_data.msg_receivers.to_string(),
                     },
                 );
                 // if all the cards are permanently up, this is the end of the game
@@ -262,10 +262,10 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     statusgameovermod::on_msg_game_over(rrc);
                     // send message
                     websocketmod::ws_send_msg(
-                        &rrc.web_communication.ws,
+                        &rrc.web_data.ws,
                         &WsMessage::MsgGameOver {
-                            my_ws_uid: rrc.web_communication.my_ws_uid,
-                            msg_receivers: rrc.web_communication.msg_receivers.to_string(),
+                            my_ws_uid: rrc.web_data.my_ws_uid,
+                            msg_receivers: rrc.web_data.msg_receivers.to_string(),
                         },
                     );
                 } else {
@@ -320,7 +320,7 @@ pub fn svg_qrcode_to_node<'a>(
 ) -> Node<'a> {
     let link = format!(
         "https://bestia.dev/mem6/#p03.{}",
-        rrc.web_communication.my_ws_uid
+        rrc.web_data.my_ws_uid
     );
     let qr = unwrap!(qrcode53bytes::Qr::new(&link));
     let svg_template = qrcode53bytes::SvgDodrioRenderer::new(222, 222).render(&qr);

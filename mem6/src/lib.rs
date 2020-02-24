@@ -266,7 +266,7 @@ mod websocketmod;
 mod statusreconnectmod;
 mod routerimplmod;
 mod htmltemplateimplmod;
-mod webcommunicationmod;
+mod webdatamod;
 //endregion
 
 // this are then used in all the mods if I have there use crate::*;
@@ -305,8 +305,8 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     // I added ws_c so that I can send messages on WebSocket
 
     let mut rrc = RootRenderingComponent::new(ws_c, my_ws_uid);
-    rrc.web_communication.href = location_href.to_string();
-    rrc.web_communication.href_hash = href_hash;
+    rrc.web_data.href = location_href.to_string();
+    rrc.web_data.href_hash = href_hash;
     // Mount the component to the `<div id="div_for_virtual_dom">`.
     let vdom = dodrio::Vdom::new(&div_for_virtual_dom, rrc);
 

@@ -27,7 +27,7 @@ pub trait Routing {
     /// Start the router.
     fn start_router(&self, vdom: VdomWeak) {
         // Callback fired whenever the URL hash fragment changes.
-        // Keeps the rrc.web_communication.local_route in sync with the `#` fragment.
+        // Keeps the rrc.web_data.local_route in sync with the `#` fragment.
         let on_hash_change = Box::new(move || {
             let location = websysmod::window().location();
             let mut short_local_route = unwrap!(location.hash());
@@ -42,7 +42,7 @@ pub trait Routing {
                         .with_component({
                             let vdom = vdom.clone();
                             // Callback fired whenever the URL hash fragment changes.
-                            // Keeps the rrc.web_communication.local_route in sync with the `#` fragment.
+                            // Keeps the rrc.web_data.local_route in sync with the `#` fragment.
                             move |root| {
                                 let short_local_route = short_local_route.clone();
                                 // If the rrc local_route already matches the event's
@@ -80,7 +80,7 @@ pub trait Routing {
 
     fn set_on_hash_change_callback(&self, mut on_hash_change: Box<dyn FnMut()>) {
         // Callback fired whenever the URL hash fragment changes.
-        // Keeps the rrc.web_communication.local_route in sync with the `#` fragment.
+        // Keeps the rrc.web_data.local_route in sync with the `#` fragment.
         // Call it once to handle the initial `#` fragment.
         on_hash_change();
 

@@ -18,7 +18,7 @@ impl routermod::Routing for Router {
     /// get rrc.local_route
     fn get_rrc_local_route(root: &mut dyn dodrio::RootRender) -> &str {
         let rrc = root.unwrap_mut::<RootRenderingComponent>();
-        &rrc.web_communication.local_route
+        &rrc.web_data.local_route
     }
 
     /// fill local_route with filenames dependent on short_local_route.
@@ -31,7 +31,7 @@ impl routermod::Routing for Router {
         if local_route == "#p02" {
             let vdom = vdom.clone();
             fetchgmod::async_fetch_game_config_request(rrc, &vdom);
-            rrc.web_communication.local_route = "p02_start_a_group.html".to_owned();
+            rrc.web_data.local_route = "p02_start_a_group.html".to_owned();
         } else if local_route.starts_with("#p03") {
             rrc.game_data.my_player_number = 2;
             if local_route.contains('.') {
@@ -40,29 +40,29 @@ impl routermod::Routing for Router {
             } else {
                 storagemod::load_group_id_string(rrc);
             }
-            rrc.web_communication.local_route = "p03_join_a_group.html".to_owned();
+            rrc.web_data.local_route = "p03_join_a_group.html".to_owned();
         } else if local_route == "#p04" {
             statusjoinedmod::on_load_joined(rrc);
-            rrc.web_communication.local_route = "p04_wait_to_start.html".to_owned();
+            rrc.web_data.local_route = "p04_wait_to_start.html".to_owned();
         } else if local_route == "#p05" {
-            rrc.web_communication.local_route = "p05_choose_game.html".to_owned();
+            rrc.web_data.local_route = "p05_choose_game.html".to_owned();
         } else if local_route == "#p06" {
-            rrc.web_communication.local_route = "p06_drink.html".to_owned();
+            rrc.web_data.local_route = "p06_drink.html".to_owned();
         } else if local_route == "#p07" {
-            rrc.web_communication.local_route = "p07_do_not_drink.html".to_owned();
+            rrc.web_data.local_route = "p07_do_not_drink.html".to_owned();
         } else if local_route == "#p08" {
-            rrc.web_communication.local_route = "p08_instructions.html".to_owned();
+            rrc.web_data.local_route = "p08_instructions.html".to_owned();
         } else if local_route == "#p11" {
-            rrc.web_communication.local_route = "p11_gameboard.html".to_owned();
+            rrc.web_data.local_route = "p11_gameboard.html".to_owned();
         } else if local_route == "#p21" {
-            rrc.web_communication.local_route = "p21_menu.html".to_owned();
+            rrc.web_data.local_route = "p21_menu.html".to_owned();
         } else if local_route == "#p31" {
-            rrc.web_communication.local_route = "p31_debug_text.html".to_owned();
+            rrc.web_data.local_route = "p31_debug_text.html".to_owned();
         } else {
-            rrc.web_communication.local_route = "p01_start.html".to_owned();
+            rrc.web_data.local_route = "p01_start.html".to_owned();
         }
         //return
-        rrc.web_communication.local_route.to_string()
+        rrc.web_data.local_route.to_string()
     }
 
     /// fill html_template
@@ -70,11 +70,11 @@ impl routermod::Routing for Router {
         resp_body_text: String,
     ) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static> {
         // Callback fired whenever the URL hash fragment changes.
-        // Keeps the rrc.web_communication.local_route in sync with the `#` fragment.
+        // Keeps the rrc.web_data.local_route in sync with the `#` fragment.
         Box::new(move |root| {
             let rrc = root.unwrap_mut::<RootRenderingComponent>();
             // only the html inside the <body> </body>
-            rrc.web_communication.html_template = routermod::between_body_tag(&resp_body_text);
+            rrc.web_data.html_template = routermod::between_body_tag(&resp_body_text);
         })
     }
 }

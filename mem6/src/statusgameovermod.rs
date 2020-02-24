@@ -27,10 +27,10 @@ pub fn div_game_over<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'
                         move |root, vdom, _event| {
                         let rrc = root.unwrap_mut::<RootRenderingComponent>();
                         websocketmod::ws_send_msg(
-                            &rrc.web_communication.ws,
+                            &rrc.web_data.ws,
                             &WsMessage::MsgPlayAgain {
-                                my_ws_uid: rrc.web_communication.my_ws_uid,
-                                msg_receivers: rrc.web_communication.msg_receivers.to_string(),
+                                my_ws_uid: rrc.web_data.my_ws_uid,
+                                msg_receivers: rrc.web_data.msg_receivers.to_string(),
                             },
                         );
                         rrc.game_data.reset_for_play_again();

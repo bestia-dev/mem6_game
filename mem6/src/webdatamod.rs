@@ -1,4 +1,4 @@
-// webcommunicationmod.rs
+// webdatamod.rs
 //! structs and methods around web and communication
 
 //region: use
@@ -23,7 +23,7 @@ pub struct MsgInQueue {
 }
 
 /// game data
-pub struct WebCommunication {
+pub struct WebData {
     /// web socket. used it to send message onclick.
     pub ws: WebSocket,
     /// local # hash route
@@ -49,11 +49,11 @@ pub struct WebCommunication {
 }
 //endregion
 
-impl WebCommunication {
+impl WebData {
     /// constructor
     pub fn new(ws: WebSocket, my_ws_uid: usize, msg_receivers: String) -> Self {
         // return from constructor
-        WebCommunication {
+        WebData {
             ws,
             local_route: "".to_owned(),
             html_template: "".to_owned(),

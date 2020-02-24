@@ -328,7 +328,7 @@ pub fn setup_ws_onerror(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                             let vdom = vdom.clone();
                             move |root| {
                                 let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                                rrc.web_communication.error_text = err_text;
+                                rrc.web_data.error_text = err_text;
                                 vdom.schedule_render();
                             }
                         })
@@ -357,7 +357,7 @@ pub fn setup_ws_onclose(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                             move |root| {
                                 let rrc = root.unwrap_mut::<RootRenderingComponent>();
                                 // I want to show a reconnect button to the user
-                                rrc.web_communication.is_reconnect = true;
+                                rrc.web_data.is_reconnect = true;
                                 vdom.schedule_render();
                             }
                         })
@@ -415,8 +415,8 @@ pub fn ws_send_msg(ws: &WebSocket, ws_message: &WsMessage) {
 
 /// msg response with ws_uid, just to check.
 pub fn on_response_ws_uid(rrc: &mut RootRenderingComponent, your_ws_uid: usize) {
-    if rrc.web_communication.my_ws_uid != your_ws_uid {
-        rrc.web_communication.error_text = "my_ws_uid is incorrect!".to_string();
+    if rrc.web_data.my_ws_uid != your_ws_uid {
+        rrc.web_data.error_text = "my_ws_uid is incorrect!".to_string();
     }
 }
 
