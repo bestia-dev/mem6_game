@@ -19,6 +19,7 @@ use wasm_bindgen_futures::spawn_local;
 /// trait intended to be added to VdomWeakWrapper
 pub trait Routing {
     //region: specific code to be implemented
+    fn get_local_route(root: &mut dyn dodrio::RootRender) -> &str;
     fn closure_on_hash_change(
         vdom: dodrio::VdomWeak,
         short_local_route: String,
@@ -26,6 +27,11 @@ pub trait Routing {
     fn closure_fill_html_template(
         resp_body_text: String,
     ) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static>;
+    fn fill_rrc_local_route(
+        local_route: String,
+        root: &mut dyn dodrio::RootRender,
+        vdom: VdomWeak,
+    ) -> String;
     //endregion: specific code
 
     //region:generic code (boilerplate)
