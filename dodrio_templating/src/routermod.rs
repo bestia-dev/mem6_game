@@ -28,14 +28,9 @@ pub trait Routing {
     /// deals with the specific routes. So the generic route code is isolated from the specific
     /// and can be made a library.
     fn start_router(&self, vdom: VdomWeak) {
-        let v3 = vdom.clone();
-        let on_hash_change = Self::closure_generic_on_hash_change(v3);
-        self.set_on_hash_change_callback(on_hash_change);
-    }
-    fn closure_generic_on_hash_change(vdom: dodrio::VdomWeak) -> Box<dyn FnMut()> {
         // Callback fired whenever the URL hash fragment changes.
         // Keeps the rrc.web_communication.local_route in sync with the `#` fragment.
-        Box::new(move || {
+        let on_hash_change = Box::new(move || {
             let location = websysmod::window().location();
             let mut short_local_route = unwrap!(location.hash());
             if short_local_route.is_empty() {
@@ -53,7 +48,8 @@ pub trait Routing {
                         .await;
                 }
             });
-        })
+        });
+        self.set_on_hash_change_callback(on_hash_change);
     }
 
     fn set_on_hash_change_callback(&self, mut on_hash_change: Box<dyn FnMut()>) {
