@@ -43,30 +43,25 @@ impl routermod::Routing for Router {
                 let url = rrc.web_communication.local_route.to_string();
                 // I cannot simply await here because this closure is not async
                 let v3 = vdom.clone();
-                spawn_local(routerimplmod::async_fetch_and_write_to_rrc_html_template(
-                    url, v3,
-                ));
+                Router::spawn_local_async_fetch_and_write_to_rrc_html_template(
+                    url,
+                    v3,
+                    Box::new(&Self::closure_fill_html_template),
+                );
             }
         })
     }
-
     fn closure_fill_html_template(
         resp_body_text: String,
     ) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static> {
-        pub_closure_fill_html_template(resp_body_text)
+        // Callback fired whenever the URL hash fragment changes.
+        // Keeps the rrc.web_communication.local_route in sync with the `#` fragment.
+        Box::new(move |root| {
+            let rrc = root.unwrap_mut::<RootRenderingComponent>();
+            // only the html inside the <body> </body>
+            rrc.web_communication.html_template = routermod::between_body_tag(&resp_body_text);
+        })
     }
-}
-
-pub fn pub_closure_fill_html_template(
-    resp_body_text: String,
-) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static> {
-    // Callback fired whenever the URL hash fragment changes.
-    // Keeps the rrc.web_communication.local_route in sync with the `#` fragment.
-    Box::new(move |root| {
-        let rrc = root.unwrap_mut::<RootRenderingComponent>();
-        // only the html inside the <body> </body>
-        rrc.web_communication.html_template = routermod::between_body_tag(&resp_body_text);
-    })
 }
 
 /// the specific code to route short_local_route to actual filenames to download
@@ -107,17 +102,4 @@ pub fn fill_rrc_local_route(local_route: String, rrc: &mut RootRenderingComponen
     } else {
         rrc.web_communication.local_route = "p01_start.html".to_owned();
     }
-}
-
-/// Fetch the html_template and save it in rrc.web_communication.html_template  
-/// async fn cannot be trait fn as of 24.2.2020 cargo version 1.41.0
-pub async fn async_fetch_and_write_to_rrc_html_template(url: String, vdom: VdomWeak) {
-    //websysmod::debug_write(&format!("fetch {}", &url));
-    let resp_body_text: String = websysmod::async_spwloc_fetch_text(url).await;
-    // update values in rrc is async.
-    unwrap!(
-        vdom.with_component({ routerimplmod::pub_closure_fill_html_template(resp_body_text) })
-            .await
-    );
-    vdom.schedule_render();
 }

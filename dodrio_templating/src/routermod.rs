@@ -14,6 +14,7 @@ use crate::*;
 use dodrio::VdomWeak;
 use wasm_bindgen::{prelude::*, JsCast};
 use unwrap::unwrap;
+use wasm_bindgen_futures::spawn_local;
 
 /// trait intended to be added to VdomWeakWrapper
 pub trait Routing {
@@ -26,6 +27,7 @@ pub trait Routing {
         resp_body_text: String,
     ) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static>;
     //endregion: specific code
+
     //region:generic code (boilerplate)
     /// Start the router.
     fn start_router(&self, vdom: VdomWeak) {
@@ -70,6 +72,20 @@ pub trait Routing {
             .unwrap_throw();
         on_hash_change.forget();
     }
+
+    fn spawn_local_async_fetch_and_write_to_rrc_html_template(
+        url: String,
+        v3: VdomWeak,
+        closure_fill_html_template: Box<
+            dyn Fn(String) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static>,
+        >,
+    ) {
+        spawn_local(async_fetch_and_write_to_rrc_html_template(
+            url,
+            v3,
+            closure_fill_html_template,
+        ));
+    }
 }
 
 /// get the first param after hash in local route after dot
@@ -93,4 +109,23 @@ pub fn between_body_tag(resp_body_text: &str) -> String {
             unwrap!(resp_body_text.get(pos1 + 6..pos2)).to_string()
         }
     }
+}
+
+/// Fetch the html_template and save it in rrc.web_communication.html_template  
+/// async fn cannot be trait fn as of 24.2.2020 cargo version 1.41.0
+pub async fn async_fetch_and_write_to_rrc_html_template(
+    url: String,
+    vdom: VdomWeak,
+    closure_fill_html_template: Box<
+        dyn Fn(String) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static>,
+    >,
+) {
+    //websysmod::debug_write(&format!("fetch {}", &url));
+    let resp_body_text: String = websysmod::async_spwloc_fetch_text(url).await;
+    // update values in rrc is async.
+    unwrap!(
+        vdom.with_component({ closure_fill_html_template(resp_body_text) })
+            .await
+    );
+    vdom.schedule_render();
 }
