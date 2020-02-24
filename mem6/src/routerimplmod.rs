@@ -19,29 +19,6 @@ impl routermod::Routing for dodrio::VdomWeak {
         let on_hash_change = Self::closure_on_hash_change(v3);
         self.set_on_hash_change_callback(on_hash_change);
     }
-    fn closure_on_hash_change(vdom: dodrio::VdomWeak) -> Box<dyn FnMut()> {
-        // Callback fired whenever the URL hash fragment changes.
-        // Keeps the rrc.web_communication.local_route in sync with the `#` fragment.
-        Box::new(move || {
-            let location = websysmod::window().location();
-            let mut short_local_route = unwrap!(location.hash());
-            if short_local_route.is_empty() {
-                short_local_route = "index".to_owned();
-            }
-            // websysmod::debug_write("after .hash");
-            wasm_bindgen_futures::spawn_local({
-                let vdom = vdom.clone();
-                async move {
-                    let _ = vdom
-                        .with_component({
-                            let vdom = vdom.clone();
-                            closure_2(vdom, short_local_route)
-                        })
-                        .await;
-                }
-            });
-        })
-    }
 }
 
 /// the specific code to route short_local_route to actual filenames to download

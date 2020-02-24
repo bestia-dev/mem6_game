@@ -19,8 +19,31 @@ use unwrap::unwrap;
 pub trait Routing {
     //region: specific code to be implemented
     fn start_router(&self);
-    fn closure_on_hash_change(vdom: dodrio::VdomWeak) -> Box<dyn FnMut()>;
     //endregion: specific code
+    fn closure_on_hash_change(vdom: dodrio::VdomWeak) -> Box<dyn FnMut()> {
+        // Callback fired whenever the URL hash fragment changes.
+        // Keeps the rrc.web_communication.local_route in sync with the `#` fragment.
+        Box::new(move || {
+            let location = websysmod::window().location();
+            let mut short_local_route = unwrap!(location.hash());
+            if short_local_route.is_empty() {
+                short_local_route = "index".to_owned();
+            }
+            // websysmod::debug_write("after .hash");
+            wasm_bindgen_futures::spawn_local({
+                let vdom = vdom.clone();
+                async move {
+                    let _ = vdom
+                        .with_component({
+                            let vdom = vdom.clone();
+                            routerimplmod::closure_2(vdom, short_local_route)
+                        })
+                        .await;
+                }
+            });
+        })
+    }
+
     fn set_on_hash_change_callback(&self, mut on_hash_change: Box<dyn FnMut()>) {
         // Callback fired whenever the URL hash fragment changes.
         // Keeps the rrc.web_communication.local_route in sync with the `#` fragment.
