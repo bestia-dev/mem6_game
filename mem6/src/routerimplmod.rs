@@ -22,33 +22,6 @@ impl routermod::Routing for Router {
         &rrc.web_communication.local_route
     }
 
-    /// on hash change
-    fn closure_on_hash_change(
-        vdom: VdomWeak,
-        short_local_route: String,
-    ) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static> {
-        // Callback fired whenever the URL hash fragment changes.
-        // Keeps the rrc.web_communication.local_route in sync with the `#` fragment.
-        Box::new(move |root| {
-            let short_local_route = short_local_route.clone();
-            // If the rrc local_route already matches the event's
-            // short_local_route, then there is nothing to do (ha). If they
-            // don't match, then we need to update the rrc' local_route
-            // and re-render.
-            if Self::get_local_route(root) != short_local_route {
-                let v2 = vdom.clone();
-                //the function that recognizes routes and urls
-                let url = Self::fill_rrc_local_route(short_local_route, root, v2);
-                // I cannot simply await here because this closure is not async
-                let v3 = vdom.clone();
-                Router::fetch_and_write_to_rrc_html_template(
-                    url,
-                    v3,
-                    Box::new(&Self::closure_fill_html_template),
-                );
-            }
-        })
-    }
     /// fill html_template
     fn closure_fill_html_template(
         resp_body_text: String,

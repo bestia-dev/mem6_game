@@ -20,10 +20,6 @@ use wasm_bindgen_futures::spawn_local;
 pub trait Routing {
     //region: specific code to be implemented
     fn get_local_route(root: &mut dyn dodrio::RootRender) -> &str;
-    fn closure_on_hash_change(
-        vdom: dodrio::VdomWeak,
-        short_local_route: String,
-    ) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static>;
     fn closure_fill_html_template(
         resp_body_text: String,
     ) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static>;
@@ -52,7 +48,35 @@ pub trait Routing {
                     let _ = vdom
                         .with_component({
                             let vdom = vdom.clone();
-                            Self::closure_on_hash_change(vdom, short_local_route)
+                            // Callback fired whenever the URL hash fragment changes.
+                            // Keeps the rrc.web_communication.local_route in sync with the `#` fragment.
+                            move |root| {
+                                let short_local_route = short_local_route.clone();
+                                // If the rrc local_route already matches the event's
+                                // short_local_route, then there is nothing to do (ha). If they
+                                // don't match, then we need to update the rrc' local_route
+                                // and re-render.
+                                if Self::get_local_route(root) != short_local_route {
+                                    let v2 = vdom.clone();
+                                    //the function that recognizes routes and urls
+                                    let url =
+                                        Self::fill_rrc_local_route(short_local_route, root, v2);
+                                    // I cannot simply await here because this closure is not async
+                                    spawn_local(async move {
+                                        //websysmod::debug_write(&format!("fetch {}", &url));
+                                        let resp_body_text: String =
+                                            websysmod::async_spwloc_fetch_text(url).await;
+                                        // update values in rrc is async.
+                                        unwrap!(
+                                            vdom.with_component({
+                                                Self::closure_fill_html_template(resp_body_text)
+                                            })
+                                            .await
+                                        );
+                                        vdom.schedule_render();
+                                    });
+                                }
+                            }
                         })
                         .await;
                 }
@@ -79,24 +103,6 @@ pub trait Routing {
         on_hash_change.forget();
     }
 
-    fn fetch_and_write_to_rrc_html_template(
-        url: String,
-        vdom: VdomWeak,
-        closure_fill_html_template: Box<
-            dyn Fn(String) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static>,
-        >,
-    ) {
-        spawn_local(async move {
-            //websysmod::debug_write(&format!("fetch {}", &url));
-            let resp_body_text: String = websysmod::async_spwloc_fetch_text(url).await;
-            // update values in rrc is async.
-            unwrap!(
-                vdom.with_component({ closure_fill_html_template(resp_body_text) })
-                    .await
-            );
-            vdom.schedule_render();
-        });
-    }
     //endregion:generic
 }
 

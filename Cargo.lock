@@ -867,7 +867,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "mem6"
-version = "2020.224.2118"
+version = "2020.224.2126"
 dependencies = [
  "console_error_panic_hook 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "conv 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)",
