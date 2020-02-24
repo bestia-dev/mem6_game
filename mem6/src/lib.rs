@@ -322,7 +322,8 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     // Start the URL router.
     // Routing is a trait implemented for VdomWeak.
     let v3 = vdom.weak();
-    v3.start_router();
+    let v4 = vdom.weak();
+    v3.start_router(v4);
 
     // Run the component forever. Forget to drop the memory.
     vdom.forget();

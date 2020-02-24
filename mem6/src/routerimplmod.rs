@@ -11,15 +11,6 @@ use dodrio::VdomWeak;
 use wasm_bindgen_futures::spawn_local;
 
 impl routermod::Routing for VdomWeak {
-    /// Start the router. The second parameter is a reference to a function that
-    /// deals with the specific routes. So the generic route code is isolated from the specific
-    /// and can be made a library.
-    fn start_router(&self) {
-        let v3 = self.clone();
-        let on_hash_change = VdomWeak::closure_generic_on_hash_change(v3);
-        self.set_on_hash_change_callback(on_hash_change);
-    }
-
     fn closure_specific_on_hash_change(
         vdom: VdomWeak,
         short_local_route: String,
