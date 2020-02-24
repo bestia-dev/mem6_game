@@ -10,7 +10,11 @@ use dodrio::VdomWeak;
 //use wasm_bindgen::{prelude::*, JsCast};
 use wasm_bindgen_futures::spawn_local;
 
-impl routermod::Routing for VdomWeak {
+pub struct VdomWeakWrapper {
+    pub vdom: VdomWeak,
+}
+
+impl routermod::Routing for VdomWeakWrapper {
     fn closure_specific_on_hash_change(
         vdom: VdomWeak,
         short_local_route: String,

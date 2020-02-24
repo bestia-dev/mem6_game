@@ -264,7 +264,6 @@ mod statustaketurnmod;
 mod statuswaitingackmsgmod;
 mod websocketmod;
 mod statusreconnectmod;
-mod routermod;
 mod routerimplmod;
 mod htmltemplateimplmod;
 mod webcommunicationmod;
@@ -273,9 +272,9 @@ mod webcommunicationmod;
 // this are then used in all the mods if I have there use crate::*;
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::gamedatamod::*;
-use crate::routermod::Routing;
 
 use dodrio_templating::*;
+use dodrio_templating::routermod::Routing;
 
 //use unwrap::unwrap;
 use wasm_bindgen::prelude::*;
@@ -322,8 +321,9 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     // Start the URL router.
     // Routing is a trait implemented for VdomWeak.
     let v3 = vdom.weak();
+    let wr = routerimplmod::VdomWeakWrapper { vdom: v3 };
     let v4 = vdom.weak();
-    v3.start_router(v4);
+    wr.start_router(v4);
 
     // Run the component forever. Forget to drop the memory.
     vdom.forget();

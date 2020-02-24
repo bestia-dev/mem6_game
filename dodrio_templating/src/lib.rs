@@ -1,5 +1,5 @@
 //! dodrio_templating
 
 pub mod websysmod;
-//mod routermod;
+pub mod routermod;
 pub mod htmltemplatemod;

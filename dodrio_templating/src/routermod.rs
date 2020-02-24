@@ -15,7 +15,7 @@ use wasm_bindgen::{prelude::*, JsCast};
 //use wasm_bindgen_futures::spawn_local;
 use unwrap::unwrap;
 
-/// trait intended to be added to VdomWeak
+/// trait intended to be added to VdomWeakWrapper
 pub trait Routing {
     //region: specific code to be implemented
     fn closure_specific_on_hash_change(
@@ -29,7 +29,7 @@ pub trait Routing {
     /// and can be made a library.
     fn start_router(&self, vdom: VdomWeak) {
         let v3 = vdom.clone();
-        let on_hash_change = VdomWeak::closure_generic_on_hash_change(v3);
+        let on_hash_change = Self::closure_generic_on_hash_change(v3);
         self.set_on_hash_change_callback(on_hash_change);
     }
     fn closure_generic_on_hash_change(vdom: dodrio::VdomWeak) -> Box<dyn FnMut()> {
