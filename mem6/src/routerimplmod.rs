@@ -1,8 +1,12 @@
 //! routerimplmod
-//! The fill_rrc_local_route() function has specific code
-//! to route from the url hash part to a
+//! Implementation of Router for this special use case with RootRenderingComponent type
+//! It routes from short_url (the url hash part) to a
 //! html_template file to fetch. The file name is written to rrc.local_route.  
-//! This contains only generic code and can be made into a library.
+//! Then fetches the file and stores it in rrc.html_template
+//! 2020-02-24 I tried to put away as much boilerplate as I could into the library
+//! dodrio_templating::routermod, but some code is very difficult to split in Rust.
+//! The main problem are Closures that use RootRenderinComponent type. The library does
+//! not know that type.
 
 use crate::*;
 use unwrap::unwrap;
@@ -10,14 +14,15 @@ use dodrio::VdomWeak;
 //use wasm_bindgen::{prelude::*, JsCast};
 use wasm_bindgen_futures::spawn_local;
 
-pub struct Router {
-    pub vdom: VdomWeak,
-}
+pub struct Router {}
 
 impl routermod::Routing for Router {
-    fn get_vdom_clone(&self) -> VdomWeak {
-        self.vdom.clone()
-    }
+    //I tried to put vdom as a field in Router. But after closurs, the vdom
+    //is not anymore the same and I cannot use the one in Router.
+    // I must pass vdom as parameter, because it comes from Closures
+    // and is not anymore the same as self.vdom.
+
+    /// specific code
     fn closure_specific_on_hash_change(
         vdom: VdomWeak,
         short_local_route: String,
@@ -32,13 +37,15 @@ impl routermod::Routing for Router {
             // don't match, then we need to update the rrc' local_route
             // and re-render.
             if rrc.web_communication.local_route != short_local_route {
-                // all the specific routes are separated from the generic routing code
                 let v2 = vdom.clone();
+                //the function that recognizes routes and urls
                 fill_rrc_local_route(short_local_route, rrc, v2);
                 let url = rrc.web_communication.local_route.to_string();
                 // I cannot simply await here because this closure is not async
                 let v3 = vdom.clone();
-                spawn_local(async_fetch_and_write_to_rrc_html_template(url, v3));
+                spawn_local(routerimplmod::async_fetch_and_write_to_rrc_html_template(
+                    url, v3,
+                ));
             }
         })
     }
@@ -47,7 +54,7 @@ impl routermod::Routing for Router {
 /// the specific code to route short_local_route to actual filenames to download
 /// and later dodrio_templating replace.
 /// It cannot be a method because it has a parameter RootRenderingComponent, that is unknown in
-/// the trait definition.
+/// the trait definition (in the library).
 pub fn fill_rrc_local_route(local_route: String, rrc: &mut RootRenderingComponent, vdom: VdomWeak) {
     if local_route == "#p02" {
         let vdom = vdom.clone();
@@ -84,26 +91,27 @@ pub fn fill_rrc_local_route(local_route: String, rrc: &mut RootRenderingComponen
     }
 }
 
+fn closure_fill_html_template(
+    resp_body_text: String,
+) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static> {
+    // Callback fired whenever the URL hash fragment changes.
+    // Keeps the rrc.web_communication.local_route in sync with the `#` fragment.
+    Box::new(move |root| {
+        let rrc = root.unwrap_mut::<RootRenderingComponent>();
+        // only the html inside the <body> </body>
+        rrc.web_communication.html_template = routermod::between_body_tag(&resp_body_text);
+    })
+}
+
 /// Fetch the html_template and save it in rrc.web_communication.html_template  
 /// async fn cannot be trait fn as of 24.2.2020 cargo version 1.41.0
 pub async fn async_fetch_and_write_to_rrc_html_template(url: String, vdom: VdomWeak) {
     //websysmod::debug_write(&format!("fetch {}", &url));
     let resp_body_text: String = websysmod::async_spwloc_fetch_text(url).await;
     // update values in rrc is async.
-    // I can await a fn call or an async block.
-    async {
-        unwrap!(
-            vdom.with_component({
-                move |root| {
-                    let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                    // only the html inside the <body> </body>
-                    rrc.web_communication.html_template =
-                        routermod::between_body_tag(&resp_body_text);
-                }
-            })
+    unwrap!(
+        vdom.with_component({ routerimplmod::closure_fill_html_template(resp_body_text) })
             .await
-        );
-        vdom.schedule_render();
-    }
-    .await;
+    );
+    vdom.schedule_render();
 }

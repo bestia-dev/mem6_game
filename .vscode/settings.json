@@ -33,7 +33,6 @@
         "htmltemplatemod",
         "instructionsmod",
         "javascriptimportmod",
-        "websysmod",
         "morsecode",
         "nanos",
         "ndcardmod",
@@ -50,6 +49,7 @@
         "statusinvitedmod",
         "statusinvitingmod",
         "statusjoinedmod",
+        "statusreconnectmod",
         "statusstartpagemod",
         "statustaketurnbeginmod",
         "statustaketurnendmod",
@@ -59,10 +59,10 @@
         "storagemod",
         "triestine",
         "utilsmod",
+        "vdomweak",
         "webcommunicationmod",
         "websocketcommunication",
         "websocketmod",
-        "statusreconnectmod",
         "websysmod"
     ]
 }

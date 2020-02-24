@@ -320,8 +320,8 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
 
     // Start the URL router.
     let v4 = vdom.weak();
-    let router = routerimplmod::Router { vdom: v4 };
-    router.start_router();
+    let router = routerimplmod::Router {};
+    router.start_router(v4);
 
     // Run the component forever. Forget to drop the memory.
     vdom.forget();
