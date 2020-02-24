@@ -311,16 +311,18 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     // Mount the component to the `<div id="div_for_virtual_dom">`.
     let vdom = dodrio::Vdom::new(&div_for_virtual_dom, rrc);
 
+    // TODO: this could be a trait for vdomweak
     websocketmod::setup_all_ws_events(&ws, vdom.weak());
 
     // async fetch_response() for gamesmetadata.json
     let v2 = vdom.weak();
+    // TODO: this could be a trait for vdomweak
     fetchgmod::fetch_games_metadata_request(location_href, v2);
 
-    // Start the URL router. Send a reference to the functions with router settings.
-    // To keep separate modules for generic router code and specific router code.
-    let v4 = vdom.weak();
-    v4.start_router();
+    // Start the URL router.
+    // Routing is a trait implemented for VdomWeak.
+    let v3 = vdom.weak();
+    v3.start_router();
 
     // Run the component forever. Forget to drop the memory.
     vdom.forget();
