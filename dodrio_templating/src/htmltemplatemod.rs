@@ -26,14 +26,14 @@ pub enum HtmlOrSvg {
 /// it must have the fields for local_route and html_template fields
 pub trait HtmlTemplating {
     //region: specific implementation code. while rendering, cannot mut rrc
-    fn call_fn_string(&self, sx: &str) -> String;
-    fn call_fn_boolean<'a>(&self, sx: &str) -> bool;
-    fn call_fn_node<'a>(&self, cx: &mut RenderContext<'a>, sx: &str) -> Node<'a>;
+    fn call_fn_string(&self, fn_name: &str) -> String;
+    fn call_fn_boolean<'a>(&self, fn_name: &str) -> bool;
+    fn call_fn_node<'a>(&self, cx: &mut RenderContext<'a>, fn_name: &str) -> Node<'a>;
     fn closure_for_listener(
         &self,
         fn_name: String,
     ) -> Box<dyn Fn(&mut dyn RootRender, dodrio::VdomWeak, web_sys::Event) + 'static>;
-    fn call_fn_listener(&mut self, vdom: dodrio::VdomWeak, sx: &str, event: web_sys::Event);
+    fn call_fn_listener(&mut self, vdom: dodrio::VdomWeak, fn_name: &str, event: web_sys::Event);
     //endregion: specific implementation code
 
     //region: generic code (in trait definition)

@@ -92,9 +92,9 @@ const VIDEOS: &[&str] = &[
 
 impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
     /// html_templating boolean id the next node is rendered or not
-    fn call_fn_boolean(&self, sx: &str) -> bool {
-        websysmod::debug_write(&format!("call_fn_boolean: {}", &sx));
-        match sx {
+    fn call_fn_boolean(&self, fn_name: &str) -> bool {
+        websysmod::debug_write(&format!("call_fn_boolean: {}", &fn_name));
+        match fn_name {
             "is_first_player" => {
                 if self.game_data.my_player_number == 1 {
                     true
@@ -103,7 +103,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 }
             }
             _ => {
-                let x = format!("Error: Unrecognized call_fn_boolean: {}", sx);
+                let x = format!("Error: Unrecognized call_fn_boolean: {}", fn_name);
                 websysmod::debug_write(&x);
                 true
             }
@@ -112,9 +112,9 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
 
     /// html_templating functions that return a String
     #[allow(clippy::needless_return, clippy::integer_arithmetic)]
-    fn call_fn_string(&self, sx: &str) -> String {
-        // websysmod::debug_write(&format!("call_fn_string: {}", &sx));
-        match sx {
+    fn call_fn_string(&self, fn_name: &str) -> String {
+        // websysmod::debug_write(&format!("call_fn_string: {}", &fn_name));
+        match fn_name {
             "my_nickname" => self.game_data.my_nickname.to_owned(),
             "blink_or_not_nickname" => storagemod::blink_or_not_nickname(self),
             "blink_or_not_group_id" => blink_or_not_group_id(self),
@@ -169,7 +169,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     .to_string();
             }
             _ => {
-                let x = format!("Error: Unrecognized call_fn_string: {}", sx);
+                let x = format!("Error: Unrecognized call_fn_string: {}", fn_name);
                 websysmod::debug_write(&x);
                 x
             }
@@ -192,9 +192,9 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
 
     /// html_templating functions for listeners
     /// get a clone of the VdomWeak
-    fn call_fn_listener(&mut self, vdom: dodrio::VdomWeak, sx: &str, event: web_sys::Event) {
-        // websysmod::debug_write(&format!("call_fn_listener: {}", &sx));
-        match sx {
+    fn call_fn_listener(&mut self, vdom: dodrio::VdomWeak, fn_name: &str, event: web_sys::Event) {
+        // websysmod::debug_write(&format!("call_fn_listener: {}", &fn_name));
+        match fn_name {
             "nickname_onkeyup" => {
                 storagemod::nickname_onkeyup(self, event);
             }
@@ -283,7 +283,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 open_new_local_page("#p11");
             }
             _ => {
-                let x = format!("Error: Unrecognized call_fn_listener: {}", sx);
+                let x = format!("Error: Unrecognized call_fn_listener: {}", fn_name);
                 websysmod::debug_write(&x);
             }
         }
@@ -291,10 +291,10 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
 
     /// html_templating functions that return a Node
     #[allow(clippy::needless_return)]
-    fn call_fn_node<'a>(&self, cx: &mut RenderContext<'a>, sx: &str) -> Node<'a> {
+    fn call_fn_node<'a>(&self, cx: &mut RenderContext<'a>, fn_name: &str) -> Node<'a> {
         let bump = cx.bump;
-        // websysmod::debug_write(&format!("call_fn_node: {}", &sx));
-        match sx {
+        // websysmod::debug_write(&format!("call_fn_node: {}", &fn_name));
+        match fn_name {
             "div_grid_container" => {
                 // what is the game_status now?
                 // websysmod::debug_write(&format!("game status: {}", self.game_data.game_status));
@@ -311,7 +311,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             _ => {
                 let node = dodrio!(bump,
                 <h2  >
-                    {vec![text(bumpalo::format!(in bump, "Error: Unrecognized call_fn_node: {}", sx).into_bump_str())]}
+                    {vec![text(bumpalo::format!(in bump, "Error: Unrecognized call_fn_node: {}", fn_name).into_bump_str())]}
                 </h2>
                 );
                 return node;
