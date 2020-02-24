@@ -9,21 +9,16 @@
 //! not know that type.
 
 use crate::*;
-use unwrap::unwrap;
 use dodrio::VdomWeak;
-//use wasm_bindgen::{prelude::*, JsCast};
-use wasm_bindgen_futures::spawn_local;
-
+//I tried to put vdom as a field in Router. But after closures, the vdom
+//is not anymore the same and I cannot use the one in Router.
+// I must pass vdom as parameter, because it comes from Closures
+// and is not anymore the same as self.vdom.
 pub struct Router {}
 
 impl routermod::Routing for Router {
-    //I tried to put vdom as a field in Router. But after closures, the vdom
-    //is not anymore the same and I cannot use the one in Router.
-    // I must pass vdom as parameter, because it comes from Closures
-    // and is not anymore the same as self.vdom.
-
     /// specific code
-    fn closure_specific_on_hash_change(
+    fn closure_on_hash_change(
         vdom: VdomWeak,
         short_local_route: String,
     ) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static> {
@@ -39,11 +34,10 @@ impl routermod::Routing for Router {
             if rrc.web_communication.local_route != short_local_route {
                 let v2 = vdom.clone();
                 //the function that recognizes routes and urls
-                fill_rrc_local_route(short_local_route, rrc, v2);
-                let url = rrc.web_communication.local_route.to_string();
+                let url = fill_rrc_local_route(short_local_route, rrc, v2);
                 // I cannot simply await here because this closure is not async
                 let v3 = vdom.clone();
-                Router::spawn_local_async_fetch_and_write_to_rrc_html_template(
+                Router::fetch_and_write_to_rrc_html_template(
                     url,
                     v3,
                     Box::new(&Self::closure_fill_html_template),
@@ -68,7 +62,11 @@ impl routermod::Routing for Router {
 /// and later dodrio_templating replace.
 /// It cannot be a method because it has a parameter RootRenderingComponent, that is unknown in
 /// the trait definition (in the library).
-pub fn fill_rrc_local_route(local_route: String, rrc: &mut RootRenderingComponent, vdom: VdomWeak) {
+pub fn fill_rrc_local_route(
+    local_route: String,
+    rrc: &mut RootRenderingComponent,
+    vdom: VdomWeak,
+) -> String {
     if local_route == "#p02" {
         let vdom = vdom.clone();
         fetchgmod::async_fetch_game_config_request(rrc, &vdom);
@@ -102,4 +100,6 @@ pub fn fill_rrc_local_route(local_route: String, rrc: &mut RootRenderingComponen
     } else {
         rrc.web_communication.local_route = "p01_start.html".to_owned();
     }
+    //return
+    rrc.web_communication.local_route.to_string()
 }

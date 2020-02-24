@@ -19,7 +19,7 @@ use wasm_bindgen_futures::spawn_local;
 /// trait intended to be added to VdomWeakWrapper
 pub trait Routing {
     //region: specific code to be implemented
-    fn closure_specific_on_hash_change(
+    fn closure_on_hash_change(
         vdom: dodrio::VdomWeak,
         short_local_route: String,
     ) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static>;
@@ -46,7 +46,7 @@ pub trait Routing {
                     let _ = vdom
                         .with_component({
                             let vdom = vdom.clone();
-                            Self::closure_specific_on_hash_change(vdom, short_local_route)
+                            Self::closure_on_hash_change(vdom, short_local_route)
                         })
                         .await;
                 }
@@ -73,7 +73,7 @@ pub trait Routing {
         on_hash_change.forget();
     }
 
-    fn spawn_local_async_fetch_and_write_to_rrc_html_template(
+    fn fetch_and_write_to_rrc_html_template(
         url: String,
         vdom: VdomWeak,
         closure_fill_html_template: Box<
@@ -91,6 +91,7 @@ pub trait Routing {
             vdom.schedule_render();
         });
     }
+    //endregion:generic
 }
 
 /// get the first param after hash in local route after dot
