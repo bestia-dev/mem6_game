@@ -19,6 +19,7 @@ use unwrap::unwrap;
 pub trait Routing {
     //region: specific code to be implemented
     fn start_router(&self);
+    fn closure_on_hash_change(vdom: dodrio::VdomWeak) -> Box<dyn FnMut()>;
     //endregion: specific code
     fn set_on_hash_change_callback(&self, mut on_hash_change: Box<dyn FnMut()>) {
         // Callback fired whenever the URL hash fragment changes.

@@ -16,8 +16,31 @@ impl routermod::Routing for dodrio::VdomWeak {
     /// and can be made a library.
     fn start_router(&self) {
         let v3 = self.clone();
-        let on_hash_change = closure_on_hash_change(v3);
+        let on_hash_change = Self::closure_on_hash_change(v3);
         self.set_on_hash_change_callback(on_hash_change);
+    }
+    fn closure_on_hash_change(vdom: dodrio::VdomWeak) -> Box<dyn FnMut()> {
+        // Callback fired whenever the URL hash fragment changes.
+        // Keeps the rrc.web_communication.local_route in sync with the `#` fragment.
+        Box::new(move || {
+            let location = websysmod::window().location();
+            let mut short_local_route = unwrap!(location.hash());
+            if short_local_route.is_empty() {
+                short_local_route = "index".to_owned();
+            }
+            // websysmod::debug_write("after .hash");
+            wasm_bindgen_futures::spawn_local({
+                let vdom = vdom.clone();
+                async move {
+                    let _ = vdom
+                        .with_component({
+                            let vdom = vdom.clone();
+                            closure_2(vdom, short_local_route)
+                        })
+                        .await;
+                }
+            });
+        })
     }
 }
 
@@ -61,30 +84,6 @@ pub fn fill_rrc_local_route(
     } else {
         rrc.web_communication.local_route = "p01_start.html".to_owned();
     }
-}
-
-pub fn closure_on_hash_change(vdom: dodrio::VdomWeak) -> Box<dyn FnMut()> {
-    // Callback fired whenever the URL hash fragment changes.
-    // Keeps the rrc.web_communication.local_route in sync with the `#` fragment.
-    Box::new(move || {
-        let location = websysmod::window().location();
-        let mut short_local_route = unwrap!(location.hash());
-        if short_local_route.is_empty() {
-            short_local_route = "index".to_owned();
-        }
-        // websysmod::debug_write("after .hash");
-        wasm_bindgen_futures::spawn_local({
-            let vdom = vdom.clone();
-            async move {
-                let _ = vdom
-                    .with_component({
-                        let vdom = vdom.clone();
-                        closure_2(vdom, short_local_route)
-                    })
-                    .await;
-            }
-        });
-    })
 }
 
 pub fn closure_2(
