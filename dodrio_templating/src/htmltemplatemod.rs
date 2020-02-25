@@ -8,7 +8,7 @@ use reader_for_microxml::*;
 use dodrio::{
     Node, Listener, Attribute, RenderContext, RootRender,
     bumpalo::{self},
-    builder::*,
+    builder::{ElementBuilder, text},
 };
 use unwrap::unwrap;
 //endregion: use
@@ -29,8 +29,10 @@ pub trait HtmlTemplating {
     fn call_fn_string(&self, fn_name: &str) -> String;
     fn call_fn_boolean<'a>(&self, fn_name: &str) -> bool;
     fn call_fn_node<'a>(&self, cx: &mut RenderContext<'a>, fn_name: &str) -> Node<'a>;
-    fn call_fn_listener(&self, fn_name: String) 
-    -> Box<dyn Fn(&mut dyn RootRender, dodrio::VdomWeak, web_sys::Event) + 'static>;
+    fn call_fn_listener(
+        &self,
+        fn_name: String,
+    ) -> Box<dyn Fn(&mut dyn RootRender, dodrio::VdomWeak, web_sys::Event) + 'static>;
     //endregion: specific implementation code
 
     //region: generic code (in trait definition)
@@ -173,8 +175,7 @@ pub trait HtmlTemplating {
                         let event_to_listen = unwrap!(name.get(8..)).to_string();
                         let event_to_listen =
                             bumpalo::format!(in bump, "{}",&event_to_listen).into_bump_str();
-                        element =
-                            element.on(event_to_listen, self.call_fn_listener(fn_name));
+                        element = element.on(event_to_listen, self.call_fn_listener(fn_name));
                     } else {
                         let name = bumpalo::format!(in bump, "{}",name).into_bump_str();
                         let value2;
@@ -267,7 +268,6 @@ pub fn decode_5_xml_control_characters(input: &str) -> String {
     //TODO: I don't know how slow is replace(), but I have really small texts.
     let control_character_names = vec!["&quot;", "&apos;", "&amp;", "&lt;", "&gt;"];
     let control_character_symbols = vec!["\"", "'", "&", "<", ">"];
-    
     let mut output = input.to_owned();
     for i in 0..control_character_symbols.len() {
         output = output.replace(

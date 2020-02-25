@@ -17,14 +17,10 @@ use crate::*;
 use mem6_common::*;
 
 use unwrap::unwrap;
-use dodrio::{
-    builder::text,
-    bumpalo::{self, Bump},
-    Node,
-};
-use typed_html::dodrio;
+//use dodrio::{};
+//use typed_html::dodrio;
 //endregion
-
+/*
 /// render reconnect
 pub fn div_reconnect<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
     dodrio!(bump,
@@ -69,7 +65,7 @@ pub fn div_reconnect<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<
     </div>
     )
 }
-
+*/
 /// send all data to resync gamedata
 pub fn send_msg_for_resync(rrc: &RootRenderingComponent) {
     websysmod::debug_write("send_msg_for_resync MsgAllGameData");

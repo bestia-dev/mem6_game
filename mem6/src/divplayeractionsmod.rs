@@ -8,7 +8,7 @@ use crate::*;
 use mem6_common::*;
 
 use dodrio::{
-    builder::*,
+    builder::{ElementBuilder, text},
     bumpalo::{self, Bump},
     Node,
 };

@@ -11,9 +11,9 @@ use unwrap::unwrap;
 use dodrio::{
     Node, RenderContext, RootRender,
     bumpalo::{self},
-    builder::*,
+    builder::{ElementBuilder, text},
 };
-use typed_html::dodrio;
+//use typed_html::dodrio;
 
 const VIDEOS: &[&str] = &[
     "VQdhDw-hE8s",
@@ -177,109 +177,110 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
     }
 
     /// return a closure for the listener.
-    fn call_fn_listener(&self, fn_name: String) 
-    -> Box<dyn Fn(&mut dyn RootRender, dodrio::VdomWeak, web_sys::Event) + 'static> {
-        
+    fn call_fn_listener(
+        &self,
+        fn_name: String,
+    ) -> Box<dyn Fn(&mut dyn RootRender, dodrio::VdomWeak, web_sys::Event) + 'static> {
         Box::new(move |root, vdom, event| {
-            let fn_name=fn_name.clone();
+            let fn_name = fn_name.clone();
             let fn_name = fn_name.as_str();
             let rrc = root.unwrap_mut::<RootRenderingComponent>();
             let vdom = vdom.clone();
-        // websysmod::debug_write(&format!("call_fn_listener: {}", &fn_name));
-        match fn_name {
-            "nickname_onkeyup" => {
-                storagemod::nickname_onkeyup(rrc, event);
-            }
-            "group_id_onkeyup" => {
-                storagemod::group_id_onkeyup(rrc, event);
-            }
-            "open_youtube" => {
-                // randomly choose a link from VIDEOS
-                let num = websysmod::get_random(0, VIDEOS.len());
-                websysmod::open_new_tab(&format!(
-                    "https://www.youtube.com/watch?v={}",
-                    VIDEOS[num]
-                ));
-            }
-            "open_menu" => {
-                websysmod::open_new_local_page_push_to_history("#p21");
-            }
-            "rejoin_resync" => {
-                statusreconnectmod::send_msg_for_resync(rrc);
-            }
-            "back_to_game" => {
-                let h = unwrap!(websysmod::window().history());
-                let _x = h.back();
-            }
-            "open_instructions" => {
-                websysmod::open_new_tab("#p08");
-            }
-            "debug_log" => {
-                websysmod::open_new_tab("#p31");
-            }
-            "start_a_group_onclick" | "restart_game" => {
-                // send a msg to others to open #p04
-                statusgameovermod::on_msg_play_again(rrc);
-                open_new_local_page("#p02");
-            }
-            "join_a_group_onclick" => {
-                websysmod::open_new_local_page_push_to_history("#p03");
-            }
-            "choose_a_game_onclick" => {
-                open_new_local_page("#p05");
-            }
-            "start_game_onclick" => {
-                statusgamedatainitmod::on_click_start_game(rrc);
-                // async fetch all imgs and put them in service worker cache
-                fetchmod::fetch_all_img_for_cache_request(rrc);
-                vdom.schedule_render();
-                // websysmod::debug_write(&format!("start_game_onclick players: {:?}",rrc.game_data.players));
-                open_new_local_page("#p11");
-            }
-            "game_type_right_onclick" => {
-                game_type_right_onclick(rrc, &vdom);
-            }
-            "game_type_left_onclick" => {
-                game_type_left_onclick(rrc, &vdom);
-            }
-            "join_group_on_click" => {
-                open_new_local_page("#p04");
-            }
-            "drink_end" => {
-                // send a msg to end drinking to all players
-                websysmod::debug_write(&format!("MsgDrinkEnd send{}", ""));
-                websocketmod::ws_send_msg(
-                    &rrc.web_data.ws,
-                    &WsMessage::MsgDrinkEnd {
-                        my_ws_uid: rrc.web_data.my_ws_uid,
-                        msg_receivers: rrc.web_data.msg_receivers.to_string(),
-                    },
-                );
-                // if all the cards are permanently up, this is the end of the game
-                // websysmod::debug_write("if is_all_permanently(rrc)");
-                if status2ndcardmod::is_all_permanently(rrc) {
-                    websysmod::debug_write("yes");
-                    statusgameovermod::on_msg_game_over(rrc);
-                    // send message
+            // websysmod::debug_write(&format!("call_fn_listener: {}", &fn_name));
+            match fn_name {
+                "nickname_onkeyup" => {
+                    storagemod::nickname_onkeyup(rrc, event);
+                }
+                "group_id_onkeyup" => {
+                    storagemod::group_id_onkeyup(rrc, event);
+                }
+                "open_youtube" => {
+                    // randomly choose a link from VIDEOS
+                    let num = websysmod::get_random(0, VIDEOS.len());
+                    websysmod::open_new_tab(&format!(
+                        "https://www.youtube.com/watch?v={}",
+                        VIDEOS[num]
+                    ));
+                }
+                "open_menu" => {
+                    websysmod::open_new_local_page_push_to_history("#p21");
+                }
+                "rejoin_resync" => {
+                    statusreconnectmod::send_msg_for_resync(rrc);
+                }
+                "back_to_game" => {
+                    let h = unwrap!(websysmod::window().history());
+                    let _x = h.back();
+                }
+                "open_instructions" => {
+                    websysmod::open_new_tab("#p08");
+                }
+                "debug_log" => {
+                    websysmod::open_new_tab("#p31");
+                }
+                "start_a_group_onclick" | "restart_game" => {
+                    // send a msg to others to open #p04
+                    statusgameovermod::on_msg_play_again(rrc);
+                    open_new_local_page("#p02");
+                }
+                "join_a_group_onclick" => {
+                    websysmod::open_new_local_page_push_to_history("#p03");
+                }
+                "choose_a_game_onclick" => {
+                    open_new_local_page("#p05");
+                }
+                "start_game_onclick" => {
+                    statusgamedatainitmod::on_click_start_game(rrc);
+                    // async fetch all imgs and put them in service worker cache
+                    fetchmod::fetch_all_img_for_cache_request(rrc);
+                    vdom.schedule_render();
+                    // websysmod::debug_write(&format!("start_game_onclick players: {:?}",rrc.game_data.players));
+                    open_new_local_page("#p11");
+                }
+                "game_type_right_onclick" => {
+                    game_type_right_onclick(rrc, &vdom);
+                }
+                "game_type_left_onclick" => {
+                    game_type_left_onclick(rrc, &vdom);
+                }
+                "join_group_on_click" => {
+                    open_new_local_page("#p04");
+                }
+                "drink_end" => {
+                    // send a msg to end drinking to all players
+                    websysmod::debug_write(&format!("MsgDrinkEnd send{}", ""));
                     websocketmod::ws_send_msg(
                         &rrc.web_data.ws,
-                        &WsMessage::MsgGameOver {
+                        &WsMessage::MsgDrinkEnd {
                             my_ws_uid: rrc.web_data.my_ws_uid,
                             msg_receivers: rrc.web_data.msg_receivers.to_string(),
                         },
                     );
-                } else {
-                    statustaketurnmod::on_click_take_turn(rrc, &vdom);
+                    // if all the cards are permanently up, this is the end of the game
+                    // websysmod::debug_write("if is_all_permanently(rrc)");
+                    if status2ndcardmod::is_all_permanently(rrc) {
+                        websysmod::debug_write("yes");
+                        statusgameovermod::on_msg_game_over(rrc);
+                        // send message
+                        websocketmod::ws_send_msg(
+                            &rrc.web_data.ws,
+                            &WsMessage::MsgGameOver {
+                                my_ws_uid: rrc.web_data.my_ws_uid,
+                                msg_receivers: rrc.web_data.msg_receivers.to_string(),
+                            },
+                        );
+                    } else {
+                        statustaketurnmod::on_click_take_turn(rrc, &vdom);
+                    }
+                    // end the drink dialog
+                    open_new_local_page("#p11");
                 }
-                // end the drink dialog
-                open_new_local_page("#p11");
+                _ => {
+                    let x = format!("Error: Unrecognized call_fn_listener: {}", fn_name);
+                    websysmod::debug_write(&x);
+                }
             }
-            _ => {
-                let x = format!("Error: Unrecognized call_fn_listener: {}", fn_name);
-                websysmod::debug_write(&x);
-            }
-        }
-    })
+        })
     }
 
     /// html_templating functions that return a Node
@@ -302,11 +303,22 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 return svg_qrcode_to_node(self, cx);
             }
             _ => {
-                let node = dodrio!(bump,
+                let node = ElementBuilder::new(bump, "h2")
+                    .children([text(
+                        bumpalo::format!(in bump,
+                            "Error: Unrecognized call_fn_node: {}",
+                            fn_name
+                        )
+                        .into_bump_str(),
+                    )])
+                    .finish();
+
+                /*dodrio !(bump,
                 <h2  >
-                    {vec![text(bumpalo::format!(in bump, "Error: Unrecognized call_fn_node: {}", fn_name).into_bump_str())]}
+                    {vec![text(bumpalo::format!(in bump, "Error: Unrecognized call_fn_node: {}",
+                    fn_name).into_bump_str())]}
                 </h2>
-                );
+                )*/
                 return node;
             }
         }
@@ -318,10 +330,7 @@ pub fn svg_qrcode_to_node<'a>(
     rrc: &RootRenderingComponent,
     cx: &mut RenderContext<'a>,
 ) -> Node<'a> {
-    let link = format!(
-        "https://bestia.dev/mem6/#p03.{}",
-        rrc.web_data.my_ws_uid
-    );
+    let link = format!("https://bestia.dev/mem6/#p03.{}", rrc.web_data.my_ws_uid);
     let qr = unwrap!(qrcode53bytes::Qr::new(&link));
     let svg_template = qrcode53bytes::SvgDodrioRenderer::new(222, 222).render(&qr);
     //I added use crate::htmltemplatemod::HtmlTemplating; to make the function get_root_node in scope.
