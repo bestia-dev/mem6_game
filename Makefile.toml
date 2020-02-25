@@ -93,7 +93,7 @@ skip_core_tasks = true
     ]
 
     [tasks.udeps]
-    description = "lists unused dependencies"
+    description = "lists unused dependencies needs nightly"
     workspace = false
     clear = true
     script = [

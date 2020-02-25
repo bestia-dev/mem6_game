@@ -7,7 +7,7 @@
 //region: lmake_readme insert "readme.md"
 //! # "unForGetTable"  (development name: mem6)
 //!
-//! version: 2020.214.1939  
+//! version: 2020.225.1404  
 //!
 //! mem6 is a simple drinking game to lose memory. It is made primarily for learning the Rust programming language and Wasm/WebAssembly with Virtual Dom Dodrio, WebSocket communication and PWA (Progressive Web App).  
 //!
@@ -149,7 +149,19 @@
 //! Rust has much more freedom to group code in different ways. So that is best suits the problem.  
 //! I splitted the rendering pages and that into sub-components.  
 //! And then I splitted the User Actions by the Status1 to easy follow the flow of the game.  
-//! I try to use the philosophy od "state machine" because is easier to follow.  
+//!
+//! ## State machine
+//!
+//! I try to use the philosophy of "state machine" because it is easier to follow.  
+//! All is dependent on the state of the data and not on the chronological events.  
+//! Any event can change the state/data. Then another piece of code will do the rest
+//! based on the state/data. The data can come from different places: user input, fetch from
+//! web, url/hash, local_storage. It doesn't matter. All the data must first go into the state/data.  
+//! Then some other code makes decision based on the state/data.  
+//! The app is divided in 2 ways:
+//!
+//! - visually it is divided in pages and page components
+//! - behaviorally is divided into pages and game_state
 //!
 //! ## Clippy
 //!
@@ -319,6 +331,9 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
 
     let v3 = vdom.weak();
     fetchmod::fetch_videos_and_update(&location_href, v3);
+
+    let v5 = vdom.weak();
+    fetchmod::fetch_audio_and_update(&location_href, v5);
 
     // Start the URL router.
     let v4 = vdom.weak();

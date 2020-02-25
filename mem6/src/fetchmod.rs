@@ -75,6 +75,25 @@ pub fn fetch_videos_and_update(href: &str, vdom: dodrio::VdomWeak) {
     });
 }
 
+/// async fetch for audio.json and update rrc
+pub fn fetch_audio_and_update(href: &str, vdom: dodrio::VdomWeak) {
+    let url = format!("{}/content/audio.json", href);
+    spawn_local(async move {
+        let respbody = websysmod::fetch_response(url).await;
+        let v: gamedatamod::Audio = unwrap!(serde_json::from_str(&respbody));
+        unwrap!(
+            vdom.with_component({
+                move |root| {
+                    let rrc = root.unwrap_mut::<RootRenderingComponent>();
+                    // fill the vector
+                    rrc.audio = v.audio;
+                }
+            })
+            .await
+        );
+    });
+}
+
 /// fetch all imgs for the cache
 #[allow(clippy::needless_pass_by_value)]
 pub fn fetch_all_img_for_cache_request(rrc: &mut RootRenderingComponent) {

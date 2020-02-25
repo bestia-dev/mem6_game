@@ -10,6 +10,7 @@ use dodrio::{
     bumpalo::{self},
     builder::{ElementBuilder, text},
 };
+use crate::*;
 use unwrap::unwrap;
 //endregion: use
 
@@ -173,6 +174,8 @@ pub trait HtmlTemplating {
                         // Only one listener for now because the api does not give me other method.
                         let fn_name = value.to_string();
                         let event_to_listen = unwrap!(name.get(8..)).to_string();
+                        //websysmod::debug_write("&event_to_listen");
+                        //websysmod::debug_write(&event_to_listen);
                         let event_to_listen =
                             bumpalo::format!(in bump, "{}",&event_to_listen).into_bump_str();
                         element = element.on(event_to_listen, self.call_fn_listener(fn_name));

@@ -110,7 +110,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             let fn_name = fn_name.as_str();
             let rrc = root.unwrap_mut::<RootRenderingComponent>();
             let vdom = vdom.clone();
-            // websysmod::debug_write(&format!("call_fn_listener: {}", &fn_name));
+            //websysmod::debug_write(&format!("call_fn_listener: {}", &fn_name));
             match fn_name {
                 "nickname_onkeyup" => {
                     storagemod::nickname_onkeyup(rrc, event);
@@ -172,6 +172,9 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 }
                 "drink_end" => {
                     // send a msg to end drinking to all players
+                    //let audio_element = unwrap!(web_sys::HtmlAudioElement::new_with_src(src));
+                    //unwrap!(audio_element.stop());
+
                     websysmod::debug_write(&format!("MsgDrinkEnd send{}", ""));
                     websocketmod::ws_send_msg(
                         &rrc.web_data.ws,
@@ -198,6 +201,10 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     }
                     // end the drink dialog
                     open_new_local_page("#p11");
+                }
+                "p06_load_image" => {
+                    //websysmod::debug_write("p06_load_image");
+                    statusdrinkmod::play_sound_for_drink(rrc);
                 }
                 _ => {
                     let x = format!("Error: Unrecognized call_fn_listener: {}", fn_name);

@@ -19,6 +19,8 @@ pub struct RootRenderingComponent {
     pub game_data: gamedatamod::GameData,
     /// videos links for fun
     pub videos: Vec<String>,
+    /// audio for fun
+    pub audio: Vec<String>,
 }
 
 /// impl
@@ -27,13 +29,13 @@ impl RootRenderingComponent {
     pub fn new(ws: WebSocket, my_ws_uid: usize) -> Self {
         let game_data = gamedatamod::GameData::new(my_ws_uid);
         let msg_receivers = game_data.prepare_msg_receivers();
-        let web_data =
-            webdatamod::WebData::new(ws, my_ws_uid, msg_receivers);
+        let web_data = webdatamod::WebData::new(ws, my_ws_uid, msg_receivers);
 
         RootRenderingComponent {
             web_data,
             game_data,
-            videos:vec![],
+            videos: vec![],
+            audio: vec![],
         }
     }
 }

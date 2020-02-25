@@ -20,6 +20,13 @@ pub struct Videos {
     pub videos: Vec<String>,
 }
 
+/// audio
+#[derive(Serialize, Deserialize, Clone)]
+pub struct Audio {
+    /// vec of strings
+    pub audio: Vec<String>,
+}
+
 /// 2d size (any UM -pixel, items, percent)
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Size2d {
