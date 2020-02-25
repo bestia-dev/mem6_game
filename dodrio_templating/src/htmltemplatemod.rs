@@ -256,7 +256,8 @@ pub trait HtmlTemplating {
 
 /// get en empty div node
 pub fn empty_div<'a>(cx: &mut RenderContext<'a>) -> Node<'a> {
-    dodrio::builder::div(&cx).finish()
+    let bump = cx.bump;
+    ElementBuilder::new(bump, "div").finish()
 }
 
 /// decode 5 xml control characters : " ' & < >  
