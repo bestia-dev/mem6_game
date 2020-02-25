@@ -14,7 +14,7 @@ use dodrio::{
     bumpalo::{self, Bump},
     Node,
 };
-use typed_html::dodrio;
+//use typed_html::dodrio;
 //endregion
 
 /// on click
@@ -123,24 +123,41 @@ pub fn div_on_1st_card<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node
         )
         */
         ElementBuilder::new(bump, "div")
-        .children([
-            ElementBuilder::new(bump, "h2")
-                .attr("class","h2_must_do_something")
-                .children([
-                        text(bumpalo::format!(in bump, "Play {}",
-                            unwrap!(rrc.game_data.players.get(rrc.game_data.player_turn-1)).nickname)
-                            .into_bump_str())
-                ]).finish()
-        ]).finish()
+            .children([ElementBuilder::new(bump, "h2")
+                .attr("class", "h2_must_do_something")
+                .children([text(
+                    bumpalo::format!(in bump,
+                        "Play {}",
+                        unwrap!(rrc.game_data.players.get(rrc.game_data.player_turn-1)).nickname
+                    )
+                    .into_bump_str(),
+                )])
+                .finish()])
+            .finish()
     } else {
         // return wait for the other player
+        /*
         dodrio!(bump,
         <h2 class="h2_user_must_wait">
-            {vec![text(bumpalo::format!(in bump, "Wait for {}",
-            unwrap!(rrc.game_data.players.get(rrc.game_data.player_turn-1)).nickname
+            {vec![text(bumpalo::format!(in bump,
+                "Wait for {}",
+                unwrap!(rrc.game_data.players.get(rrc.game_data.player_turn-1)).nickname
             ).into_bump_str())]}
         </h2>
         )
+        */
+        ElementBuilder::new(bump, "div")
+            .children([ElementBuilder::new(bump, "h2")
+                .attr("class", "h2_user_must_wait")
+                .children([text(
+                    bumpalo::format!(in bump,
+                        "Wait for {}",
+                        unwrap!(rrc.game_data.players.get(rrc.game_data.player_turn-1)).nickname
+                    )
+                    .into_bump_str(),
+                )])
+                .finish()])
+            .finish()
     }
 }
 
