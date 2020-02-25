@@ -16,7 +16,6 @@ use dodrio::{
     builder::{ElementBuilder},
 };
 
-use typed_html::dodrio;
 //use wasm_bindgen::prelude::*;
 //use web_sys::console;
 
@@ -55,11 +54,14 @@ pub fn div_grid_container<'a>(
             ""
         },
     );
-    let grid_container = dodrio!(bump,
-        <div class= "grid_container" style={s_style}>
-            {div_grid_items(rrc, bump)}
-        </div>
-    );
+    let grid_container = ElementBuilder::new(bump, "div")
+        .attr("class", "grid_container")
+        .attr(
+            "style",
+            bumpalo::format!(in bump, "{}", s_style).into_bump_str(),
+        )
+        .children(div_grid_items(rrc, bump))
+        .finish();
     // return
     grid_container
 }
@@ -171,73 +173,48 @@ pub fn div_grid_item<'a>(
     opacity: &str,
 ) -> Node<'a> {
     match rrc.game_data.game_status {
-        GameStatus::Status1stCard =>
-        /*dodrio!(bump,
-        <div class= "grid_item">
-        <img class= "grid_item_img" src={img_src} id={img_id} style={opacity}
-        onclick={move |root, vdom, event| {
-            status1stcardmod::on_click_img_status1st(root,vdom,event);
-        }}>
-        </img>
-        </div>
-        )*/
-        {
-            ElementBuilder::new(bump, "div")
-                .attr("class", "grid_item")
-                .children([ElementBuilder::new(bump, "img")
-                    .attr("class", "grid_item_img")
-                    .attr(
-                        "src",
-                        bumpalo::format!(in bump, "{}", img_src).into_bump_str(),
-                    )
-                    .attr(
-                        "id",
-                        bumpalo::format!(in bump, "{}", img_id).into_bump_str(),
-                    )
-                    .attr(
-                        "style",
-                        bumpalo::format!(in bump, "{}", opacity).into_bump_str(),
-                    )
-                    .on("click", move |root, vdom, event| {
-                        status1stcardmod::on_click_img_status1st(root, vdom, event);
-                    })
-                    .finish()])
-                .finish()
-        }
-        GameStatus::Status2ndCard =>
-        /*dodrio !(bump,
-        <div class= "grid_item">
-        <img class= "grid_item_img" src={img_src} id={img_id} style={opacity}
-        onclick={move |root, vdom, event| {
-            status2ndcardmod::on_click_img_status2nd(root,vdom,event);
-        }}>
-        </img>
-        </div>
-        )
-        */
-        {
-            ElementBuilder::new(bump, "div")
-                .attr("class", "grid_item")
-                .children([ElementBuilder::new(bump, "img")
-                    .attr("class", "grid_item_img")
-                    .attr(
-                        "src",
-                        bumpalo::format!(in bump, "{}", img_src).into_bump_str(),
-                    )
-                    .attr(
-                        "id",
-                        bumpalo::format!(in bump, "{}", img_id).into_bump_str(),
-                    )
-                    .attr(
-                        "style",
-                        bumpalo::format!(in bump, "{}", opacity).into_bump_str(),
-                    )
-                    .on("click", move |root, vdom, event| {
-                        status2ndcardmod::on_click_img_status2nd(root, vdom, event);
-                    })
-                    .finish()])
-                .finish()
-        }
+        GameStatus::Status1stCard => ElementBuilder::new(bump, "div")
+            .attr("class", "grid_item")
+            .children([ElementBuilder::new(bump, "img")
+                .attr("class", "grid_item_img")
+                .attr(
+                    "src",
+                    bumpalo::format!(in bump, "{}", img_src).into_bump_str(),
+                )
+                .attr(
+                    "id",
+                    bumpalo::format!(in bump, "{}", img_id).into_bump_str(),
+                )
+                .attr(
+                    "style",
+                    bumpalo::format!(in bump, "{}", opacity).into_bump_str(),
+                )
+                .on("click", move |root, vdom, event| {
+                    status1stcardmod::on_click_img_status1st(root, vdom, event);
+                })
+                .finish()])
+            .finish(),
+        GameStatus::Status2ndCard => ElementBuilder::new(bump, "div")
+            .attr("class", "grid_item")
+            .children([ElementBuilder::new(bump, "img")
+                .attr("class", "grid_item_img")
+                .attr(
+                    "src",
+                    bumpalo::format!(in bump, "{}", img_src).into_bump_str(),
+                )
+                .attr(
+                    "id",
+                    bumpalo::format!(in bump, "{}", img_id).into_bump_str(),
+                )
+                .attr(
+                    "style",
+                    bumpalo::format!(in bump, "{}", opacity).into_bump_str(),
+                )
+                .on("click", move |root, vdom, event| {
+                    status2ndcardmod::on_click_img_status2nd(root, vdom, event);
+                })
+                .finish()])
+            .finish(),
         mem6_common::GameStatus::StatusStartPage
         | mem6_common::GameStatus::StatusJoined
         | mem6_common::GameStatus::StatusDrink

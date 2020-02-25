@@ -1,6 +1,6 @@
 [package]
 name = "mem6"
-version = "2020.225.1057"
+version = "2020.225.1112"
 authors = ["Luciano Furlan <Luciano.Bestia@gmail.com>"]
 edition = "2018"
 description = "Learning Rust Wasm/WebAssembly with Virtual Dom Dodrio"
@@ -36,7 +36,6 @@ wasm-bindgen-futures = "0.4.8"
 #log = "0.4.8"
 strum = "0.17.1"
 strum_macros = "0.17.1"
-typed-html = {version="0.2.1", features = ["dodrio_macro"]}
 conv = "0.3.3"
 gloo-timers = {version="0.2.0", features=["futures"]}
 reader_for_microxml = "1.0.4"

@@ -13,7 +13,6 @@ use dodrio::{
     bumpalo::{self},
     builder::{ElementBuilder, text},
 };
-//use typed_html::dodrio;
 
 const VIDEOS: &[&str] = &[
     "VQdhDw-hE8s",
