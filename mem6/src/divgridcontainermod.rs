@@ -13,6 +13,7 @@ use conv::{ConvUtil, ConvAsUtil};
 use dodrio::{
     bumpalo::{self, Bump},
     Node,
+    builder::{ElementBuilder, text},
 };
 use wasm_bindgen::JsCast; // don't remove this. It is needed for dyn_into.
 use typed_html::dodrio;
@@ -243,12 +244,32 @@ pub fn div_grid_item<'a>(
         | mem6_common::GameStatus::StatusTakeTurn
         | mem6_common::GameStatus::StatusGameOver
         | mem6_common::GameStatus::StatusReconnect
-        | mem6_common::GameStatus::StatusWaitingAckMsg => dodrio!(bump,
-            <div class= "grid_item">
-                <img class= "grid_item_img" src={img_src} id={img_id} style={opacity} >
-                </img>
-            </div>
-        ),
+        | mem6_common::GameStatus::StatusWaitingAckMsg =>
+        /*dodrio!(bump,
+        <div class= "grid_item">
+            <img class= "grid_item_img" src={img_src} id={img_id} style={opacity} >
+            </img>
+        </div>*/
+        {
+            ElementBuilder::new(bump, "div")
+                .attr("class", "grid_item")
+                .children([ElementBuilder::new(bump, "img")
+                    .attr("class", "grid_item_img")
+                    .attr(
+                        "src",
+                        bumpalo::format!(in bump, "{}", img_src).into_bump_str(),
+                    )
+                    .attr(
+                        "id",
+                        bumpalo::format!(in bump, "{}", img_id).into_bump_str(),
+                    )
+                    .attr(
+                        "style",
+                        bumpalo::format!(in bump, "{}", opacity).into_bump_str(),
+                    )
+                    .finish()])
+                .finish()
+        }
     }
 }
 

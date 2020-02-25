@@ -107,7 +107,7 @@
 //!
 //! In the past I wrote html inside Rust code with the macro `html!` from the `crate typed-html`  
 //! <https://github.com/bodil/typed-html>  
-//! It has also a macro `dodrio!` created exclusively for the dodrio vdom.  
+//! It has also a macro `dodrio !` created exclusively for the dodrio vdom.  
 //! I had two main problems with this approach:  
 //!
 //! 1. Any change to the html required a recompiling. And that is very slow in Rust.  
@@ -187,7 +187,7 @@
 
 //endregion: lmake_readme insert "readme.md"
 
-//needed for dodrio! macro (typed-html)
+//needed for dodrio ! macro (typed-html)
 #![recursion_limit = "512"]
 //region: Clippy
 #![warn(

@@ -8,7 +8,7 @@
 // All other players send him the complete data. He uses only the data from the first msg
 // he receives and ignore all others.
 
-//macro dodrio! now has warning about a panic?!?
+//macro dodrio ! now has warning about a panic?!?
 #![allow(clippy::panic)]
 
 //region: use
@@ -23,7 +23,7 @@ use unwrap::unwrap;
 /*
 /// render reconnect
 pub fn div_reconnect<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
-    dodrio!(bump,
+    dodrio !(bump,
     <div>
       <h4>
             {vec![text(bumpalo::format!(in bump,

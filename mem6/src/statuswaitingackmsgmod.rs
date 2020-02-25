@@ -18,7 +18,7 @@ use dodrio::{
 /// waiting ack msg
 pub fn div_waiting_ack_msg<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
     /*
-    dodrio!(bump,
+    dodrio !(bump,
     <div>
         <h2 class="h2_user_must_wait">
                 {vec![text(
