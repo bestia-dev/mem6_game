@@ -14,7 +14,7 @@ use dodrio::{
     bumpalo::{self, Bump},
     Node,
 };
-//use typed_html::dodrio;
+use wasm_bindgen::JsCast;
 //endregion
 
 /// on click
@@ -140,4 +140,39 @@ pub fn div_on_1st_card<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node
     }
 }
 
+pub fn on_click_img_status1st(
+    root: &mut dyn dodrio::RootRender,
+    vdom: dodrio::VdomWeak,
+    event: web_sys::Event,
+) {
+    // websysmod::debug_write("img click");
+    let rrc = root.unwrap_mut::<RootRenderingComponent>();
+    // If the event's target is our image...
+    let img = match event
+        .target()
+        .and_then(|t| t.dyn_into::<web_sys::HtmlImageElement>().ok())
+    {
+        None => return,
+        // ?? Don't understand what this does. The original was written for Input element.
+        Some(input) => input,
+    };
+    // id attribute of image html element is prefixed with img ex. "img12"
+    let this_click_card_index = unwrap!(
+        (unwrap!(img.id().get(3..), "error slicing")).parse::<usize>(),
+        "error parse img id to usize"
+    );
+    // click is useful only on facedown cards
+    if unwrap!(
+        rrc.game_data.card_grid_data.get(this_click_card_index),
+        "error this_click_card_index"
+    )
+    .status
+    .as_ref()
+        == CardStatusCardFace::Down.as_ref()
+    {
+        status1stcardmod::on_click_1st_card(rrc, &vdom, this_click_card_index);
+        // Finally, re-render the component on the next animation frame.
+        vdom.schedule_render();
+    }
+}
 //div_grid_container() is in divgridcontainermod.rs

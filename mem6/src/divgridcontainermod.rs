@@ -15,7 +15,7 @@ use dodrio::{
     Node,
     builder::{ElementBuilder, text},
 };
-use wasm_bindgen::JsCast; // don't remove this. It is needed for dyn_into.
+
 use typed_html::dodrio;
 //use wasm_bindgen::prelude::*;
 //use web_sys::console;
@@ -171,105 +171,48 @@ pub fn div_grid_item<'a>(
     opacity: &str,
 ) -> Node<'a> {
     match rrc.game_data.game_status {
-        GameStatus::Status1stCard => {
-            dodrio!(bump,
-            <div class= "grid_item">
-            <img class= "grid_item_img" src={img_src} id={img_id} style={opacity} onclick={move |root, vdom, event| {
-                // websysmod::debug_write("img click");
-                let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                // If the event's target is our image...
-                let img = match event
-                    .target()
-                    .and_then(|t| t.dyn_into::<web_sys::HtmlImageElement>().ok())
-                {
-                    None => return,
-                    // ?? Don't understand what this does. The original was written for Input element.
-                    Some(input) => input,
-                };
-                // id attribute of image html element is prefixed with img ex. "img12"
-                let this_click_card_index = unwrap!(
-                    (unwrap!(img.id().get(3..), "error slicing")).parse::<usize>(),
-                    "error parse img id to usize"
-                );
-                // click is useful only on facedown cards
-                if unwrap!(
-                    rrc.game_data.card_grid_data.get(this_click_card_index),
-                    "error this_click_card_index"
-                ).status.as_ref()==CardStatusCardFace::Down.as_ref(){
-                    status1stcardmod::on_click_1st_card(rrc, &vdom, this_click_card_index);
-                    // Finally, re-render the component on the next animation frame.
-                    vdom.schedule_render();
-                }
-            }}>
-            </img>
-            </div>
-            )
-        }
-        GameStatus::Status2ndCard => {
-            dodrio!(bump,
-            <div class= "grid_item">
-            <img class= "grid_item_img" src={img_src} id={img_id} style={opacity} onclick={move |root, vdom, event| {
-                let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                // If the event's target is our image...
-                let img = match event
-                    .target()
-                    .and_then(|t| t.dyn_into::<web_sys::HtmlImageElement>().ok())
-                {
-                    None => return,
-                    // ?? Don't understand what this does. The original was written for Input element.
-                    Some(input) => input,
-                };
-                // id attribute of image html element is prefixed with img ex. "img12"
-                let this_click_card_index = unwrap!(
-                    (unwrap!(img.id().get(3..), "error slicing")).parse::<usize>(),
-                    "error parse img id to usize"
-                );
-                // click is useful only on facedown cards
-                if unwrap!(
-                    rrc.game_data.card_grid_data.get(this_click_card_index),
-                    "error this_click_card_index"
-                ).status.as_ref()==CardStatusCardFace::Down.as_ref(){
-                    status2ndcardmod::on_click_2nd_card(rrc, &vdom, this_click_card_index);
-                    // Finally, re-render the component on the next animation frame.
-                    vdom.schedule_render();
-                }
-            }}>
-            </img>
-            </div>
-            )
-        }
+        GameStatus::Status1stCard => dodrio!(bump,
+        <div class= "grid_item">
+        <img class= "grid_item_img" src={img_src} id={img_id} style={opacity}
+        onclick={move |root, vdom, event| {
+            status1stcardmod::on_click_img_status1st(root,vdom,event);
+        }}>
+        </img>
+        </div>
+        ),
+        GameStatus::Status2ndCard => dodrio!(bump,
+        <div class= "grid_item">
+        <img class= "grid_item_img" src={img_src} id={img_id} style={opacity}
+        onclick={move |root, vdom, event| {
+            status2ndcardmod::on_click_img_status2nd(root,vdom,event);
+        }}>
+        </img>
+        </div>
+        ),
         mem6_common::GameStatus::StatusStartPage
         | mem6_common::GameStatus::StatusJoined
         | mem6_common::GameStatus::StatusDrink
         | mem6_common::GameStatus::StatusTakeTurn
         | mem6_common::GameStatus::StatusGameOver
         | mem6_common::GameStatus::StatusReconnect
-        | mem6_common::GameStatus::StatusWaitingAckMsg =>
-        /*dodrio!(bump,
-        <div class= "grid_item">
-            <img class= "grid_item_img" src={img_src} id={img_id} style={opacity} >
-            </img>
-        </div>*/
-        {
-            ElementBuilder::new(bump, "div")
-                .attr("class", "grid_item")
-                .children([ElementBuilder::new(bump, "img")
-                    .attr("class", "grid_item_img")
-                    .attr(
-                        "src",
-                        bumpalo::format!(in bump, "{}", img_src).into_bump_str(),
-                    )
-                    .attr(
-                        "id",
-                        bumpalo::format!(in bump, "{}", img_id).into_bump_str(),
-                    )
-                    .attr(
-                        "style",
-                        bumpalo::format!(in bump, "{}", opacity).into_bump_str(),
-                    )
-                    .finish()])
-                .finish()
-        }
+        | mem6_common::GameStatus::StatusWaitingAckMsg => ElementBuilder::new(bump, "div")
+            .attr("class", "grid_item")
+            .children([ElementBuilder::new(bump, "img")
+                .attr("class", "grid_item_img")
+                .attr(
+                    "src",
+                    bumpalo::format!(in bump, "{}", img_src).into_bump_str(),
+                )
+                .attr(
+                    "id",
+                    bumpalo::format!(in bump, "{}", img_id).into_bump_str(),
+                )
+                .attr(
+                    "style",
+                    bumpalo::format!(in bump, "{}", opacity).into_bump_str(),
+                )
+                .finish()])
+            .finish(),
     }
 }
 
