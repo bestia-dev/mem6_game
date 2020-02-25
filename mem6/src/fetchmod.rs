@@ -1,4 +1,4 @@
-// fetchgmod.rs
+// fetchmod.rs
 //! fetch game_config, game metadata, imgs
 
 //region: use

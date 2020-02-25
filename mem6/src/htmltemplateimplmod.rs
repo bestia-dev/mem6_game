@@ -231,7 +231,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             "start_game_onclick" => {
                 statusgamedatainitmod::on_click_start_game(rrc);
                 // async fetch all imgs and put them in service worker cache
-                fetchgmod::fetch_all_img_for_cache_request(rrc);
+                fetchmod::fetch_all_img_for_cache_request(rrc);
                 vdom.schedule_render();
                 // websysmod::debug_write(&format!("start_game_onclick players: {:?}",rrc.game_data.players));
                 open_new_local_page("#p11");
@@ -340,7 +340,7 @@ pub fn game_type_right_onclick(rrc: &mut RootRenderingComponent, vdom: &dodrio::
         }
         last_name = x.name.to_string();
     }
-    fetchgmod::async_fetch_game_config_request(rrc, vdom);
+    fetchmod::async_fetch_game_config_request(rrc, vdom);
 }
 
 /// left arrow button
@@ -355,7 +355,7 @@ pub fn game_type_left_onclick(rrc: &mut RootRenderingComponent, vdom: &dodrio::V
         }
         last_name = x.name.to_string();
     }
-    fetchgmod::async_fetch_game_config_request(rrc, vdom);
+    fetchmod::async_fetch_game_config_request(rrc, vdom);
 }
 
 /// fn open new local page with #

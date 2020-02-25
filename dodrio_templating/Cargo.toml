@@ -76,7 +76,7 @@ features = [
   "Response",
   "Screen",
   "Storage",
-  "WebSocket",
+  #"WebSocket",
   "Window",
 ]
 

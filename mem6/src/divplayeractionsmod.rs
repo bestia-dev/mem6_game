@@ -8,11 +8,10 @@ use crate::*;
 use mem6_common::*;
 
 use dodrio::{
-    builder::text,
+    builder::*,
     bumpalo::{self, Bump},
     Node,
 };
-use typed_html::dodrio;
 //endregion
 
 /// render html element to inform player what to do and get a click action from user
@@ -44,9 +43,11 @@ pub fn div_player_actions_from_game_status<'a>(
 fn div_unpredicted<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
     // unpredictable situation
     // return
-    dodrio!(bump,
-    <h2  >
-        {vec![text(bumpalo::format!(in bump, "gamestatus: {} player {}", rrc.game_data.game_status.as_ref(),rrc.game_data.my_player_number).into_bump_str())]}
-    </h2>
-    )
+    ElementBuilder::new(bump, "h2")
+        .children([text(
+            bumpalo::format!(in bump, "gamestatus: {} player {}", 
+        rrc.game_data.game_status.as_ref(),rrc.game_data.my_player_number)
+            .into_bump_str(),
+        )])
+        .finish()
 }

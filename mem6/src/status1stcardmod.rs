@@ -10,7 +10,7 @@ use mem6_common::*;
 
 use unwrap::unwrap;
 use dodrio::{
-    builder::text,
+    builder::*,
     bumpalo::{self, Bump},
     Node,
 };
