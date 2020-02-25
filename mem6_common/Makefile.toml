@@ -30,7 +30,7 @@ skip_core_tasks = true
     description = "cargo check"
     clear = true
     command = "cargo"
-    args = ["check"]
+    args = ["check","--release"]
 
     [tasks.audit]
     description = "cargo audit - for warning dependencies"

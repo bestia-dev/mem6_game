@@ -12,6 +12,14 @@ use strum_macros::AsRefStr;
 //endregion: use
 
 //region: struct, enum
+
+/// videos
+#[derive(Serialize, Deserialize, Clone)]
+pub struct Videos {
+    /// vec of strings
+    pub videos: Vec<String>,
+}
+
 /// 2d size (any UM -pixel, items, percent)
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Size2d {

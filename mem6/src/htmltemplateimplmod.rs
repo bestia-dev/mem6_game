@@ -14,81 +14,6 @@ use dodrio::{
     builder::{ElementBuilder, text},
 };
 
-const VIDEOS: &[&str] = &[
-    "VQdhDw-hE8s",
-    "2RT9AzqEfLo",
-    "gCDNz8ozT0Y",
-    "2RT9AzqEfLo",
-    "YgPm3POLqec",
-    "9k_ZRyws8Uc",
-    "--AvCsh48bk",
-    "SCZqBOK8JG4",
-    "v7PTqPRFq0w",
-    "LeiFF0gvqcc",
-    "o3mP3mJDL2k",
-    "xwhPlUlkBOc",
-    "myS9lF0GrL4",
-    "tHjiqz9Q-JQ",
-    "JbHo4yrix5o",
-    "gfDQPRp8yG4",
-    "GnRClOK5R9g",
-    "s_rBqCxj3gU",
-    "4wAkV_ryyZE",
-    "6dxf1VCQi-U",
-    "DTxSMX6CfU0",
-    "O4hbiab6epE",
-    "qViSjEBaDeo",
-    "i30sHTaO65U",
-    "Yeg4hn8OQko",
-    "30CtCHHbhx0",
-    "sqfa-6OAJ-A",
-    "3CsdVbbdMtU",
-    "_Ohi_MJa64Y",
-    "N3oCS85HvpY",
-    "ICFi4QLlXyo",
-    "w7Wx1V9GNcs",
-    "YXRENpuksxA",
-    "qtcLC0axZmY",
-    "lQVeBVipOgI",
-    "UzAVaAWLsac",
-    "vac5Vq3uas8",
-    "CUO8twlE6do",
-    "xYfYfB15JmU",
-    "A6dDjEKIaMU",
-    "1Z1dxe7zkQo",
-    "dhO49-agq-E",
-    "XnKj8diK5t8",
-    "UUZwkSpLyuY",
-    "nYLITSwgbMo",
-    "4v6bezLr-cU",
-    "Wr_dt3mjpaI",
-    "iVEdOVSujz8",
-    "e3aLX5Avlsc",
-    "yTjTIO6zfNo",
-    "5xyWlGOeqJY",
-    "dBC984kMPuw",
-    "kqIe2w13-dY",
-    "o2V7qrxjW8k",
-    "PjCXl3XZbPU",
-    "49VAeeTrOIc",
-    "RYQlpDPBb9k",
-    "bU_dD3R3fAI",
-    "lK5sHyjXfz4",
-    "hkHHvb2eDb4",
-    "7F-MKVP91XI",
-    "3ftey36D12M",
-    "0mkD5aptXu8",
-    "RXmH_4RKrrc",
-    "MeF-e6yPXfo",
-    "CHba51EvycY",
-    "EY5X9GcOWhk",
-    "R9QdgWY01d8",
-    "JWA5GTlLCTQ",
-    "fvq7PG_6sPk",
-    "SX1grPSFjYU",
-    "-5u2Nw18z_c",
-];
-
 impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
     /// html_templating boolean id the next node is rendered or not
     fn call_fn_boolean(&self, fn_name: &str) -> bool {
@@ -194,11 +119,11 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     storagemod::group_id_onkeyup(rrc, event);
                 }
                 "open_youtube" => {
-                    // randomly choose a link from VIDEOS
-                    let num = websysmod::get_random(0, VIDEOS.len());
+                    // randomly choose a link from rrc.videos
+                    let num = websysmod::get_random(0, rrc.videos.len());
                     websysmod::open_new_tab(&format!(
                         "https://www.youtube.com/watch?v={}",
-                        VIDEOS[num]
+                        rrc.videos[num]
                     ));
                 }
                 "open_menu" => {
@@ -237,10 +162,10 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     open_new_local_page("#p11");
                 }
                 "game_type_right_onclick" => {
-                    game_type_right_onclick(rrc, &vdom);
+                    game_type_right_onclick(rrc, vdom);
                 }
                 "game_type_left_onclick" => {
-                    game_type_left_onclick(rrc, &vdom);
+                    game_type_left_onclick(rrc, vdom);
                 }
                 "join_group_on_click" => {
                     open_new_local_page("#p04");
@@ -337,7 +262,7 @@ pub fn svg_qrcode_to_node<'a>(
 }
 
 /// the arrow to the right
-pub fn game_type_right_onclick(rrc: &mut RootRenderingComponent, vdom: &dodrio::VdomWeak) {
+pub fn game_type_right_onclick(rrc: &mut RootRenderingComponent, vdom: dodrio::VdomWeak) {
     let gmd = &unwrap!(rrc.game_data.games_metadata.as_ref()).vec_game_metadata;
     let mut last_name = unwrap!(gmd.last()).name.to_string();
     for x in gmd {
@@ -348,11 +273,11 @@ pub fn game_type_right_onclick(rrc: &mut RootRenderingComponent, vdom: &dodrio::
         }
         last_name = x.name.to_string();
     }
-    fetchmod::async_fetch_game_config_request(rrc, vdom);
+    fetchmod::async_fetch_game_config_and_update(rrc, vdom);
 }
 
 /// left arrow button
-pub fn game_type_left_onclick(rrc: &mut RootRenderingComponent, vdom: &dodrio::VdomWeak) {
+pub fn game_type_left_onclick(rrc: &mut RootRenderingComponent, vdom: dodrio::VdomWeak) {
     let gmd = &unwrap!(rrc.game_data.games_metadata.as_ref()).vec_game_metadata;
     let mut last_name = unwrap!(gmd.first()).name.to_string();
     for x in gmd.iter().rev() {
@@ -363,7 +288,7 @@ pub fn game_type_left_onclick(rrc: &mut RootRenderingComponent, vdom: &dodrio::V
         }
         last_name = x.name.to_string();
     }
-    fetchmod::async_fetch_game_config_request(rrc, vdom);
+    fetchmod::async_fetch_game_config_and_update(rrc, vdom);
 }
 
 /// fn open new local page with #

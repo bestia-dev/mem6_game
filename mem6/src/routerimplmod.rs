@@ -30,7 +30,7 @@ impl routermod::Routing for Router {
         let rrc = root.unwrap_mut::<RootRenderingComponent>();
         if local_route == "#p02" {
             let vdom = vdom.clone();
-            fetchmod::async_fetch_game_config_request(rrc, &vdom);
+            fetchmod::async_fetch_game_config_and_update(rrc, vdom);
             rrc.web_data.local_route = "p02_start_a_group.html".to_owned();
         } else if local_route.starts_with("#p03") {
             rrc.game_data.my_player_number = 2;

@@ -17,6 +17,8 @@ pub struct RootRenderingComponent {
     pub web_data: webdatamod::WebData,
     /// game data will be inside of Root
     pub game_data: gamedatamod::GameData,
+    /// videos links for fun
+    pub videos: Vec<String>,
 }
 
 /// impl
@@ -31,6 +33,7 @@ impl RootRenderingComponent {
         RootRenderingComponent {
             web_data,
             game_data,
+            videos:vec![],
         }
     }
 }

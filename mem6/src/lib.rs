@@ -315,7 +315,10 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     // async fetch_response() for gamesmetadata.json
     let v2 = vdom.weak();
     // TODO: this could be a trait for vdomweak
-    fetchmod::fetch_games_metadata_request(location_href, v2);
+    fetchmod::fetch_games_metadata_and_update(&location_href, v2);
+
+    let v3 = vdom.weak();
+    fetchmod::fetch_videos_and_update(&location_href, v3);
 
     // Start the URL router.
     let v4 = vdom.weak();
