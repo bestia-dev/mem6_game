@@ -75,33 +75,10 @@ pub fn fetch_videos_and_update(href: &str, vdom: dodrio::VdomWeak) {
     });
 }
 
-/// every smartphone grid starts and ends at a specific index of the card vector
-pub fn grid_start_end_index(game_data: &gamedatamod::GameData) -> (usize, usize) {
-    let start_index = unwrap!(unwrap!((unwrap!(game_data.my_player_number.checked_sub(1)))
-        .checked_mul(unwrap!(unwrap!(game_data.game_config.as_ref())
-            .grid_items_hor
-            .checked_mul(unwrap!(game_data.game_config.as_ref()).grid_items_ver))))
-    .checked_add(1));
-
-    let mut end_index =
-        unwrap!(game_data
-            .my_player_number
-            .checked_mul(unwrap!(unwrap!(game_data.game_config.as_ref())
-                .grid_items_hor
-                .checked_mul(unwrap!(game_data.game_config.as_ref()).grid_items_ver))));
-    // the count of cards can now be not divisible with 2 for card pairs.
-    // so I need to make a different last card that is not clickable.
-    if end_index >= game_data.card_grid_data.len() {
-        end_index -= 1;
-    }
-    //return
-    (start_index, end_index)
-}
-
 /// fetch all imgs for the cache
 #[allow(clippy::needless_pass_by_value)]
 pub fn fetch_all_img_for_cache_request(rrc: &mut RootRenderingComponent) {
-    let (start_index, end_index) = grid_start_end_index(&rrc.game_data);
+    let (start_index, end_index) = rrc.game_data.grid_start_end_index();
     for i in start_index..end_index {
         let x = &rrc.game_data.card_grid_data[i];
 

@@ -272,4 +272,26 @@ impl GameData {
         // return
         unwrap!(serde_json::to_string(&msg_receivers))
     }
+
+    /// every smartphone grid starts and ends at a specific index of the card vector
+    pub fn grid_start_end_index(&self) -> (usize, usize) {
+        let start_index = unwrap!(unwrap!((unwrap!(self.my_player_number.checked_sub(1)))
+            .checked_mul(unwrap!(unwrap!(self.game_config.as_ref())
+                .grid_items_hor
+                .checked_mul(unwrap!(self.game_config.as_ref()).grid_items_ver))))
+        .checked_add(1));
+
+        let mut end_index = unwrap!(self.my_player_number.checked_mul(unwrap!(unwrap!(self
+            .game_config
+            .as_ref())
+        .grid_items_hor
+        .checked_mul(unwrap!(self.game_config.as_ref()).grid_items_ver))));
+        // the count of cards can now be not divisible with 2 for card pairs.
+        // so I need to make a different last card that is not clickable.
+        if end_index >= self.card_grid_data.len() {
+            end_index -= 1;
+        }
+        //return
+        (start_index, end_index)
+    }
 }

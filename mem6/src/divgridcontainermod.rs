@@ -70,7 +70,6 @@ pub fn div_grid_container<'a>(
 /// the grid container needs only grid items. There is no need for rows and columns in 'css grid'.
 #[allow(clippy::integer_arithmetic)] // end_index-1 will not overflow
 pub fn div_grid_items<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Vec<Node<'a>> {
-    // this game_data mutable reference is dropped on the end of the function
     let game_data = &rrc.game_data;
 
     let mut vec_grid_items: Vec<Node<'a>> = Vec::new();
@@ -82,7 +81,7 @@ pub fn div_grid_items<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Vec<N
         // so I need to make a different last card that is not clickable.
 
         // ((game_data.my_player_number - 1) * grid_width*grid_height) + 1
-        let (start_index, end_index) = fetchmod::grid_start_end_index(&game_data);
+        let (start_index, end_index) = game_data.grid_start_end_index();
         for x in start_index..=end_index {
             let index: usize = x;
             // region: prepare variables and closures for inserting into vdom
