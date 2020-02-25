@@ -111,6 +111,7 @@ pub fn update_on_1st_card(rrc: &mut RootRenderingComponent) {
 #[allow(clippy::integer_arithmetic)]
 pub fn div_on_1st_card<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
     if rrc.game_data.my_player_number == rrc.game_data.player_turn {
+        /*
         dodrio!(bump,
         <div >
             <h2 class="h2_must_do_something">
@@ -120,6 +121,17 @@ pub fn div_on_1st_card<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node
             </h2>
         </div>
         )
+        */
+        ElementBuilder::new(bump, "div")
+        .children([
+            ElementBuilder::new(bump, "h2")
+                .attr("class","h2_must_do_something")
+                .children([
+                        text(bumpalo::format!(in bump, "Play {}",
+                            unwrap!(rrc.game_data.players.get(rrc.game_data.player_turn-1)).nickname)
+                            .into_bump_str())
+                ]).finish()
+        ]).finish()
     } else {
         // return wait for the other player
         dodrio!(bump,
