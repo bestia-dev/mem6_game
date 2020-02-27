@@ -155,6 +155,8 @@ impl GameData {
             content_folders: vec![String::from("alphabet")],
             game_config: None,
             games_metadata: None,
+            videos: vec![],
+            audio: vec![],
         }
     }
     /// reset the data to play again the game

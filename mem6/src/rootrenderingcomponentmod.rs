@@ -30,8 +30,6 @@ impl RootRenderingComponent {
         RootRenderingComponent {
             web_data,
             game_data,
-            videos: vec![],
-            audio: vec![],
         }
     }
 }
