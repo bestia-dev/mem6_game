@@ -13,12 +13,12 @@ use wasm_bindgen_futures::spawn_local;
 pub trait Routing {
     //region: specific code to be implemented on Router struct
     fn get_rrc_local_route(root: &mut dyn dodrio::RootRender) -> &str;
-    fn fill_rrc_local_route(
+    fn update_rrc_local_route(
         local_route: String,
         root: &mut dyn dodrio::RootRender,
         vdom: VdomWeak,
     ) -> String;
-    fn fill_html_template(
+    fn update_rrc_html_template(
         resp_body_text: String,
     ) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static>;
     //endregion: specific code
@@ -53,7 +53,7 @@ pub trait Routing {
                                     let v2 = vdom.clone();
                                     //the function that recognizes routes and urls
                                     let url =
-                                        Self::fill_rrc_local_route(short_local_route, root, v2);
+                                        Self::update_rrc_local_route(short_local_route, root, v2);
                                     // I cannot simply await here because this closure is not async
                                     spawn_local(async move {
                                         //websysmod::debug_write(&format!("fetch {}", &url));
@@ -62,7 +62,7 @@ pub trait Routing {
                                         // update values in rrc is async.
                                         unwrap!(
                                             vdom.with_component({
-                                                Self::fill_html_template(resp_body_text)
+                                                Self::update_rrc_html_template(resp_body_text)
                                             })
                                             .await
                                         );

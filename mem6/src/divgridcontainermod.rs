@@ -54,16 +54,15 @@ pub fn div_grid_container<'a>(
             ""
         },
     );
-    let grid_container = ElementBuilder::new(bump, "div")
+    // return grid_container
+    ElementBuilder::new(bump, "div")
         .attr("class", "grid_container")
         .attr(
             "style",
             bumpalo::format!(in bump, "{}", s_style).into_bump_str(),
         )
         .children(div_grid_items(rrc, bump))
-        .finish();
-    // return
-    grid_container
+        .finish()
 }
 
 /// prepare a vector<Node> for the Virtual Dom for 'css grid' item with <img>
@@ -162,7 +161,7 @@ pub fn div_grid_item<'a>(
                     bumpalo::format!(in bump, "{}", opacity).into_bump_str(),
                 )
                 .on("click", move |root, vdom, event| {
-                    status1stcardmod::on_click_img_status1st(root, vdom, event);
+                    status1stcardmod::on_click_img_status1st(root, &vdom, &event);
                 })
                 .finish()])
             .finish(),
@@ -183,7 +182,7 @@ pub fn div_grid_item<'a>(
                     bumpalo::format!(in bump, "{}", opacity).into_bump_str(),
                 )
                 .on("click", move |root, vdom, event| {
-                    status2ndcardmod::on_click_img_status2nd(root, vdom, event);
+                    status2ndcardmod::on_click_img_status2nd(root, &vdom, &event);
                 })
                 .finish()])
             .finish(),

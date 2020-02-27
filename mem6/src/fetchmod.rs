@@ -99,6 +99,8 @@ pub fn fetch_audio_and_update(href: &str, vdom: dodrio::VdomWeak) {
 pub fn fetch_all_img_for_cache_request(rrc: &mut RootRenderingComponent) {
     let (start_index, end_index) = rrc.game_data.grid_start_end_index();
     for i in start_index..end_index {
+        #[allow(clippy::indexing_slicing)]
+        //index i is calculated to be inside 0..card_grid_data.len()
         let x = &rrc.game_data.card_grid_data[i];
 
         let url_img = format!(

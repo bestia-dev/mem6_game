@@ -296,7 +296,10 @@ impl GameData {
         // the count of cards can now be not divisible with 2 for card pairs.
         // so I need to make a different last card that is not clickable.
         if end_index >= self.card_grid_data.len() {
-            end_index -= 1;
+            #[allow(clippy::integer_arithmetic)]
+            {
+                end_index -= 1;
+            }
         }
         //return
         (start_index, end_index)

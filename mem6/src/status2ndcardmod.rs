@@ -187,10 +187,11 @@ pub fn div_click_2nd_card<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> N
     }
 }
 
+/// on click for img in status 2
 pub fn on_click_img_status2nd(
     root: &mut dyn dodrio::RootRender,
-    vdom: dodrio::VdomWeak,
-    event: web_sys::Event,
+    vdom: &dodrio::VdomWeak,
+    event: &web_sys::Event,
 ) {
     let rrc = root.unwrap_mut::<RootRenderingComponent>();
     // If the event's target is our image...
@@ -216,7 +217,7 @@ pub fn on_click_img_status2nd(
     .as_ref()
         == CardStatusCardFace::Down.as_ref()
     {
-        status2ndcardmod::on_click_2nd_card(rrc, &vdom, this_click_card_index);
+        status2ndcardmod::on_click_2nd_card(rrc, vdom, this_click_card_index);
         // Finally, re-render the component on the next animation frame.
         vdom.schedule_render();
     }

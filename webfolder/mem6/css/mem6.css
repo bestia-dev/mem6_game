@@ -64,7 +64,7 @@ html {
 body{
     background-color: #000000;
     /*this is a game. All pages except instructions should be not scrollable*/
-    /*this looks funny when the keyboard appers. That smashes all the elements. Hahahaha*/
+    /*this looks funny when the keyboard appears. That smashes all the elements.*/
     height: 100%;
     margin: auto;
 }

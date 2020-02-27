@@ -62,9 +62,9 @@ pub fn on_msg_click_1st_card(
 ) {
     flip_back(rrc);
     ackmsgmod::send_ack(rrc, msg_sender_ws_uid, msg_id, MsgAckKind::MsgClick1stCard);
-    // it can happen that 2 smartphones send the msg click1st simultaneosly.
+    // it can happen that 2 smartphones send the msg click1st simultaneously.
     // This is a conflict.
-    // Only one Player can be the judge and I choosen the Player 1 to resolve it.
+    // Only one Player can be the judge and I chosen the Player 1 to resolve it.
     if rrc.game_data.my_player_number == 1 && GameStatus::Status1stCard != rrc.game_data.game_status
     {
         websysmod::debug_write("CONFLICT on_msg_click_1st_card");
@@ -140,10 +140,11 @@ pub fn div_on_1st_card<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node
     }
 }
 
+/// on click for image in status 1s
 pub fn on_click_img_status1st(
     root: &mut dyn dodrio::RootRender,
-    vdom: dodrio::VdomWeak,
-    event: web_sys::Event,
+    vdom: &dodrio::VdomWeak,
+    event: &web_sys::Event,
 ) {
     // websysmod::debug_write("img click");
     let rrc = root.unwrap_mut::<RootRenderingComponent>();
@@ -170,7 +171,7 @@ pub fn on_click_img_status1st(
     .as_ref()
         == CardStatusCardFace::Down.as_ref()
     {
-        status1stcardmod::on_click_1st_card(rrc, &vdom, this_click_card_index);
+        status1stcardmod::on_click_1st_card(rrc, vdom, this_click_card_index);
         // Finally, re-render the component on the next animation frame.
         vdom.schedule_render();
     }

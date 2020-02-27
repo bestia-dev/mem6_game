@@ -19,13 +19,8 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
     fn call_fn_boolean(&self, fn_name: &str) -> bool {
         websysmod::debug_write(&format!("call_fn_boolean: {}", &fn_name));
         match fn_name {
-            "is_first_player" => {
-                if self.game_data.my_player_number == 1 {
-                    true
-                } else {
-                    false
-                }
-            }
+            "is_first_player" => self.game_data.my_player_number == 1,
+            "is_true" => true,
             _ => {
                 let x = format!("Error: Unrecognized call_fn_boolean: {}", fn_name);
                 websysmod::debug_write(&x);
@@ -109,7 +104,6 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             let fn_name = fn_name.clone();
             let fn_name = fn_name.as_str();
             let rrc = root.unwrap_mut::<RootRenderingComponent>();
-            let vdom = vdom.clone();
             //websysmod::debug_write(&format!("call_fn_listener: {}", &fn_name));
             match fn_name {
                 "nickname_onkeyup" => {
@@ -121,6 +115,8 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 "open_youtube" => {
                     // randomly choose a link from rrc.videos
                     let num = websysmod::get_random(0, rrc.videos.len());
+                    #[allow(clippy::indexing_slicing)]
+                    //cannot panic:the num is 0..video.len
                     websysmod::open_new_tab(&format!(
                         "https://www.youtube.com/watch?v={}",
                         rrc.videos[num]

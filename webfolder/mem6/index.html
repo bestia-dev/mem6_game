@@ -2,28 +2,21 @@
 <html lang="en">
 
 <head>
+      <!-- classic header for a web page -->
       <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
       <title>mem6</title>
       <meta name="Description"
             content="UnForGetTable - a drinking game to lose memory">
       <link rel="stylesheet" href="css/mem6.css">
-      <!--
-A lot of tricks is needed to simply make the game fill the width of the smartphone and go fullscreen.
-IOS Safari does not have the FullScreen API, but Android Chrome has it.
-The best option is the browser menu item "Add to home screen" on both iPhone and Android.
-Even better is a true and complete PWA (Progressive Web App), but that requires a lot of prerequisites. 
-The meta viewport properties user-scalable and maximum-scale does not work in many cases: 
-on Safari or in Chrome with accessibility settings (bigger fonts). So I will try with javascript.
--->
-      <link rel="manifest" href="manifest.json">
       <meta name="viewport"
             content="width = device-width,initial-scale = 1.0" />
+      <!-- A lot of metadata for PWA -->
+      <link rel="manifest" href="manifest.json">
       <meta name="mobile-web-app-capable" content="yes">
       <meta name="apple-mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-status-bar-style"
             content="black-translucent" />
       <meta name="theme-color" content="#FFFF00">
-
       <link rel="apple-touch-icon" sizes="57x57"
             href="images/apple-icon-57x57.png">
       <link rel="apple-touch-icon" sizes="60x60"
@@ -59,8 +52,9 @@ on Safari or in Chrome with accessibility settings (bigger fonts). So I will try
 </head>
 
 <body>
+      <!-- a standard service worker is a must for PWA -->
       <script src="start_service_worker.js"></script>
-
+      <!-- warning if javascript iis not enabled -->
       <noscript>
             <h2>
                   !!!???!!!<br>
@@ -70,6 +64,7 @@ on Safari or in Chrome with accessibility settings (bigger fonts). So I will try
                   enabled<br>
                   !!!???!!!</h2>
       </noscript>
+      <!-- display a text while waiting for wasm download. It can take some time. -->
       <div id="div_for_virtual_dom">
             <h2>
                   Waiting to<br>
@@ -80,6 +75,7 @@ on Safari or in Chrome with accessibility settings (bigger fonts). So I will try
                   networks...<br>
             </h2>
       </div>
+      <!-- import and init the wasm code -->
       <script type="module">
             import init from "./pkg/mem6.js";
             init("./pkg/mem6_bg.wasm");

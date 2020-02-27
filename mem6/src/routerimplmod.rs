@@ -12,6 +12,7 @@ use dodrio::VdomWeak;
 // and is not anymore the same as self.vdom.
 // No other field is really necessary for this struct.
 
+/// empty struct just to implement Router
 pub struct Router {}
 
 impl routermod::Routing for Router {
@@ -21,22 +22,21 @@ impl routermod::Routing for Router {
         &rrc.web_data.local_route
     }
 
-    /// fill local_route with filenames dependent on short_local_route.
-    fn fill_rrc_local_route(
+    /// update local_route with filenames dependent on short_local_route.
+    fn update_rrc_local_route(
         local_route: String,
         root: &mut dyn dodrio::RootRender,
         vdom: VdomWeak,
     ) -> String {
         let rrc = root.unwrap_mut::<RootRenderingComponent>();
         if local_route == "#p02" {
-            let vdom = vdom.clone();
             fetchmod::async_fetch_game_config_and_update(rrc, vdom);
             rrc.web_data.local_route = "p02_start_a_group.html".to_owned();
         } else if local_route.starts_with("#p03") {
             rrc.game_data.my_player_number = 2;
             if local_route.contains('.') {
                 let gr = routermod::get_url_param_in_hash_after_dot(&local_route);
-                storagemod::save_group_id_string_to_local_storage(rrc, gr.to_string());
+                storagemod::save_group_id_string_to_local_storage(rrc, gr);
             } else {
                 storagemod::load_group_id_string(rrc);
             }
@@ -65,8 +65,8 @@ impl routermod::Routing for Router {
         rrc.web_data.local_route.to_string()
     }
 
-    /// fill html_template
-    fn fill_html_template(
+    /// update html_template
+    fn update_rrc_html_template(
         resp_body_text: String,
     ) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static> {
         // Callback fired whenever the URL hash fragment changes.

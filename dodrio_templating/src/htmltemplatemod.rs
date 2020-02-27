@@ -88,7 +88,7 @@ pub trait HtmlTemplating {
         // return
         Ok(root_element.finish())
     }
-    /// Recursive function to fill the tree with a node.  
+    /// Recursive function to fill the Element with attributes and sub-nodes(Element, Text, Comment).  
     /// Moves & Returns ElementBuilder or error.  
     /// I must `move` ElementBuilder because its methods are all `move`.  
     /// It makes the code less readable. It is only good for chaining and type changing.  

@@ -87,16 +87,16 @@ pub fn group_id_onkeyup(rrc: &mut RootRenderingComponent, event: web_sys::Event)
 /// save group_id from html input elements to local storage and rrc
 pub fn save_group_id_to_local_storage(rrc: &mut RootRenderingComponent) {
     let group_id_string = websysmod::get_input_element_value_string_by_id("input_group_id");
-    save_group_id_string_to_local_storage(rrc, group_id_string);
+    save_group_id_string_to_local_storage(rrc, &group_id_string);
 }
 
 /// save group_id from html input elements to local storage and rrc
 pub fn save_group_id_string_to_local_storage(
     rrc: &mut RootRenderingComponent,
-    group_id_string: String,
+    group_id_string: &str,
 ) {
-    set_group_id(rrc, &group_id_string);
-    websysmod::save_to_local_storage("group_id", &group_id_string);
+    set_group_id(rrc, group_id_string);
+    websysmod::save_to_local_storage("group_id", group_id_string);
 }
 
 /// load group_id from local storage

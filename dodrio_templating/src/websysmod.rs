@@ -1,5 +1,5 @@
 // websysmod.rs
-//! helper functions for web_sys, window, document, dom
+//! helper functions for web_sys, window, document, dom, console, local_storage, session_storage
 
 //region: use
 use web_sys::console;
