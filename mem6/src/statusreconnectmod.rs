@@ -42,7 +42,7 @@ pub fn div_reconnect<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<
                 my_ws_uid,
             ));
             // websysmod::debug_write(&"before reconnect");
-            // first disconnect if is possible, than recconect
+            // first disconnect if is possible, than reconnect
             let _x = rrc.web_data.ws.close();
 
             let msg_receivers = rrc.web_data.msg_receivers.clone();
@@ -65,7 +65,7 @@ pub fn div_reconnect<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<
     )
 }
 */
-/// send all data to resync gamedata
+/// send all data to resync game_data
 pub fn send_msg_for_resync(rrc: &RootRenderingComponent) {
     websysmod::debug_write("send_msg_for_resync MsgAllGameData");
     websocketmod::ws_send_msg(

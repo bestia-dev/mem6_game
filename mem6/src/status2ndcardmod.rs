@@ -33,7 +33,7 @@ pub fn on_click_2nd_card(
     // 2 possible outcomes: 1) Next Player 2) end game/play again
     // that changes: game status,CardStatusCardFace, points or/and player_turn
     // if the cards match, player get one point, but it is the next player turn.
-    let is_point = get_is_point(rrc);
+    let is_point = is_point(rrc);
     if is_point {
         update_click_2nd_card_flip_permanently(rrc, is_point);
     }
@@ -52,7 +52,7 @@ pub fn on_click_2nd_card(
 pub fn is_all_permanently(rrc: &mut RootRenderingComponent) -> bool {
     let mut is_all_permanently = true;
     // the zero element is exceptional, but the iterator uses it
-    unwrap!(rrc.game_data.card_grid_data.get_mut(0)).status = CardStatusCardFace::UpPermanently;
+    rrc.game_data.card_grid_data[0].status = CardStatusCardFace::UpPermanently;
 
     for x in &rrc.game_data.card_grid_data {
         match x.status {
@@ -68,12 +68,10 @@ pub fn is_all_permanently(rrc: &mut RootRenderingComponent) -> bool {
 }
 
 /// is it a point or not
-pub fn get_is_point(rrc: &RootRenderingComponent) -> bool {
-
-    rrc.game_data.get_1st_card().card_number
-    ==
-    rrc.game_data.get_2nd_card().card_number
+pub fn is_point(rrc: &RootRenderingComponent) -> bool {
+    rrc.game_data.get_1st_card().card_number==rrc.game_data.get_2nd_card().card_number
 }
+
 /// msg player click
 pub fn on_msg_click_2nd_card(
     rrc: &mut RootRenderingComponent,
@@ -96,7 +94,7 @@ pub fn on_msg_ack_player_click2nd_card(
     vdom: &dodrio::VdomWeak,
 ) {
     if ackmsgmod::remove_ack_msg_from_queue(rrc, player_ws_uid, msg_id) {
-        let is_point = get_is_point(rrc);
+        let is_point = is_point(rrc);
         update_click_2nd_card_point(rrc, is_point);
         if is_point {
             // nothing because all happens after the Drink/no drink dialog
@@ -191,17 +189,9 @@ pub fn on_click_img_status2nd(
         Some(input) => input,
     };
     // id attribute of image html element is prefixed with img ex. "img12"
-    let this_click_card_index = unwrap!(
-        (unwrap!(img.id().get(3..), "error slicing")).parse::<usize>(),
-        "error parse img id to usize"
-    );
+    let this_click_card_index = unwrap!(img.id()[3..].parse::<usize>());
     // click is useful only on facedown cards
-    if unwrap!(
-        rrc.game_data.card_grid_data.get(this_click_card_index),
-        "error this_click_card_index"
-    )
-    .status
-    .as_ref()
+    if rrc.game_data.card_grid_data[this_click_card_index].status.as_ref()
         == CardStatusCardFace::Down.as_ref()
     {
         status2ndcardmod::on_click_2nd_card(rrc, vdom, this_click_card_index);

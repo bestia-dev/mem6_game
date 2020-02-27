@@ -99,8 +99,7 @@ pub fn on_msg_ack_click_1st_card(
 pub fn update_on_1st_card(rrc: &mut RootRenderingComponent) {
     websysmod::debug_write("update_on_1st_card");
     // flip the card up
-    rrc.game_data.get_1st_card_mut()
-    .status = CardStatusCardFace::UpTemporary;
+    rrc.game_data.get_1st_card_mut().status = CardStatusCardFace::UpTemporary;
     rrc.game_data.game_status = GameStatus::Status2ndCard;
 }
 
@@ -155,17 +154,9 @@ pub fn on_click_img_status1st(
         Some(input) => input,
     };
     // id attribute of image html element is prefixed with img ex. "img12"
-    let this_click_card_index = unwrap!(
-        (unwrap!(img.id().get(3..), "error slicing")).parse::<usize>(),
-        "error parse img id to usize"
-    );
+    let this_click_card_index = unwrap!((img.id()[3..]).parse::<usize>());
     // click is useful only on facedown cards
-    if unwrap!(
-        rrc.game_data.card_grid_data.get(this_click_card_index),
-        "error this_click_card_index"
-    )
-    .status
-    .as_ref()
+    if rrc.game_data.card_grid_data[this_click_card_index].status.as_ref()
         == CardStatusCardFace::Down.as_ref()
     {
         status1stcardmod::on_click_1st_card(rrc, vdom, this_click_card_index);
