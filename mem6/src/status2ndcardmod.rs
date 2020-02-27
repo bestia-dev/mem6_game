@@ -126,11 +126,10 @@ pub fn on_msg_ack_player_click2nd_card(
 pub fn update_click_2nd_card_point(rrc: &mut RootRenderingComponent, is_point: bool) {
     if is_point {
         rrc.game_data.game_status = GameStatus::StatusDrink;
-        let player_for_point = unwrap!(rrc.game_data.player_turn.checked_sub(1));
         // give points
-        unwrap!(rrc.game_data.players.get_mut(player_for_point)).points += 1;
+        rrc.game_data.player_turn_now_mut().points += 1;
 
-        if rrc.game_data.my_player_number == player_for_point + 1 {
+        if rrc.game_data.is_my_turn() {
             // drink
             htmltemplateimplmod::open_new_local_page("#p06");
         } else {
@@ -157,14 +156,14 @@ pub fn update_click_2nd_card_flip_permanently(rrc: &mut RootRenderingComponent, 
 /// render Play or Wait
 #[allow(clippy::integer_arithmetic)]
 pub fn div_click_2nd_card<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
-    if rrc.game_data.my_player_number == rrc.game_data.player_turn {
+    if rrc.game_data.is_my_turn() {
         ElementBuilder::new(bump, "div")
             .children([ElementBuilder::new(bump, "h2")
                 .attr("class", "h2_must_do_something")
                 .children([text(
                     bumpalo::format!(in bump,
                         "Play {}",
-                        unwrap!(rrc.game_data.players.get(rrc.game_data.player_turn-1)).nickname
+                        rrc.game_data.player_turn_now().nickname
                     )
                     .into_bump_str(),
                 )])
@@ -178,7 +177,7 @@ pub fn div_click_2nd_card<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> N
                 .children([text(
                     bumpalo::format!(in bump,
                         "Wait for {}",
-                        unwrap!(rrc.game_data.players.get(rrc.game_data.player_turn-1)).nickname
+                        rrc.game_data.player_turn_now().nickname
                     )
                     .into_bump_str(),
                 )])

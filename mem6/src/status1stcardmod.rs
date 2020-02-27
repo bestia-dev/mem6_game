@@ -110,14 +110,14 @@ pub fn update_on_1st_card(rrc: &mut RootRenderingComponent) {
 /// render div
 #[allow(clippy::integer_arithmetic)]
 pub fn div_on_1st_card<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
-    if rrc.game_data.my_player_number == rrc.game_data.player_turn {
+    if rrc.game_data.is_my_turn() {
         ElementBuilder::new(bump, "div")
             .children([ElementBuilder::new(bump, "h2")
                 .attr("class", "h2_must_do_something")
                 .children([text(
                     bumpalo::format!(in bump,
                         "Play {}",
-                        unwrap!(rrc.game_data.players.get(rrc.game_data.player_turn-1)).nickname
+                        rrc.game_data.player_turn_now().nickname
                     )
                     .into_bump_str(),
                 )])
@@ -131,7 +131,7 @@ pub fn div_on_1st_card<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node
                 .children([text(
                     bumpalo::format!(in bump,
                         "Wait for {}",
-                        unwrap!(rrc.game_data.players.get(rrc.game_data.player_turn-1)).nickname
+                        rrc.game_data.player_turn_now().nickname
                     )
                     .into_bump_str(),
                 )])

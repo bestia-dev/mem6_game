@@ -108,11 +108,14 @@ pub fn load_group_id_string(rrc: &mut RootRenderingComponent) -> String {
 }
 
 /// there are 3 places that must be managed (plus the local_storage)
-///
 pub fn set_group_id(rrc: &mut RootRenderingComponent, group_id_string: &str) {
     rrc.game_data.group_id = group_id_string.parse::<usize>().unwrap_or(0);
     // change it also in players[0]
-    unwrap!(rrc.game_data.players.get_mut(0)).ws_uid = rrc.game_data.group_id;
+    #[allow(clippy::indexing_slicing)]
+    //cannot panic because player[0] must exist
+    {
+    rrc.game_data.players[0].ws_uid = rrc.game_data.group_id;
+    }
     // on any change in players the msg_receivers must be constructed
     rrc.web_data.msg_receivers = rrc.game_data.prepare_msg_receivers();
 }

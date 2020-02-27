@@ -68,8 +68,7 @@ pub fn on_msg_start_game(
     // find my player number
     for index in 0..rrc.game_data.players.len() {
         if unwrap!(
-            rrc.game_data.players.get_mut(index),
-            "rrc.game_data.players.get_mut(index)"
+            rrc.game_data.players.get_mut(index)
         )
         .ws_uid
             == rrc.web_data.my_ws_uid

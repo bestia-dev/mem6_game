@@ -304,4 +304,23 @@ impl GameData {
         //return
         (start_index, end_index)
     }
+
+    /// which player is on turn now
+    pub fn player_turn_now(&self)-> &Player{
+        //players vector are counted from zero
+        //player_turn is counted from 1
+        unwrap!(self.players.get(self.player_turn-1))
+    }
+
+        /// which player is on turn now
+        pub fn player_turn_now_mut(&mut self)-> &mut Player{
+            //players vector are counted from zero
+            //player_turn is counted from 1
+            unwrap!(self.players.get_mut(self.player_turn-1))
+        }
+
+    /// is my turn?
+    pub fn is_my_turn(&self)-> bool{
+        self.my_player_number == self.player_turn
+    }
 }

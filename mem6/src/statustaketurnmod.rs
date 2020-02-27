@@ -49,7 +49,8 @@ pub fn update_on_take_turn(rrc: &mut RootRenderingComponent) {
         &rrc.game_data.player_turn, &rrc.game_data.my_player_number
     ));
 
-    rrc.game_data.player_turn = if rrc.game_data.player_turn < rrc.game_data.players.len() {
+    rrc.game_data.player_turn = 
+    if rrc.game_data.player_turn < rrc.game_data.players.len() {
         unwrap!(rrc.game_data.player_turn.checked_add(1))
     } else {
         1
