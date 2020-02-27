@@ -94,12 +94,12 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 }
                 "open_youtube" => {
                     // randomly choose a link from rrc.videos
-                    let num = websysmod::get_random(0, rrc.videos.len());
+                    let num = websysmod::get_random(0, rrc.game_data.videos.len());
                     #[allow(clippy::indexing_slicing)]
                     //cannot panic:the num is 0..video.len
                     websysmod::open_new_tab(&format!(
                         "https://www.youtube.com/watch?v={}",
-                        rrc.videos[num]
+                        rrc.game_data.videos[num]
                     ));
                 }
                 "open_menu" => {

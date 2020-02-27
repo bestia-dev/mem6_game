@@ -122,6 +122,10 @@ pub struct GameData {
     pub games_metadata: Option<GamesMetadata>,
     /// game_configs
     pub game_config: Option<GameConfig>,
+    /// videos links for fun
+    pub videos: Vec<String>,
+    /// audio for fun
+    pub audio: Vec<String>,
 }
 //endregion
 

@@ -61,13 +61,13 @@ pub fn fetch_videos_and_update(href: &str, vdom: dodrio::VdomWeak) {
     let url = format!("{}/content/videos.json", href);
     spawn_local(async move {
         let respbody = websysmod::fetch_response(url).await;
-        let v: gamedatamod::Videos = unwrap!(serde_json::from_str(&respbody));
+        let vid_json: gamedatamod::Videos = unwrap!(serde_json::from_str(&respbody));
         unwrap!(
             vdom.with_component({
                 move |root| {
                     let rrc = root.unwrap_mut::<RootRenderingComponent>();
                     // fill the vector
-                    rrc.videos = v.videos;
+                    rrc.game_data.videos = vid_json.videos;
                 }
             })
             .await
@@ -80,13 +80,13 @@ pub fn fetch_audio_and_update(href: &str, vdom: dodrio::VdomWeak) {
     let url = format!("{}/content/audio.json", href);
     spawn_local(async move {
         let respbody = websysmod::fetch_response(url).await;
-        let v: gamedatamod::Audio = unwrap!(serde_json::from_str(&respbody));
+        let aud_json: gamedatamod::Audio = unwrap!(serde_json::from_str(&respbody));
         unwrap!(
             vdom.with_component({
                 move |root| {
                     let rrc = root.unwrap_mut::<RootRenderingComponent>();
                     // fill the vector
-                    rrc.audio = v.audio;
+                    rrc.game_data.audio = aud_json.audio;
                 }
             })
             .await
