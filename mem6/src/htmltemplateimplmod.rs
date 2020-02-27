@@ -49,43 +49,23 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 "btn".to_owned()
             }
             "card_moniker_first" => {
-                return unwrap!(unwrap!(self.game_data.game_config.as_ref())
-                    .card_moniker
-                    .get(
-                        unwrap!(self
-                            .game_data
-                            .card_grid_data
-                            .get(self.game_data.card_index_of_first_click))
-                        .card_number_and_img_src
-                    ))
-                .to_string();
+                return unwrap!(self.game_data.game_config.as_ref())
+                    .card_moniker[self.game_data.get_1st_card().card_number]
+                    .to_string();
             }
             "card_moniker_second" => {
-                return unwrap!(unwrap!(self.game_data.game_config.as_ref())
-                    .card_moniker
-                    .get(
-                        unwrap!(self
-                            .game_data
-                            .card_grid_data
-                            .get(self.game_data.card_index_of_second_click))
-                        .card_number_and_img_src
-                    ))
-                .to_string();
+                return unwrap!(self.game_data.game_config.as_ref())
+                    .card_moniker[self.game_data.get_2nd_card().card_number]
+                    .to_string();
             }
             "my_points" => {
                 return format!(
                     "{} ",
-                    unwrap!(self
-                        .game_data
-                        .players
-                        .get(self.game_data.my_player_number - 1))
-                    .points,
+                    self.game_data.my_player().points,
                 );
             }
             "player_turn" => {
-                return unwrap!(self.game_data.players.get(self.game_data.player_turn - 1))
-                    .nickname
-                    .to_string();
+                return self.game_data.player_turn_now().nickname.to_string();
             }
             _ => {
                 let x = format!("Error: Unrecognized call_fn_string: {}", fn_name);
@@ -240,12 +220,6 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     )])
                     .finish();
 
-                /*dodrio !(bump,
-                <h2  >
-                    {vec![text(bumpalo::format!(in bump, "Error: Unrecognized call_fn_node: {}",
-                    fn_name).into_bump_str())]}
-                </h2>
-                )*/
                 return node;
             }
         }

@@ -89,7 +89,7 @@ pub struct Card {
     /// card status
     pub status: CardStatusCardFace,
     /// field for src attribute for HTML element image and filename of card image
-    pub card_number_and_img_src: usize,
+    pub card_number: usize,
     /// field for id attribute for HTML element image contains the card index
     pub card_index_and_id: usize,
 }
@@ -109,9 +109,9 @@ pub struct GameData {
     /// vector of cards
     pub card_grid_data: Vec<Card>,
     /// card index of first click
-    pub card_index_of_first_click: usize,
+    pub card_index_of_1st_click: usize,
     /// card index of second click
-    pub card_index_of_second_click: usize,
+    pub card_index_of_2nd_click: usize,
     /// content folder name
     pub game_name: String,
     /// whose turn is now:  player 1,2,3,...
@@ -139,8 +139,8 @@ impl GameData {
         // return from constructor
         GameData {
             card_grid_data: Self::prepare_for_empty(),
-            card_index_of_first_click: 0,
-            card_index_of_second_click: 0,
+            card_index_of_1st_click: 0,
+            card_index_of_2nd_click: 0,
             my_nickname,
             group_id: 0,
             players,
@@ -155,8 +155,8 @@ impl GameData {
     }
     /// reset the data to play again the game
     pub fn reset_for_play_again(&mut self) {
-        self.card_index_of_first_click = 0;
-        self.card_index_of_second_click = 0;
+        self.card_index_of_1st_click = 0;
+        self.card_index_of_2nd_click = 0;
         // reset points
         for x in &mut self.players {
             x.points = 0;
@@ -228,7 +228,7 @@ impl GameData {
         // Index 0 is special and reserved for FaceDown. Cards start with base 1
         let new_card = Card {
             status: CardStatusCardFace::Down,
-            card_number_and_img_src: 0,
+            card_number: 0,
             card_index_and_id: 0,
         };
         card_grid_data.push(new_card);
@@ -238,7 +238,7 @@ impl GameData {
             let new_card = Card {
                 status: CardStatusCardFace::Down,
                 // dereference random number from iterator
-                card_number_and_img_src: *random_number,
+                card_number: *random_number,
                 // card base index will be 1. 0 is reserved for FaceDown.
                 card_index_and_id: unwrap!(index.checked_add(1), "usize overflow"),
             };
@@ -262,7 +262,7 @@ impl GameData {
         for i in 0..=32 {
             let new_card = Card {
                 status: CardStatusCardFace::Down,
-                card_number_and_img_src: 1,
+                card_number: 1,
                 card_index_and_id: i,
             };
             card_grid_data.push(new_card);
@@ -305,6 +305,21 @@ impl GameData {
         (start_index, end_index)
     }
 
+    
+    /// which player is me
+    pub fn my_player(&self)-> &Player{
+        //players vector are counted from zero
+        //player_turn is counted from 1
+        unwrap!(self.players.get(self.my_player_number-1))
+    }
+
+    /// which player is me
+    pub fn my_player_mut(&mut self)-> &mut Player{
+        //players vector are counted from zero
+        //player_turn is counted from 1
+        unwrap!(self.players.get_mut(self.my_player_number-1))
+    }
+    
     /// which player is on turn now
     pub fn player_turn_now(&self)-> &Player{
         //players vector are counted from zero
@@ -312,15 +327,36 @@ impl GameData {
         unwrap!(self.players.get(self.player_turn-1))
     }
 
-        /// which player is on turn now
-        pub fn player_turn_now_mut(&mut self)-> &mut Player{
-            //players vector are counted from zero
-            //player_turn is counted from 1
-            unwrap!(self.players.get_mut(self.player_turn-1))
-        }
+    /// which player is on turn now
+    pub fn player_turn_now_mut(&mut self)-> &mut Player{
+        //players vector are counted from zero
+        //player_turn is counted from 1
+        unwrap!(self.players.get_mut(self.player_turn-1))
+    }
 
     /// is my turn?
     pub fn is_my_turn(&self)-> bool{
         self.my_player_number == self.player_turn
+    }
+
+    pub fn get_1st_card(&self)->&Card{
+        unwrap!(self
+            .card_grid_data
+            .get(self.card_index_of_1st_click))
+    }
+    pub fn get_1st_card_mut(&mut self)->&mut Card{
+        unwrap!(self
+            .card_grid_data
+            .get_mut(self.card_index_of_1st_click))
+    }
+    pub fn get_2nd_card(&self)->&Card{
+        unwrap!(self
+            .card_grid_data
+            .get(self.card_index_of_2nd_click))
+    }
+    pub fn get_2nd_card_mut(&mut self)->&mut Card{
+        unwrap!(self
+            .card_grid_data
+            .get_mut(self.card_index_of_2nd_click))
     }
 }

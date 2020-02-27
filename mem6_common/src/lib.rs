@@ -117,7 +117,7 @@ pub enum WsMessage {
         /// all players for the server to know whom to send msg
         msg_receivers: String,
         /// have to send all the state of the game
-        card_index_of_first_click: usize,
+        card_index_of_1st_click: usize,
         /// msg id (random)
         msg_id: usize,
     },
@@ -128,7 +128,7 @@ pub enum WsMessage {
         /// all players for the server to know whom to send msg
         msg_receivers: String,
         /// have to send all the state of the game
-        card_index_of_second_click: usize,
+        card_index_of_2nd_click: usize,
         /// is point
         is_point: bool,
         /// msg id (random)
@@ -193,9 +193,9 @@ pub enum WsMessage {
         /// vector of cards status
         card_grid_data: String,
         /// have to send all the state of the game
-        card_index_of_first_click: usize,
+        card_index_of_1st_click: usize,
         /// have to send all the state of the game
-        card_index_of_second_click: usize,
+        card_index_of_2nd_click: usize,
         /// whose turn is now:  player 1,2,3,...
         player_turn: usize,
         /// game status

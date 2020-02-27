@@ -26,15 +26,9 @@ pub fn on_click_2nd_card(
     vdom: &dodrio::VdomWeak,
     this_click_card_index: usize,
 ) {
-    rrc.game_data.card_index_of_second_click = this_click_card_index;
+    rrc.game_data.card_index_of_2nd_click = this_click_card_index;
     // flip the card up
-    unwrap!(
-        rrc.game_data
-            .card_grid_data
-            .get_mut(rrc.game_data.card_index_of_second_click),
-        "error this_click_card_index"
-    )
-    .status = CardStatusCardFace::UpTemporary;
+    rrc.game_data.get_2nd_card_mut().status = CardStatusCardFace::UpTemporary;
     divgridcontainermod::play_sound(rrc, this_click_card_index);
     // 2 possible outcomes: 1) Next Player 2) end game/play again
     // that changes: game status,CardStatusCardFace, points or/and player_turn
@@ -47,7 +41,7 @@ pub fn on_click_2nd_card(
     let msg = WsMessage::MsgClick2ndCard {
         my_ws_uid: rrc.web_data.my_ws_uid,
         msg_receivers: rrc.web_data.msg_receivers.to_string(),
-        card_index_of_second_click: rrc.game_data.card_index_of_second_click,
+        card_index_of_2nd_click: rrc.game_data.card_index_of_2nd_click,
         is_point,
         msg_id,
     };
@@ -75,27 +69,21 @@ pub fn is_all_permanently(rrc: &mut RootRenderingComponent) -> bool {
 
 /// is it a point or not
 pub fn get_is_point(rrc: &RootRenderingComponent) -> bool {
-    unwrap!(rrc
-        .game_data
-        .card_grid_data
-        .get(rrc.game_data.card_index_of_first_click))
-    .card_number_and_img_src
-        == unwrap!(rrc
-            .game_data
-            .card_grid_data
-            .get(rrc.game_data.card_index_of_second_click))
-        .card_number_and_img_src
+
+    rrc.game_data.get_1st_card().card_number
+    ==
+    rrc.game_data.get_2nd_card().card_number
 }
 /// msg player click
 pub fn on_msg_click_2nd_card(
     rrc: &mut RootRenderingComponent,
     msg_sender_ws_uid: usize,
-    card_index_of_second_click: usize,
+    card_index_of_2nd_click: usize,
     is_point: bool,
     msg_id: usize,
 ) {
     ackmsgmod::send_ack(rrc, msg_sender_ws_uid, msg_id, MsgAckKind::MsgClick2ndCard);
-    rrc.game_data.card_index_of_second_click = card_index_of_second_click;
+    rrc.game_data.card_index_of_2nd_click = card_index_of_2nd_click;
     update_click_2nd_card_flip_permanently(rrc, is_point);
     update_click_2nd_card_point(rrc, is_point);
 }
@@ -144,8 +132,8 @@ pub fn update_click_2nd_card_point(rrc: &mut RootRenderingComponent, is_point: b
 pub fn update_click_2nd_card_flip_permanently(rrc: &mut RootRenderingComponent, is_point: bool) {
     if is_point {
         // the two cards matches. make them permanent FaceUp
-        let x1 = rrc.game_data.card_index_of_first_click;
-        let x2 = rrc.game_data.card_index_of_second_click;
+        let x1 = rrc.game_data.card_index_of_1st_click;
+        let x2 = rrc.game_data.card_index_of_2nd_click;
         unwrap!(rrc.game_data.card_grid_data.get_mut(x1)).status =
             CardStatusCardFace::UpPermanently;
         unwrap!(rrc.game_data.card_grid_data.get_mut(x2)).status =

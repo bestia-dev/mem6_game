@@ -26,13 +26,13 @@ pub fn on_click_1st_card(
     // websysmod::debug_write("on_click_1st_card");
     flip_back(rrc);
     // change card status and game status
-    rrc.game_data.card_index_of_first_click = this_click_card_index;
+    rrc.game_data.card_index_of_1st_click = this_click_card_index;
 
     let msg_id = ackmsgmod::prepare_for_ack_msg_waiting(rrc, vdom);
     let msg = WsMessage::MsgClick1stCard {
         my_ws_uid: rrc.web_data.my_ws_uid,
         msg_receivers: rrc.web_data.msg_receivers.to_string(),
-        card_index_of_first_click: this_click_card_index,
+        card_index_of_1st_click: this_click_card_index,
         msg_id,
     };
     ackmsgmod::send_msg_and_write_in_queue(rrc, &msg, msg_id);
@@ -48,8 +48,8 @@ pub fn flip_back(rrc: &mut RootRenderingComponent) {
             x.status = CardStatusCardFace::Down;
         }
     }
-    rrc.game_data.card_index_of_first_click = 0;
-    rrc.game_data.card_index_of_second_click = 0;
+    rrc.game_data.card_index_of_1st_click = 0;
+    rrc.game_data.card_index_of_2nd_click = 0;
 }
 
 /// on msg
@@ -57,7 +57,7 @@ pub fn on_msg_click_1st_card(
     rrc: &mut RootRenderingComponent,
     vdom: &dodrio::VdomWeak,
     msg_sender_ws_uid: usize,
-    card_index_of_first_click: usize,
+    card_index_of_1st_click: usize,
     msg_id: usize,
 ) {
     flip_back(rrc);
@@ -69,12 +69,12 @@ pub fn on_msg_click_1st_card(
     {
         websysmod::debug_write("CONFLICT on_msg_click_1st_card");
         // do the whole click1st process
-        on_click_1st_card(rrc, vdom, rrc.game_data.card_index_of_first_click);
+        on_click_1st_card(rrc, vdom, rrc.game_data.card_index_of_1st_click);
         // do the whole click2nd process
-        status2ndcardmod::on_click_2nd_card(rrc, vdom, card_index_of_first_click)
+        status2ndcardmod::on_click_2nd_card(rrc, vdom, card_index_of_1st_click)
     } else {
         // websysmod::debug_write("on_msg_click_1st_card");
-        rrc.game_data.card_index_of_first_click = card_index_of_first_click;
+        rrc.game_data.card_index_of_1st_click = card_index_of_1st_click;
         update_on_1st_card(rrc);
     }
 }
@@ -99,10 +99,7 @@ pub fn on_msg_ack_click_1st_card(
 pub fn update_on_1st_card(rrc: &mut RootRenderingComponent) {
     websysmod::debug_write("update_on_1st_card");
     // flip the card up
-    unwrap!(rrc
-        .game_data
-        .card_grid_data
-        .get_mut(rrc.game_data.card_index_of_first_click))
+    rrc.game_data.get_1st_card_mut()
     .status = CardStatusCardFace::UpTemporary;
     rrc.game_data.game_status = GameStatus::Status2ndCard;
 }

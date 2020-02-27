@@ -108,7 +108,7 @@ pub fn fetch_all_img_for_cache_request(rrc: &mut RootRenderingComponent) {
             rrc.game_data.game_name,
             unwrap!(unwrap!(rrc.game_data.game_config.as_ref())
                 .img_filename
-                .get(x.card_number_and_img_src))
+                .get(x.card_number))
         );
         // websysmod::debug_write(&url_img);
         // this is async, so I don't care how much it takes

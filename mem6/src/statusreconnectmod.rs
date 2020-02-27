@@ -78,8 +78,8 @@ pub fn send_msg_for_resync(rrc: &RootRenderingComponent) {
             players: unwrap!(serde_json::to_string(&rrc.game_data.players)),
             /// vector of cards status
             card_grid_data: unwrap!(serde_json::to_string(&rrc.game_data.card_grid_data)),
-            card_index_of_first_click: rrc.game_data.card_index_of_first_click,
-            card_index_of_second_click: rrc.game_data.card_index_of_second_click,
+            card_index_of_1st_click: rrc.game_data.card_index_of_1st_click,
+            card_index_of_2nd_click: rrc.game_data.card_index_of_2nd_click,
             /// whose turn is now:  player 1,2,3,...
             player_turn: rrc.game_data.player_turn,
             /// game status
@@ -94,8 +94,8 @@ pub fn on_msg_all_game_data(
     rrc: &mut RootRenderingComponent,
     players: String,
     card_grid_data: String,
-    card_index_of_first_click: usize,
-    card_index_of_second_click: usize,
+    card_index_of_1st_click: usize,
+    card_index_of_2nd_click: usize,
     // whose turn is now:  player 1,2,3,...
     player_turn: usize,
     game_status: GameStatus,
@@ -106,8 +106,8 @@ pub fn on_msg_all_game_data(
     rrc.web_data.is_reconnect = false;
     rrc.game_data.players = unwrap!(serde_json::from_str(&players));
     rrc.game_data.card_grid_data = unwrap!(serde_json::from_str(&card_grid_data));
-    rrc.game_data.card_index_of_first_click = card_index_of_first_click;
-    rrc.game_data.card_index_of_second_click = card_index_of_second_click;
+    rrc.game_data.card_index_of_1st_click = card_index_of_1st_click;
+    rrc.game_data.card_index_of_2nd_click = card_index_of_2nd_click;
     rrc.game_data.player_turn = player_turn;
     rrc.game_data.game_status = game_status;
     rrc.web_data.msgs_waiting_ack.retain(|_x| false);

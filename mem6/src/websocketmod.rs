@@ -188,14 +188,14 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                 WsMessage::MsgClick1stCard {
                                     my_ws_uid,
                                     msg_receivers: _,
-                                    card_index_of_first_click,
+                                    card_index_of_1st_click,
                                     msg_id,
                                 } => {
                                     status1stcardmod::on_msg_click_1st_card(
                                         rrc,
                                         &vdom,
                                         my_ws_uid,
-                                        card_index_of_first_click,
+                                        card_index_of_1st_click,
                                         msg_id,
                                     );
                                     vdom.schedule_render();
@@ -203,14 +203,14 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                 WsMessage::MsgClick2ndCard {
                                     my_ws_uid,
                                     msg_receivers: _,
-                                    card_index_of_second_click,
+                                    card_index_of_2nd_click,
                                     is_point,
                                     msg_id,
                                 } => {
                                     status2ndcardmod::on_msg_click_2nd_card(
                                         rrc,
                                         my_ws_uid,
-                                        card_index_of_second_click,
+                                        card_index_of_2nd_click,
                                         is_point,
                                         msg_id,
                                     );
@@ -281,8 +281,8 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                     msg_receivers: _,
                                     players,
                                     card_grid_data,
-                                    card_index_of_first_click,
-                                    card_index_of_second_click,
+                                    card_index_of_1st_click,
+                                    card_index_of_2nd_click,
                                     player_turn,
                                     game_status,
                                 } => {
@@ -290,8 +290,8 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                         rrc,
                                         players,
                                         card_grid_data,
-                                        card_index_of_first_click,
-                                        card_index_of_second_click,
+                                        card_index_of_1st_click,
+                                        card_index_of_2nd_click,
                                         player_turn,
                                         game_status,
                                     );

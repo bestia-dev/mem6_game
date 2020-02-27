@@ -18,32 +18,9 @@ use dodrio::{
 /// play again
 pub fn div_game_over<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
     // game over
-    // only the first player can choose Play again?
+    // only the leader of the group player can choose Play again?
     // other players are already joined to the group
     if rrc.game_data.my_player_number == 1 {
-        /*
-        dodrio !(bump,
-            <div class="div_clickable" onclick={
-                        move |root, vdom, _event| {
-                        let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                        websocketmod::ws_send_msg(
-                            &rrc.web_data.ws,
-                            &WsMessage::MsgPlayAgain {
-                                my_ws_uid: rrc.web_data.my_ws_uid,
-                                msg_receivers: rrc.web_data.msg_receivers.to_string(),
-                            },
-                        );
-                        rrc.game_data.reset_for_play_again();
-                        htmltemplateimplmod::open_new_local_page("#p05");
-                    }}>
-                <h2 class="h2_user_can_click">
-                        {vec![text(
-                            bumpalo::format!(in bump, "Play again{}?", "").into_bump_str(),
-                        )]}
-                </h2>
-            </div>
-        )
-        */
         ElementBuilder::new(bump, "div")
             .on("click", move |root, _vdom, _event| {
                 let rrc = root.unwrap_mut::<RootRenderingComponent>();

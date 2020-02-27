@@ -105,7 +105,7 @@ pub fn div_grid_items<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Vec<N
                         unwrap!(game_data.game_config.as_ref())
                         .img_filename.get(
                             unwrap!(game_data.card_grid_data.get(index))
-                            .card_number_and_img_src
+                            .card_number
                         ))
                     )
                     .into_bump_str()
@@ -226,7 +226,7 @@ pub fn play_sound(rrc: &RootRenderingComponent, this_click_card_index: usize) {
                     rrc.game_data.card_grid_data.get(this_click_card_index),
                     "error this_click_card_index"
                 )
-                .card_number_and_img_src
+                .card_number
             ))
     );
 

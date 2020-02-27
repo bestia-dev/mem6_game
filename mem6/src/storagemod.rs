@@ -45,11 +45,7 @@ pub fn save_nickname_to_local_storage(rrc: &mut RootRenderingComponent) {
     rrc.game_data.my_nickname = nickname.clone();
     // change it also in players, if the player exists
     if rrc.game_data.my_player_number < rrc.game_data.players.len() {
-        unwrap!(rrc
-            .game_data
-            .players
-            .get_mut(unwrap!(rrc.game_data.my_player_number.checked_sub(1))))
-        .nickname = nickname;
+        rrc.game_data.my_player_mut().nickname = nickname;
     }
 }
 

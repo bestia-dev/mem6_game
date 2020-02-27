@@ -44,11 +44,6 @@ pub fn on_msg_ack_take_turn(rrc: &mut RootRenderingComponent, player_ws_uid: usi
 
 /// update game data
 pub fn update_on_take_turn(rrc: &mut RootRenderingComponent) {
-    websysmod::debug_write(&format!(
-        "update_on_take_turn: player_turn {}  my_player_number {}",
-        &rrc.game_data.player_turn, &rrc.game_data.my_player_number
-    ));
-
     rrc.game_data.player_turn = 
     if rrc.game_data.player_turn < rrc.game_data.players.len() {
         unwrap!(rrc.game_data.player_turn.checked_add(1))
