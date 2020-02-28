@@ -49,20 +49,17 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 "btn".to_owned()
             }
             "card_moniker_first" => {
-                return unwrap!(self.game_data.game_config.as_ref())
-                    .card_moniker[self.game_data.get_1st_card().card_number]
+                return unwrap!(self.game_data.game_config.as_ref()).card_moniker
+                    [self.game_data.get_1st_card().card_number]
                     .to_string();
             }
             "card_moniker_second" => {
-                return unwrap!(self.game_data.game_config.as_ref())
-                    .card_moniker[self.game_data.get_2nd_card().card_number]
+                return unwrap!(self.game_data.game_config.as_ref()).card_moniker
+                    [self.game_data.get_2nd_card().card_number]
                     .to_string();
             }
             "my_points" => {
-                return format!(
-                    "{} ",
-                    self.game_data.my_player().points,
-                );
+                return format!("{} ", self.game_data.my_player().points,);
             }
             "player_turn" => {
                 return self.game_data.player_turn_now().nickname.to_string();
@@ -203,7 +200,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 return divgridcontainermod::div_grid_container(self, bump, &max_grid_size);
             }
             "div_player_action" => {
-                let node = divplayeractionsmod::div_player_actions_from_game_status(self, bump);
+                let node = divplayeractionsmod::div_player_actions_from_game_status(self, cx);
                 return node;
             }
             "svg_qrcode" => {
@@ -234,8 +231,8 @@ pub fn svg_qrcode_to_node<'a>(
     let link = format!("https://bestia.dev/mem6/#p03.{}", rrc.web_data.my_ws_uid);
     let qr = unwrap!(qrcode53bytes::Qr::new(&link));
     let svg_template = qrcode53bytes::SvgDodrioRenderer::new(222, 222).render(&qr);
-    //I added use crate::htmltemplatemod::HtmlTemplating; to make the function get_root_node in scope.
-    unwrap!(rrc.get_root_node(cx, &svg_template, htmltemplatemod::HtmlOrSvg::Svg,))
+    //I added use crate::htmltemplatemod::HtmlTemplating; to make the function prepare_node_from_template in scope.
+    unwrap!(rrc.prepare_node_from_template(cx, &svg_template, htmltemplatemod::HtmlOrSvg::Svg))
 }
 
 /// the arrow to the right

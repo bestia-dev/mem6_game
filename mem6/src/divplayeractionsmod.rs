@@ -8,6 +8,7 @@ use crate::*;
 use mem6_common::*;
 
 use dodrio::{
+    RenderContext,
     builder::{ElementBuilder, text},
     bumpalo::{self, Bump},
     Node,
@@ -17,7 +18,7 @@ use dodrio::{
 /// render html element to inform player what to do and get a click action from user
 pub fn div_player_actions_from_game_status<'a>(
     rrc: &RootRenderingComponent,
-    bump: &'a Bump,
+    cx: &mut RenderContext<'a>,
 ) -> Node<'a> {
     // if rrc.game_data.is_status_start_page() {
     /*
@@ -26,8 +27,9 @@ pub fn div_player_actions_from_game_status<'a>(
         // ready_state: 0	CONNECTING, 1	OPEN, 2	CLOSING, 3	CLOSED
         statusreconnectmod::div_reconnect(rrc, bump)
     */
+    let bump = cx.bump;
     if let GameStatus::Status1stCard = rrc.game_data.game_status {
-        status1stcardmod::div_on_1st_card(rrc, bump)
+        status1stcardmod::div_on_1st_card(rrc, cx)
     } else if let GameStatus::Status2ndCard = rrc.game_data.game_status {
         status2ndcardmod::div_click_2nd_card(rrc, bump)
     } else if let GameStatus::StatusGameOver = rrc.game_data.game_status {

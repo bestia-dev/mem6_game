@@ -56,12 +56,12 @@ This is a "single page" app so the start of wasm is only one time here:
 
 Only one function Render() in `impl Render for RootRenderingComponent`.  
 
-- takes `rrc.html_template` and start the templating to `get_root_node()`.
+- takes `rrc.html_template` and start the templating to `prepare_node_from_template()`.
 - after that the dodrio vdom will make its magic: find the diffs and update the real dom.
 
 ## HtmlTemplate (htmltemplatemod, htmltemplateimplmod)
 
-- get_root_node() returns a complete single `dodrio::Node`
+- prepare_node_from_template() returns a complete single `dodrio::Node`
 - parses the html_template with `ReaderForMicroXml`
 - create `dodrio::Nodes` with `ElementBuilder::new`
 - there is a difference between Html nodes and Svg nodes. The latter must have a namespace.

@@ -10,11 +10,13 @@ use mem6_common::*;
 
 use unwrap::unwrap;
 use dodrio::{
+    RenderContext,
     builder::{ElementBuilder, text},
     bumpalo::{self, Bump},
     Node,
 };
 use wasm_bindgen::JsCast;
+use crate::htmltemplatemod::HtmlTemplating;
 //endregion
 
 /// on click
@@ -105,35 +107,24 @@ pub fn update_on_1st_card(rrc: &mut RootRenderingComponent) {
 
 /// render div
 #[allow(clippy::integer_arithmetic)]
-pub fn div_on_1st_card<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
-    if rrc.game_data.is_my_turn() {
-        ElementBuilder::new(bump, "div")
-            .children([ElementBuilder::new(bump, "h2")
-                .attr("class", "h2_must_do_something")
-                .children([text(
-                    bumpalo::format!(in bump,
-                        "Play {}",
-                        rrc.game_data.player_turn_now().nickname
-                    )
-                    .into_bump_str(),
-                )])
-                .finish()])
-            .finish()
+pub fn div_on_1st_card<'a>(rrc: &RootRenderingComponent, cx: &mut RenderContext<'a>) -> Node<'a> {
+    let html_template = if rrc.game_data.is_my_turn() {
+        r#"
+        <div>
+            <h2 class="h2_must_do_something">
+                Play <!--t=player_turn -->
+            </h2>
+        </div>"#
     } else {
         // return wait for the other player
-        ElementBuilder::new(bump, "div")
-            .children([ElementBuilder::new(bump, "h2")
-                .attr("class", "h2_user_must_wait")
-                .children([text(
-                    bumpalo::format!(in bump,
-                        "Wait for {}",
-                        rrc.game_data.player_turn_now().nickname
-                    )
-                    .into_bump_str(),
-                )])
-                .finish()])
-            .finish()
-    }
+        r#"
+        <div>
+            <h2 class="h2_user_must_wait">
+                Wait for <!--t=player_turn -->
+            </h2>
+        </div>"#
+    };
+    unwrap!(rrc.prepare_node_from_template(cx, html_template, htmltemplatemod::HtmlOrSvg::Html))
 }
 
 /// on click for image in status 1s
@@ -156,7 +147,9 @@ pub fn on_click_img_status1st(
     // id attribute of image html element is prefixed with img ex. "img12"
     let this_click_card_index = unwrap!((img.id()[3..]).parse::<usize>());
     // click is useful only on facedown cards
-    if rrc.game_data.card_grid_data[this_click_card_index].status.as_ref()
+    if rrc.game_data.card_grid_data[this_click_card_index]
+        .status
+        .as_ref()
         == CardStatusCardFace::Down.as_ref()
     {
         status1stcardmod::on_click_1st_card(rrc, vdom, this_click_card_index);

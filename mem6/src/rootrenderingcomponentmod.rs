@@ -37,8 +37,8 @@ impl RootRenderingComponent {
 ///`Render` trait implementation on RootRenderingComponent struct
 /// It is called for every Dodrio animation frame to render the vdom.
 /// Only when render is scheduled after some change id the game data.
-impl Render for RootRenderingComponent {
-    fn render<'a>(&self, cx: &mut RenderContext<'a>) -> Node<'a> {
+impl<'a> Render<'a> for RootRenderingComponent {
+    fn render(&self, cx: &mut RenderContext<'a>) -> Node<'a> {
         // let bump = cx.bump;
         // return
         // html fragment from html_template defined in # local_route
@@ -47,7 +47,7 @@ impl Render for RootRenderingComponent {
         } else {
             //I must add use crate::htmltemplatemod::HtmlTemplating;
             // to allow this trait to be used here on self
-            unwrap!(self.get_root_node(
+            unwrap!(self.prepare_node_from_template(
                 cx,
                 &self.web_data.html_template,
                 htmltemplatemod::HtmlOrSvg::Html,
