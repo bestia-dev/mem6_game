@@ -30,6 +30,7 @@ pub trait HtmlTemplating {
     fn call_fn_string(&self, fn_name: &str) -> String;
     fn call_fn_boolean<'a>(&self, fn_name: &str) -> bool;
     fn call_fn_node<'a>(&self, cx: &mut RenderContext<'a>, fn_name: &str) -> Node<'a>;
+    fn call_fn_vec_nodes<'a>(&self, cx: &mut RenderContext<'a>, fn_name: &str) -> Vec<Node<'a>>;
     fn call_fn_listener(
         &self,
         fn_name: String,
@@ -116,6 +117,7 @@ pub trait HtmlTemplating {
     > {
         let mut replace_string: Option<String> = None;
         let mut replace_node: Option<Node> = None;
+        let mut replace_vec_nodes: Option<Vec<Node>> = None;
         let mut replace_boolean: Option<bool> = None;
         let mut html_or_svg_local;
         let bump = cx.bump;
@@ -152,9 +154,13 @@ pub trait HtmlTemplating {
                     // if the boolean is empty or true then render the next node
                     if replace_boolean.unwrap_or(true) {
                         if let Some(repl_node) = replace_node {
-                            // websysmod::debug_write(&format!("child is repl_node {}", ""));
                             element = element.child(repl_node);
                             replace_node = None;
+                        } else if let Some(repl_vec_nodes) = replace_vec_nodes {
+                            for repl_node in repl_vec_nodes {
+                                element = element.child(repl_node);
+                            }
+                            replace_vec_nodes = None;
                         } else {
                             element = element.child(child_element.finish());
                         }
@@ -223,8 +229,12 @@ pub trait HtmlTemplating {
                     } else if txt.starts_with("n=") {
                         let fn_name = unwrap!(txt.get(2..));
                         let repl_node = self.call_fn_node(cx, fn_name);
-                        // websysmod::debug_write(&format!("n= {:?}", &repl_node));
                         replace_node = Some(repl_node);
+                    } else if txt.starts_with("v=") {
+                        let fn_name = unwrap!(txt.get(2..));
+                        //vector of nodes
+                        let repl_vec_nodes = self.call_fn_vec_nodes(cx, fn_name);
+                        replace_vec_nodes = Some(repl_vec_nodes);
                     } else if txt.starts_with("b=") {
                         // boolean if this is true than render the next node, else don't render
                         let fn_name = unwrap!(txt.get(2..));

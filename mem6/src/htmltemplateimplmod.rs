@@ -193,6 +193,12 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     rrc.game_data.reset_for_play_again();
                     open_new_local_page("#p05");
                 }
+                "on_click_img_status1st" => {
+                    status1stcardmod::on_click_img_status1st(root, &vdom, &event);
+                }
+                "on_click_img_status2nd" => {
+                    status2ndcardmod::on_click_img_status2nd(root, &vdom, &event);
+                }
                 _ => {
                     let x = format!("Error: Unrecognized call_fn_listener: \"{}\"", fn_name);
                     websysmod::debug_write(&x);
@@ -211,7 +217,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 // what is the game_status now?
                 // websysmod::debug_write(&format!("game status: {}", self.game_data.game_status));
                 let max_grid_size = divgridcontainermod::max_grid_size(self);
-                return divgridcontainermod::div_grid_container(self, bump, &max_grid_size);
+                return divgridcontainermod::div_grid_container(self, cx, &max_grid_size);
             }
             "div_player_action" => {
                 let node = divplayeractionsmod::div_player_actions_from_game_status(self, cx);
@@ -232,6 +238,30 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     .finish();
 
                 return node;
+            }
+        }
+    }
+    /// html_templating functions that return a vector of Nodes
+    #[allow(clippy::needless_return)]
+    fn call_fn_vec_nodes<'a>(&self, cx: &mut RenderContext<'a>, fn_name: &str) -> Vec<Node<'a>> {
+        let bump = cx.bump;
+        // websysmod::debug_write(&format!("call_fn_node: {}", &fn_name));
+        match fn_name {
+            "div_grid_items" => {
+                return divgridcontainermod::div_grid_items(self, cx);
+            }
+            _ => {
+                let node = ElementBuilder::new(bump, "h2")
+                    .children([text(
+                        bumpalo::format!(in bump,
+                            "Error: Unrecognized call_fn_node: \"{}\"",
+                            fn_name
+                        )
+                        .into_bump_str(),
+                    )])
+                    .finish();
+
+                return vec![node];
             }
         }
     }
