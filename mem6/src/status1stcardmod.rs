@@ -121,6 +121,7 @@ pub fn div_on_1st_card<'a>(rrc: &RootRenderingComponent, cx: &mut RenderContext<
 }
 
 /// on click for image in status 1s
+#[allow(clippy::indexing_slicing)]
 pub fn on_click_img_status1st(
     root: &mut dyn dodrio::RootRender,
     vdom: &dodrio::VdomWeak,

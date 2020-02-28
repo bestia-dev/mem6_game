@@ -46,6 +46,7 @@ pub fn on_click_2nd_card(
 }
 
 /// is all card permanently on
+#[allow(clippy::indexing_slicing)]
 pub fn is_all_permanently(rrc: &mut RootRenderingComponent) -> bool {
     let mut is_all_permanently = true;
     // the zero element is exceptional, but the iterator uses it

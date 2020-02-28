@@ -311,58 +311,58 @@ impl GameData {
         (start_index, end_index)
     }
 
-    
     /// which player is me
-    pub fn my_player(&self)-> &Player{
+    pub fn my_player(&self) -> &Player {
         //players vector are counted from zero
         //player_turn is counted from 1
-        unwrap!(self.players.get(self.my_player_number-1))
+        unwrap!(self.players.get(self.my_player_number - 1))
     }
 
     /// which player is me
-    pub fn my_player_mut(&mut self)-> &mut Player{
+    #[allow(clippy::integer_arithmetic)]
+    pub fn my_player_mut(&mut self) -> &mut Player {
         //players vector are counted from zero
         //player_turn is counted from 1
-        unwrap!(self.players.get_mut(self.my_player_number-1))
+        unwrap!(self.players.get_mut(self.my_player_number - 1))
     }
-    
     /// which player is on turn now
-    pub fn player_turn_now(&self)-> &Player{
+    #[allow(clippy::integer_arithmetic)]
+    pub fn player_turn_now(&self) -> &Player {
         //players vector are counted from zero
         //player_turn is counted from 1
-        unwrap!(self.players.get(self.player_turn-1))
+        unwrap!(self.players.get(self.player_turn - 1))
     }
 
     /// which player is on turn now
-    pub fn player_turn_now_mut(&mut self)-> &mut Player{
+    #[allow(clippy::integer_arithmetic)]
+    pub fn player_turn_now_mut(&mut self) -> &mut Player {
         //players vector are counted from zero
         //player_turn is counted from 1
-        unwrap!(self.players.get_mut(self.player_turn-1))
+        unwrap!(self.players.get_mut(self.player_turn - 1))
     }
 
     /// is my turn?
-    pub fn is_my_turn(&self)-> bool{
+    pub fn is_my_turn(&self) -> bool {
         self.my_player_number == self.player_turn
     }
 
-    pub fn get_1st_card(&self)->&Card{
-        unwrap!(self
-            .card_grid_data
-            .get(self.card_index_of_1st_click))
+    /// get 1st card
+    pub fn get_1st_card(&self) -> &Card {
+        unwrap!(self.card_grid_data.get(self.card_index_of_1st_click))
     }
-    pub fn get_1st_card_mut(&mut self)->&mut Card{
-        unwrap!(self
-            .card_grid_data
-            .get_mut(self.card_index_of_1st_click))
+
+    /// get 1st card mut
+    pub fn get_1st_card_mut(&mut self) -> &mut Card {
+        unwrap!(self.card_grid_data.get_mut(self.card_index_of_1st_click))
     }
-    pub fn get_2nd_card(&self)->&Card{
-        unwrap!(self
-            .card_grid_data
-            .get(self.card_index_of_2nd_click))
+
+    /// get 2nd card
+    pub fn get_2nd_card(&self) -> &Card {
+        unwrap!(self.card_grid_data.get(self.card_index_of_2nd_click))
     }
-    pub fn get_2nd_card_mut(&mut self)->&mut Card{
-        unwrap!(self
-            .card_grid_data
-            .get_mut(self.card_index_of_2nd_click))
+
+    /// get 2nd card mut
+    pub fn get_2nd_card_mut(&mut self) -> &mut Card {
+        unwrap!(self.card_grid_data.get_mut(self.card_index_of_2nd_click))
     }
 }

@@ -30,7 +30,11 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
     }
 
     /// html_templating functions that return a String
-    #[allow(clippy::needless_return, clippy::integer_arithmetic)]
+    #[allow(
+        clippy::needless_return,
+        clippy::integer_arithmetic,
+        clippy::indexing_slicing
+    )]
     fn call_fn_string(&self, fn_name: &str) -> String {
         // websysmod::debug_write(&format!("call_fn_string: {}", &fn_name));
         match fn_name {
@@ -76,6 +80,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
     }
 
     /// return a closure for the listener.
+    #[allow(clippy::too_many_lines, clippy::type_complexity)]
     fn call_fn_listener(
         &self,
         fn_name: String,
