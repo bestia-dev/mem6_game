@@ -12,3 +12,4 @@
 - idea for hostels: photos of guests and names. So it is easy to remember the names.  
 - some pages can go into history, other must not
 - 25.2. 654kb
+- when open a new tab, don't loose the websocket connection with the same ws_uid

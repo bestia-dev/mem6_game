@@ -20,9 +20,9 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
         websysmod::debug_write(&format!("call_fn_boolean: {}", &fn_name));
         match fn_name {
             "is_first_player" => self.game_data.my_player_number == 1,
-            "is_true" => true,
+            "player_joined" => self.game_data.players.len() > 1,
             _ => {
-                let x = format!("Error: Unrecognized call_fn_boolean: {}", fn_name);
+                let x = format!("Error: Unrecognized call_fn_boolean: \"{}\"", fn_name);
                 websysmod::debug_write(&x);
                 true
             }
@@ -44,6 +44,8 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             "url_to_join" => format!("bestia.dev/mem6/#p03.{}", self.web_data.my_ws_uid),
             "cargo_pkg_version" => env!("CARGO_PKG_VERSION").to_string(),
             "debug_text" => websysmod::get_debug_text(),
+            "game_status" => self.game_data.game_status.as_ref().to_string(),
+            "my_player_number" => self.game_data.my_player_number.to_string(),
             "gameboard_btn" => {
                 // different class depend on status
                 "btn".to_owned()
@@ -61,11 +63,12 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             "my_points" => {
                 return format!("{} ", self.game_data.my_player().points,);
             }
-            "player_turn" => {
+            "player_turn_nickname" => {
+                websysmod::debug_write("player_turn_nickname");
                 return self.game_data.player_turn_now().nickname.to_string();
             }
             _ => {
-                let x = format!("Error: Unrecognized call_fn_string: {}", fn_name);
+                let x = format!("Error: Unrecognized call_fn_string: \"{}\"", fn_name);
                 websysmod::debug_write(&x);
                 x
             }
@@ -172,15 +175,26 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     } else {
                         statustaketurnmod::on_click_take_turn(rrc, &vdom);
                     }
-                    // end the drink dialog
+                    // end the drink page
                     open_new_local_page("#p11");
                 }
                 "p06_load_image" => {
                     //websysmod::debug_write("p06_load_image");
                     statusdrinkmod::play_sound_for_drink(rrc);
                 }
+                "play_again" => {
+                    websocketmod::ws_send_msg(
+                        &rrc.web_data.ws,
+                        &WsMessage::MsgPlayAgain {
+                            my_ws_uid: rrc.web_data.my_ws_uid,
+                            msg_receivers: rrc.web_data.msg_receivers.to_string(),
+                        },
+                    );
+                    rrc.game_data.reset_for_play_again();
+                    open_new_local_page("#p05");
+                }
                 _ => {
-                    let x = format!("Error: Unrecognized call_fn_listener: {}", fn_name);
+                    let x = format!("Error: Unrecognized call_fn_listener: \"{}\"", fn_name);
                     websysmod::debug_write(&x);
                 }
             }
@@ -210,7 +224,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 let node = ElementBuilder::new(bump, "h2")
                     .children([text(
                         bumpalo::format!(in bump,
-                            "Error: Unrecognized call_fn_node: {}",
+                            "Error: Unrecognized call_fn_node: \"{}\"",
                             fn_name
                         )
                         .into_bump_str(),

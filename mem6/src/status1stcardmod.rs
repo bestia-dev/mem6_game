@@ -9,12 +9,7 @@ use crate::*;
 use mem6_common::*;
 
 use unwrap::unwrap;
-use dodrio::{
-    RenderContext,
-    builder::{ElementBuilder, text},
-    bumpalo::{self, Bump},
-    Node,
-};
+use dodrio::{RenderContext, Node};
 use wasm_bindgen::JsCast;
 use crate::htmltemplatemod::HtmlTemplating;
 //endregion
@@ -105,22 +100,20 @@ pub fn update_on_1st_card(rrc: &mut RootRenderingComponent) {
     rrc.game_data.game_status = GameStatus::Status2ndCard;
 }
 
-/// render div
-#[allow(clippy::integer_arithmetic)]
+/// render
 pub fn div_on_1st_card<'a>(rrc: &RootRenderingComponent, cx: &mut RenderContext<'a>) -> Node<'a> {
     let html_template = if rrc.game_data.is_my_turn() {
         r#"
         <div>
             <h2 class="h2_must_do_something">
-                Play <!--t=player_turn -->
+                Play <!--t=player_turn_nickname--> Nick
             </h2>
         </div>"#
     } else {
-        // return wait for the other player
         r#"
         <div>
             <h2 class="h2_user_must_wait">
-                Wait for <!--t=player_turn -->
+                Wait for <!--t=player_turn_nickname--> Nick
             </h2>
         </div>"#
     };

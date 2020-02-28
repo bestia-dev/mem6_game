@@ -6,37 +6,21 @@
 //region: use
 use crate::*;
 
-//use unwrap::unwrap;
-use dodrio::{
-    builder::{ElementBuilder, text},
-    bumpalo::{self, Bump},
-    Node,
-};
+use unwrap::unwrap;
+use dodrio::{RenderContext, Node};
+use crate::htmltemplatemod::HtmlTemplating;
 //endregion
 
 /// waiting ack msg
-pub fn div_waiting_ack_msg<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
-    /*
-    dodrio !(bump,
-    <div>
+pub fn div_waiting_ack_msg<'a>(
+    rrc: &RootRenderingComponent,
+    cx: &mut RenderContext<'a>,
+) -> Node<'a> {
+    let html_template = r#"
+    <div >
         <h2 class="h2_user_must_wait">
-                {vec![text(
-                    bumpalo::format!(in bump, "slow network{}", "").into_bump_str(),
-                )]}
+            Slow network !
         </h2>
-    </div>
-    )
-    */
-    ElementBuilder::new(bump, "div")
-        .children([ElementBuilder::new(bump, "h2")
-            .attr("class", "h2_user_must_wait")
-            .children([text(
-                bumpalo::format!(in bump,
-                    "slow network{}",
-                    ""
-                )
-                .into_bump_str(),
-            )])
-            .finish()])
-        .finish()
+    </div>"#;
+    unwrap!(rrc.prepare_node_from_template(cx, html_template, htmltemplatemod::HtmlOrSvg::Html))
 }

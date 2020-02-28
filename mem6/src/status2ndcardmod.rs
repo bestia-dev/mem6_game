@@ -9,12 +9,9 @@ use crate::*;
 use mem6_common::*;
 
 use unwrap::unwrap;
-use dodrio::{
-    builder::{ElementBuilder, text},
-    bumpalo::{self, Bump},
-    Node,
-};
+use dodrio::{RenderContext, Node};
 use wasm_bindgen::JsCast;
+use crate::htmltemplatemod::HtmlTemplating;
 //endregion
 
 /// on second click
@@ -69,7 +66,7 @@ pub fn is_all_permanently(rrc: &mut RootRenderingComponent) -> bool {
 
 /// is it a point or not
 pub fn is_point(rrc: &RootRenderingComponent) -> bool {
-    rrc.game_data.get_1st_card().card_number==rrc.game_data.get_2nd_card().card_number
+    rrc.game_data.get_1st_card().card_number == rrc.game_data.get_2nd_card().card_number
 }
 
 /// msg player click
@@ -97,7 +94,7 @@ pub fn on_msg_ack_player_click2nd_card(
         let is_point = is_point(rrc);
         update_click_2nd_card_point(rrc, is_point);
         if is_point {
-            // nothing because all happens after the Drink/no drink dialog
+            // nothing because all happens after the Drink/no drink page
         } else {
             websysmod::debug_write("no");
             statustaketurnmod::on_click_take_turn(rrc, vdom);
@@ -140,36 +137,26 @@ pub fn update_click_2nd_card_flip_permanently(rrc: &mut RootRenderingComponent, 
 }
 
 /// render Play or Wait
-#[allow(clippy::integer_arithmetic)]
-pub fn div_click_2nd_card<'a>(rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<'a> {
-    if rrc.game_data.is_my_turn() {
-        ElementBuilder::new(bump, "div")
-            .children([ElementBuilder::new(bump, "h2")
-                .attr("class", "h2_must_do_something")
-                .children([text(
-                    bumpalo::format!(in bump,
-                        "Play {}",
-                        rrc.game_data.player_turn_now().nickname
-                    )
-                    .into_bump_str(),
-                )])
-                .finish()])
-            .finish()
+pub fn div_click_2nd_card<'a>(
+    rrc: &RootRenderingComponent,
+    cx: &mut RenderContext<'a>,
+) -> Node<'a> {
+    let html_template = if rrc.game_data.is_my_turn() {
+        r#"
+        <div>
+            <h2 class="h2_must_do_something">
+                Play <!--t=player_turn_nickname--> Nick
+            </h2>
+        </div>"#
     } else {
-        // return wait for the other player
-        ElementBuilder::new(bump, "div")
-            .children([ElementBuilder::new(bump, "h2")
-                .attr("class", "h2_user_must_wait")
-                .children([text(
-                    bumpalo::format!(in bump,
-                        "Wait for {}",
-                        rrc.game_data.player_turn_now().nickname
-                    )
-                    .into_bump_str(),
-                )])
-                .finish()])
-            .finish()
-    }
+        r#"
+        <div>
+            <h2 class="h2_user_must_wait">
+                Wait for <!--t=player_turn_nickname--> Nick
+            </h2>
+        </div>"#
+    };
+    unwrap!(rrc.prepare_node_from_template(cx, html_template, htmltemplatemod::HtmlOrSvg::Html))
 }
 
 /// on click for img in status 2
@@ -191,7 +178,9 @@ pub fn on_click_img_status2nd(
     // id attribute of image html element is prefixed with img ex. "img12"
     let this_click_card_index = unwrap!(img.id()[3..].parse::<usize>());
     // click is useful only on facedown cards
-    if rrc.game_data.card_grid_data[this_click_card_index].status.as_ref()
+    if rrc.game_data.card_grid_data[this_click_card_index]
+        .status
+        .as_ref()
         == CardStatusCardFace::Down.as_ref()
     {
         status2ndcardmod::on_click_2nd_card(rrc, vdom, this_click_card_index);
