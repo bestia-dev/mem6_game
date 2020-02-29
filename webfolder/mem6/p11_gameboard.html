@@ -61,18 +61,38 @@
                                 <!--t=card_moniker_second-->Elephant</text>
 
                         <foreignObject x="0%" y="80%" width="100%" height="17%">
-                                <template name="player_action">
-                                        <div>
-                                                <h2
-                                                    class="h2_must_do_something">
-                                                        Play
-                                                        <!--t=player_turn_nickname-->
-                                                        Nick
+                                <!--n=div_player_action-->
+                                <div>
+                                        <h2 class="h2_must_do_something">
+                                                Play Nick
+                                        </h2>
+                                </div>
+                                <template name="action_1st_turn">
+                                        <h2 class="h2_must_do_something">
+                                                Play
+                                                <!--t=player_turn_nickname-->
+                                                Nick
+                                        </h2>
+                                </template>
+                                <template name="action_1st_not_turn">
+                                        <h2 class="h2_user_must_wait">
+                                                Wait for
+                                                <!--t=player_turn_nickname-->
+                                                Nick
+                                        </h2>
+                                </template>
+                                <template name="play_again">
+                                        <div data-on-click="play_again">
+                                                <h2 class="h2_user_must_click">
+                                                        Play again?
                                                 </h2>
                                         </div>
                                 </template>
-                                <!--n=div_player_action-->
-                                <h2>some action</h2>
+                                <template name="game_over">
+                                        <h2 class="h2_user_must_wait">
+                                                Game Over!
+                                        </h2>
+                                </template>
                         </foreignObject>
 
                         <text x="50%" y="97%" class="h6">

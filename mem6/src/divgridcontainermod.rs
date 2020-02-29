@@ -121,7 +121,7 @@ pub fn div_grid_all_items<'a>(
             };
             // endregion
 
-            // creating grid_width*grid_height <div> in loop
+            // creating grid_item in loop grid_width*grid_height
             let grid_item_bump = render_template_grid_item(rrc, cx, img_src, img_id, img_style);
             vec_grid_items.push(grid_item_bump);
         }

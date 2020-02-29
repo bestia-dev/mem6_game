@@ -142,22 +142,13 @@ pub fn div_click_2nd_card<'a>(
     rrc: &RootRenderingComponent,
     cx: &mut RenderContext<'a>,
 ) -> Node<'a> {
-    let html_template = if rrc.game_data.is_my_turn() {
-        r#"
-        <div>
-            <h2 class="h2_must_do_something">
-                Play <!--t=player_turn_nickname--> Nick
-            </h2>
-        </div>"#
+    let template_name = if rrc.game_data.is_my_turn() {
+        "action_1st_turn"
     } else {
-        r#"
-        <div>
-            <h2 class="h2_user_must_wait">
-                Wait for <!--t=player_turn_nickname--> Nick
-            </h2>
-        </div>"#
+        "action_1st_not_turn"
     };
-    unwrap!(rrc.render_template(cx, html_template, htmltemplatemod::HtmlOrSvg::Html))
+    let html_template = rrc.web_data.get_sub_template(template_name);
+    unwrap!(rrc.render_template(cx, &html_template, htmltemplatemod::HtmlOrSvg::Html))
 }
 
 /// on click for img in status 2

@@ -17,22 +17,13 @@ pub fn div_game_over<'a>(rrc: &RootRenderingComponent, cx: &mut RenderContext<'a
     // game over
     // only the leader of the group player can choose Play again?
     // other players are already joined to the group
-    let html_template = if rrc.game_data.my_player_number == 1 {
-        r#"
-        <div data-on-click="play_again">
-            <h2 class="h2_user_must_click">
-                Play again?
-            </h2>
-        </div>"#
+    let template_name = if rrc.game_data.my_player_number == 1 {
+        "play_again"
     } else {
-        r#"
-        <div >
-            <h2 class="h2_user_must_wait">
-                Game Over!
-            </h2>
-        </div>"#
+        "game_over"
     };
-    unwrap!(rrc.render_template(cx, html_template, htmltemplatemod::HtmlOrSvg::Html))
+    let html_template = rrc.web_data.get_sub_template(template_name);
+    unwrap!(rrc.render_template(cx, &html_template, htmltemplatemod::HtmlOrSvg::Html))
 }
 
 /// on msg game over
