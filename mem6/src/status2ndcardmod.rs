@@ -161,6 +161,7 @@ pub fn div_click_2nd_card<'a>(
 }
 
 /// on click for img in status 2
+#[allow(clippy::indexing_slicing)]
 pub fn on_click_img_status2nd(
     root: &mut dyn dodrio::RootRender,
     vdom: &dodrio::VdomWeak,

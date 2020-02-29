@@ -6,6 +6,7 @@
 
 use crate::*;
 use dodrio::VdomWeak;
+use unwrap::unwrap;
 // I tried to put vdom as a field in Router. But after closures, the vdom
 // is not anymore the same and I cannot use the one in Router.
 // I must pass vdom as parameter, because it comes from Closures
@@ -68,6 +69,8 @@ impl routermod::Routing for Router {
     }
 
     /// update html_template
+    #[allow(clippy::integer_arithmetic)]
+    #[allow(clippy::indexing_slicing)]
     fn update_rrc_html_template(
         resp_body_text: String,
     ) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static> {
@@ -76,7 +79,46 @@ impl routermod::Routing for Router {
         Box::new(move |root| {
             let rrc = root.unwrap_mut::<RootRenderingComponent>();
             // only the html inside the <body> </body>
-            rrc.web_data.html_template = routermod::between_body_tag(&resp_body_text);
+            let mut tm = routermod::between_body_tag(&resp_body_text);
+            //parse subtemplates <template name="xxx"></template>
+            rrc.web_data.vec_html_templates.clear();
+            loop {
+                let mut exist_template = false;
+
+                let pos1 = tm.find("<template ");
+                let del2 = "</template>";
+                let pos2 = tm.find(del2);
+                if let Some(pos_start) = pos1 {
+                    if let Some(pos_end) = pos2 {
+                        exist_template = true;
+                        //drain - extract a substring and remove it from the original
+                        let sub1: String = tm.drain(pos_start..pos_end + del2.len()).collect();
+
+                        let del3 = "name=\"";
+                        let pos_name_start = unwrap!(sub1.find(del3));
+                        let sub2 = &sub1[pos_name_start + del3.len()..];
+                        //websysmod::debug_write(sub2);
+
+                        let pos_name_end = unwrap!(sub2.find('"'));
+                        let name = &sub2[0..pos_name_end];
+                        //websysmod::debug_write(name);
+
+                        let del5 = '>';
+                        let pos_name_end_tag = unwrap!(sub1.find(del5));
+                        let pos6 = unwrap!(sub1.find(del2));
+                        let sub_template = &sub1[pos_name_end_tag + 1..pos6];
+                        //websysmod::debug_write(sub_template);
+
+                        rrc.web_data
+                            .vec_html_templates
+                            .push((name.to_string(), sub_template.to_string()));
+                    }
+                }
+                if !exist_template {
+                    break;
+                }
+            }
+            rrc.web_data.html_template = tm;
         })
     }
 }

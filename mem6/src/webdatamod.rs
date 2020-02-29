@@ -30,7 +30,7 @@ pub struct WebData {
     pub local_route: String,
     /// downloaded html template for main page
     pub html_template: String,
-    /// vector of named nodes <!--tn=grid_name--><template>...</template>
+    /// vector of subtemplates <template name=xxx>...</template>
     pub vec_html_templates: Vec<(String, String)>,
     /// is reconnect
     pub is_reconnect: bool,

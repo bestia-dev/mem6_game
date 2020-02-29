@@ -312,6 +312,7 @@ impl GameData {
     }
 
     /// which player is me
+    #[allow(clippy::integer_arithmetic)]
     pub fn my_player(&self) -> &Player {
         //players vector are counted from zero
         //player_turn is counted from 1
@@ -342,7 +343,7 @@ impl GameData {
     }
 
     /// is my turn?
-    pub fn is_my_turn(&self) -> bool {
+    pub const fn is_my_turn(&self) -> bool {
         self.my_player_number == self.player_turn
     }
 
