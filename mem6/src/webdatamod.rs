@@ -28,8 +28,10 @@ pub struct WebData {
     pub ws: WebSocket,
     /// local # hash route
     pub local_route: String,
-    /// downloaded html template
+    /// downloaded html template for main page
     pub html_template: String,
+    /// vector of named nodes <!--tn=grid_name--><template>...</template>
+    pub vec_html_templates: Vec<(String, String)>,
     /// is reconnect
     pub is_reconnect: bool,
     /// my ws client instance unique id. To not listen the echo to yourself.
@@ -57,6 +59,7 @@ impl WebData {
             ws,
             local_route: "".to_owned(),
             html_template: "".to_owned(),
+            vec_html_templates: vec![],
             is_reconnect: false,
             my_ws_uid,
             msg_receivers,

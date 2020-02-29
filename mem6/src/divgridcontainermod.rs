@@ -121,7 +121,7 @@ pub fn div_grid_items<'a>(
                     "game_data.card_grid_data.get(index)").card_index_and_id)
                 .into_bump_str();
 
-            let opacity = if img_src
+            let img_style = if img_src
                 == format!("content/{}/{}", game_data.game_name, SRC_FOR_CARD_FACE_DOWN)
             {
                 bumpalo::format!(in bump, "opacity:{}", 0.2).into_bump_str()
@@ -131,7 +131,7 @@ pub fn div_grid_items<'a>(
             // endregion
 
             // creating grid_width*grid_height <div> in loop
-            let grid_item_bump = div_grid_item(rrc, cx, img_src, img_id, opacity);
+            let grid_item_bump = div_grid_item(rrc, cx, img_src, img_id, img_style);
             vec_grid_items.push(grid_item_bump);
         }
     }
@@ -145,8 +145,11 @@ pub fn div_grid_item<'a>(
     cx: &mut RenderContext<'a>,
     img_src: &str,
     img_id: &str,
-    opacity: &str,
+    img_style: &str,
 ) -> Node<'a> {
+    //TODO: the htmltemplating wil read the template, but how can I read it here?
+    //rrc vector with html name grid_item
+
     match rrc.game_data.game_status {
         GameStatus::Status1stCard => {
             let html_template = format!(
@@ -154,7 +157,7 @@ pub fn div_grid_item<'a>(
             <img class="grid_item_img" src="{}" id="{}" style="{}"
             data-on-click="on_click_img_status1st" />
         </div>"#,
-                img_src, img_id, opacity
+                img_src, img_id, img_style
             );
             unwrap!(rrc.prepare_node_from_template(
                 cx,
@@ -169,7 +172,7 @@ pub fn div_grid_item<'a>(
             <img class="grid_item_img" src="{}" id="{}" style="{}"
             data-on-click="on_click_img_status2nd" />
         </div>"#,
-                img_src, img_id, opacity
+                img_src, img_id, img_style
             );
             unwrap!(rrc.prepare_node_from_template(
                 cx,
@@ -189,7 +192,7 @@ pub fn div_grid_item<'a>(
         <div class="grid_item" >
             <img class="grid_item_img" src="{}" id="{}" style="{}" />
         </div>"#,
-                img_src, img_id, opacity
+                img_src, img_id, img_style
             );
             unwrap!(rrc.prepare_node_from_template(
                 cx,

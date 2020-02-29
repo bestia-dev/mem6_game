@@ -123,6 +123,9 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 "debug_log" => {
                     websysmod::open_new_tab("#p31");
                 }
+                "webrtc" => {
+                    open_new_local_page("#p41");
+                }
                 "start_a_group_onclick" | "restart_game" => {
                     // send a msg to others to open #p04
                     statusgameovermod::on_msg_play_again(rrc);
@@ -254,6 +257,10 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
         match fn_name {
             "div_grid_items" => {
                 return divgridcontainermod::div_grid_items(self, cx);
+            }
+            "dummy" => {
+                //just to avoid the one match clippy
+                return vec![];
             }
             _ => {
                 let node = ElementBuilder::new(bump, "h2")
