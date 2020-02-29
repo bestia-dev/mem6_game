@@ -68,24 +68,21 @@ pub fn div_reconnect<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<
 /// send all data to resync game_data
 pub fn send_msg_for_resync(rrc: &RootRenderingComponent) {
     websysmod::debug_write("send_msg_for_resync MsgAllGameData");
-    websocketmod::ws_send_msg(
-        &rrc.web_data.ws,
-        &WsMessage::MsgAllGameData {
-            my_ws_uid: rrc.web_data.my_ws_uid,
-            /// only the players that resync
-            msg_receivers: rrc.web_data.msg_receivers.clone(),
-            /// json of vector of players with nicknames and order data
-            players: unwrap!(serde_json::to_string(&rrc.game_data.players)),
-            /// vector of cards status
-            card_grid_data: unwrap!(serde_json::to_string(&rrc.game_data.card_grid_data)),
-            card_index_of_1st_click: rrc.game_data.card_index_of_1st_click,
-            card_index_of_2nd_click: rrc.game_data.card_index_of_2nd_click,
-            /// whose turn is now:  player 1,2,3,...
-            player_turn: rrc.game_data.player_turn,
-            /// game status
-            game_status: rrc.game_data.game_status.clone(),
-        },
-    );
+    rrc.web_data.send_ws_msg(&WsMessage::MsgAllGameData {
+        my_ws_uid: rrc.web_data.my_ws_uid,
+        /// only the players that resync
+        msg_receivers: rrc.web_data.msg_receivers.clone(),
+        /// json of vector of players with nicknames and order data
+        players: unwrap!(serde_json::to_string(&rrc.game_data.players)),
+        /// vector of cards status
+        card_grid_data: unwrap!(serde_json::to_string(&rrc.game_data.card_grid_data)),
+        card_index_of_1st_click: rrc.game_data.card_index_of_1st_click,
+        card_index_of_2nd_click: rrc.game_data.card_index_of_2nd_click,
+        /// whose turn is now:  player 1,2,3,...
+        player_turn: rrc.game_data.player_turn,
+        /// game status
+        game_status: rrc.game_data.game_status.clone(),
+    });
 }
 
 /// after reconnect receive all the data from other player

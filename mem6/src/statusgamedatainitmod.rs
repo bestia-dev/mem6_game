@@ -17,18 +17,15 @@ pub fn on_click_start_game(rrc: &mut RootRenderingComponent) {
     rrc.game_data.player_turn =
         websysmod::get_random(1, unwrap!(rrc.game_data.players.len().checked_add(1)));
 
-    websocketmod::ws_send_msg(
-        &rrc.web_data.ws,
-        &WsMessage::MsgStartGame {
-            my_ws_uid: rrc.web_data.my_ws_uid,
-            msg_receivers: rrc.web_data.msg_receivers.to_string(),
-            players: unwrap!(serde_json::to_string(&rrc.game_data.players)),
-            card_grid_data: unwrap!(serde_json::to_string(&rrc.game_data.card_grid_data)),
-            game_config: unwrap!(serde_json::to_string(&rrc.game_data.game_config)),
-            game_name: rrc.game_data.game_name.to_string(),
-            player_turn: rrc.game_data.player_turn,
-        },
-    );
+    rrc.web_data.send_ws_msg(&WsMessage::MsgStartGame {
+        my_ws_uid: rrc.web_data.my_ws_uid,
+        msg_receivers: rrc.web_data.msg_receivers.to_string(),
+        players: unwrap!(serde_json::to_string(&rrc.game_data.players)),
+        card_grid_data: unwrap!(serde_json::to_string(&rrc.game_data.card_grid_data)),
+        game_config: unwrap!(serde_json::to_string(&rrc.game_data.game_config)),
+        game_name: rrc.game_data.game_name.to_string(),
+        player_turn: rrc.game_data.player_turn,
+    });
 }
 
 /// on game data init

@@ -2,12 +2,12 @@
 //! structs and methods around web and communication
 
 //region: use
-//use crate::*;
+use crate::*;
 use mem6_common::*;
 
 use web_sys::WebSocket;
 use serde_derive::{Serialize, Deserialize};
-//use unwrap::unwrap;
+use unwrap::unwrap;
 //endregion
 
 //region: structs
@@ -25,7 +25,7 @@ pub struct MsgInQueue {
 /// game data
 pub struct WebData {
     /// web socket. used it to send message onclick.
-    pub ws: WebSocket,
+    pub ws: Option<WebSocket>,
     /// local # hash route
     pub local_route: String,
     /// downloaded html template for main page
@@ -53,10 +53,10 @@ pub struct WebData {
 
 impl WebData {
     /// constructor
-    pub fn new(ws: WebSocket, my_ws_uid: usize, msg_receivers: String) -> Self {
+    pub fn new(my_ws_uid: usize, msg_receivers: String) -> Self {
         // return from constructor
         WebData {
-            ws,
+            ws: None,
             local_route: "".to_owned(),
             html_template: "".to_owned(),
             html_sub_templates: vec![],
@@ -82,5 +82,21 @@ impl WebData {
         }
         //return
         html_template
+    }
+
+    /// create websocket connection
+    pub fn start_websocket(&mut self, vdom: dodrio::VdomWeak) {
+        let (location_href, _href_hash) = websysmod::get_url_and_hash();
+        let msg_receivers = "[]".to_string(); // empty vector in json
+        let ws =
+            websocketmod::setup_ws_connection(location_href.clone(), self.my_ws_uid, msg_receivers);
+        websocketmod::setup_all_ws_events(&ws, vdom);
+        let ws_c = ws.clone();
+        self.ws = Some(ws_c);
+    }
+
+    /// send msg over ws
+    pub fn send_ws_msg(&self, ws_message: &WsMessage) {
+        websocketmod::ws_send_msg(unwrap!(self.ws.as_ref()), ws_message);
     }
 }

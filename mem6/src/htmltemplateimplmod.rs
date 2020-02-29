@@ -127,7 +127,8 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     open_new_local_page("#p41");
                 }
                 "start_a_group_onclick" => {
-                    //start ws
+                    let v2 = vdom.clone();
+                    rrc.web_data.start_websocket(v2);
                     open_new_local_page("#p02");
                 }
                 "restart_game" => {
@@ -164,26 +165,20 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     //unwrap!(audio_element.stop());
 
                     websysmod::debug_write(&format!("MsgDrinkEnd send{}", ""));
-                    websocketmod::ws_send_msg(
-                        &rrc.web_data.ws,
-                        &WsMessage::MsgDrinkEnd {
-                            my_ws_uid: rrc.web_data.my_ws_uid,
-                            msg_receivers: rrc.web_data.msg_receivers.to_string(),
-                        },
-                    );
+                    rrc.web_data.send_ws_msg(&WsMessage::MsgDrinkEnd {
+                        my_ws_uid: rrc.web_data.my_ws_uid,
+                        msg_receivers: rrc.web_data.msg_receivers.to_string(),
+                    });
                     // if all the cards are permanently up, this is the end of the game
                     // websysmod::debug_write("if is_all_permanently(rrc)");
                     if status2ndcardmod::is_all_permanently(rrc) {
                         websysmod::debug_write("yes");
                         statusgameovermod::on_msg_game_over(rrc);
                         // send message
-                        websocketmod::ws_send_msg(
-                            &rrc.web_data.ws,
-                            &WsMessage::MsgGameOver {
-                                my_ws_uid: rrc.web_data.my_ws_uid,
-                                msg_receivers: rrc.web_data.msg_receivers.to_string(),
-                            },
-                        );
+                        rrc.web_data.send_ws_msg(&WsMessage::MsgGameOver {
+                            my_ws_uid: rrc.web_data.my_ws_uid,
+                            msg_receivers: rrc.web_data.msg_receivers.to_string(),
+                        });
                     } else {
                         statustaketurnmod::on_click_take_turn(rrc, &vdom);
                     }
@@ -195,13 +190,10 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     statusdrinkmod::play_sound_for_drink(rrc);
                 }
                 "play_again" => {
-                    websocketmod::ws_send_msg(
-                        &rrc.web_data.ws,
-                        &WsMessage::MsgPlayAgain {
-                            my_ws_uid: rrc.web_data.my_ws_uid,
-                            msg_receivers: rrc.web_data.msg_receivers.to_string(),
-                        },
-                    );
+                    rrc.web_data.send_ws_msg(&WsMessage::MsgPlayAgain {
+                        my_ws_uid: rrc.web_data.my_ws_uid,
+                        msg_receivers: rrc.web_data.msg_receivers.to_string(),
+                    });
                     rrc.game_data.reset_for_play_again();
                     open_new_local_page("#p05");
                 }

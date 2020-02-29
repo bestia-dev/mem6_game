@@ -306,23 +306,12 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     let my_ws_uid = websocketmod::load_or_random_ws_uid();
 
     let (location_href, href_hash) = websysmod::get_url_and_hash();
-    // WebSocket connection
-    let msg_receivers = "[]".to_string(); // empty vector in json
-    let ws = websocketmod::setup_ws_connection(location_href.clone(), my_ws_uid, msg_receivers);
-    // I don't know why is needed to clone the WebSocket connection
-    let ws_c = ws.clone();
-
     // Construct a new RootRenderingComponent.
-    // I added ws_c so that I can send messages on WebSocket
-
-    let mut rrc = RootRenderingComponent::new(ws_c, my_ws_uid);
+    let mut rrc = RootRenderingComponent::new(my_ws_uid);
     rrc.web_data.href = location_href.to_string();
     rrc.web_data.href_hash = href_hash;
     // Mount the component to the `<div id="div_for_virtual_dom">`.
     let vdom = dodrio::Vdom::new(&div_for_virtual_dom, rrc);
-
-    // TODO: this could be a trait for vdomweak
-    websocketmod::setup_all_ws_events(&ws, vdom.weak());
 
     // async fetch_response() for gamesmetadata.json
     let v2 = vdom.weak();

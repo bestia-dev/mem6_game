@@ -55,16 +55,14 @@ pub fn send_msg_and_write_in_queue(
     for player in &rrc.game_data.players {
         if player.ws_uid != rrc.web_data.my_ws_uid {
             let msg_for_loop = msg.clone();
-            rrc.web_data
-                .msgs_waiting_ack
-                .push(webdatamod::MsgInQueue {
-                    player_ws_uid: player.ws_uid,
-                    msg_id,
-                    msg: msg_for_loop,
-                });
+            rrc.web_data.msgs_waiting_ack.push(webdatamod::MsgInQueue {
+                player_ws_uid: player.ws_uid,
+                msg_id,
+                msg: msg_for_loop,
+            });
         }
     }
-    websocketmod::ws_send_msg(&rrc.web_data.ws, msg);
+    rrc.web_data.send_ws_msg(msg);
 }
 
 /// send ack
@@ -76,13 +74,10 @@ pub fn send_ack(
 ) {
     // websysmod::debug_write(&format!("send_ack players: {:?}", rrc.game_data.players));
     // send back the ACK msg to the sender
-    websocketmod::ws_send_msg(
-        &rrc.web_data.ws,
-        &WsMessage::MsgAck {
-            my_ws_uid: rrc.web_data.my_ws_uid,
-            msg_receivers: unwrap!(serde_json::to_string(&vec![msg_sender_ws_uid])),
-            msg_id,
-            msg_ack_kind,
-        },
-    );
+    rrc.web_data.send_ws_msg(&WsMessage::MsgAck {
+        my_ws_uid: rrc.web_data.my_ws_uid,
+        msg_receivers: unwrap!(serde_json::to_string(&vec![msg_sender_ws_uid])),
+        msg_id,
+        msg_ack_kind,
+    });
 }

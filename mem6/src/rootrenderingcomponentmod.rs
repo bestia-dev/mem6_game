@@ -7,7 +7,6 @@ use crate::htmltemplatemod::HtmlTemplating;
 
 use unwrap::unwrap;
 use dodrio::{Node, Render, RenderContext};
-use web_sys::WebSocket;
 //endregion
 
 /// Root Rendering Component has all
@@ -22,10 +21,10 @@ pub struct RootRenderingComponent {
 /// impl
 impl RootRenderingComponent {
     /// Construct a new `RootRenderingComponent` at the beginning only once.
-    pub fn new(ws: WebSocket, my_ws_uid: usize) -> Self {
+    pub fn new(my_ws_uid: usize) -> Self {
         let game_data = gamedatamod::GameData::new(my_ws_uid);
         let msg_receivers = game_data.prepare_msg_receivers();
-        let web_data = webdatamod::WebData::new(ws, my_ws_uid, msg_receivers);
+        let web_data = webdatamod::WebData::new(my_ws_uid, msg_receivers);
 
         RootRenderingComponent {
             web_data,

@@ -15,19 +15,13 @@ use mem6_common::*;
 /// group_id is the ws_uid of the first player
 pub fn on_load_joined(rrc: &mut RootRenderingComponent) {
     rrc.game_data.game_status = GameStatus::StatusJoined;
-    websysmod::debug_write(&format!(
-        "StatusJoined send {}",
-        rrc.web_data.msg_receivers
-    ));
+    websysmod::debug_write(&format!("StatusJoined send {}", rrc.web_data.msg_receivers));
 
-    websocketmod::ws_send_msg(
-        &rrc.web_data.ws,
-        &WsMessage::MsgJoin {
-            my_ws_uid: rrc.web_data.my_ws_uid,
-            msg_receivers: rrc.web_data.msg_receivers.to_string(),
-            my_nickname: rrc.game_data.my_nickname.clone(),
-        },
-    );
+    rrc.web_data.send_ws_msg(&WsMessage::MsgJoin {
+        my_ws_uid: rrc.web_data.my_ws_uid,
+        msg_receivers: rrc.web_data.msg_receivers.to_string(),
+        my_nickname: rrc.game_data.my_nickname.clone(),
+    });
 }
 
 /// msg joined

@@ -30,10 +30,14 @@ impl routermod::Routing for Router {
         vdom: VdomWeak,
     ) -> String {
         let rrc = root.unwrap_mut::<RootRenderingComponent>();
+        //there are 2 entry points: no hash and #p03
         if local_route == "#p02" {
             fetchmod::async_fetch_game_config_and_update(rrc, vdom);
             rrc.web_data.local_route = "p02_start_a_group.html".to_owned();
         } else if local_route.starts_with("#p03") {
+            //entry point for join game
+            let v2 = vdom.clone();
+            rrc.web_data.start_websocket(v2);
             rrc.game_data.my_player_number = 2;
             if local_route.contains('.') {
                 let gr = routermod::get_url_param_in_hash_after_dot(&local_route);
@@ -62,6 +66,7 @@ impl routermod::Routing for Router {
         } else if local_route == "#p41" {
             rrc.web_data.local_route = "p41_webrtc.html".to_owned();
         } else {
+            //main entry point
             rrc.web_data.local_route = "p01_start.html".to_owned();
         }
         //return
