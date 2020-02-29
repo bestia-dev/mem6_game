@@ -147,38 +147,24 @@ pub fn div_grid_item<'a>(
     img_id: &str,
     img_style: &str,
 ) -> Node<'a> {
-    //TODO: the htmltemplating wil read the template, but how can I read it here?
-    //rrc vector with html name grid_item
-
+    //saved sub-template node inside the main template
+    let template_name = "grid_item";
+    let mut html_template = "".to_string();
+    for (name, template) in &rrc.web_data.vec_html_templates {
+        if name == template_name {
+            html_template = template.to_string();
+        }
+    }
+    html_template = html_template.replace("img_src", &img_src);
+    html_template = html_template.replace("img_id", &img_id);
+    html_template = html_template.replace("img_style", &img_style);
+    websysmod::debug_write(&html_template);
     match rrc.game_data.game_status {
         GameStatus::Status1stCard => {
-            let html_template = format!(
-                r#"<div class="grid_item" >
-            <img class="grid_item_img" src="{}" id="{}" style="{}"
-            data-on-click="on_click_img_status1st" />
-        </div>"#,
-                img_src, img_id, img_style
-            );
-            unwrap!(rrc.prepare_node_from_template(
-                cx,
-                &html_template,
-                htmltemplatemod::HtmlOrSvg::Html
-            ))
+            html_template = html_template.replace("on_click_img", "on_click_img_status1st");
         }
         GameStatus::Status2ndCard => {
-            let html_template = format!(
-                r#"
-        <div class="grid_item" >
-            <img class="grid_item_img" src="{}" id="{}" style="{}"
-            data-on-click="on_click_img_status2nd" />
-        </div>"#,
-                img_src, img_id, img_style
-            );
-            unwrap!(rrc.prepare_node_from_template(
-                cx,
-                &html_template,
-                htmltemplatemod::HtmlOrSvg::Html
-            ))
+            html_template = html_template.replace("on_click_img", "on_click_img_status2nd");
         }
         mem6_common::GameStatus::StatusStartPage
         | mem6_common::GameStatus::StatusJoined
@@ -187,20 +173,10 @@ pub fn div_grid_item<'a>(
         | mem6_common::GameStatus::StatusGameOver
         | mem6_common::GameStatus::StatusReconnect
         | mem6_common::GameStatus::StatusWaitingAckMsg => {
-            let html_template = format!(
-                r#"
-        <div class="grid_item" >
-            <img class="grid_item_img" src="{}" id="{}" style="{}" />
-        </div>"#,
-                img_src, img_id, img_style
-            );
-            unwrap!(rrc.prepare_node_from_template(
-                cx,
-                &html_template,
-                htmltemplatemod::HtmlOrSvg::Html
-            ))
+            html_template = html_template.replace("on_click_img", "");
         }
     }
+    unwrap!(rrc.prepare_node_from_template(cx, &html_template, htmltemplatemod::HtmlOrSvg::Html))
 }
 
 /// play sound mp3
