@@ -67,14 +67,15 @@
                                                 Play Nick
                                         </h2>
                                 </div>
-                                <template name="action_1st_turn">
+                                <!-- templates for different div_player_action -->
+                                <template name="action_1st_2nd_turn">
                                         <h2 class="h2_must_do_something">
                                                 Play
                                                 <!--t=player_turn_nickname-->
                                                 Nick
                                         </h2>
                                 </template>
-                                <template name="action_1st_not_turn">
+                                <template name="action_1st_2nd_not_turn">
                                         <h2 class="h2_user_must_wait">
                                                 Wait for
                                                 <!--t=player_turn_nickname-->
@@ -93,13 +94,18 @@
                                                 Game Over!
                                         </h2>
                                 </template>
+                                <template name="slow_network">
+                                        <h2 class="h2_user_must_wait">
+                                                Slow network !
+                                        </h2>
+                                </template>
                         </foreignObject>
 
                         <text x="50%" y="97%" class="h6">
                                 <!--t=my_nickname-->Player1
-                                <!--end t--> :
+                                <!-- end --> :
                                 <!--t=my_points-->11
-                                <!-- end t--> points</text>
+                                <!-- end --> points</text>
                         <image class="clickable" x="0%" y="95%" height="5%"
                                width="10%" data-on-click="open_menu"
                                href="images/hamburgher.png" />

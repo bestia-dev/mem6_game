@@ -103,9 +103,9 @@ pub fn update_on_1st_card(rrc: &mut RootRenderingComponent) {
 /// render
 pub fn div_on_1st_card<'a>(rrc: &RootRenderingComponent, cx: &mut RenderContext<'a>) -> Node<'a> {
     let template_name = if rrc.game_data.is_my_turn() {
-        "action_1st_turn"
+        "action_1st_2nd_turn"
     } else {
-        "action_1st_not_turn"
+        "action_1st_2nd_not_turn"
     };
     let html_template = rrc.web_data.get_sub_template(template_name);
     unwrap!(rrc.render_template(cx, &html_template, htmltemplatemod::HtmlOrSvg::Html))
