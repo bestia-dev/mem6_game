@@ -9,17 +9,25 @@
 
 <body>
         <div class="m_container">
-                <template name="grid_item">
-                        <div class="grid_item">
-                                <img class="grid_item_img" src="img_src"
-                                     id="img_id" style="img_style"
-                                     data-on-click="on_click_img" />
-                        </div>
-                </template>
                 <!--n=div_grid_container-->
                 <div class="m_container">
+                        <template name="grid_container">
+                                <div class="grid_container"
+                                     style="container_style">
+                                        <!--v=div_grid_items-->
+                                        <div>grid items</div>
+                                </div>
+                        </template>
                         <div class="grid_container"
                              style="width:100%; height:412px;grid-template-columns: auto auto auto ;">
+                                <template name="grid_item">
+                                        <div class="grid_item">
+                                                <img class="grid_item_img"
+                                                     src="img_src" id="img_id"
+                                                     style="img_style"
+                                                     data-on-click="on_click_img" />
+                                        </div>
+                                </template>
                                 <div class="grid_item"><img id="img01"
                                              src="content/alphabet/img/mem_cardfacedown.png"
                                              style="opacity:0.2" /></div>

@@ -29,7 +29,7 @@ pub fn div_grid_container<'a>(
     cx: &mut RenderContext<'a>,
     max_grid_size: &Size2d,
 ) -> Node<'a> {
-    let s_style = format!(
+    let container_style = format!(
         "width:{}px; height:{}px;grid-template-columns: {} {} {} {};",
         max_grid_size.hor,
         max_grid_size.ver,
@@ -54,14 +54,16 @@ pub fn div_grid_container<'a>(
             ""
         },
     );
+    let template_name = "grid_container";
+    let mut html_template = "".to_string();
+    for (name, template) in &rrc.web_data.vec_html_templates {
+        if name == template_name {
+            html_template = template.to_string();
+        }
+    }
+    html_template = html_template.replace("container_style", &container_style);
+
     // return grid_container
-    let html_template = format!(
-        r#"
-    <div class="grid_container" style="{}"> 
-        <!--v=div_grid_items--><div>grid items</div>
-    </div>"#,
-        s_style
-    );
     unwrap!(rrc.prepare_node_from_template(cx, &html_template, htmltemplatemod::HtmlOrSvg::Html))
 }
 
@@ -158,7 +160,7 @@ pub fn div_grid_item<'a>(
     html_template = html_template.replace("img_src", &img_src);
     html_template = html_template.replace("img_id", &img_id);
     html_template = html_template.replace("img_style", &img_style);
-    websysmod::debug_write(&html_template);
+    //websysmod::debug_write(&html_template);
     match rrc.game_data.game_status {
         GameStatus::Status1stCard => {
             html_template = html_template.replace("on_click_img", "on_click_img_status1st");
