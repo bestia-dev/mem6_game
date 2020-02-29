@@ -31,7 +31,7 @@ pub struct WebData {
     /// downloaded html template for main page
     pub html_template: String,
     /// vector of subtemplates <template name=xxx>...</template>
-    pub vec_html_templates: Vec<(String, String)>,
+    pub html_sub_templates: Vec<(String, String)>,
     /// is reconnect
     pub is_reconnect: bool,
     /// my ws client instance unique id. To not listen the echo to yourself.
@@ -59,7 +59,7 @@ impl WebData {
             ws,
             local_route: "".to_owned(),
             html_template: "".to_owned(),
-            vec_html_templates: vec![],
+            html_sub_templates: vec![],
             is_reconnect: false,
             my_ws_uid,
             msg_receivers,
@@ -69,5 +69,18 @@ impl WebData {
             msgs_waiting_ack: vec![],
             show_debug_info: false,
         }
+    }
+
+    /// get sub_template
+    pub fn get_sub_template(&self, template_name: &str) -> String {
+        let mut html_template = format!("Error: no sub-template with name: {}", template_name);
+        for (name, template) in &self.html_sub_templates {
+            if name == template_name {
+                html_template = template.to_string();
+                break;
+            }
+        }
+        //return
+        html_template
     }
 }

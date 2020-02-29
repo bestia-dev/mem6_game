@@ -47,7 +47,7 @@ impl<'a> Render<'a> for RootRenderingComponent {
         } else {
             //I must add use crate::htmltemplatemod::HtmlTemplating;
             // to allow this trait to be used here on self
-            unwrap!(self.prepare_node_from_template(
+            unwrap!(self.render_template(
                 cx,
                 &self.web_data.html_template,
                 htmltemplatemod::HtmlOrSvg::Html,

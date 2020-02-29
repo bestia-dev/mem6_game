@@ -43,5 +43,5 @@ fn div_unpredicted<'a>(rrc: &RootRenderingComponent, cx: &mut RenderContext<'a>)
     gamestatus: <!--t=game_status--> one, player<!--t=my_player_number--> Nick
     </h2>"#;
     // return
-    unwrap!(rrc.prepare_node_from_template(cx, html_template, htmltemplatemod::HtmlOrSvg::Html))
+    unwrap!(rrc.render_template(cx, html_template, htmltemplatemod::HtmlOrSvg::Html))
 }

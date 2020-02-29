@@ -22,5 +22,5 @@ pub fn div_waiting_ack_msg<'a>(
             Slow network !
         </h2>
     </div>"#;
-    unwrap!(rrc.prepare_node_from_template(cx, html_template, htmltemplatemod::HtmlOrSvg::Html))
+    unwrap!(rrc.render_template(cx, html_template, htmltemplatemod::HtmlOrSvg::Html))
 }

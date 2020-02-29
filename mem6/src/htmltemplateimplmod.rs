@@ -255,8 +255,8 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
         let bump = cx.bump;
         // websysmod::debug_write(&format!("call_fn_node: {}", &fn_name));
         match fn_name {
-            "div_grid_items" => {
-                return divgridcontainermod::div_grid_items(self, cx);
+            "div_grid_all_items" => {
+                return divgridcontainermod::div_grid_all_items(self, cx);
             }
             "dummy" => {
                 //just to avoid the one match clippy
@@ -287,8 +287,8 @@ pub fn svg_qrcode_to_node<'a>(
     let link = format!("https://bestia.dev/mem6/#p03.{}", rrc.web_data.my_ws_uid);
     let qr = unwrap!(qrcode53bytes::Qr::new(&link));
     let svg_template = qrcode53bytes::SvgDodrioRenderer::new(222, 222).render(&qr);
-    //I added use crate::htmltemplatemod::HtmlTemplating; to make the function prepare_node_from_template in scope.
-    unwrap!(rrc.prepare_node_from_template(cx, &svg_template, htmltemplatemod::HtmlOrSvg::Svg))
+    //I added use crate::htmltemplatemod::HtmlTemplating; to make the function render_template in scope.
+    unwrap!(rrc.render_template(cx, &svg_template, htmltemplatemod::HtmlOrSvg::Svg))
 }
 
 /// the arrow to the right

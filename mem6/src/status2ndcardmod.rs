@@ -157,7 +157,7 @@ pub fn div_click_2nd_card<'a>(
             </h2>
         </div>"#
     };
-    unwrap!(rrc.prepare_node_from_template(cx, html_template, htmltemplatemod::HtmlOrSvg::Html))
+    unwrap!(rrc.render_template(cx, html_template, htmltemplatemod::HtmlOrSvg::Html))
 }
 
 /// on click for img in status 2

@@ -42,7 +42,7 @@ pub trait HtmlTemplating {
     /// get root element Node.   
     /// I wanted to use dodrio::Node, but it has only private methods.  
     /// I must use dodrio element_builder.  
-    fn prepare_node_from_template<'a>(
+    fn render_template<'a>(
         &self,
         cx: &mut RenderContext<'a>,
         html_template: &str,

@@ -54,23 +54,19 @@ pub fn div_grid_container<'a>(
             ""
         },
     );
-    let template_name = "grid_container";
-    let mut html_template = "".to_string();
-    for (name, template) in &rrc.web_data.vec_html_templates {
-        if name == template_name {
-            html_template = template.to_string();
-        }
-    }
-    html_template = html_template.replace("container_style", &container_style);
+    let html_template = rrc
+        .web_data
+        .get_sub_template("grid_container")
+        .replace("container_style", &container_style);
 
     // return grid_container
-    unwrap!(rrc.prepare_node_from_template(cx, &html_template, htmltemplatemod::HtmlOrSvg::Html))
+    unwrap!(rrc.render_template(cx, &html_template, htmltemplatemod::HtmlOrSvg::Html))
 }
 
 /// prepare a vector<Node> for the Virtual Dom for 'css grid' item with <img>
 /// the grid container needs only grid items. There is no need for rows and columns in 'css grid'.
 #[allow(clippy::integer_arithmetic)] // end_index-1 will not overflow
-pub fn div_grid_items<'a>(
+pub fn div_grid_all_items<'a>(
     rrc: &RootRenderingComponent,
     cx: &mut RenderContext<'a>,
 ) -> Vec<Node<'a>> {
@@ -90,22 +86,15 @@ pub fn div_grid_items<'a>(
         for x in start_index..=end_index {
             let index: usize = x;
             // region: prepare variables and closures for inserting into vdom
-            let img_src = match unwrap!(
-                game_data.card_grid_data.get(index),
-                "match game_data.card_grid_data.get(index) {} startindex {} endindex {} vec_card.len {}",
-                index,
-                start_index,
-                end_index,
-                game_data.card_grid_data.len()
-            )
-            .status
-            {
-                CardStatusCardFace::Down => bumpalo::format!(in bump, "content/{}/{}",
-                                        game_data.game_name,
-                                        SRC_FOR_CARD_FACE_DOWN)
+            let img_src = match unwrap!(game_data.card_grid_data.get(index)).status {
+                CardStatusCardFace::Down => bumpalo::format!(in bump, 
+                "content/{}/{}",
+                game_data.game_name,
+                SRC_FOR_CARD_FACE_DOWN)
                 .into_bump_str(),
                 CardStatusCardFace::UpTemporary | CardStatusCardFace::UpPermanently => {
-                    bumpalo::format!(in bump, "content/{}/img/{}",
+                    bumpalo::format!(in bump,
+                    "content/{}/img/{}",
                     game_data.game_name,
                     unwrap!(
                         unwrap!(game_data.game_config.as_ref())
@@ -133,7 +122,7 @@ pub fn div_grid_items<'a>(
             // endregion
 
             // creating grid_width*grid_height <div> in loop
-            let grid_item_bump = div_grid_item(rrc, cx, img_src, img_id, img_style);
+            let grid_item_bump = render_template_grid_item(rrc, cx, img_src, img_id, img_style);
             vec_grid_items.push(grid_item_bump);
         }
     }
@@ -142,43 +131,34 @@ pub fn div_grid_items<'a>(
     vec_grid_items
 }
 /// on click is the most important part and here is more or less isolated
-pub fn div_grid_item<'a>(
+pub fn render_template_grid_item<'a>(
     rrc: &RootRenderingComponent,
     cx: &mut RenderContext<'a>,
     img_src: &str,
     img_id: &str,
     img_style: &str,
 ) -> Node<'a> {
-    //saved sub-template node inside the main template
     let template_name = "grid_item";
-    let mut html_template = "".to_string();
-    for (name, template) in &rrc.web_data.vec_html_templates {
-        if name == template_name {
-            html_template = template.to_string();
-        }
-    }
-    html_template = html_template.replace("img_src", &img_src);
-    html_template = html_template.replace("img_id", &img_id);
-    html_template = html_template.replace("img_style", &img_style);
-    //websysmod::debug_write(&html_template);
-    match rrc.game_data.game_status {
-        GameStatus::Status1stCard => {
-            html_template = html_template.replace("on_click_img", "on_click_img_status1st");
-        }
-        GameStatus::Status2ndCard => {
-            html_template = html_template.replace("on_click_img", "on_click_img_status2nd");
-        }
+    let on_click_img = match rrc.game_data.game_status {
+        GameStatus::Status1stCard => "on_click_img_status1st",
+        GameStatus::Status2ndCard => "on_click_img_status2nd",
         mem6_common::GameStatus::StatusStartPage
         | mem6_common::GameStatus::StatusJoined
         | mem6_common::GameStatus::StatusDrink
         | mem6_common::GameStatus::StatusTakeTurn
         | mem6_common::GameStatus::StatusGameOver
         | mem6_common::GameStatus::StatusReconnect
-        | mem6_common::GameStatus::StatusWaitingAckMsg => {
-            html_template = html_template.replace("on_click_img", "");
-        }
-    }
-    unwrap!(rrc.prepare_node_from_template(cx, &html_template, htmltemplatemod::HtmlOrSvg::Html))
+        | mem6_common::GameStatus::StatusWaitingAckMsg => "",
+    };
+    let html_template = rrc
+        .web_data
+        .get_sub_template(template_name)
+        .replace("img_src", &img_src)
+        .replace("img_id", &img_id)
+        .replace("img_style", &img_style)
+        .replace("on_click_img", on_click_img);
+    //websysmod::debug_write(&html_template);
+    unwrap!(rrc.render_template(cx, &html_template, htmltemplatemod::HtmlOrSvg::Html))
 }
 
 /// play sound mp3

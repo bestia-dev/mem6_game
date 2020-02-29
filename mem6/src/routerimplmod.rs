@@ -81,7 +81,7 @@ impl routermod::Routing for Router {
             // only the html inside the <body> </body>
             let mut tm = routermod::between_body_tag(&resp_body_text);
             //parse subtemplates <template name="xxx"></template>
-            rrc.web_data.vec_html_templates.clear();
+            rrc.web_data.html_sub_templates.clear();
             loop {
                 let mut exist_template = false;
 
@@ -110,7 +110,7 @@ impl routermod::Routing for Router {
                         //websysmod::debug_write(sub_template);
 
                         rrc.web_data
-                            .vec_html_templates
+                            .html_sub_templates
                             .push((name.to_string(), sub_template.to_string()));
                     }
                 }

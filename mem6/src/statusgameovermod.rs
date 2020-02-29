@@ -32,7 +32,7 @@ pub fn div_game_over<'a>(rrc: &RootRenderingComponent, cx: &mut RenderContext<'a
             </h2>
         </div>"#
     };
-    unwrap!(rrc.prepare_node_from_template(cx, html_template, htmltemplatemod::HtmlOrSvg::Html))
+    unwrap!(rrc.render_template(cx, html_template, htmltemplatemod::HtmlOrSvg::Html))
 }
 
 /// on msg game over
