@@ -126,7 +126,11 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 "webrtc" => {
                     open_new_local_page("#p41");
                 }
-                "start_a_group_onclick" | "restart_game" => {
+                "start_a_group_onclick" => {
+                    //start ws
+                    open_new_local_page("#p02");
+                }
+                "restart_game" => {
                     // send a msg to others to open #p04
                     statusgameovermod::on_msg_play_again(rrc);
                     open_new_local_page("#p02");

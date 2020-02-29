@@ -68,7 +68,7 @@ impl routermod::Routing for Router {
         rrc.web_data.local_route.to_string()
     }
 
-    /// update html_template
+    /// update html_template and save html_sub_templates
     #[allow(clippy::integer_arithmetic)]
     #[allow(clippy::indexing_slicing)]
     fn update_rrc_html_template(
@@ -80,7 +80,7 @@ impl routermod::Routing for Router {
             let rrc = root.unwrap_mut::<RootRenderingComponent>();
             // only the html inside the <body> </body>
             let mut tm = routermod::between_body_tag(&resp_body_text);
-            //parse subtemplates <template name="xxx"></template>
+            //parse and save subtemplates <template name="xxx"></template>
             rrc.web_data.html_sub_templates.clear();
             loop {
                 let mut exist_template = false;
