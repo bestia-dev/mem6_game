@@ -1,12 +1,12 @@
 // statusgamedatainitmod.rs
 //! code flow from this status
 
-//region: use
+// region: use
 use crate::*;
 use mem6_common::*;
 
 use unwrap::unwrap;
-//endregion
+// endregion
 
 /// prepares the game data
 pub fn on_click_start_game(rrc: &mut RootRenderingComponent) {

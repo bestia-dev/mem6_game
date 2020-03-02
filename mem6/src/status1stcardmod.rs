@@ -3,7 +3,7 @@
 
 #![allow(clippy::panic)]
 
-//region: use
+// region: use
 use crate::*;
 
 use mem6_common::*;
@@ -12,7 +12,7 @@ use unwrap::unwrap;
 use dodrio::{RenderContext, Node};
 use wasm_bindgen::JsCast;
 use crate::htmltemplatemod::HtmlTemplating;
-//endregion
+// endregion
 
 /// on click
 pub fn on_click_1st_card(
@@ -142,4 +142,4 @@ pub fn on_click_img_status1st(
         vdom.schedule_render();
     }
 }
-//div_grid_container() is in divgridcontainermod.rs
+// div_grid_container() is in divgridcontainermod.rs

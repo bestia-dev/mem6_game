@@ -4,7 +4,7 @@
 
 #![allow(clippy::panic)]
 
-//region: use, const
+// region: use, const
 use crate::*;
 
 use mem6_common::*;
@@ -16,12 +16,12 @@ use dodrio::{
     Node,
 };
 use crate::htmltemplatemod::HtmlTemplating;
-//use wasm_bindgen::prelude::*;
-//use web_sys::console;
+// use wasm_bindgen::prelude::*;
+// use web_sys::console;
 
 /// fixed filename for card face down
 const SRC_FOR_CARD_FACE_DOWN: &str = "img/mem_cardfacedown.png";
-//endregion
+// endregion
 
 /// prepare the grid container
 pub fn div_grid_container<'a>(

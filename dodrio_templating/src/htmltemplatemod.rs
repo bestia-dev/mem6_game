@@ -3,16 +3,16 @@
 //! The implementation is in another file where RootRenderingComponents
 //! implement the trait HtmlTemplating
 
-//region: use
+// region: use
 use reader_for_microxml::*;
 use dodrio::{
     Node, Listener, Attribute, RenderContext, RootRender,
     bumpalo::{self},
     builder::{ElementBuilder, text},
 };
-//use crate::*;
+// use crate::*;
 use unwrap::unwrap;
-//endregion: use
+// endregion: use
 
 /// Svg elements are different because they have a namespace
 #[derive(Clone, Copy)]
@@ -26,7 +26,7 @@ pub enum HtmlOrSvg {
 /// the RootRenderingComponent struct must implement this trait
 /// it must have the fields for local_route and html_template fields
 pub trait HtmlTemplating {
-    //region: specific implementation code. while rendering, cannot mut rrc
+    // region: specific implementation code. while rendering, cannot mut rrc
     fn call_fn_string(&self, fn_name: &str) -> String;
     fn call_fn_boolean<'a>(&self, fn_name: &str) -> bool;
     fn call_fn_node<'a>(&self, cx: &mut RenderContext<'a>, fn_name: &str) -> Node<'a>;
@@ -35,9 +35,9 @@ pub trait HtmlTemplating {
         &self,
         fn_name: String,
     ) -> Box<dyn Fn(&mut dyn RootRender, dodrio::VdomWeak, web_sys::Event) + 'static>;
-    //endregion: specific implementation code
+    // endregion: specific implementation code
 
-    //region: generic code (in trait definition)
+    // region: generic code (in trait definition)
 
     /// get root element Node.   
     /// I wanted to use dodrio::Node, but it has only private methods.  
@@ -232,7 +232,7 @@ pub trait HtmlTemplating {
                         replace_node = Some(repl_node);
                     } else if txt.starts_with("v=") {
                         let fn_name = unwrap!(txt.get(2..));
-                        //vector of nodes
+                        // vector of nodes
                         let repl_vec_nodes = self.call_fn_vec_nodes(cx, fn_name);
                         replace_vec_nodes = Some(repl_vec_nodes);
                     } else if txt.starts_with("b=") {
@@ -264,7 +264,7 @@ pub trait HtmlTemplating {
             }
         }
     }
-    //endregion: generic code
+    // endregion: generic code
 }
 
 /// get en empty div node
@@ -279,7 +279,7 @@ pub fn empty_div<'a>(cx: &mut RenderContext<'a>) -> Node<'a> {
 /// because all others characters can be written as utf-8 characters.
 /// https://www.tutorialspoint.com/html5/html5_entities.htm  
 pub fn decode_5_xml_control_characters(input: &str) -> String {
-    //TODO: I don't know how slow is replace(), but I have really small texts.
+    // TODO: I don't know how slow is replace(), but I have really small texts.
     let control_character_names = vec!["&quot;", "&apos;", "&amp;", "&lt;", "&gt;"];
     let control_character_symbols = vec!["\"", "'", "&", "<", ">"];
     let mut output = input.to_owned();

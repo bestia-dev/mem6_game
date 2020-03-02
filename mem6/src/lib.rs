@@ -4,7 +4,7 @@
 #![doc(
     html_logo_url = "https://github.com/LucianoBestia/mem6_game/raw/master/webfolder/mem6/images/icons-192.png"
 )]
-//region: lmake_readme insert "readme.md"
+// region: lmake_readme insert "readme.md"
 //! # "unForGetTable"  (development name: mem6)
 //!
 //! version: 2020.225.1404  
@@ -197,11 +197,11 @@
 //! Crazy stuff. I used the website <https://www.favicon-generator.org/> to generate
 //! all the different imgs, sizes and code. And than add all this into index.html. There is more lines for icons than anything else now. Just crazy world.  
 
-//endregion: lmake_readme insert "readme.md"
+// endregion: lmake_readme insert "readme.md"
 
-//needed for dodrio ! macro (typed-html)
+// needed for dodrio ! macro (typed-html)
 #![recursion_limit = "512"]
-//region: Clippy
+// region: Clippy
 #![warn(
     clippy::all,
     clippy::restriction,
@@ -255,9 +255,9 @@
     // Why is this bad : Splitting the implementation of a type makes the code harder to navigate.
     clippy::multiple_inherent_impl,
 )]
-//endregion
+// endregion
 
-//region: mod is used only in lib file. All the rest use use crate
+// region: mod is used only in lib file. All the rest use use crate
 mod ackmsgmod;
 mod divgridcontainermod;
 mod divplayeractionsmod;
@@ -278,7 +278,7 @@ mod statusreconnectmod;
 mod routerimplmod;
 mod htmltemplateimplmod;
 mod webdatamod;
-//endregion
+// endregion
 
 // this are then used in all the mods if I have there use crate::*;
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
@@ -287,7 +287,7 @@ use crate::gamedatamod::*;
 use dodrio_templating::*;
 use dodrio_templating::routermod::Routing;
 
-//use unwrap::unwrap;
+// use unwrap::unwrap;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]

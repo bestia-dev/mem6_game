@@ -1,12 +1,12 @@
 // statusdrinkmod.rs
 //! code flow from this status
 
-//region: use
+// region: use
 use crate::*;
 
 use unwrap::unwrap;
 use wasm_bindgen::JsCast;
-//endregion
+// endregion
 
 /// on msg
 pub fn on_msg_drink_end(

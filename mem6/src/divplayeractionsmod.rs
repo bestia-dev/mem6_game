@@ -2,14 +2,14 @@
 //! renders the div to inform player what to do next
 //! and get a click action from the user
 
-//region: use
+// region: use
 use crate::*;
 
 use mem6_common::*;
 use crate::htmltemplatemod::HtmlTemplating;
 use dodrio::{RenderContext, Node};
 use unwrap::unwrap;
-//endregion
+// endregion
 
 /// render html element to inform player what to do and get a click action from user
 pub fn div_player_actions_from_game_status<'a>(

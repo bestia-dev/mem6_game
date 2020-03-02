@@ -1,13 +1,13 @@
 // statustaketurnmod.rs
 //! code flow from this status
 
-//region: use
+// region: use
 use crate::*;
 
 use mem6_common::*;
 
 use unwrap::unwrap;
-//endregion
+// endregion
 
 /// on click
 pub fn on_click_take_turn(rrc: &mut RootRenderingComponent, vdom: &dodrio::VdomWeak) {
@@ -44,8 +44,7 @@ pub fn on_msg_ack_take_turn(rrc: &mut RootRenderingComponent, player_ws_uid: usi
 
 /// update game data
 pub fn update_on_take_turn(rrc: &mut RootRenderingComponent) {
-    rrc.game_data.player_turn = 
-    if rrc.game_data.player_turn < rrc.game_data.players.len() {
+    rrc.game_data.player_turn = if rrc.game_data.player_turn < rrc.game_data.players.len() {
         unwrap!(rrc.game_data.player_turn.checked_add(1))
     } else {
         1
@@ -54,4 +53,4 @@ pub fn update_on_take_turn(rrc: &mut RootRenderingComponent) {
     rrc.game_data.game_status = GameStatus::Status1stCard;
 }
 
-//there is no special div render, because it jumps to StatusBefore1stClick
+// there is no special div render, because it jumps to StatusBefore1stClick

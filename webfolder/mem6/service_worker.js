@@ -3,7 +3,7 @@
 // Incrementing VERSION in CACHE_NAME will kick off the 
 // install event and force previously cached
 // resources to be cached again.
-//But the new service worker will not be activated until all 
+// but the new service worker will not be activated until all 
 //tabs with this webapp are closed.
 
 const CACHE_NAME = '2020.229.2131';

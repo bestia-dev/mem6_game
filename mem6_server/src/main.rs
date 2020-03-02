@@ -4,33 +4,33 @@
 #![doc(
     html_logo_url = "https://github.com/LucianoBestia/mem6_game/raw/master/webfolder/mem6/images/icons-192.png"
 )]
-//region: lmake_readme insert "readme.md"
+// region: lmake_readme insert "readme.md"
 //! # mem6_server
-//! 
+//!
 //! version: 2020.221.1018  
-//! 
+//!
 //! **Html and WebSocket server for the mem6 game**  
 //! Primarily made for learning to code Rust for a http + WebSocket server on the same port.  
 //! Using Warp for a simple memory game for kids - mem6.  
 //! On the IP address on port 8086 listens to http and WebSocket.  
 //! Route for http `/` serves static files from folder `/mem6/`.  
 //! Route `/mem6ws/` broadcast all WebSocket msg to all connected clients except sender.  
-//! 
+//!
 //! ## Google vm
-//! 
+//!
 //! One working server is installed on my google vm.  
 //! There is a nginx server reverse proxy that accepts https http2 on 443 and relay to internal 8086.
 //! Nginx also redirects all http 80 to https 443.  
 //! You can play the game here (hosted on google cloud platform):  
 //! <https://bestia.dev/mem6>  
-//! 
+//!
 //! ## new version of Warp
-//! 
+//!
 //! The new version looks nice, but I had the problem when a user disconnects the websocket without handshake. It happens only on Android Chrome.  
 
-//endregion: lmake_readme insert "readme.md"
+// endregion: lmake_readme insert "readme.md"
 
-//region: Clippy
+// region: Clippy
 #![warn(
     clippy::all,
     clippy::restriction,
@@ -57,9 +57,9 @@
     // Why is this bad : Doc is good. rustc has a MISSING_DOCS allowed-by-default lint for public members, but has no way to enforce documentation of private items. This lint fixes that.
     clippy::doc_markdown,
 )]
-//endregion
+// endregion
 
-//region: use statements
+// region: use statements
 use mem6_common::{WsMessage};
 
 use unwrap::unwrap;
@@ -76,15 +76,15 @@ use warp::{
     Filter,
 };
 use log::info;
-//endregion
+// endregion
 
-//region: enum, structs, const,...
+// region: enum, structs, const,...
 /// Our status of currently connected users.
 /// - Key is their id
 /// - Value is a sender of `warp::ws::Message`
 type Users = Arc<Mutex<HashMap<usize, mpsc::UnboundedSender<Message>>>>;
 
-//endregion
+// endregion
 
 /// main function of the binary
 fn main() {
@@ -175,9 +175,9 @@ fn main() {
     warp::serve(routes).run(local_addr);
 }
 
-//the url_param is not consumed in this function and Clippy wants a reference instead a value
+// the url_param is not consumed in this function and Clippy wants a reference instead a value
 #[allow(clippy::needless_pass_by_value)]
-//region: WebSocket callbacks: connect, msg, disconnect
+// region: WebSocket callbacks: connect, msg, disconnect
 /// new user connects
 fn user_connected(
     ws: WebSocket,
@@ -378,4 +378,4 @@ fn user_disconnected(my_id: usize, users: &Users) {
     // Stream closed up, so remove from the user list
     users.lock().expect("users.lock").remove(&my_id);
 }
-//endregion
+// endregion

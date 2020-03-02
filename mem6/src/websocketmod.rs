@@ -3,7 +3,7 @@
 
 #![allow(clippy::panic)]
 
-//region: use
+// region: use
 use crate::*;
 
 use mem6_common::*;
@@ -14,10 +14,10 @@ use wasm_bindgen::{prelude::*, JsCast};
 use wasm_bindgen_futures::spawn_local;
 use web_sys::{ErrorEvent, WebSocket};
 use gloo_timers::future::TimeoutFuture;
-//endregion
+// endregion
 
-//the location_href is not consumed in this function and Clippy wants a reference instead a value
-//but I don't want references, because they have the lifetime problem.
+// the location_href is not consumed in this function and Clippy wants a reference instead a value
+// but I don't want references, because they have the lifetime problem.
 #[allow(clippy::needless_pass_by_value)]
 /// setup WebSocket connection
 pub fn setup_ws_connection(
@@ -26,7 +26,7 @@ pub fn setup_ws_connection(
     msg_receivers: String,
 ) -> WebSocket {
     // web-sys has WebSocket for Rust exactly like JavaScript has¸
-    // location_href comes in this format  http://localhost:4000/
+    // location_href comes in this format  http:// localhost:4000/
     let mut loc_href = location_href
         .replace("http://", "ws://")
         .replace("https://", "wss://");
@@ -94,7 +94,7 @@ pub fn setup_ws_connection(
 
 /// usize of time
 #[allow(clippy::integer_arithmetic)]
-//u32 will not overflow, the minutes are max 60, so 6 mio
+// u32 will not overflow, the minutes are max 60, so 6 mio
 pub fn u32_size() -> u32 {
     let now = js_sys::Date::new_0();
     now.get_minutes() * 100_000 + now.get_seconds() * 1_000 + now.get_milliseconds()

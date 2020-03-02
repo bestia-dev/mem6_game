@@ -3,14 +3,14 @@
 
 #![allow(clippy::panic)]
 
-//region: use
+// region: use
 use crate::*;
 
 use mem6_common::*;
 
-//use unwrap::unwrap;
+// use unwrap::unwrap;
 
-//endregion
+// endregion
 
 /// group_id is the ws_uid of the first player
 pub fn on_load_joined(rrc: &mut RootRenderingComponent) {

@@ -1,16 +1,16 @@
 // webdatamod.rs
 //! structs and methods around web and communication
 
-//region: use
+// region: use
 use crate::*;
 use mem6_common::*;
 
 use web_sys::WebSocket;
 use serde_derive::{Serialize, Deserialize};
 use unwrap::unwrap;
-//endregion
+// endregion
 
-//region: structs
+// region: structs
 /// save the message in queue to resend it if timeout expires
 #[derive(Serialize, Deserialize)]
 pub struct MsgInQueue {
@@ -30,7 +30,7 @@ pub struct WebData {
     pub local_route: String,
     /// downloaded html template for main page
     pub html_template: String,
-    /// vector of subtemplates <template name=xxx>...</template>
+    /// vector of named sub_templates <template name=xxx>...</template>
     pub html_sub_templates: Vec<(String, String)>,
     /// is reconnect
     pub is_reconnect: bool,
@@ -49,7 +49,7 @@ pub struct WebData {
     /// show debug info on the smartphone screen
     pub show_debug_info: bool,
 }
-//endregion
+// endregion
 
 impl WebData {
     /// constructor
@@ -80,7 +80,7 @@ impl WebData {
                 break;
             }
         }
-        //return
+        // return
         html_template
     }
 

@@ -30,12 +30,12 @@ impl routermod::Routing for Router {
         vdom: VdomWeak,
     ) -> String {
         let rrc = root.unwrap_mut::<RootRenderingComponent>();
-        //there are 2 entry points: no hash and #p03
+        // there are 2 entry points: no hash and #p03
         if local_route == "#p02" {
             fetchmod::async_fetch_game_config_and_update(rrc, vdom);
             rrc.web_data.local_route = "p02_start_a_group.html".to_owned();
         } else if local_route.starts_with("#p03") {
-            //entry point for join game
+            // entry point for join game
             let v2 = vdom.clone();
             rrc.web_data.start_websocket(v2);
             rrc.game_data.my_player_number = 2;
@@ -66,10 +66,10 @@ impl routermod::Routing for Router {
         } else if local_route == "#p41" {
             rrc.web_data.local_route = "p41_webrtc.html".to_owned();
         } else {
-            //main entry point
+            // main entry point
             rrc.web_data.local_route = "p01_start.html".to_owned();
         }
-        //return
+        // return
         rrc.web_data.local_route.to_string()
     }
 
@@ -85,7 +85,7 @@ impl routermod::Routing for Router {
             let rrc = root.unwrap_mut::<RootRenderingComponent>();
             // only the html inside the <body> </body>
             let mut tm = routermod::between_body_tag(&resp_body_text);
-            //parse and save subtemplates <template name="xxx"></template>
+            // parse and save sub_templates <template name="xxx"></template>
             rrc.web_data.html_sub_templates.clear();
             loop {
                 let mut exist_template = false;
@@ -96,7 +96,7 @@ impl routermod::Routing for Router {
                 if let Some(pos_start) = pos1 {
                     if let Some(pos_end) = pos2 {
                         exist_template = true;
-                        //drain - extract a substring and remove it from the original
+                        // drain - extract a substring and remove it from the original
                         let sub1: String = tm.drain(pos_start..pos_end + del2.len()).collect();
 
                         let del3 = "name=\"";

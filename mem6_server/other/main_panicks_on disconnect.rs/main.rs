@@ -4,7 +4,7 @@
 #![doc(
     html_logo_url = "https://github.com/LucianoBestia/mem6_game/raw/master/webfolder/mem6/images/icons-192.png"
 )]
-//region: lmake_readme insert "readme.md"
+// region: lmake_readme insert "readme.md"
 //! # mem6_server
 //!
 //! version: 19.10.21-20.11  
@@ -24,9 +24,9 @@
 //! You can play the game here (hosted on google cloud platform):  
 //! https://bestia.dev/mem6  
 
-//endregion: lmake_readme insert "readme.md"
+// endregion: lmake_readme insert "readme.md"
 
-//region: Clippy
+// region: Clippy
 #![warn(
     clippy::all,
     clippy::restriction,
@@ -53,12 +53,12 @@
     // Why is this bad : Doc is good. rustc has a MISSING_DOCS allowed-by-default lint for public members, but has no way to enforce documentation of private items. This lint fixes that.
     clippy::doc_markdown,
 )]
-//endregion
+// endregion
 
-//macro dodrio ! now has warning about a panic?!?
+// macro dodrio ! now has warning about a panic?!?
 #![allow(clippy::panic)]
 
-//region: use statements
+// region: use statements
 use mem6_common::{WsMessage};
 
 use std::{
@@ -76,15 +76,15 @@ use unwrap::unwrap;
 use clap::{App, Arg};
 use env_logger::Env;
 use log::info;
-//endregion
+// endregion
 
-//region: enum, structs, const,...
+// region: enum, structs, const,...
 /// Our status of currently connected users.
 /// - Key is their id
 /// - Value is a sender of `warp::ws::Message`
 type Users = Arc<Mutex<HashMap<usize, mpsc::UnboundedSender<Result<Message, warp::Error>>>>>;
 
-//endregion
+// endregion
 
 /// main function of the binary
 #[tokio::main]
@@ -176,10 +176,10 @@ async fn main() {
     warp::serve(routes).run(local_addr).await;
 }
 
-//the url_param is not consumed in this function and Clippy wants
-//a reference instead a value
+// the url_param is not consumed in this function and Clippy wants
+// a reference instead a value
 #[allow(clippy::needless_pass_by_value)]
-//region: WebSocket callbacks: connect, msg, disconnect
+// region: WebSocket callbacks: connect, msg, disconnect
 /// new user connects
 fn user_connected(
     ws: WebSocket,
@@ -355,4 +355,4 @@ fn user_disconnected(my_id: usize, users: &Users) {
     // Stream closed up, so remove from the user list
     unwrap!(users.lock()).remove(&my_id);
 }
-//endregion
+// endregion

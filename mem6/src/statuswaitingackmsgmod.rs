@@ -3,13 +3,13 @@
 
 #![allow(clippy::panic)]
 
-//region: use
+// region: use
 use crate::*;
 
 use unwrap::unwrap;
 use dodrio::{RenderContext, Node};
 use crate::htmltemplatemod::HtmlTemplating;
-//endregion
+// endregion
 
 /// waiting ack msg
 pub fn div_waiting_ack_msg<'a>(

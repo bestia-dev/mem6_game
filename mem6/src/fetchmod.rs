@@ -1,11 +1,11 @@
 // fetchmod.rs
 //! fetch game_config, game metadata, imgs
 
-//region: use
+// region: use
 use crate::*;
 use unwrap::unwrap;
 use wasm_bindgen_futures::spawn_local;
-//endregion
+// endregion
 
 /// async fetch for gameconfig.json and update rrc
 pub fn async_fetch_game_config_and_update(
@@ -100,7 +100,7 @@ pub fn fetch_all_img_for_cache_request(rrc: &mut RootRenderingComponent) {
     let (start_index, end_index) = rrc.game_data.grid_start_end_index();
     for i in start_index..end_index {
         #[allow(clippy::indexing_slicing)]
-        //index i is calculated to be inside 0..card_grid_data.len()
+        // index i is calculated to be inside 0..card_grid_data.len()
         let x = &rrc.game_data.card_grid_data[i];
 
         let url_img = format!(

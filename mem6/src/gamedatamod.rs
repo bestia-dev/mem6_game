@@ -1,7 +1,7 @@
 // gamedatamod.rs
 //! structs and methods around game data
 
-//region: use
+// region: use
 use crate::*;
 use mem6_common::*;
 
@@ -9,9 +9,9 @@ use serde_derive::{Serialize, Deserialize};
 use unwrap::unwrap;
 use rand::{rngs::SmallRng, seq::SliceRandom, SeedableRng, Rng};
 use strum_macros::AsRefStr;
-//endregion: use
+// endregion: use
 
-//region: struct, enum
+// region: struct, enum
 
 /// videos
 #[derive(Serialize, Deserialize, Clone)]
@@ -127,7 +127,7 @@ pub struct GameData {
     /// audio for fun
     pub audio: Vec<String>,
 }
-//endregion
+// endregion
 
 impl GameData {
     /// constructor of game data
@@ -307,38 +307,38 @@ impl GameData {
                 end_index -= 1;
             }
         }
-        //return
+        // return
         (start_index, end_index)
     }
 
     /// which player is me
     #[allow(clippy::integer_arithmetic)]
     pub fn my_player(&self) -> &Player {
-        //players vector are counted from zero
-        //player_turn is counted from 1
+        // players vector are counted from zero
+        // player_turn is counted from 1
         unwrap!(self.players.get(self.my_player_number - 1))
     }
 
     /// which player is me
     #[allow(clippy::integer_arithmetic)]
     pub fn my_player_mut(&mut self) -> &mut Player {
-        //players vector are counted from zero
-        //player_turn is counted from 1
+        // players vector are counted from zero
+        // player_turn is counted from 1
         unwrap!(self.players.get_mut(self.my_player_number - 1))
     }
     /// which player is on turn now
     #[allow(clippy::integer_arithmetic)]
     pub fn player_turn_now(&self) -> &Player {
-        //players vector are counted from zero
-        //player_turn is counted from 1
+        // players vector are counted from zero
+        // player_turn is counted from 1
         unwrap!(self.players.get(self.player_turn - 1))
     }
 
     /// which player is on turn now
     #[allow(clippy::integer_arithmetic)]
     pub fn player_turn_now_mut(&mut self) -> &mut Player {
-        //players vector are counted from zero
-        //player_turn is counted from 1
+        // players vector are counted from zero
+        // player_turn is counted from 1
         unwrap!(self.players.get_mut(self.player_turn - 1))
     }
 

@@ -11,7 +11,7 @@ use wasm_bindgen_futures::spawn_local;
 
 /// trait intended to be added to VdomWeakWrapper
 pub trait Routing {
-    //region: specific code to be implemented on Router struct
+    // region: specific code to be implemented on Router struct
     fn get_rrc_local_route(root: &mut dyn dodrio::RootRender) -> &str;
     fn update_rrc_local_route(
         local_route: String,
@@ -21,9 +21,9 @@ pub trait Routing {
     fn update_rrc_html_template(
         resp_body_text: String,
     ) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static>;
-    //endregion: specific code
+    // endregion: specific code
 
-    //region:generic code (boilerplate)
+    // region:generic code (boilerplate)
     /// Start the router.
     fn start_router(&self, vdom: VdomWeak) {
         // Callback fired whenever the URL hash fragment changes.
@@ -51,7 +51,7 @@ pub trait Routing {
                                 // and re-render.
                                 if Self::get_rrc_local_route(root) != short_local_route {
                                     let v2 = vdom.clone();
-                                    //the function that recognizes routes and urls
+                                    // the function that recognizes routes and urls
                                     let url =
                                         Self::update_rrc_local_route(short_local_route, root, v2);
                                     // I cannot simply await here because this closure is not async
@@ -96,7 +96,7 @@ pub trait Routing {
         on_hash_change.forget();
     }
 
-    //endregion:generic
+    // endregion:generic
 }
 
 /// get the first param after hash in local route after dot
@@ -111,7 +111,7 @@ pub fn get_url_param_in_hash_after_dot(short_local_route: &str) -> &str {
 pub fn between_body_tag(resp_body_text: &str) -> String {
     let pos1 = resp_body_text.find("<body>").unwrap_or(0);
     let pos2 = resp_body_text.find("</body>").unwrap_or(0);
-    //return
+    // return
     if pos1 == 0 {
         resp_body_text.to_string()
     } else {

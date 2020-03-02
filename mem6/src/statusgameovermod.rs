@@ -3,14 +3,14 @@
 
 #![allow(clippy::panic)]
 
-//region: use
+// region: use
 use crate::*;
 use mem6_common::*;
 
 use unwrap::unwrap;
 use dodrio::{RenderContext, Node};
 use crate::htmltemplatemod::HtmlTemplating;
-//endregion
+// endregion
 
 /// play again
 pub fn div_game_over<'a>(rrc: &RootRenderingComponent, cx: &mut RenderContext<'a>) -> Node<'a> {

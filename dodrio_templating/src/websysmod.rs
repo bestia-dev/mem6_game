@@ -1,14 +1,14 @@
 // websysmod.rs
 //! helper functions for web_sys, window, document, dom, console, local_storage, session_storage
 
-//region: use
+// region: use
 use web_sys::console;
 use unwrap::unwrap;
 use rand::{Rng, rngs::SmallRng, SeedableRng};
 use wasm_bindgen::{JsValue, JsCast};
 use web_sys::{Request, RequestInit, Response};
 use wasm_bindgen_futures::{JsFuture};
-//endregion: use
+// endregion: use
 
 /// return window object
 pub fn window() -> web_sys::Window {
@@ -69,7 +69,7 @@ pub fn get_random(min: usize, max: usize) -> usize {
     rng.gen_range(min, max)
 }
 
-//region: fetch
+// region: fetch
 /// fetch in Rust with async await for executor spawn_local()
 /// return the response as JsValue. Any error will panic.
 pub async fn async_spwloc_fetch_text(url: String) -> String {
@@ -114,7 +114,7 @@ pub async fn fetch_only(url: String) {
     unwrap!(JsFuture::from(window().fetch_with_request(&request)).await);
 }
 
-//endregion:fetch
+// endregion:fetch
 
 /// get url and hash from window.location
 #[must_use]
@@ -173,7 +173,7 @@ pub fn open_new_local_page_push_to_history(hash: &str) {
 pub fn open_new_tab(url: &str) {
     let _w = window().open_with_url_and_target(url, "_blank");
 }
-//region: debug_text
+// region: debug_text
 /// get debug text from session storage
 pub fn get_debug_text() -> String {
     load_string_from_session_storage("debug_text", "")
@@ -202,4 +202,4 @@ fn utf8_truncate(input: &mut String, max_size: usize) {
         input.truncate(utf8_max_size);
     }
 }
-//endregion: debug_text
+// endregion: debug_text

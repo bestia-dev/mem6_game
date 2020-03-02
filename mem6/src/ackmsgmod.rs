@@ -1,12 +1,12 @@
-//ackmsgmod.rs
+// ackmsgmod.rs
 //! acknowledge msg
 
-//region: use
+// region: use
 use crate::*;
 
 use mem6_common::*;
 use unwrap::unwrap;
-//endregion
+// endregion
 
 /// remove ack msg from queue - return true if there are no more msgs
 #[allow(clippy::needless_pass_by_value)]

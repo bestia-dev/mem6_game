@@ -6,7 +6,7 @@ use crate::*;
 use wasm_bindgen::JsCast; // don't remove this. It is needed for dyn_into.
 use unwrap::unwrap;
 
-//region: my_ws_uid
+// region: my_ws_uid
 /// save my_ws_uid to session storage so we can restart the game and preserve the ws_uid
 pub fn save_my_ws_uid(my_ws_uid: usize) {
     websysmod::save_string_to_session_storage("my_ws_uid", &format!("{}", my_ws_uid))
@@ -20,9 +20,9 @@ pub fn load_my_ws_uid() -> usize {
     // return my_ws_uid
     my_ws_uid
 }
-//endregion: my_ws_uid
+// endregion: my_ws_uid
 
-//region: nickname
+// region: nickname
 /// save on every key stroke
 pub fn nickname_onkeyup(rrc: &mut RootRenderingComponent, event: web_sys::Event) {
     // websysmod::debug_write("on key up");
@@ -64,9 +64,9 @@ pub fn blink_or_not_nickname(rrc: &RootRenderingComponent) -> String {
     }
 }
 
-//endregion: nickname
+// endregion: nickname
 
-//region: group_id
+// region: group_id
 /// group id key stroke
 pub fn group_id_onkeyup(rrc: &mut RootRenderingComponent, event: web_sys::Event) {
     // websysmod::debug_write("on key up");
@@ -108,11 +108,11 @@ pub fn set_group_id(rrc: &mut RootRenderingComponent, group_id_string: &str) {
     rrc.game_data.group_id = group_id_string.parse::<usize>().unwrap_or(0);
     // change it also in players[0]
     #[allow(clippy::indexing_slicing)]
-    //cannot panic because player[0] must exist
+    // cannot panic because player[0] must exist
     {
-    rrc.game_data.players[0].ws_uid = rrc.game_data.group_id;
+        rrc.game_data.players[0].ws_uid = rrc.game_data.group_id;
     }
     // on any change in players the msg_receivers must be constructed
     rrc.web_data.msg_receivers = rrc.game_data.prepare_msg_receivers();
 }
-//endregion: group_id
+// endregion: group_id

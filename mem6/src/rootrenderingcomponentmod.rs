@@ -1,13 +1,13 @@
 // rootrenderingcomponentmod.rs
 //! renders the web page
 
-//region: use, const
+// region: use, const
 use crate::*;
 use crate::htmltemplatemod::HtmlTemplating;
 
 use unwrap::unwrap;
 use dodrio::{Node, Render, RenderContext};
-//endregion
+// endregion
 
 /// Root Rendering Component has all
 /// the data needed for play logic and rendering
@@ -44,7 +44,7 @@ impl<'a> Render<'a> for RootRenderingComponent {
         if self.web_data.html_template.is_empty() {
             htmltemplatemod::empty_div(cx)
         } else {
-            //I must add use crate::htmltemplatemod::HtmlTemplating;
+            // i must add use crate::htmltemplatemod::HtmlTemplating;
             // to allow this trait to be used here on self
             unwrap!(self.render_template(
                 cx,

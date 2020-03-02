@@ -4,7 +4,7 @@ use crate::*;
 use crate::htmltemplatemod::HtmlTemplating;
 
 use mem6_common::*;
-//use qrcode53bytes::*;
+// use qrcode53bytes::*;
 
 use unwrap::unwrap;
 
@@ -101,7 +101,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     // randomly choose a link from rrc.videos
                     let num = websysmod::get_random(0, rrc.game_data.videos.len());
                     #[allow(clippy::indexing_slicing)]
-                    //cannot panic:the num is 0..video.len
+                    // cannot panic:the num is 0..video.len
                     websysmod::open_new_tab(&format!(
                         "https://www.youtube.com/watch?v={}",
                         rrc.game_data.videos[num]
@@ -161,8 +161,8 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 }
                 "drink_end" => {
                     // send a msg to end drinking to all players
-                    //let audio_element = unwrap!(web_sys::HtmlAudioElement::new_with_src(src));
-                    //unwrap!(audio_element.stop());
+                    // let audio_element = unwrap!(web_sys::HtmlAudioElement::new_with_src(src));
+                    // unwrap!(audio_element.stop());
 
                     websysmod::debug_write(&format!("MsgDrinkEnd send{}", ""));
                     rrc.web_data.send_ws_msg(&WsMessage::MsgDrinkEnd {
@@ -255,7 +255,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 return divgridcontainermod::div_grid_all_items(self, cx);
             }
             "dummy" => {
-                //just to avoid the one match clippy
+                // just to avoid the one match clippy
                 return vec![];
             }
             _ => {
@@ -283,7 +283,7 @@ pub fn svg_qrcode_to_node<'a>(
     let link = format!("https://bestia.dev/mem6/#p03.{}", rrc.web_data.my_ws_uid);
     let qr = unwrap!(qrcode53bytes::Qr::new(&link));
     let svg_template = qrcode53bytes::SvgDodrioRenderer::new(222, 222).render(&qr);
-    //I added use crate::htmltemplatemod::HtmlTemplating; to make the function render_template in scope.
+    // i added use crate::htmltemplatemod::HtmlTemplating; to make the function render_template in scope.
     unwrap!(rrc.render_template(cx, &svg_template, htmltemplatemod::HtmlOrSvg::Svg))
 }
 

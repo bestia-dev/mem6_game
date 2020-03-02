@@ -4,19 +4,19 @@
 #![doc(
     html_logo_url = "https://github.com/LucianoBestia/mem6_game/raw/master/webfolder/mem6/images/icons-192.png"
 )]
-//region: lmake_readme insert "readme.md"
+// region: lmake_readme insert "readme.md"
 //! # mem6_common
-//! 
+//!
 //! version: 2020.221.1322  
-//! 
+//!
 //! **commons for mem6 wasm and server**  
 //! Learning to code Rust for a http + WebSocket.  
 //! Here are just the structures, that are in common between frontend and backend.  
 //! Mostly because of the Messages.  
 
-//endregion: lmake_readme insert "readme.md"
+// endregion: lmake_readme insert "readme.md"
 
-//region: Clippy
+// region: Clippy
 #![warn(
     clippy::all,
     clippy::restriction,
@@ -43,12 +43,12 @@
     // Why is this bad : Doc is good. rustc has a MISSING_DOCS allowed-by-default lint for public members, but has no way to enforce documentation of private items. This lint fixes that.
     clippy::doc_markdown,
 )]
-//endregion
+// endregion
 
-//region: use statements
+// region: use statements
 use strum_macros::{Display, AsRefStr};
 use serde_derive::{Serialize, Deserialize};
-//endregion
+// endregion
 
 /// `WsMessage` enum for WebSocket
 #[allow(clippy::pub_enum_variant_names)]
@@ -251,4 +251,4 @@ pub enum MsgAckKind {
     MsgClick2ndCard,
 }
 
-//endregion
+// endregion
