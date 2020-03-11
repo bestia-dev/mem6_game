@@ -37,7 +37,7 @@ pub struct WebData {
     /// my ws client instance unique id. To not listen the echo to yourself.
     pub my_ws_uid: usize,
     /// the json string for the ws server to send msgs to other players only
-    pub msg_receivers: String,
+    pub json_msg_receivers: String,
     /// error text
     pub error_text: String,
     /// href
@@ -53,7 +53,7 @@ pub struct WebData {
 
 impl WebData {
     /// constructor
-    pub fn new(my_ws_uid: usize, msg_receivers: String) -> Self {
+    pub fn new(my_ws_uid: usize, json_msg_receivers: String) -> Self {
         // return from constructor
         WebData {
             ws: None,
@@ -62,7 +62,7 @@ impl WebData {
             html_sub_templates: vec![],
             is_reconnect: false,
             my_ws_uid,
-            msg_receivers,
+            json_msg_receivers,
             error_text: "".to_string(),
             href: "".to_string(),
             href_hash: "".to_string(),
@@ -87,9 +87,12 @@ impl WebData {
     /// create websocket connection
     pub fn start_websocket(&mut self, vdom: dodrio::VdomWeak) {
         let (location_href, _href_hash) = websysmod::get_url_and_hash();
-        let msg_receivers = "[]".to_string(); // empty vector in json
-        let ws =
-            websocketmod::setup_ws_connection(location_href.clone(), self.my_ws_uid, msg_receivers);
+        let json_msg_receivers = "[]".to_string(); // empty vector in json
+        let ws = websocketmod::setup_ws_connection(
+            location_href.clone(),
+            self.my_ws_uid,
+            json_msg_receivers,
+        );
         websocketmod::setup_all_ws_events(&ws, vdom);
         let ws_c = ws.clone();
         self.ws = Some(ws_c);

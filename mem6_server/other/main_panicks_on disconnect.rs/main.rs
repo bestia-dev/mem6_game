@@ -266,9 +266,9 @@ fn user_message(ws_uid_of_message: usize, message: Message, users: &Users) {
         WsMessage::MsgDummy { dummy } => info!("MsgDummy: {}", dummy),
         WsMessage::MsgRequestWsUid {
             my_ws_uid,
-            msg_receivers,
+            json_msg_receivers,
         } => {
-            info!("MsgRequestWsUid: {} {}", my_ws_uid, msg_receivers);
+            info!("MsgRequestWsUid: {} {}", my_ws_uid, json_msg_receivers);
             let j = unwrap!(serde_json::to_string(&WsMessage::MsgResponseWsUid {
                 your_ws_uid: ws_uid_of_message,
                 server_version: env!("CARGO_PKG_VERSION").to_string(),
@@ -280,7 +280,7 @@ fn user_message(ws_uid_of_message: usize, message: Message, users: &Users) {
                 Err(_disconnected) => {}
             }
             // send to other users for reconnect. Do nothing if there is not yet other users.
-            send_to_other_players(users, ws_uid_of_message, &new_msg, &msg_receivers)
+            send_to_other_players(users, ws_uid_of_message, &new_msg, &json_msg_receivers)
         }
         WsMessage::MsgPing { msg_id } => {
             // info!("MsgPing: {}", msg_id);
@@ -299,19 +299,39 @@ fn user_message(ws_uid_of_message: usize, message: Message, users: &Users) {
         WsMessage::MsgResponseWsUid { .. } => {
             info!("MsgResponseWsUid: {}", "");
         }
-        WsMessage::MsgJoin { msg_receivers, .. }
-        | WsMessage::MsgStartGame { msg_receivers, .. }
-        | WsMessage::MsgClick1stCard { msg_receivers, .. }
-        | WsMessage::MsgClick2ndCard { msg_receivers, .. }
-        | WsMessage::MsgDrinkEnd { msg_receivers, .. }
-        | WsMessage::MsgTakeTurn { msg_receivers, .. }
-        | WsMessage::MsgGameOver { msg_receivers, .. }
-        | WsMessage::MsgPlayAgain { msg_receivers, .. }
-        | WsMessage::MsgAllGameData { msg_receivers, .. }
-        | WsMessage::MsgAck { msg_receivers, .. }
-        | WsMessage::MsgAskPlayer1ForResync { msg_receivers, .. } => {
-            send_to_other_players(users, ws_uid_of_message, &new_msg, &msg_receivers)
+        WsMessage::MsgJoin {
+            json_msg_receivers, ..
         }
+        | WsMessage::MsgStartGame {
+            json_msg_receivers, ..
+        }
+        | WsMessage::MsgClick1stCard {
+            json_msg_receivers, ..
+        }
+        | WsMessage::MsgClick2ndCard {
+            json_msg_receivers, ..
+        }
+        | WsMessage::MsgDrinkEnd {
+            json_msg_receivers, ..
+        }
+        | WsMessage::MsgTakeTurn {
+            json_msg_receivers, ..
+        }
+        | WsMessage::MsgGameOver {
+            json_msg_receivers, ..
+        }
+        | WsMessage::MsgPlayAgain {
+            json_msg_receivers, ..
+        }
+        | WsMessage::MsgAllGameData {
+            json_msg_receivers, ..
+        }
+        | WsMessage::MsgAck {
+            json_msg_receivers, ..
+        }
+        | WsMessage::MsgAskPlayer1ForResync {
+            json_msg_receivers, ..
+        } => send_to_other_players(users, ws_uid_of_message, &new_msg, &json_msg_receivers),
     }
 }
 
@@ -320,11 +340,11 @@ fn send_to_other_players(
     users: &Users,
     ws_uid_of_message: usize,
     new_msg: &str,
-    msg_receivers: &str,
+    json_msg_receivers: &str,
 ) {
     // info!("send_to_other_players: {}", new_msg);
 
-    let vec_msg_receivers: Vec<usize> = unwrap!(serde_json::from_str(msg_receivers));
+    let vec_msg_receivers: Vec<usize> = unwrap!(serde_json::from_str(json_msg_receivers));
 
     for (&uid, tx) in unwrap!(users.lock()).iter() {
         let mut is_player;

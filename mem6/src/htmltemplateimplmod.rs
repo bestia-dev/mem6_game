@@ -167,7 +167,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     websysmod::debug_write(&format!("MsgDrinkEnd send{}", ""));
                     rrc.web_data.send_ws_msg(&WsMessage::MsgDrinkEnd {
                         my_ws_uid: rrc.web_data.my_ws_uid,
-                        msg_receivers: rrc.web_data.msg_receivers.to_string(),
+                        json_msg_receivers: rrc.web_data.json_msg_receivers.to_string(),
                     });
                     // if all the cards are permanently up, this is the end of the game
                     // websysmod::debug_write("if is_all_permanently(rrc)");
@@ -177,7 +177,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                         // send message
                         rrc.web_data.send_ws_msg(&WsMessage::MsgGameOver {
                             my_ws_uid: rrc.web_data.my_ws_uid,
-                            msg_receivers: rrc.web_data.msg_receivers.to_string(),
+                            json_msg_receivers: rrc.web_data.json_msg_receivers.to_string(),
                         });
                     } else {
                         statustaketurnmod::on_click_take_turn(rrc, &vdom);
@@ -192,7 +192,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 "play_again" => {
                     rrc.web_data.send_ws_msg(&WsMessage::MsgPlayAgain {
                         my_ws_uid: rrc.web_data.my_ws_uid,
-                        msg_receivers: rrc.web_data.msg_receivers.to_string(),
+                        json_msg_receivers: rrc.web_data.json_msg_receivers.to_string(),
                     });
                     rrc.game_data.reset_for_play_again();
                     open_new_local_page("#p05");

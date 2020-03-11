@@ -279,16 +279,12 @@ pub fn empty_div<'a>(cx: &mut RenderContext<'a>) -> Node<'a> {
 /// because all others characters can be written as utf-8 characters.
 /// https://www.tutorialspoint.com/html5/html5_entities.htm  
 pub fn decode_5_xml_control_characters(input: &str) -> String {
-    // TODO: I don't know how slow is replace(), but I have really small texts.
-    let control_character_names = vec!["&quot;", "&apos;", "&amp;", "&lt;", "&gt;"];
-    let control_character_symbols = vec!["\"", "'", "&", "<", ">"];
-    let mut output = input.to_owned();
-    for i in 0..control_character_symbols.len() {
-        output = output.replace(
-            unwrap!(control_character_names.get(i)),
-            unwrap!(control_character_symbols.get(i)),
-        )
-    }
-    // return
-    output
+    // The standard library replace() function makes allocation,
+    //but is probably fast enough for my use case.
+    input
+        .replace("&quot;", "\"")
+        .replace("&apos;", "'")
+        .replace("&amp;", "&")
+        .replace("&lt;", "<")
+        .replace("&gt;", ">")
 }

@@ -23,8 +23,8 @@ impl RootRenderingComponent {
     /// Construct a new `RootRenderingComponent` at the beginning only once.
     pub fn new(my_ws_uid: usize) -> Self {
         let game_data = gamedatamod::GameData::new(my_ws_uid);
-        let msg_receivers = game_data.prepare_msg_receivers();
-        let web_data = webdatamod::WebData::new(my_ws_uid, msg_receivers);
+        let json_msg_receivers = game_data.prepare_json_msg_receivers();
+        let web_data = webdatamod::WebData::new(my_ws_uid, json_msg_receivers);
 
         RootRenderingComponent {
             web_data,

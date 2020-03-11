@@ -23,7 +23,7 @@ use gloo_timers::future::TimeoutFuture;
 pub fn setup_ws_connection(
     location_href: String,
     client_ws_id: usize,
-    msg_receivers: String,
+    json_msg_receivers: String,
 ) -> WebSocket {
     // web-sys has WebSocket for Rust exactly like JavaScript has¸
     // location_href comes in this format  http:// localhost:4000/
@@ -64,7 +64,7 @@ pub fn setup_ws_connection(
             ws_c.send_with_str(&unwrap!(serde_json::to_string(
                 &WsMessage::MsgRequestWsUid {
                     my_ws_uid: client_ws_id,
-                    msg_receivers: msg_receivers.clone(),
+                    json_msg_receivers: json_msg_receivers.clone(),
                 }
             )),),
             "Failed to send 'test' to server"
@@ -145,7 +145,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                 }
                                 WsMessage::MsgRequestWsUid {
                                     my_ws_uid,
-                                    msg_receivers: _,
+                                    json_msg_receivers: _,
                                 } => websysmod::debug_write(
                                     format!("MsgRequestWsUid {}", my_ws_uid).as_str(),
                                 ),
@@ -158,7 +158,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                 }
                                 WsMessage::MsgJoin {
                                     my_ws_uid,
-                                    msg_receivers: _,
+                                    json_msg_receivers: _,
                                     my_nickname,
                                 } => {
                                     statusjoinedmod::on_msg_joined(rrc, my_ws_uid, my_nickname);
@@ -166,7 +166,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                 }
                                 WsMessage::MsgStartGame {
                                     my_ws_uid: _,
-                                    msg_receivers: _,
+                                    json_msg_receivers: _,
                                     card_grid_data,
                                     game_config,
                                     players,
@@ -187,7 +187,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                 }
                                 WsMessage::MsgClick1stCard {
                                     my_ws_uid,
-                                    msg_receivers: _,
+                                    json_msg_receivers: _,
                                     card_index_of_1st_click,
                                     msg_id,
                                 } => {
@@ -202,7 +202,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                 }
                                 WsMessage::MsgClick2ndCard {
                                     my_ws_uid,
-                                    msg_receivers: _,
+                                    json_msg_receivers: _,
                                     card_index_of_2nd_click,
                                     is_point,
                                     msg_id,
@@ -218,14 +218,14 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                 }
                                 WsMessage::MsgDrinkEnd {
                                     my_ws_uid,
-                                    msg_receivers: _,
+                                    json_msg_receivers: _,
                                 } => {
                                     statusdrinkmod::on_msg_drink_end(rrc, my_ws_uid, &vdom);
                                     vdom.schedule_render();
                                 }
                                 WsMessage::MsgTakeTurn {
                                     my_ws_uid,
-                                    msg_receivers: _,
+                                    json_msg_receivers: _,
                                     msg_id,
                                 } => {
                                     statustaketurnmod::on_msg_take_turn(rrc, my_ws_uid, msg_id);
@@ -233,20 +233,20 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                 }
                                 WsMessage::MsgGameOver {
                                     my_ws_uid: _,
-                                    msg_receivers: _,
+                                    json_msg_receivers: _,
                                 } => {
                                     statusgameovermod::on_msg_game_over(rrc);
                                     vdom.schedule_render();
                                 }
                                 WsMessage::MsgPlayAgain {
                                     my_ws_uid: _,
-                                    msg_receivers: _,
+                                    json_msg_receivers: _,
                                 } => {
                                     statusgameovermod::on_msg_play_again(rrc);
                                 }
                                 WsMessage::MsgAck {
                                     my_ws_uid,
-                                    msg_receivers: _,
+                                    json_msg_receivers: _,
                                     msg_id,
                                     msg_ack_kind,
                                 } => {
@@ -271,14 +271,14 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                 }
                                 WsMessage::MsgAskPlayer1ForResync {
                                     my_ws_uid: _,
-                                    msg_receivers: _,
+                                    json_msg_receivers: _,
                                 } => {
                                     statusreconnectmod::send_msg_for_resync(rrc);
                                     vdom.schedule_render();
                                 }
                                 WsMessage::MsgAllGameData {
                                     my_ws_uid: _,
-                                    msg_receivers: _,
+                                    json_msg_receivers: _,
                                     players,
                                     card_grid_data,
                                     card_index_of_1st_click,

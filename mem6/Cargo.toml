@@ -1,6 +1,6 @@
 [package]
 name = "mem6"
-version = "2020.229.2131"
+version = "2020.311.1304"
 authors = ["Luciano Furlan <Luciano.Bestia@gmail.com>"]
 edition = "2018"
 description = "Learning Rust Wasm/WebAssembly with Virtual Dom Dodrio"
@@ -87,3 +87,6 @@ features = [
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3.8"
+
+[profile.release]
+panic = "abort"
