@@ -15,7 +15,6 @@ use wasm_bindgen_futures::spawn_local;
 use web_sys::{ErrorEvent, WebSocket};
 use gloo_timers::future::TimeoutFuture;
 use serde_derive::{Serialize, Deserialize};
-use strum_macros::{Display, AsRefStr};
 // endregion
 
 /// message for receivers
@@ -27,95 +26,7 @@ pub struct WsMessageForReceivers {
     /// only the players that reconnected
     pub msg_receivers_json: String,
     /// msg data
-    pub msg_data: WsMessageData,
-}
-
-/// `WsMessageData` enum for WebSocket
-#[allow(clippy::pub_enum_variant_names)]
-#[derive(Serialize, Deserialize, Clone)]
-pub enum WsMessageData {
-    /// join the group
-    MsgJoin {
-        /// my nickname
-        my_nickname: String,
-    },
-    /// player1 initialize the game data and sends it to all players
-    /// I will send json string to not confuse the server with vectors
-    MsgStartGame {
-        /// json of vector of players with nicknames and order data
-        players: String,
-        /// vector of cards status
-        card_grid_data: String,
-        /// json of game_config
-        game_config: String,
-        /// game name
-        game_name: String,
-        /// player turn to start game
-        player_turn: usize,
-    },
-    /// player click
-    MsgClick1stCard {
-        /// have to send all the state of the game
-        card_index_of_1st_click: usize,
-        /// msg id (random)
-        msg_id: usize,
-    },
-    /// player click success
-    MsgClick2ndCard {
-        /// have to send all the state of the game
-        card_index_of_2nd_click: usize,
-        /// is point
-        is_point: bool,
-        /// msg id (random)
-        msg_id: usize,
-    },
-    /// drink end
-    MsgDrinkEnd {},
-    /// Game Over
-    MsgGameOver {},
-    /// Play Again
-    MsgPlayAgain {},
-    /// player change
-    MsgTakeTurn {
-        /// msg id (random)
-        msg_id: usize,
-    },
-    /// acknowledge msg, that the receiver received the message
-    MsgAck {
-        /// msg id (random)
-        msg_id: usize,
-        /// kind of ack msg
-        msg_ack_kind: MsgAckKind,
-    },
-    /// ask player1 for resync
-    MsgAskPlayer1ForResync {},
-    /// all game data
-    MsgAllGameData {
-        /// json of vector of players with nicknames and order data
-        players: String,
-        /// vector of cards status
-        card_grid_data: String,
-        /// have to send all the state of the game
-        card_index_of_1st_click: usize,
-        /// have to send all the state of the game
-        card_index_of_2nd_click: usize,
-        /// whose turn is now:  player 1,2,3,...
-        player_turn: usize,
-        /// game status (isize is the enum variant datatype)
-        game_status: String,
-    },
-}
-
-#[derive(Display, AsRefStr, Serialize, Deserialize, Clone)]
-#[allow(clippy::pub_enum_variant_names)]
-/// msg ack kind
-pub enum MsgAckKind {
-    /// ack for MsgTakeTurn
-    MsgTakeTurn,
-    /// ack for MsgClick1stCard
-    MsgClick1stCard,
-    /// ack for MsgClick2ndCard
-    MsgClick2ndCard,
+    pub msg_data: WsMessageGameData,
 }
 
 // the location_href is not consumed in this function and Clippy wants a reference instead a value
@@ -255,13 +166,13 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                 move |root| {
                                     let rrc = root.unwrap_mut::<RootRenderingComponent>();
                                     match msg.msg_data {
-                                        WsMessageData::MsgJoin {
+                                        WsMessageGameData::MsgJoin {
                                             my_nickname,
                                         } => {
                                             statusjoinedmod::on_msg_joined(rrc, msg.msg_sender_ws_uid, my_nickname);
                                             vdom.schedule_render();
                                         }
-                                        WsMessageData::MsgStartGame {
+                                        WsMessageGameData::MsgStartGame {
                                             
                                             card_grid_data,
                                             game_config,
@@ -281,7 +192,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                             htmltemplateimplmod::open_new_local_page("#p11");
                                             vdom.schedule_render();
                                         }
-                                        WsMessageData::MsgClick1stCard {
+                                        WsMessageGameData::MsgClick1stCard {
                                             
                                             card_index_of_1st_click,
                                             msg_id,
@@ -295,7 +206,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                             );
                                             vdom.schedule_render();
                                         }
-                                        WsMessageData::MsgClick2ndCard {
+                                        WsMessageGameData::MsgClick2ndCard {
                                           
                                             card_index_of_2nd_click,
                                             is_point,
@@ -310,13 +221,13 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                             );
                                             vdom.schedule_render();
                                         }
-                                        WsMessageData::MsgDrinkEnd {
+                                        WsMessageGameData::MsgDrinkEnd {
                                            
                                         } => {
                                             statusdrinkmod::on_msg_drink_end(rrc, msg.msg_sender_ws_uid, &vdom);
                                             vdom.schedule_render();
                                         }
-                                        WsMessageData::MsgTakeTurn {
+                                        WsMessageGameData::MsgTakeTurn {
                                             
                                             
                                             msg_id,
@@ -324,17 +235,17 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                             statustaketurnmod::on_msg_take_turn(rrc, msg.msg_sender_ws_uid, msg_id);
                                             vdom.schedule_render();
                                         }
-                                        WsMessageData::MsgGameOver {
+                                        WsMessageGameData::MsgGameOver {
                                            
                                         } => {
                                             statusgameovermod::on_msg_game_over(rrc);
                                             vdom.schedule_render();
                                         }
-                                        WsMessageData::MsgPlayAgain {
+                                        WsMessageGameData::MsgPlayAgain {
                                                                                    } => {
                                             statusgameovermod::on_msg_play_again(rrc);
                                         }
-                                        WsMessageData::MsgAck {
+                                        WsMessageGameData::MsgAck {
                                            
                                             msg_id,
                                             msg_ack_kind,
@@ -358,13 +269,13 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                             }
                                             vdom.schedule_render();
                                         }
-                                        WsMessageData::MsgAskPlayer1ForResync {
+                                        WsMessageGameData::MsgAskPlayer1ForResync {
                                             
                                         } => {
                                             statusreconnectmod::send_msg_for_resync(rrc);
                                             vdom.schedule_render();
                                         }
-                                        WsMessageData::MsgAllGameData {
+                                        WsMessageGameData::MsgAllGameData {
                                             
                                             players,
                                             card_grid_data,

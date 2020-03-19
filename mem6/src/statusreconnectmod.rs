@@ -14,8 +14,6 @@
 // region: use
 use crate::*;
 
-use mem6_common::*;
-
 use unwrap::unwrap;
 
 // use dodrio::{};
@@ -74,7 +72,7 @@ pub fn send_msg_for_resync(rrc: &RootRenderingComponent) {
             msg_sender_ws_uid: rrc.web_data.my_ws_uid,
             /// only the players that resync
             msg_receivers_json: rrc.web_data.msg_receivers_json.clone(),
-            msg_data: websocketmod::WsMessageData::MsgAllGameData {
+            msg_data: gamedatamod::WsMessageGameData::MsgAllGameData {
                 /// json of vector of players with nicknames and order data
                 players: unwrap!(serde_json::to_string(&rrc.game_data.players)),
                 /// vector of cards status

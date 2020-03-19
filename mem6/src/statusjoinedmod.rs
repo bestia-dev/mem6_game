@@ -6,8 +6,6 @@
 // region: use
 use crate::*;
 
-use mem6_common::*;
-
 // use unwrap::unwrap;
 
 // endregion
@@ -24,7 +22,7 @@ pub fn on_load_joined(rrc: &mut RootRenderingComponent) {
         .send_ws_msg(&websocketmod::WsMessageForReceivers {
             msg_sender_ws_uid: rrc.web_data.my_ws_uid,
             msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
-            msg_data: websocketmod::WsMessageData::MsgJoin {
+            msg_data: gamedatamod::WsMessageGameData::MsgJoin {
                 my_nickname: rrc.game_data.my_nickname.clone(),
             },
         });

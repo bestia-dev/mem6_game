@@ -259,21 +259,23 @@ fn user_message(msg_sender_ws_uid: usize, message: Message, users: &Users) {
     // all others must be forwarded to exactly the other player.
 
     let msg: WsMessage =
-        serde_json::from_str(&new_msg).unwrap_or_else(|_x| WsMessageData::MsgDummy {
+        serde_json::from_str(&new_msg).unwrap_or_else(|_x| WsMessageGameData::MsgDummy {
             dummy: String::from("error"),
         });
 
     match msg {
-        WsMessageData::MsgDummy { dummy } => info!("MsgDummy: {}", dummy),
-        WsMessageData::MsgRequestWsUid {
+        WsMessageGameData::MsgDummy { dummy } => info!("MsgDummy: {}", dummy),
+        WsMessageGameData::MsgRequestWsUid {
             my_ws_uid,
             msg_receivers_json,
         } => {
             info!("MsgRequestWsUid: {} {}", my_ws_uid, msg_receivers_json);
-            let j = unwrap!(serde_json::to_string(&WsMessageData::MsgResponseWsUid {
-                your_ws_uid: msg_sender_ws_uid,
-                server_version: env!("CARGO_PKG_VERSION").to_string(),
-            }));
+            let j = unwrap!(serde_json::to_string(
+                &WsMessageGameData::MsgResponseWsUid {
+                    your_ws_uid: msg_sender_ws_uid,
+                    server_version: env!("CARGO_PKG_VERSION").to_string(),
+                }
+            ));
             info!("send MsgResponseWsUid: {}", j);
             match unwrap!(unwrap!(users.lock()).get(&msg_sender_ws_uid)).send(Ok(Message::text(j)))
             {
@@ -283,10 +285,12 @@ fn user_message(msg_sender_ws_uid: usize, message: Message, users: &Users) {
             // send to other users for reconnect. Do nothing if there is not yet other users.
             send_to_msg_receivers(users, msg_sender_ws_uid, &new_msg, &msg_receivers_json)
         }
-        WsMessageData::MsgPing { msg_id } => {
+        WsMessageGameData::MsgPing { msg_id } => {
             // info!("MsgPing: {}", msg_id);
 
-            let j = unwrap!(serde_json::to_string(&WsMessageData::MsgPong { msg_id }));
+            let j = unwrap!(serde_json::to_string(&WsMessageGameData::MsgPong {
+                msg_id
+            }));
             // info!("send MsgPong: {}", j);
             match unwrap!(unwrap!(users.lock()).get(&msg_sender_ws_uid)).send(Ok(Message::text(j)))
             {
@@ -294,43 +298,43 @@ fn user_message(msg_sender_ws_uid: usize, message: Message, users: &Users) {
                 Err(_disconnected) => {}
             }
         }
-        WsMessageData::MsgPong { .. } => {
+        WsMessageGameData::MsgPong { .. } => {
             unreachable!("mem6_server must not receive MsgPong");
         }
-        WsMessageData::MsgResponseWsUid { .. } => {
+        WsMessageGameData::MsgResponseWsUid { .. } => {
             info!("MsgResponseWsUid: {}", "");
         }
-        WsMessageData::MsgJoin {
+        WsMessageGameData::MsgJoin {
             msg_receivers_json, ..
         }
-        | WsMessageData::MsgStartGame {
+        | WsMessageGameData::MsgStartGame {
             msg_receivers_json, ..
         }
-        | WsMessageData::MsgClick1stCard {
+        | WsMessageGameData::MsgClick1stCard {
             msg_receivers_json, ..
         }
-        | WsMessageData::MsgClick2ndCard {
+        | WsMessageGameData::MsgClick2ndCard {
             msg_receivers_json, ..
         }
-        | WsMessageData::MsgDrinkEnd {
+        | WsMessageGameData::MsgDrinkEnd {
             msg_receivers_json, ..
         }
-        | WsMessageData::MsgTakeTurn {
+        | WsMessageGameData::MsgTakeTurn {
             msg_receivers_json, ..
         }
-        | WsMessageData::MsgGameOver {
+        | WsMessageGameData::MsgGameOver {
             msg_receivers_json, ..
         }
-        | WsMessageData::MsgPlayAgain {
+        | WsMessageGameData::MsgPlayAgain {
             msg_receivers_json, ..
         }
-        | WsMessageData::MsgAllGameData {
+        | WsMessageGameData::MsgAllGameData {
             msg_receivers_json, ..
         }
-        | WsMessageData::MsgAck {
+        | WsMessageGameData::MsgAck {
             msg_receivers_json, ..
         }
-        | WsMessageData::MsgAskPlayer1ForResync {
+        | WsMessageGameData::MsgAskPlayer1ForResync {
             msg_receivers_json, ..
         } => send_to_msg_receivers(users, msg_sender_ws_uid, &new_msg, &msg_receivers_json),
     }

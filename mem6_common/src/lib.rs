@@ -90,5 +90,6 @@ pub enum WsMessageFromServer {
 // A copy of this struct is also in the server project, but without the msg_data field.
 // They are the same struct, but the declaration is different, because
 // the server does not need all the data.
+// So we need to duplicate the declaration. Not ideal, but practical.
 
 // endregion

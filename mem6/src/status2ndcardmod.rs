@@ -6,8 +6,6 @@
 // region: use
 use crate::*;
 
-use mem6_common::*;
-
 use unwrap::unwrap;
 use dodrio::{RenderContext, Node};
 use wasm_bindgen::JsCast;
@@ -38,7 +36,7 @@ pub fn on_click_2nd_card(
     let msg = websocketmod::WsMessageForReceivers {
         msg_sender_ws_uid: rrc.web_data.my_ws_uid,
         msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
-        msg_data: websocketmod::WsMessageData::MsgClick2ndCard {
+        msg_data: gamedatamod::WsMessageGameData::MsgClick2ndCard {
             card_index_of_2nd_click: rrc.game_data.card_index_of_2nd_click,
             is_point,
             msg_id,
@@ -84,7 +82,7 @@ pub fn on_msg_click_2nd_card(
         rrc,
         msg_sender_ws_uid,
         msg_id,
-        websocketmod::MsgAckKind::MsgClick2ndCard,
+        gamedatamod::MsgAckKind::MsgClick2ndCard,
     );
     rrc.game_data.card_index_of_2nd_click = card_index_of_2nd_click;
     update_click_2nd_card_flip_permanently(rrc, is_point);

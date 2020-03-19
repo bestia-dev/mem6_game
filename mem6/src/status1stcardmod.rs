@@ -6,8 +6,6 @@
 // region: use
 use crate::*;
 
-use mem6_common::*;
-
 use unwrap::unwrap;
 use dodrio::{RenderContext, Node};
 use wasm_bindgen::JsCast;
@@ -29,7 +27,7 @@ pub fn on_click_1st_card(
     let msg = websocketmod::WsMessageForReceivers {
         msg_sender_ws_uid: rrc.web_data.my_ws_uid,
         msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
-        msg_data: websocketmod::WsMessageData::MsgClick1stCard {
+        msg_data: gamedatamod::WsMessageGameData::MsgClick1stCard {
             card_index_of_1st_click: this_click_card_index,
             msg_id,
         },
@@ -64,7 +62,7 @@ pub fn on_msg_click_1st_card(
         rrc,
         msg_sender_ws_uid,
         msg_id,
-        websocketmod::MsgAckKind::MsgClick1stCard,
+        gamedatamod::MsgAckKind::MsgClick1stCard,
     );
     // it can happen that 2 smartphones send the msg click1st simultaneously.
     // This is a conflict.

@@ -4,8 +4,6 @@
 // region: use
 use crate::*;
 
-use mem6_common::*;
-
 use unwrap::unwrap;
 // endregion
 
@@ -18,7 +16,7 @@ pub fn on_click_take_turn(rrc: &mut RootRenderingComponent, vdom: &dodrio::VdomW
     let msg = websocketmod::WsMessageForReceivers {
         msg_sender_ws_uid: rrc.web_data.my_ws_uid,
         msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
-        msg_data: websocketmod::WsMessageData::MsgTakeTurn { msg_id },
+        msg_data: gamedatamod::WsMessageGameData::MsgTakeTurn { msg_id },
     };
     ackmsgmod::send_msg_and_write_in_queue(rrc, &msg, msg_id);
 
@@ -32,7 +30,7 @@ pub fn on_msg_take_turn(rrc: &mut RootRenderingComponent, msg_sender_ws_uid: usi
         rrc,
         msg_sender_ws_uid,
         msg_id,
-        websocketmod::MsgAckKind::MsgTakeTurn,
+        gamedatamod::MsgAckKind::MsgTakeTurn,
     );
     update_on_take_turn(rrc);
 }

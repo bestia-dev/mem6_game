@@ -2,8 +2,6 @@
 
 use crate::*;
 use crate::htmltemplatemod::HtmlTemplating;
-
-use mem6_common::*;
 // use qrcode53bytes::*;
 
 use unwrap::unwrap;
@@ -169,7 +167,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                         .send_ws_msg(&websocketmod::WsMessageForReceivers {
                             msg_sender_ws_uid: rrc.web_data.my_ws_uid,
                             msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
-                            msg_data: websocketmod::WsMessageData::MsgDrinkEnd {},
+                            msg_data: gamedatamod::WsMessageGameData::MsgDrinkEnd {},
                         });
                     // if all the cards are permanently up, this is the end of the game
                     // websysmod::debug_write("if is_all_permanently(rrc)");
@@ -181,7 +179,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                             .send_ws_msg(&websocketmod::WsMessageForReceivers {
                                 msg_sender_ws_uid: rrc.web_data.my_ws_uid,
                                 msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
-                                msg_data: websocketmod::WsMessageData::MsgGameOver {},
+                                msg_data: gamedatamod::WsMessageGameData::MsgGameOver {},
                             });
                     } else {
                         statustaketurnmod::on_click_take_turn(rrc, &vdom);
@@ -198,7 +196,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                         .send_ws_msg(&websocketmod::WsMessageForReceivers {
                             msg_sender_ws_uid: rrc.web_data.my_ws_uid,
                             msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
-                            msg_data: websocketmod::WsMessageData::MsgPlayAgain {},
+                            msg_data: gamedatamod::WsMessageGameData::MsgPlayAgain {},
                         });
                     rrc.game_data.reset_for_play_again();
                     open_new_local_page("#p05");

@@ -94,8 +94,9 @@ pub struct WsMessageForReceivers {
     pub msg_sender_ws_uid: usize,
     /// only the players that reconnected
     pub msg_receivers_json: String,
-    // msg data
-    // pub msg_data: WsMessageData,
+    // msg data - it is not needed, that the server knows anything about this field.
+    // simply just ignore it.
+    // pub msg_data: WsMessageGameData,
 }
 // endregion
 
@@ -294,7 +295,7 @@ fn receive_message(msg_sender_ws_uid: usize, message: &Message, ws_users: &WsUse
                         your_ws_uid: msg_sender_ws_uid,
                         server_version: env!("CARGO_PKG_VERSION").to_string(),
                          })
-                    .expect("serde_json::to_string(&WsMessageData::MsgResponseWsUid { your_ws_uid: msg_sender_ws_uid })");
+                    .expect("serde_json::to_string(&WsMessageGameData::MsgResponseWsUid { your_ws_uid: msg_sender_ws_uid })");
                 info!("send MsgResponseWsUid: {}", j);
                 match ws_users
                     .lock()

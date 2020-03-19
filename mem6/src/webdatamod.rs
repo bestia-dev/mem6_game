@@ -3,7 +3,6 @@
 
 // region: use
 use crate::*;
-use mem6_common::*;
 
 use web_sys::WebSocket;
 use serde_derive::{Serialize, Deserialize};

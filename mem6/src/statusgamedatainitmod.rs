@@ -3,7 +3,6 @@
 
 // region: use
 use crate::*;
-use mem6_common::*;
 
 use unwrap::unwrap;
 // endregion
@@ -21,7 +20,7 @@ pub fn on_click_start_game(rrc: &mut RootRenderingComponent) {
         .send_ws_msg(&websocketmod::WsMessageForReceivers {
             msg_sender_ws_uid: rrc.web_data.my_ws_uid,
             msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
-            msg_data: websocketmod::WsMessageData::MsgStartGame {
+            msg_data: gamedatamod::WsMessageGameData::MsgStartGame {
                 players: unwrap!(serde_json::to_string(&rrc.game_data.players)),
                 card_grid_data: unwrap!(serde_json::to_string(&rrc.game_data.card_grid_data)),
                 game_config: unwrap!(serde_json::to_string(&rrc.game_data.game_config)),

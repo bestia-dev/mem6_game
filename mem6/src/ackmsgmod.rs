@@ -4,7 +4,6 @@
 // region: use
 use crate::*;
 
-use mem6_common::*;
 use unwrap::unwrap;
 // endregion
 
@@ -70,7 +69,7 @@ pub fn send_ack(
     rrc: &mut RootRenderingComponent,
     msg_sender_ws_uid: usize,
     msg_id: usize,
-    msg_ack_kind: websocketmod::MsgAckKind,
+    msg_ack_kind: gamedatamod::MsgAckKind,
 ) {
     // websysmod::debug_write(&format!("send_ack players: {:?}", rrc.game_data.players));
     // send back the ACK msg to the sender
@@ -78,7 +77,7 @@ pub fn send_ack(
         .send_ws_msg(&websocketmod::WsMessageForReceivers {
             msg_sender_ws_uid: rrc.web_data.my_ws_uid,
             msg_receivers_json: unwrap!(serde_json::to_string(&vec![msg_sender_ws_uid])),
-            msg_data: websocketmod::WsMessageData::MsgAck {
+            msg_data: gamedatamod::WsMessageGameData::MsgAck {
                 msg_id,
                 msg_ack_kind,
             },
