@@ -46,8 +46,8 @@ pub fn div_reconnect<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<
             // first disconnect if is possible, than reconnect
             let _x = rrc.web_data.ws.close();
 
-            let json_msg_receivers = rrc.web_data.json_msg_receivers.clone();
-            let ws = websocketmod::setup_ws_connection(href, my_ws_uid,json_msg_receivers);
+            let msg_receivers_json = rrc.web_data.msg_receivers_json.clone();
+            let ws = websocketmod::setup_ws_connection(href, my_ws_uid,msg_receivers_json);
             websocketmod::setup_all_ws_events(&ws,vdom.clone());
 
             rrc.web_data.ws=ws;
@@ -72,7 +72,7 @@ pub fn send_msg_for_resync(rrc: &RootRenderingComponent) {
     rrc.web_data.send_ws_msg(&WsMessageForReceivers {
         msg_sender_ws_uid: rrc.web_data.my_ws_uid,
         /// only the players that resync
-        json_msg_receivers: rrc.web_data.json_msg_receivers.clone(),
+        msg_receivers_json: rrc.web_data.msg_receivers_json.clone(),
         msg_data: WsMessageData::MsgAllGameData {
             /// json of vector of players with nicknames and order data
             players: unwrap!(serde_json::to_string(&rrc.game_data.players)),

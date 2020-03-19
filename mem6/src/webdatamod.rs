@@ -37,7 +37,7 @@ pub struct WebData {
     /// my ws client instance unique id. To not listen the echo to yourself.
     pub my_ws_uid: usize,
     /// the json string for the ws server to send msgs to other players only
-    pub json_msg_receivers: String,
+    pub msg_receivers_json: String,
     /// error text
     pub error_text: String,
     /// href
@@ -53,7 +53,7 @@ pub struct WebData {
 
 impl WebData {
     /// constructor
-    pub fn new(my_ws_uid: usize, json_msg_receivers: String) -> Self {
+    pub fn new(my_ws_uid: usize, msg_receivers_json: String) -> Self {
         // return from constructor
         WebData {
             ws: None,
@@ -62,7 +62,7 @@ impl WebData {
             html_sub_templates: vec![],
             is_reconnect: false,
             my_ws_uid,
-            json_msg_receivers,
+            msg_receivers_json,
             error_text: "".to_string(),
             href: "".to_string(),
             href_hash: "".to_string(),

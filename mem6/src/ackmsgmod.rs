@@ -76,7 +76,7 @@ pub fn send_ack(
     // send back the ACK msg to the sender
     rrc.web_data.send_ws_msg(&WsMessageForReceivers {
         msg_sender_ws_uid: rrc.web_data.my_ws_uid,
-        json_msg_receivers: unwrap!(serde_json::to_string(&vec![msg_sender_ws_uid])),
+        msg_receivers_json: unwrap!(serde_json::to_string(&vec![msg_sender_ws_uid])),
         msg_data: WsMessageData::MsgAck {
             msg_id,
             msg_ack_kind,

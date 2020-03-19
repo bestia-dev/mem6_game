@@ -37,7 +37,7 @@ pub fn on_click_2nd_card(
     let msg_id = ackmsgmod::prepare_for_ack_msg_waiting(rrc, vdom);
     let msg = WsMessageForReceivers {
         msg_sender_ws_uid: rrc.web_data.my_ws_uid,
-        json_msg_receivers: rrc.web_data.json_msg_receivers.to_string(),
+        msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
         msg_data: WsMessageData::MsgClick2ndCard {
             card_index_of_2nd_click: rrc.game_data.card_index_of_2nd_click,
             is_point,

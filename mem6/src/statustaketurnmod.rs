@@ -17,7 +17,7 @@ pub fn on_click_take_turn(rrc: &mut RootRenderingComponent, vdom: &dodrio::VdomW
 
     let msg = WsMessageForReceivers {
         msg_sender_ws_uid: rrc.web_data.my_ws_uid,
-        json_msg_receivers: rrc.web_data.json_msg_receivers.to_string(),
+        msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
         msg_data: WsMessageData::MsgTakeTurn { msg_id },
     };
     ackmsgmod::send_msg_and_write_in_queue(rrc, &msg, msg_id);

@@ -168,7 +168,7 @@ pub struct WsMessageForReceivers {
     /// ws client instance unique id. To not listen the echo to yourself.
     pub msg_sender_ws_uid: usize,
     /// only the players that reconnected
-    pub json_msg_receivers: String,
+    pub msg_receivers_json: String,
     /// msg data
     pub msg_data: WsMessageData,
 }

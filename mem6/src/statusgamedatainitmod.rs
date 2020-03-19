@@ -19,7 +19,7 @@ pub fn on_click_start_game(rrc: &mut RootRenderingComponent) {
 
     rrc.web_data.send_ws_msg(&WsMessageForReceivers {
         msg_sender_ws_uid: rrc.web_data.my_ws_uid,
-        json_msg_receivers: rrc.web_data.json_msg_receivers.to_string(),
+        msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
         msg_data: WsMessageData::MsgStartGame {
             players: unwrap!(serde_json::to_string(&rrc.game_data.players)),
             card_grid_data: unwrap!(serde_json::to_string(&rrc.game_data.card_grid_data)),
@@ -63,7 +63,7 @@ pub fn on_msg_start_game(
         "error serde_json::from_str(players)"
     );
 
-    rrc.web_data.json_msg_receivers = rrc.game_data.prepare_json_msg_receivers();
+    rrc.web_data.msg_receivers_json = rrc.game_data.prepare_json_msg_receivers();
 
     // find my player number
     for index in 0..rrc.game_data.players.len() {

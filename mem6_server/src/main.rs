@@ -294,7 +294,7 @@ fn receive_message(msg_sender_ws_uid: usize, message: &Message, ws_users: &WsUse
                     Err(_disconnected) => {}
                 }
                 // send to other ws_users for reconnect. Do nothing if there is not yet other ws_users.
-                // send_to_msg_receivers(ws_users, msg_sender_ws_uid, &msg_string, &json_msg_receivers)
+                // send_to_msg_receivers(ws_users, msg_sender_ws_uid, &msg_string, &msg_receivers_json)
             }
             WsMessageToServer::MsgPing { msg_id } => {
                 // info!("MsgPing: {}", msg_id);
@@ -322,7 +322,7 @@ fn receive_message(msg_sender_ws_uid: usize, message: &Message, ws_users: &WsUse
                 ws_users,
                 msg_sender_ws_uid,
                 &msg_string,
-                &msg_for_receivers.json_msg_receivers,
+                &msg_for_receivers.msg_receivers_json,
             );
         }
     }
@@ -333,11 +333,11 @@ fn send_to_msg_receivers(
     ws_users: &WsUsers,
     msg_sender_ws_uid: usize,
     msg_string: &str,
-    json_msg_receivers: &str,
+    msg_receivers_json: &str,
 ) {
     // info!("send_to_msg_receivers: {}", msg_string);
 
-    let vec_msg_receivers: Vec<usize> = unwrap!(serde_json::from_str(json_msg_receivers));
+    let vec_msg_receivers: Vec<usize> = unwrap!(serde_json::from_str(msg_receivers_json));
 
     for (&uid, tx) in ws_users.lock().expect("error ws_users.lock()").iter() {
         let mut is_player;
