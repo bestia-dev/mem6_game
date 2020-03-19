@@ -26,10 +26,10 @@ pub fn on_click_1st_card(
     rrc.game_data.card_index_of_1st_click = this_click_card_index;
 
     let msg_id = ackmsgmod::prepare_for_ack_msg_waiting(rrc, vdom);
-    let msg = WsMessageForReceivers {
+    let msg = websocketmod::WsMessageForReceivers {
         msg_sender_ws_uid: rrc.web_data.my_ws_uid,
         msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
-        msg_data: WsMessageData::MsgClick1stCard {
+        msg_data: websocketmod::WsMessageData::MsgClick1stCard {
             card_index_of_1st_click: this_click_card_index,
             msg_id,
         },
@@ -60,7 +60,12 @@ pub fn on_msg_click_1st_card(
     msg_id: usize,
 ) {
     flip_back(rrc);
-    ackmsgmod::send_ack(rrc, msg_sender_ws_uid, msg_id, MsgAckKind::MsgClick1stCard);
+    ackmsgmod::send_ack(
+        rrc,
+        msg_sender_ws_uid,
+        msg_id,
+        websocketmod::MsgAckKind::MsgClick1stCard,
+    );
     // it can happen that 2 smartphones send the msg click1st simultaneously.
     // This is a conflict.
     // Only one Player can be the judge and I chosen the Player 1 to resolve it.

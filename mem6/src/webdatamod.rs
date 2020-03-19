@@ -19,7 +19,7 @@ pub struct MsgInQueue {
     /// the msg id is a random number
     pub msg_id: usize,
     /// the content of the message if it needs to be resend
-    pub msg: WsMessageForReceivers,
+    pub msg: websocketmod::WsMessageForReceivers,
 }
 
 /// game data
@@ -94,7 +94,7 @@ impl WebData {
     }
 
     /// send msg over ws
-    pub fn send_ws_msg(&self, ws_message: &WsMessageForReceivers) {
+    pub fn send_ws_msg(&self, ws_message: &websocketmod::WsMessageForReceivers) {
         websocketmod::ws_send_msg(unwrap!(self.ws.as_ref()), ws_message);
     }
 }

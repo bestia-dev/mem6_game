@@ -46,7 +46,6 @@
 // endregion
 
 // region: use statements
-use strum_macros::{Display, AsRefStr};
 use serde_derive::{Serialize, Deserialize};
 // endregion
 
@@ -86,103 +85,10 @@ pub enum WsMessageFromServer {
     },
 }
 
-/// `WsMessageData` enum for WebSocket
-#[allow(clippy::pub_enum_variant_names)]
-#[derive(Serialize, Deserialize, Clone)]
-pub enum WsMessageData {
-    /// join the group
-    MsgJoin {
-        /// my nickname
-        my_nickname: String,
-    },
-    /// player1 initialize the game data and sends it to all players
-    /// I will send json string to not confuse the server with vectors
-    MsgStartGame {
-        /// json of vector of players with nicknames and order data
-        players: String,
-        /// vector of cards status
-        card_grid_data: String,
-        /// json of game_config
-        game_config: String,
-        /// game name
-        game_name: String,
-        /// player turn to start game
-        player_turn: usize,
-    },
-    /// player click
-    MsgClick1stCard {
-        /// have to send all the state of the game
-        card_index_of_1st_click: usize,
-        /// msg id (random)
-        msg_id: usize,
-    },
-    /// player click success
-    MsgClick2ndCard {
-        /// have to send all the state of the game
-        card_index_of_2nd_click: usize,
-        /// is point
-        is_point: bool,
-        /// msg id (random)
-        msg_id: usize,
-    },
-    /// drink end
-    MsgDrinkEnd {},
-    /// Game Over
-    MsgGameOver {},
-    /// Play Again
-    MsgPlayAgain {},
-    /// player change
-    MsgTakeTurn {
-        /// msg id (random)
-        msg_id: usize,
-    },
-    /// acknowledge msg, that the receiver received the message
-    MsgAck {
-        /// msg id (random)
-        msg_id: usize,
-        /// kind of ack msg
-        msg_ack_kind: MsgAckKind,
-    },
-    /// ask player1 for resync
-    MsgAskPlayer1ForResync {},
-    /// all game data
-    MsgAllGameData {
-        /// json of vector of players with nicknames and order data
-        players: String,
-        /// vector of cards status
-        card_grid_data: String,
-        /// have to send all the state of the game
-        card_index_of_1st_click: usize,
-        /// have to send all the state of the game
-        card_index_of_2nd_click: usize,
-        /// whose turn is now:  player 1,2,3,...
-        player_turn: usize,
-        /// game status (isize is the enum variant datatype)
-        game_status: String,
-    },
-}
-
-/// message for receivers
-#[derive(Serialize, Deserialize, Clone)]
-pub struct WsMessageForReceivers {
-    /// ws client instance unique id. To not listen the echo to yourself.
-    pub msg_sender_ws_uid: usize,
-    /// only the players that reconnected
-    pub msg_receivers_json: String,
-    /// msg data
-    pub msg_data: WsMessageData,
-}
-
-#[derive(Display, AsRefStr, Serialize, Deserialize, Clone)]
-#[allow(clippy::pub_enum_variant_names)]
-/// msg ack kind
-pub enum MsgAckKind {
-    /// ack for MsgTakeTurn
-    MsgTakeTurn,
-    /// ack for MsgClick1stCard
-    MsgClick1stCard,
-    /// ack for MsgClick2ndCard
-    MsgClick2ndCard,
-}
+// The struct WsMessageForReceivers original is in the
+// wasm project with all the fields.
+// A copy of this struct is also in the server project, but without the msg_data field.
+// They are the same struct, but the declaration is different, because
+// the server does not need all the data.
 
 // endregion

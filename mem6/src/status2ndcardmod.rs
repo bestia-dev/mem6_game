@@ -35,10 +35,10 @@ pub fn on_click_2nd_card(
         update_click_2nd_card_flip_permanently(rrc, is_point);
     }
     let msg_id = ackmsgmod::prepare_for_ack_msg_waiting(rrc, vdom);
-    let msg = WsMessageForReceivers {
+    let msg = websocketmod::WsMessageForReceivers {
         msg_sender_ws_uid: rrc.web_data.my_ws_uid,
         msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
-        msg_data: WsMessageData::MsgClick2ndCard {
+        msg_data: websocketmod::WsMessageData::MsgClick2ndCard {
             card_index_of_2nd_click: rrc.game_data.card_index_of_2nd_click,
             is_point,
             msg_id,
@@ -80,7 +80,12 @@ pub fn on_msg_click_2nd_card(
     is_point: bool,
     msg_id: usize,
 ) {
-    ackmsgmod::send_ack(rrc, msg_sender_ws_uid, msg_id, MsgAckKind::MsgClick2ndCard);
+    ackmsgmod::send_ack(
+        rrc,
+        msg_sender_ws_uid,
+        msg_id,
+        websocketmod::MsgAckKind::MsgClick2ndCard,
+    );
     rrc.game_data.card_index_of_2nd_click = card_index_of_2nd_click;
     update_click_2nd_card_flip_permanently(rrc, is_point);
     update_click_2nd_card_point(rrc, is_point);

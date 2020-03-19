@@ -76,6 +76,7 @@ use warp::{
     Filter,
 };
 use log::info;
+use serde_derive::{Serialize, Deserialize};
 // endregion
 
 // region: enum, structs, const,...
@@ -84,6 +85,18 @@ use log::info;
 /// - Value is a sender of `warp::ws::Message`
 type WsUsers = Arc<Mutex<HashMap<usize, mpsc::UnboundedSender<Message>>>>;
 
+/// message for receivers. The original declaration is in the wasm module
+/// this here is only a copy that is needed for the server
+/// Here, I ignore the msg_data completely.
+#[derive(Serialize, Deserialize, Clone)]
+pub struct WsMessageForReceivers {
+    /// ws client instance unique id. To not listen the echo to yourself.
+    pub msg_sender_ws_uid: usize,
+    /// only the players that reconnected
+    pub msg_receivers_json: String,
+    // msg data
+    // pub msg_data: WsMessageData,
+}
 // endregion
 
 /// main function of the binary

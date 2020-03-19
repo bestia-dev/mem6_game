@@ -17,17 +17,18 @@ pub fn on_click_start_game(rrc: &mut RootRenderingComponent) {
     rrc.game_data.player_turn =
         websysmod::get_random(1, unwrap!(rrc.game_data.players.len().checked_add(1)));
 
-    rrc.web_data.send_ws_msg(&WsMessageForReceivers {
-        msg_sender_ws_uid: rrc.web_data.my_ws_uid,
-        msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
-        msg_data: WsMessageData::MsgStartGame {
-            players: unwrap!(serde_json::to_string(&rrc.game_data.players)),
-            card_grid_data: unwrap!(serde_json::to_string(&rrc.game_data.card_grid_data)),
-            game_config: unwrap!(serde_json::to_string(&rrc.game_data.game_config)),
-            game_name: rrc.game_data.game_name.to_string(),
-            player_turn: rrc.game_data.player_turn,
-        },
-    });
+    rrc.web_data
+        .send_ws_msg(&websocketmod::WsMessageForReceivers {
+            msg_sender_ws_uid: rrc.web_data.my_ws_uid,
+            msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
+            msg_data: websocketmod::WsMessageData::MsgStartGame {
+                players: unwrap!(serde_json::to_string(&rrc.game_data.players)),
+                card_grid_data: unwrap!(serde_json::to_string(&rrc.game_data.card_grid_data)),
+                game_config: unwrap!(serde_json::to_string(&rrc.game_data.game_config)),
+                game_name: rrc.game_data.game_name.to_string(),
+                player_turn: rrc.game_data.player_turn,
+            },
+        });
 }
 
 /// on game data init
