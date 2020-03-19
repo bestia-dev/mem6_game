@@ -35,12 +35,14 @@ pub fn on_click_2nd_card(
         update_click_2nd_card_flip_permanently(rrc, is_point);
     }
     let msg_id = ackmsgmod::prepare_for_ack_msg_waiting(rrc, vdom);
-    let msg = WsMessage::MsgClick2ndCard {
+    let msg = WsMessageForReceivers {
         my_ws_uid: rrc.web_data.my_ws_uid,
         json_msg_receivers: rrc.web_data.json_msg_receivers.to_string(),
-        card_index_of_2nd_click: rrc.game_data.card_index_of_2nd_click,
-        is_point,
-        msg_id,
+        msg_data: WsMessageData::MsgClick2ndCard {
+            card_index_of_2nd_click: rrc.game_data.card_index_of_2nd_click,
+            is_point,
+            msg_id,
+        },
     };
     ackmsgmod::send_msg_and_write_in_queue(rrc, &msg, msg_id);
 }

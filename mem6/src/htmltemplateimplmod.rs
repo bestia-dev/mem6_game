@@ -165,9 +165,10 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     // unwrap!(audio_element.stop());
 
                     websysmod::debug_write(&format!("MsgDrinkEnd send{}", ""));
-                    rrc.web_data.send_ws_msg(&WsMessage::MsgDrinkEnd {
+                    rrc.web_data.send_ws_msg(&WsMessageForReceivers {
                         my_ws_uid: rrc.web_data.my_ws_uid,
                         json_msg_receivers: rrc.web_data.json_msg_receivers.to_string(),
+                        msg_data: WsMessageData::MsgDrinkEnd {},
                     });
                     // if all the cards are permanently up, this is the end of the game
                     // websysmod::debug_write("if is_all_permanently(rrc)");
@@ -175,9 +176,10 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                         websysmod::debug_write("yes");
                         statusgameovermod::on_msg_game_over(rrc);
                         // send message
-                        rrc.web_data.send_ws_msg(&WsMessage::MsgGameOver {
+                        rrc.web_data.send_ws_msg(&WsMessageForReceivers {
                             my_ws_uid: rrc.web_data.my_ws_uid,
                             json_msg_receivers: rrc.web_data.json_msg_receivers.to_string(),
+                            msg_data: WsMessageData::MsgGameOver {},
                         });
                     } else {
                         statustaketurnmod::on_click_take_turn(rrc, &vdom);
@@ -190,9 +192,10 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     statusdrinkmod::play_sound_for_drink(rrc);
                 }
                 "play_again" => {
-                    rrc.web_data.send_ws_msg(&WsMessage::MsgPlayAgain {
+                    rrc.web_data.send_ws_msg(&WsMessageForReceivers {
                         my_ws_uid: rrc.web_data.my_ws_uid,
                         json_msg_receivers: rrc.web_data.json_msg_receivers.to_string(),
+                        msg_data: WsMessageData::MsgPlayAgain {},
                     });
                     rrc.game_data.reset_for_play_again();
                     open_new_local_page("#p05");

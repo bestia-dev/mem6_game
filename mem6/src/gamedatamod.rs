@@ -3,12 +3,12 @@
 
 // region: use
 use crate::*;
-use mem6_common::*;
 
 use serde_derive::{Serialize, Deserialize};
 use unwrap::unwrap;
 use rand::{rngs::SmallRng, seq::SliceRandom, SeedableRng, Rng};
-use strum_macros::AsRefStr;
+use strum_macros::{Display, AsRefStr, EnumString};
+//use strum::{EnumString};
 // endregion: use
 
 // region: struct, enum
@@ -35,6 +35,44 @@ pub struct Size2d {
     /// vertical
     pub ver: usize,
 }
+
+/// data for one player
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Player {
+    /// ws_uid
+    pub ws_uid: usize,
+    /// nickname
+    pub nickname: String,
+    /// field for src attribute for HTML element image and filename of card image
+    pub points: usize,
+}
+
+/// the game can be in various statuses and that differentiate the UI and actions
+/// all players have the same game status
+/// when sending a message, I will send a String with EnumString
+#[derive(Display, AsRefStr, EnumString, Serialize, Deserialize, Clone, PartialEq)]
+#[allow(clippy::pub_enum_variant_names)]
+pub enum GameStatus {
+    /// start page
+    StatusStartPage,
+    /// Joined
+    StatusJoined,
+    /// before first card
+    Status1stCard,
+    /// before second card
+    Status2ndCard,
+    /// drink
+    StatusDrink,
+    /// take turn end
+    StatusTakeTurn,
+    /// game over
+    StatusGameOver,
+    /// StatusReconnect after a lost connection
+    StatusReconnect,
+    /// waiting ack msg
+    StatusWaitingAckMsg,
+}
+
 /// game metadata (for the vector)
 #[derive(Serialize, Deserialize, Clone)]
 pub struct GameMetadata {

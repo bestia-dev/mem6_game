@@ -60,7 +60,7 @@
 // endregion
 
 // region: use statements
-use mem6_common::{WsMessage};
+use mem6_common::*;
 
 use unwrap::unwrap;
 use clap::{App, Arg};
@@ -265,108 +265,68 @@ fn receive_message(ws_uid_of_message: usize, message: &Message, users: &Users) {
     let new_msg = msg.to_string();
     // info!("msg: {}", new_msg);
 
-    // There are different messages coming from the mem6 wasm app
-    // MsgInvite must be broadcasted to all users
-    // all others must be forwarded to exactly the other player.
+    // The ws server can receive 2 kinds of msgs:
+    // 1. for the server to process
+    // 2. to forward to receivers
 
-    let msg: WsMessage = serde_json::from_str(&new_msg).unwrap_or_else(|_x| WsMessage::MsgDummy {
-        dummy: String::from("error"),
-    });
-
-    match msg {
-        WsMessage::MsgDummy { dummy } => info!("MsgDummy: {}", dummy),
-        WsMessage::MsgRequestWsUid {
-            my_ws_uid,
-            json_msg_receivers,
-        } => {
-            info!("MsgRequestWsUid: {} {}", my_ws_uid, json_msg_receivers);
-            let j = serde_json::to_string(
-                &WsMessage::MsgResponseWsUid {
-                    your_ws_uid: ws_uid_of_message,
-                    server_version: env!("CARGO_PKG_VERSION").to_string(),
-                     })
-                .expect("serde_json::to_string(&WsMessage::MsgResponseWsUid { your_ws_uid: ws_uid_of_message })");
-            info!("send MsgResponseWsUid: {}", j);
-            match users
-                .lock()
-                .expect("error users.lock()")
-                .get(&ws_uid_of_message)
-                .unwrap()
-                .unbounded_send(Message::text(j))
-            {
-                Ok(()) => (),
-                Err(_disconnected) => {}
+    if let Ok(msg) = serde_json::from_str::<WsMessageKindToServer>(&new_msg) {
+        match msg {
+            WsMessageKindToServer::MsgRequestWsUid { my_ws_uid } => {
+                info!("MsgRequestWsUid: {}", my_ws_uid);
+                let j = serde_json::to_string(
+                    &WsMessageKindFromServer::MsgResponseWsUid {
+                        your_ws_uid: ws_uid_of_message,
+                        server_version: env!("CARGO_PKG_VERSION").to_string(),
+                         })
+                    .expect("serde_json::to_string(&WsMessageData::MsgResponseWsUid { your_ws_uid: ws_uid_of_message })");
+                info!("send MsgResponseWsUid: {}", j);
+                match users
+                    .lock()
+                    .expect("error users.lock()")
+                    .get(&ws_uid_of_message)
+                    .unwrap()
+                    .unbounded_send(Message::text(j))
+                {
+                    Ok(()) => (),
+                    Err(_disconnected) => {}
+                }
+                // send to other users for reconnect. Do nothing if there is not yet other users.
+                // send_to_msg_receivers(users, ws_uid_of_message, &new_msg, &json_msg_receivers)
             }
-            // send to other users for reconnect. Do nothing if there is not yet other users.
-            send_to_other_players(users, ws_uid_of_message, &new_msg, &json_msg_receivers)
-        }
-        WsMessage::MsgPing { msg_id } => {
-            // info!("MsgPing: {}", msg_id);
+            WsMessageKindToServer::MsgPing { msg_id } => {
+                // info!("MsgPing: {}", msg_id);
 
-            let j = unwrap!(serde_json::to_string(&WsMessage::MsgPong { msg_id }));
-            // info!("send MsgPong: {}", j);
-            match users
-                .lock()
-                .expect("error users.lock()")
-                .get(&ws_uid_of_message)
-                .unwrap()
-                .unbounded_send(Message::text(j))
-            {
-                Ok(()) => (),
-                Err(_disconnected) => {}
+                let j = unwrap!(serde_json::to_string(&WsMessageKindFromServer::MsgPong {
+                    msg_id
+                }));
+                // info!("send MsgPong: {}", j);
+                match users
+                    .lock()
+                    .expect("error users.lock()")
+                    .get(&ws_uid_of_message)
+                    .unwrap()
+                    .unbounded_send(Message::text(j))
+                {
+                    Ok(()) => (),
+                    Err(_disconnected) => {}
+                }
             }
         }
-        WsMessage::MsgPong { .. } => {
-            unreachable!("mem6_server must not receive MsgPong");
+    } else {
+        if let Ok(msg) = serde_json::from_str::<WsMessageForReceivers>(&new_msg) {
+            send_to_msg_receivers(users, ws_uid_of_message, &new_msg, &msg.json_msg_receivers);
         }
-        WsMessage::MsgResponseWsUid { .. } => {
-            info!("MsgResponseWsUid: {}", "");
-        }
-
-        WsMessage::MsgStartGame {
-            json_msg_receivers, ..
-        }
-        | WsMessage::MsgClick1stCard {
-            json_msg_receivers, ..
-        }
-        | WsMessage::MsgClick2ndCard {
-            json_msg_receivers, ..
-        }
-        | WsMessage::MsgTakeTurn {
-            json_msg_receivers, ..
-        }
-        | WsMessage::MsgGameOver {
-            json_msg_receivers, ..
-        }
-        | WsMessage::MsgAllGameData {
-            json_msg_receivers, ..
-        }
-        | WsMessage::MsgAck {
-            json_msg_receivers, ..
-        }
-        | WsMessage::MsgJoin {
-            json_msg_receivers, ..
-        }
-        | WsMessage::MsgDrinkEnd {
-            json_msg_receivers, ..
-        }
-        | WsMessage::MsgPlayAgain {
-            json_msg_receivers, ..
-        }
-        | WsMessage::MsgAskPlayer1ForResync {
-            json_msg_receivers, ..
-        } => send_to_other_players(users, ws_uid_of_message, &new_msg, &json_msg_receivers),
     }
 }
 
 /// New message from this user send to all other players except sender.
-fn send_to_other_players(
+fn send_to_msg_receivers(
     users: &Users,
     ws_uid_of_message: usize,
     new_msg: &str,
     json_msg_receivers: &str,
 ) {
-    // info!("send_to_other_players: {}", new_msg);
+    // info!("send_to_msg_receivers: {}", new_msg);
 
     let vec_msg_receivers: Vec<usize> = unwrap!(serde_json::from_str(json_msg_receivers));
 

@@ -50,22 +50,28 @@ use strum_macros::{Display, AsRefStr};
 use serde_derive::{Serialize, Deserialize};
 // endregion
 
-/// `WsMessage` enum for WebSocket
+/// WsMessageKindToServer enum for WebSocket
+/// The ws server will perform an action according to this type.
 #[allow(clippy::pub_enum_variant_names)]
 #[derive(Serialize, Deserialize, Clone)]
-pub enum WsMessage {
-    /// MsgDummy
-    MsgDummy {
-        /// anything
-        dummy: String,
-    },
+pub enum WsMessageKindToServer {
     /// Request WebSocket Uid - first message to WebSocket server
     MsgRequestWsUid {
         /// ws client instance unique id. To not listen the echo to yourself.
         my_ws_uid: usize,
-        /// json of vector of players for the server to know whom to send msg
-        json_msg_receivers: String,
     },
+    /// MsgPing
+    MsgPing {
+        /// random msg_id
+        msg_id: u32,
+    },
+}
+
+/// WsMessageKindFromServer enum for WebSocket
+/// The ws server will send this kind of msgs.
+#[allow(clippy::pub_enum_variant_names)]
+#[derive(Serialize, Deserialize, Clone)]
+pub enum WsMessageKindFromServer {
     /// response from WebSocket server for first message
     MsgResponseWsUid {
         /// WebSocket Uid
@@ -73,32 +79,25 @@ pub enum WsMessage {
         /// server version
         server_version: String,
     },
-    /// MsgPing
-    MsgPing {
-        /// random msg_id
-        msg_id: u32,
-    },
     /// MsgPong
     MsgPong {
         /// random msg_id
         msg_id: u32,
     },
+}
+
+/// `WsMessageData` enum for WebSocket
+#[allow(clippy::pub_enum_variant_names)]
+#[derive(Serialize, Deserialize, Clone)]
+pub enum WsMessageData {
     /// join the group
     MsgJoin {
-        /// ws client instance unique id. To not listen the echo to yourself.
-        my_ws_uid: usize,
-        /// json of vector of players for the server to know whom to send msg
-        json_msg_receivers: String,
         /// my nickname
         my_nickname: String,
     },
     /// player1 initialize the game data and sends it to all players
     /// I will send json string to not confuse the server with vectors
     MsgStartGame {
-        /// ws client instance unique id. To not listen the echo to yourself.
-        my_ws_uid: usize,
-        /// json of vector of players for the server to know whom to send msg
-        json_msg_receivers: String,
         /// json of vector of players with nicknames and order data
         players: String,
         /// vector of cards status
@@ -112,10 +111,6 @@ pub enum WsMessage {
     },
     /// player click
     MsgClick1stCard {
-        /// this identifies the smartphone, but not the player-in-turn
-        my_ws_uid: usize,
-        /// all players for the server to know whom to send msg
-        json_msg_receivers: String,
         /// have to send all the state of the game
         card_index_of_1st_click: usize,
         /// msg id (random)
@@ -123,10 +118,6 @@ pub enum WsMessage {
     },
     /// player click success
     MsgClick2ndCard {
-        /// this identifies the smartphone, but not the player-in-turn
-        my_ws_uid: usize,
-        /// all players for the server to know whom to send msg
-        json_msg_receivers: String,
         /// have to send all the state of the game
         card_index_of_2nd_click: usize,
         /// is point
@@ -135,59 +126,27 @@ pub enum WsMessage {
         msg_id: usize,
     },
     /// drink end
-    MsgDrinkEnd {
-        /// this identifies the smartphone, but not the player-in-turn
-        my_ws_uid: usize,
-        /// all players for the server to know whom to send msg
-        json_msg_receivers: String,
-    },
+    MsgDrinkEnd {},
     /// Game Over
-    MsgGameOver {
-        /// this identifies the smartphone, but not the player-in-turn
-        my_ws_uid: usize,
-        /// all players for the server to know whom to send msg
-        json_msg_receivers: String,
-    },
+    MsgGameOver {},
     /// Play Again
-    MsgPlayAgain {
-        /// this identifies the smartphone, but not the player-in-turn
-        my_ws_uid: usize,
-        /// all players for the server to know whom to send msg
-        json_msg_receivers: String,
-    },
+    MsgPlayAgain {},
     /// player change
     MsgTakeTurn {
-        /// ws client instance unique id. To not listen the echo to yourself.
-        my_ws_uid: usize,
-        /// all players for the server to know whom to send msg
-        json_msg_receivers: String,
         /// msg id (random)
         msg_id: usize,
     },
     /// acknowledge msg, that the receiver received the message
     MsgAck {
-        /// msg sender uid
-        my_ws_uid: usize,
-        /// send msg to this players
-        json_msg_receivers: String,
         /// msg id (random)
         msg_id: usize,
         /// kind of ack msg
         msg_ack_kind: MsgAckKind,
     },
     /// ask player1 for resync
-    MsgAskPlayer1ForResync {
-        /// msg sender uid
-        my_ws_uid: usize,
-        /// send msg to this players
-        json_msg_receivers: String,
-    },
+    MsgAskPlayer1ForResync {},
     /// all game data
     MsgAllGameData {
-        /// ws client instance unique id. To not listen the echo to yourself.
-        my_ws_uid: usize,
-        /// only the players that reconnected
-        json_msg_receivers: String,
         /// json of vector of players with nicknames and order data
         players: String,
         /// vector of cards status
@@ -198,45 +157,20 @@ pub enum WsMessage {
         card_index_of_2nd_click: usize,
         /// whose turn is now:  player 1,2,3,...
         player_turn: usize,
-        /// game status
-        game_status: GameStatus,
+        /// game status (isize is the enum variant datatype)
+        game_status: String,
     },
 }
 
-/// the game can be in various statuses and that differentiate the UI and actions
-/// all players have the same game status
-#[derive(Display, AsRefStr, Serialize, Deserialize, Clone, PartialEq)]
-#[allow(clippy::pub_enum_variant_names)]
-pub enum GameStatus {
-    /// start page
-    StatusStartPage,
-    /// Joined
-    StatusJoined,
-    /// before first card
-    Status1stCard,
-    /// before second card
-    Status2ndCard,
-    /// drink
-    StatusDrink,
-    /// take turn end
-    StatusTakeTurn,
-    /// game over
-    StatusGameOver,
-    /// StatusReconnect after a lost connection
-    StatusReconnect,
-    /// waiting ack msg
-    StatusWaitingAckMsg,
-}
-
-/// data for one player
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Player {
-    /// ws_uid
-    pub ws_uid: usize,
-    /// nickname
-    pub nickname: String,
-    /// field for src attribute for HTML element image and filename of card image
-    pub points: usize,
+/// message for receivers
+#[derive(Serialize, Deserialize, Clone)]
+pub struct WsMessageForReceivers {
+    /// ws client instance unique id. To not listen the echo to yourself.
+    pub my_ws_uid: usize,
+    /// only the players that reconnected
+    pub json_msg_receivers: String,
+    /// msg data
+    pub msg_data: WsMessageData,
 }
 
 #[derive(Display, AsRefStr, Serialize, Deserialize, Clone)]

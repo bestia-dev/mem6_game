@@ -653,7 +653,7 @@ checksum = "7ffc5c5338469d4d3ea17d269fa8ea3512ad247247c30bd2df69e68309ed0a08"
 
 [[package]]
 name = "mem6"
-version = "2020.311.1304"
+version = "2020.319.1920"
 dependencies = [
  "console_error_panic_hook",
  "conv",
@@ -668,6 +668,7 @@ dependencies = [
  "serde",
  "serde_derive",
  "serde_json",
+ "strum",
  "strum_macros",
  "unwrap",
  "wasm-bindgen",
@@ -678,7 +679,7 @@ dependencies = [
 
 [[package]]
 name = "mem6_common"
-version = "2020.311.1304"
+version = "2020.319.1914"
 dependencies = [
  "serde",
  "serde_derive",
@@ -687,7 +688,7 @@ dependencies = [
 
 [[package]]
 name = "mem6_server"
-version = "2020.311.1304"
+version = "2020.319.1929"
 dependencies = [
  "ansi_term 0.12.1",
  "clap",
@@ -1305,6 +1306,12 @@ name = "strsim"
 version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8ea5119cdb4c55b55d432abb513a0429384878c15dde60cc77b1c99de1a95a6a"
+
+[[package]]
+name = "strum"
+version = "0.17.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "530efb820d53b712f4e347916c5e7ed20deb76a4f0457943b3182fb889b06d2c"
 
 [[package]]
 name = "strum_macros"

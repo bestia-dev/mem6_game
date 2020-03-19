@@ -7,7 +7,6 @@
 // region: use, const
 use crate::*;
 
-use mem6_common::*;
 use unwrap::unwrap;
 use conv::{ConvUtil, ConvAsUtil};
 use dodrio::{
@@ -142,13 +141,13 @@ pub fn render_template_grid_item<'a>(
     let on_click_img = match rrc.game_data.game_status {
         GameStatus::Status1stCard => "on_click_img_status1st",
         GameStatus::Status2ndCard => "on_click_img_status2nd",
-        mem6_common::GameStatus::StatusStartPage
-        | mem6_common::GameStatus::StatusJoined
-        | mem6_common::GameStatus::StatusDrink
-        | mem6_common::GameStatus::StatusTakeTurn
-        | mem6_common::GameStatus::StatusGameOver
-        | mem6_common::GameStatus::StatusReconnect
-        | mem6_common::GameStatus::StatusWaitingAckMsg => "",
+        gamedatamod::GameStatus::StatusStartPage
+        | gamedatamod::GameStatus::StatusJoined
+        | gamedatamod::GameStatus::StatusDrink
+        | gamedatamod::GameStatus::StatusTakeTurn
+        | gamedatamod::GameStatus::StatusGameOver
+        | gamedatamod::GameStatus::StatusReconnect
+        | gamedatamod::GameStatus::StatusWaitingAckMsg => "",
     };
     let html_template = rrc
         .web_data

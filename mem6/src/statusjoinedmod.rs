@@ -20,10 +20,12 @@ pub fn on_load_joined(rrc: &mut RootRenderingComponent) {
         rrc.web_data.json_msg_receivers
     ));
 
-    rrc.web_data.send_ws_msg(&WsMessage::MsgJoin {
+    rrc.web_data.send_ws_msg(&WsMessageForReceivers {
         my_ws_uid: rrc.web_data.my_ws_uid,
         json_msg_receivers: rrc.web_data.json_msg_receivers.to_string(),
-        my_nickname: rrc.game_data.my_nickname.clone(),
+        msg_data: WsMessageData::MsgJoin {
+            my_nickname: rrc.game_data.my_nickname.clone(),
+        },
     });
 }
 

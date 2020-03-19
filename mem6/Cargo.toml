@@ -1,6 +1,6 @@
 [package]
 name = "mem6"
-version = "2020.311.1304"
+version = "2020.319.1920"
 authors = ["Luciano Furlan <Luciano.Bestia@gmail.com>"]
 edition = "2018"
 description = "Learning Rust Wasm/WebAssembly with Virtual Dom Dodrio"
@@ -34,7 +34,7 @@ serde_json = "1.0"
 # newer futures have unstable .await
 wasm-bindgen-futures = "0.4.8"
 #log = "0.4.8"
-#udep strum = "0.17.1"
+strum = "0.17.1"
 strum_macros = "0.17.1"
 conv = "0.3.3"
 gloo-timers = {version="0.2.0", features=["futures"]}

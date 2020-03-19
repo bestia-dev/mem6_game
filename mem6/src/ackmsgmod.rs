@@ -48,7 +48,7 @@ pub fn prepare_for_ack_msg_waiting(
 /// send msg and write in queue
 pub fn send_msg_and_write_in_queue(
     rrc: &mut RootRenderingComponent,
-    msg: &WsMessage,
+    msg: &WsMessageForReceivers,
     msg_id: usize,
 ) {
     // write the msgs in the queue
@@ -74,10 +74,12 @@ pub fn send_ack(
 ) {
     // websysmod::debug_write(&format!("send_ack players: {:?}", rrc.game_data.players));
     // send back the ACK msg to the sender
-    rrc.web_data.send_ws_msg(&WsMessage::MsgAck {
+    rrc.web_data.send_ws_msg(&WsMessageForReceivers {
         my_ws_uid: rrc.web_data.my_ws_uid,
         json_msg_receivers: unwrap!(serde_json::to_string(&vec![msg_sender_ws_uid])),
-        msg_id,
-        msg_ack_kind,
+        msg_data: WsMessageData::MsgAck {
+            msg_id,
+            msg_ack_kind,
+        },
     });
 }

@@ -19,7 +19,7 @@ pub struct MsgInQueue {
     /// the msg id is a random number
     pub msg_id: usize,
     /// the content of the message if it needs to be resend
-    pub msg: WsMessage,
+    pub msg: WsMessageForReceivers,
 }
 
 /// game data
@@ -87,19 +87,14 @@ impl WebData {
     /// create websocket connection
     pub fn start_websocket(&mut self, vdom: dodrio::VdomWeak) {
         let (location_href, _href_hash) = websysmod::get_url_and_hash();
-        let json_msg_receivers = "[]".to_string(); // empty vector in json
-        let ws = websocketmod::setup_ws_connection(
-            location_href.clone(),
-            self.my_ws_uid,
-            json_msg_receivers,
-        );
+        let ws = websocketmod::setup_ws_connection(location_href.clone(), self.my_ws_uid);
         websocketmod::setup_all_ws_events(&ws, vdom);
         let ws_c = ws.clone();
         self.ws = Some(ws_c);
     }
 
     /// send msg over ws
-    pub fn send_ws_msg(&self, ws_message: &WsMessage) {
+    pub fn send_ws_msg(&self, ws_message: &WsMessageForReceivers) {
         websocketmod::ws_send_msg(unwrap!(self.ws.as_ref()), ws_message);
     }
 }

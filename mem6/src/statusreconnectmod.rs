@@ -17,6 +17,7 @@ use crate::*;
 use mem6_common::*;
 
 use unwrap::unwrap;
+
 // use dodrio::{};
 // endregion
 /*
@@ -68,20 +69,22 @@ pub fn div_reconnect<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<
 /// send all data to resync game_data
 pub fn send_msg_for_resync(rrc: &RootRenderingComponent) {
     websysmod::debug_write("send_msg_for_resync MsgAllGameData");
-    rrc.web_data.send_ws_msg(&WsMessage::MsgAllGameData {
+    rrc.web_data.send_ws_msg(&WsMessageForReceivers {
         my_ws_uid: rrc.web_data.my_ws_uid,
         /// only the players that resync
         json_msg_receivers: rrc.web_data.json_msg_receivers.clone(),
-        /// json of vector of players with nicknames and order data
-        players: unwrap!(serde_json::to_string(&rrc.game_data.players)),
-        /// vector of cards status
-        card_grid_data: unwrap!(serde_json::to_string(&rrc.game_data.card_grid_data)),
-        card_index_of_1st_click: rrc.game_data.card_index_of_1st_click,
-        card_index_of_2nd_click: rrc.game_data.card_index_of_2nd_click,
-        /// whose turn is now:  player 1,2,3,...
-        player_turn: rrc.game_data.player_turn,
-        /// game status
-        game_status: rrc.game_data.game_status.clone(),
+        msg_data: WsMessageData::MsgAllGameData {
+            /// json of vector of players with nicknames and order data
+            players: unwrap!(serde_json::to_string(&rrc.game_data.players)),
+            /// vector of cards status
+            card_grid_data: unwrap!(serde_json::to_string(&rrc.game_data.card_grid_data)),
+            card_index_of_1st_click: rrc.game_data.card_index_of_1st_click,
+            card_index_of_2nd_click: rrc.game_data.card_index_of_2nd_click,
+            /// whose turn is now:  player 1,2,3,...
+            player_turn: rrc.game_data.player_turn,
+            /// game status, strum Display converts into String
+            game_status: format!("{}", rrc.game_data.game_status),
+        },
     });
 }
 
@@ -95,9 +98,13 @@ pub fn on_msg_all_game_data(
     card_index_of_2nd_click: usize,
     // whose turn is now:  player 1,2,3,...
     player_turn: usize,
-    game_status: GameStatus,
+    game_status: String,
 ) {
     websysmod::debug_write("on_msg_all_game_data");
+    //strum EnumString adds the from_str function
+    use std::str::FromStr;
+    let game_status = GameStatus::from_str(&game_status).unwrap();
+
     // only the first message is processed
     // if rrc.game_data.web_data.is_reconnect {
     rrc.web_data.is_reconnect = false;

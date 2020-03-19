@@ -7,6 +7,3 @@ members = [
     "mem6_server",
 ]
 
-[profile.release]
-panic = "abort"
-

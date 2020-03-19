@@ -26,11 +26,13 @@ pub fn on_click_1st_card(
     rrc.game_data.card_index_of_1st_click = this_click_card_index;
 
     let msg_id = ackmsgmod::prepare_for_ack_msg_waiting(rrc, vdom);
-    let msg = WsMessage::MsgClick1stCard {
+    let msg = WsMessageForReceivers {
         my_ws_uid: rrc.web_data.my_ws_uid,
         json_msg_receivers: rrc.web_data.json_msg_receivers.to_string(),
-        card_index_of_1st_click: this_click_card_index,
-        msg_id,
+        msg_data: WsMessageData::MsgClick1stCard {
+            card_index_of_1st_click: this_click_card_index,
+            msg_id,
+        },
     };
     ackmsgmod::send_msg_and_write_in_queue(rrc, &msg, msg_id);
     // websysmod::debug_write(&format!("send_msg_and_write_in_queue: {}", msg_id));
