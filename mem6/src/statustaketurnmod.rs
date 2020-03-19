@@ -16,7 +16,7 @@ pub fn on_click_take_turn(rrc: &mut RootRenderingComponent, vdom: &dodrio::VdomW
     let msg_id = ackmsgmod::prepare_for_ack_msg_waiting(rrc, vdom);
 
     let msg = WsMessageForReceivers {
-        my_ws_uid: rrc.web_data.my_ws_uid,
+        msg_sender_ws_uid: rrc.web_data.my_ws_uid,
         json_msg_receivers: rrc.web_data.json_msg_receivers.to_string(),
         msg_data: WsMessageData::MsgTakeTurn { msg_id },
     };

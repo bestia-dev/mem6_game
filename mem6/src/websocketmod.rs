@@ -57,8 +57,8 @@ pub fn setup_ws_connection(location_href: String, client_ws_id: usize) -> WebSoc
     let open_handler = Box::new(move || {
         // websysmod::debug_write("Connection opened, sending MsgRequestWsUid to server");
         unwrap!(ws_c.send_with_str(&unwrap!(serde_json::to_string(
-            &WsMessageKindToServer::MsgRequestWsUid {
-                my_ws_uid: client_ws_id
+            &WsMessageToServer::MsgRequestWsUid {
+                msg_sender_ws_uid: client_ws_id
             }
         ))));
         // region heartbeat ping pong keepalive
@@ -66,7 +66,7 @@ pub fn setup_ws_connection(location_href: String, client_ws_id: usize) -> WebSoc
         let timeout = gloo_timers::callback::Interval::new(10_000, move || {
             // Do something after the one second timeout is up!
             let u32_size = u32_size();
-            let msg = WsMessageKindToServer::MsgPing { msg_id: u32_size };
+            let msg = WsMessageToServer::MsgPing { msg_id: u32_size };
             ws_send_msg_to_server(ws2.as_ref(), &msg);
             // websysmod::console_log(format!("gloo timer: {}", u32_size).as_str());
         });
@@ -106,9 +106,9 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
         //}
 
         // we can receive 2 types of msgs:
-        // 1. from the server WsMessageKindFromServer
+        // 1. from the server WsMessageFromServer
         // 2. from other players WsMessage
-        if let Ok(msg) = serde_json::from_str::<WsMessageKindFromServer>(&data) {
+        if let Ok(msg) = serde_json::from_str::<WsMessageFromServer>(&data) {
             //msg from ws server
             spawn_local({
                 let vdom = vdom.clone();
@@ -120,10 +120,10 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                 let rrc = root.unwrap_mut::<RootRenderingComponent>();
                                 // msgs from server
                                 match msg {
-                                    WsMessageKindFromServer::MsgPong { msg_id: _ } => {
+                                    WsMessageFromServer::MsgPong { msg_id: _ } => {
                                         // websysmod::debug_write(format!("MsgPong {}", msg_id).as_str())
                                     }
-                                    WsMessageKindFromServer::MsgResponseWsUid {
+                                    WsMessageFromServer::MsgResponseWsUid {
                                         your_ws_uid,
                                         server_version: _,
                                     } => {
@@ -156,7 +156,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                         WsMessageData::MsgJoin {
                                             my_nickname,
                                         } => {
-                                            statusjoinedmod::on_msg_joined(rrc, msg.my_ws_uid, my_nickname);
+                                            statusjoinedmod::on_msg_joined(rrc, msg.msg_sender_ws_uid, my_nickname);
                                             vdom.schedule_render();
                                         }
                                         WsMessageData::MsgStartGame {
@@ -187,7 +187,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                             status1stcardmod::on_msg_click_1st_card(
                                                 rrc,
                                                 &vdom,
-                                                msg.my_ws_uid,
+                                                msg.msg_sender_ws_uid,
                                                 card_index_of_1st_click,
                                                 msg_id,
                                             );
@@ -201,7 +201,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                         } => {
                                             status2ndcardmod::on_msg_click_2nd_card(
                                                 rrc,
-                                                msg.my_ws_uid,
+                                                msg.msg_sender_ws_uid,
                                                 card_index_of_2nd_click,
                                                 is_point,
                                                 msg_id,
@@ -211,7 +211,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                         WsMessageData::MsgDrinkEnd {
                                            
                                         } => {
-                                            statusdrinkmod::on_msg_drink_end(rrc, msg.my_ws_uid, &vdom);
+                                            statusdrinkmod::on_msg_drink_end(rrc, msg.msg_sender_ws_uid, &vdom);
                                             vdom.schedule_render();
                                         }
                                         WsMessageData::MsgTakeTurn {
@@ -219,7 +219,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                             
                                             msg_id,
                                         } => {
-                                            statustaketurnmod::on_msg_take_turn(rrc, msg.my_ws_uid, msg_id);
+                                            statustaketurnmod::on_msg_take_turn(rrc, msg.msg_sender_ws_uid, msg_id);
                                             vdom.schedule_render();
                                         }
                                         WsMessageData::MsgGameOver {
@@ -240,17 +240,17 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                             match msg_ack_kind {
                                                 MsgAckKind::MsgTakeTurn => {
                                                     statustaketurnmod::on_msg_ack_take_turn(
-                                                        rrc, msg.my_ws_uid, msg_id,
+                                                        rrc, msg.msg_sender_ws_uid, msg_id,
                                                     );
                                                 }
                                                 MsgAckKind::MsgClick1stCard => {
                                                     status1stcardmod::on_msg_ack_click_1st_card(
-                                                        rrc, msg.my_ws_uid, msg_id,
+                                                        rrc, msg.msg_sender_ws_uid, msg_id,
                                                     );
                                                 }
                                                 MsgAckKind::MsgClick2ndCard => {
                                                     status2ndcardmod::on_msg_ack_player_click2nd_card(
-                                                        rrc, msg.my_ws_uid, msg_id, &vdom,
+                                                        rrc, msg.msg_sender_ws_uid, msg_id, &vdom,
                                                     );
                                                 }
                                             }
@@ -371,7 +371,7 @@ pub fn setup_all_ws_events(ws: &WebSocket, vdom: dodrio::VdomWeak) {
 }
 
 /// send ws message to server
-pub fn ws_send_msg_to_server(ws: &WebSocket, ws_message: &WsMessageKindToServer) {
+pub fn ws_send_msg_to_server(ws: &WebSocket, ws_message: &WsMessageToServer) {
     let x = ws.send_with_str(&unwrap!(serde_json::to_string(ws_message)));
     // retry send a 10 times before panicking
     if let Err(_err) = x {

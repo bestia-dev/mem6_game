@@ -50,15 +50,15 @@ use strum_macros::{Display, AsRefStr};
 use serde_derive::{Serialize, Deserialize};
 // endregion
 
-/// WsMessageKindToServer enum for WebSocket
+/// WsMessageToServer enum for WebSocket
 /// The ws server will perform an action according to this type.
 #[allow(clippy::pub_enum_variant_names)]
 #[derive(Serialize, Deserialize, Clone)]
-pub enum WsMessageKindToServer {
+pub enum WsMessageToServer {
     /// Request WebSocket Uid - first message to WebSocket server
     MsgRequestWsUid {
         /// ws client instance unique id. To not listen the echo to yourself.
-        my_ws_uid: usize,
+        msg_sender_ws_uid: usize,
     },
     /// MsgPing
     MsgPing {
@@ -67,11 +67,11 @@ pub enum WsMessageKindToServer {
     },
 }
 
-/// WsMessageKindFromServer enum for WebSocket
+/// WsMessageFromServer enum for WebSocket
 /// The ws server will send this kind of msgs.
 #[allow(clippy::pub_enum_variant_names)]
 #[derive(Serialize, Deserialize, Clone)]
-pub enum WsMessageKindFromServer {
+pub enum WsMessageFromServer {
     /// response from WebSocket server for first message
     MsgResponseWsUid {
         /// WebSocket Uid
@@ -166,7 +166,7 @@ pub enum WsMessageData {
 #[derive(Serialize, Deserialize, Clone)]
 pub struct WsMessageForReceivers {
     /// ws client instance unique id. To not listen the echo to yourself.
-    pub my_ws_uid: usize,
+    pub msg_sender_ws_uid: usize,
     /// only the players that reconnected
     pub json_msg_receivers: String,
     /// msg data

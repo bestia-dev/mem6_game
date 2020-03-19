@@ -70,7 +70,7 @@ pub fn div_reconnect<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<
 pub fn send_msg_for_resync(rrc: &RootRenderingComponent) {
     websysmod::debug_write("send_msg_for_resync MsgAllGameData");
     rrc.web_data.send_ws_msg(&WsMessageForReceivers {
-        my_ws_uid: rrc.web_data.my_ws_uid,
+        msg_sender_ws_uid: rrc.web_data.my_ws_uid,
         /// only the players that resync
         json_msg_receivers: rrc.web_data.json_msg_receivers.clone(),
         msg_data: WsMessageData::MsgAllGameData {

@@ -190,11 +190,11 @@ fn user_connected(
     info!("user_connect() url_param: {}", url_param);
     // convert string to usize
     // hahahahaha syntax 'turbofish' ::<>
-    let my_id = unwrap!(url_param.parse::<usize>());
+    let my_ws_uid = unwrap!(url_param.parse::<usize>());
     // if uid already exists, it is an error
     let mut user_exist = false;
     for (&uid, ..) in unwrap!(users.lock()).iter() {
-        if uid == my_id {
+        if uid == my_ws_uid {
             user_exist = true;
             break;
         }
@@ -202,8 +202,8 @@ fn user_connected(
 
     if user_exist {
         // disconnect the old user
-        info!("user_disconnected for reconnect: {}", my_id);
-        user_disconnected(my_id, &users);
+        info!("user_disconnected for reconnect: {}", my_ws_uid);
+        user_disconnected(my_ws_uid, &users);
     }
 
     // Split the socket into a sender and receive of messages.
@@ -218,8 +218,8 @@ fn user_connected(
         }
     }));
     // Save the sender in our list of connected users.
-    info!("users.insert: {}", my_id);
-    unwrap!(users.lock()).insert(my_id, tx);
+    info!("users.insert: {}", my_ws_uid);
+    unwrap!(users.lock()).insert(my_ws_uid, tx);
 
     // Return a `Future` that is basically a state machine managing
     // this specific user's connection.
@@ -231,13 +231,13 @@ fn user_connected(
         // Every time the user sends a message, broadcast it to
         // all other users...
         .for_each(move |msg| {
-            user_message(my_id, unwrap!(msg), &users);
+            user_message(my_ws_uid, unwrap!(msg), &users);
             future::ready(())
         })
         // for_each will keep processing as long as the user stays
         // connected. Once they disconnect, then...
         .then(move |result| {
-            user_disconnected(my_id, &users2);
+            user_disconnected(my_ws_uid, &users2);
             future::ok(result)
         })
 }
@@ -370,10 +370,10 @@ fn send_to_msg_receivers(
 }
 
 /// disconnect user
-fn user_disconnected(my_id: usize, users: &Users) {
-    info!("good bye user: {}", my_id);
+fn user_disconnected(my_ws_uid: usize, users: &Users) {
+    info!("good bye user: {}", my_ws_uid);
 
     // Stream closed up, so remove from the user list
-    unwrap!(users.lock()).remove(&my_id);
+    unwrap!(users.lock()).remove(&my_ws_uid);
 }
 // endregion

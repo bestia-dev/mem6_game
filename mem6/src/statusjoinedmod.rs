@@ -21,7 +21,7 @@ pub fn on_load_joined(rrc: &mut RootRenderingComponent) {
     ));
 
     rrc.web_data.send_ws_msg(&WsMessageForReceivers {
-        my_ws_uid: rrc.web_data.my_ws_uid,
+        msg_sender_ws_uid: rrc.web_data.my_ws_uid,
         json_msg_receivers: rrc.web_data.json_msg_receivers.to_string(),
         msg_data: WsMessageData::MsgJoin {
             my_nickname: rrc.game_data.my_nickname.clone(),

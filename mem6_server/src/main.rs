@@ -79,10 +79,10 @@ use log::info;
 // endregion
 
 // region: enum, structs, const,...
-/// Our status of currently connected users.
+/// Our status of currently connected ws_users.
 /// - Key is their id
 /// - Value is a sender of `warp::ws::Message`
-type Users = Arc<Mutex<HashMap<usize, mpsc::UnboundedSender<Message>>>>;
+type WsUsers = Arc<Mutex<HashMap<usize, mpsc::UnboundedSender<Message>>>>;
 
 // endregion
 
@@ -137,13 +137,13 @@ fn main() {
     );
     // endregion
 
-    // Keep track of all connected users, key is usize, value
+    // Keep track of all connected ws_users, key is usize, value
     // is a WebSocket sender.
-    let users = Arc::new(Mutex::new(HashMap::new()));
+    let ws_users = Arc::new(Mutex::new(HashMap::new()));
     // Turn our "state" into a new Filter...
-    // let users = warp::any().map(move || users.clone());
-    // Clippy recommends this craziness instead of just users.clone()
-    let users = warp::any().map(move || {
+    // let ws_users = warp::any().map(move || ws_users.clone());
+    // Clippy recommends this craziness instead of just ws_users.clone()
+    let ws_users = warp::any().map(move || {
         Arc::<
             std::sync::Mutex<
                 std::collections::HashMap<
@@ -151,7 +151,7 @@ fn main() {
                     futures::sync::mpsc::UnboundedSender<warp::ws::Message>,
                 >,
             >,
-        >::clone(&users)
+        >::clone(&ws_users)
     });
 
     // WebSocket server
@@ -159,12 +159,12 @@ fn main() {
     let websocket = warp::path("mem6ws")
         // The `ws2()` filter will prepare WebSocket handshake...
         .and(warp::ws2())
-        .and(users)
+        .and(ws_users)
         // Match `/mem6ws/url_param` it can be any string.
         .and(warp::path::param::<String>())
-        .map(|ws: warp::ws::Ws2, users, url_param| {
+        .map(|ws: warp::ws::Ws2, ws_users, url_param| {
             // This will call our function if the handshake succeeds.
-            ws.on_upgrade(move |socket| user_connected(socket, users, url_param))
+            ws.on_upgrade(move |socket| user_connected(socket, ws_users, url_param))
         });
 
     // static file server
@@ -181,18 +181,18 @@ fn main() {
 /// new user connects
 fn user_connected(
     ws: WebSocket,
-    users: Users,
+    ws_users: WsUsers,
     url_param: String,
 ) -> impl Future<Item = (), Error = ()> {
     // the client sends his ws_uid in url_param. it is a random number.
     info!("user_connect() url_param: {}", url_param);
     // convert string to usize
     // hahahahaha syntax 'turbofish' ::<>
-    let my_id = unwrap!(url_param.parse::<usize>());
+    let my_ws_uid = unwrap!(url_param.parse::<usize>());
     // if uid already exists, it is an error
     let mut user_exist = false;
-    for (&uid, ..) in users.lock().expect("error users.lock()").iter() {
-        if uid == my_id {
+    for (&uid, ..) in ws_users.lock().expect("error ws_users.lock()").iter() {
+        if uid == my_ws_uid {
             user_exist = true;
             break;
         }
@@ -200,8 +200,8 @@ fn user_connected(
 
     if user_exist {
         // disconnect the old user
-        info!("user_disconnected for reconnect: {}", my_id);
-        user_disconnected(my_id, &users);
+        info!("user_disconnected for reconnect: {}", my_ws_uid);
+        user_disconnected(my_ws_uid, &ws_users);
     }
 
     // Split the socket into a sender and receive of messages.
@@ -217,15 +217,18 @@ fn user_connected(
             .map_err(|ws_err| info!("WebSocket send error: {}", ws_err)),
     );
 
-    // Save the sender in our list of connected users.
-    info!("users.insert: {}", my_id);
-    users.lock().expect("error uses.lock()").insert(my_id, tx);
+    // Save the sender in our list of connected ws_users.
+    info!("ws_users.insert: {}", my_ws_uid);
+    ws_users
+        .lock()
+        .expect("error uses.lock()")
+        .insert(my_ws_uid, tx);
 
     // Return a `Future` that is basically a state machine managing
     // this specific user's connection.
     // Make an extra clone to give to our disconnection handler...
-    // let users2 = users.clone();
-    // Clippy recommends this craziness instead of users.clone()
+    // let users2 = ws_users.clone();
+    // Clippy recommends this craziness instead of ws_users.clone()
     let users2 = Arc::<
         std::sync::Mutex<
             std::collections::HashMap<
@@ -233,28 +236,28 @@ fn user_connected(
                 futures::sync::mpsc::UnboundedSender<warp::ws::Message>,
             >,
         >,
-    >::clone(&users);
+    >::clone(&ws_users);
 
     user_ws_rx
         // Every time the user sends a message, call receive message
         .for_each(move |msg| {
-            receive_message(my_id, &msg, &users);
+            receive_message(my_ws_uid, &msg, &ws_users);
             Ok(())
         })
         // for_each will keep processing as long as the user stays
         // connected. Once they disconnect, then...
         .then(move |result| {
-            user_disconnected(my_id, &users2);
+            user_disconnected(my_ws_uid, &users2);
             result
         })
         // If at any time, there was a WebSocket error, log here...
         .map_err(move |e| {
-            info!("WebSocket error(uid={}): {}", my_id, e);
+            info!("WebSocket error(uid={}): {}", my_ws_uid, e);
         })
 }
 
 /// on receive WebSocket message
-fn receive_message(msg_sender_ws_uid: usize, message: &Message, users: &Users) {
+fn receive_message(msg_sender_ws_uid: usize, message: &Message, ws_users: &WsUsers) {
     // Skip any non-Text messages...
     let msg = if let Ok(s) = message.to_str() {
         s
@@ -262,27 +265,27 @@ fn receive_message(msg_sender_ws_uid: usize, message: &Message, users: &Users) {
         return;
     };
 
-    let new_msg = msg.to_string();
-    // info!("msg: {}", new_msg);
+    let msg_string = msg.to_string();
+    // info!("msg: {}", msg_string);
 
     // The ws server can receive 2 kinds of msgs:
     // 1. for the server to process
     // 2. to forward to receivers
 
-    if let Ok(msg) = serde_json::from_str::<WsMessageKindToServer>(&new_msg) {
-        match msg {
-            WsMessageKindToServer::MsgRequestWsUid { my_ws_uid } => {
-                info!("MsgRequestWsUid: {}", my_ws_uid);
+    if let Ok(msg_to_server) = serde_json::from_str::<WsMessageToServer>(&msg_string) {
+        match msg_to_server {
+            WsMessageToServer::MsgRequestWsUid { msg_sender_ws_uid } => {
+                info!("MsgRequestWsUid: {}", msg_sender_ws_uid);
                 let j = serde_json::to_string(
-                    &WsMessageKindFromServer::MsgResponseWsUid {
+                    &WsMessageFromServer::MsgResponseWsUid {
                         your_ws_uid: msg_sender_ws_uid,
                         server_version: env!("CARGO_PKG_VERSION").to_string(),
                          })
                     .expect("serde_json::to_string(&WsMessageData::MsgResponseWsUid { your_ws_uid: msg_sender_ws_uid })");
                 info!("send MsgResponseWsUid: {}", j);
-                match users
+                match ws_users
                     .lock()
-                    .expect("error users.lock()")
+                    .expect("error ws_users.lock()")
                     .get(&msg_sender_ws_uid)
                     .unwrap()
                     .unbounded_send(Message::text(j))
@@ -290,19 +293,19 @@ fn receive_message(msg_sender_ws_uid: usize, message: &Message, users: &Users) {
                     Ok(()) => (),
                     Err(_disconnected) => {}
                 }
-                // send to other users for reconnect. Do nothing if there is not yet other users.
-                // send_to_msg_receivers(users, msg_sender_ws_uid, &new_msg, &json_msg_receivers)
+                // send to other ws_users for reconnect. Do nothing if there is not yet other ws_users.
+                // send_to_msg_receivers(ws_users, msg_sender_ws_uid, &msg_string, &json_msg_receivers)
             }
-            WsMessageKindToServer::MsgPing { msg_id } => {
+            WsMessageToServer::MsgPing { msg_id } => {
                 // info!("MsgPing: {}", msg_id);
 
-                let j = unwrap!(serde_json::to_string(&WsMessageKindFromServer::MsgPong {
+                let j = unwrap!(serde_json::to_string(&WsMessageFromServer::MsgPong {
                     msg_id
                 }));
                 // info!("send MsgPong: {}", j);
-                match users
+                match ws_users
                     .lock()
-                    .expect("error users.lock()")
+                    .expect("error ws_users.lock()")
                     .get(&msg_sender_ws_uid)
                     .unwrap()
                     .unbounded_send(Message::text(j))
@@ -313,24 +316,30 @@ fn receive_message(msg_sender_ws_uid: usize, message: &Message, users: &Users) {
             }
         }
     } else {
-        if let Ok(msg) = serde_json::from_str::<WsMessageForReceivers>(&new_msg) {
-            send_to_msg_receivers(users, msg_sender_ws_uid, &new_msg, &msg.json_msg_receivers);
+        // forward msg to receivers
+        if let Ok(msg_for_receivers) = serde_json::from_str::<WsMessageForReceivers>(&msg_string) {
+            send_to_msg_receivers(
+                ws_users,
+                msg_sender_ws_uid,
+                &msg_string,
+                &msg_for_receivers.json_msg_receivers,
+            );
         }
     }
 }
 
 /// New message from this user send to all other players except sender.
 fn send_to_msg_receivers(
-    users: &Users,
+    ws_users: &WsUsers,
     msg_sender_ws_uid: usize,
-    new_msg: &str,
+    msg_string: &str,
     json_msg_receivers: &str,
 ) {
-    // info!("send_to_msg_receivers: {}", new_msg);
+    // info!("send_to_msg_receivers: {}", msg_string);
 
     let vec_msg_receivers: Vec<usize> = unwrap!(serde_json::from_str(json_msg_receivers));
 
-    for (&uid, tx) in users.lock().expect("error users.lock()").iter() {
+    for (&uid, tx) in ws_users.lock().expect("error ws_users.lock()").iter() {
         let mut is_player;
         is_player = false;
         for &pl_ws_uid in &vec_msg_receivers {
@@ -339,7 +348,7 @@ fn send_to_msg_receivers(
             }
         }
         if msg_sender_ws_uid != uid && is_player {
-            match tx.unbounded_send(Message::text(String::from(new_msg))) {
+            match tx.unbounded_send(Message::text(String::from(msg_string))) {
                 Ok(()) => (),
                 Err(_disconnected) => {
                     // The tx is disconnected, our `user_disconnected` code
@@ -352,10 +361,10 @@ fn send_to_msg_receivers(
 }
 
 /// disconnect user
-fn user_disconnected(my_id: usize, users: &Users) {
-    info!("good bye user: {}", my_id);
+fn user_disconnected(my_ws_uid: usize, ws_users: &WsUsers) {
+    info!("good bye user: {}", my_ws_uid);
 
     // Stream closed up, so remove from the user list
-    users.lock().expect("users.lock").remove(&my_id);
+    ws_users.lock().expect("ws_users.lock").remove(&my_ws_uid);
 }
 // endregion

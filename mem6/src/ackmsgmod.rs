@@ -75,7 +75,7 @@ pub fn send_ack(
     // websysmod::debug_write(&format!("send_ack players: {:?}", rrc.game_data.players));
     // send back the ACK msg to the sender
     rrc.web_data.send_ws_msg(&WsMessageForReceivers {
-        my_ws_uid: rrc.web_data.my_ws_uid,
+        msg_sender_ws_uid: rrc.web_data.my_ws_uid,
         json_msg_receivers: unwrap!(serde_json::to_string(&vec![msg_sender_ws_uid])),
         msg_data: WsMessageData::MsgAck {
             msg_id,
