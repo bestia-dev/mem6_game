@@ -1,6 +1,6 @@
 [package]
 name = "mem6_server"
-version = "2020.319.1929" #no need for semver if it is not a library
+version = "2020.319.1936" #no need for semver if it is not a library
 description = "server for the game mem6 http + WebSocket on the same port"
 authors = ["Luciano Bestia"]
 edition = "2018"

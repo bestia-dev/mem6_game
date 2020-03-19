@@ -688,7 +688,7 @@ dependencies = [
 
 [[package]]
 name = "mem6_server"
-version = "2020.319.1929"
+version = "2020.319.1936"
 dependencies = [
  "ansi_term 0.12.1",
  "clap",

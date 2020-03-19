@@ -254,7 +254,7 @@ fn user_connected(
 }
 
 /// on receive WebSocket message
-fn receive_message(ws_uid_of_message: usize, message: &Message, users: &Users) {
+fn receive_message(msg_sender_ws_uid: usize, message: &Message, users: &Users) {
     // Skip any non-Text messages...
     let msg = if let Ok(s) = message.to_str() {
         s
@@ -275,15 +275,15 @@ fn receive_message(ws_uid_of_message: usize, message: &Message, users: &Users) {
                 info!("MsgRequestWsUid: {}", my_ws_uid);
                 let j = serde_json::to_string(
                     &WsMessageKindFromServer::MsgResponseWsUid {
-                        your_ws_uid: ws_uid_of_message,
+                        your_ws_uid: msg_sender_ws_uid,
                         server_version: env!("CARGO_PKG_VERSION").to_string(),
                          })
-                    .expect("serde_json::to_string(&WsMessageData::MsgResponseWsUid { your_ws_uid: ws_uid_of_message })");
+                    .expect("serde_json::to_string(&WsMessageData::MsgResponseWsUid { your_ws_uid: msg_sender_ws_uid })");
                 info!("send MsgResponseWsUid: {}", j);
                 match users
                     .lock()
                     .expect("error users.lock()")
-                    .get(&ws_uid_of_message)
+                    .get(&msg_sender_ws_uid)
                     .unwrap()
                     .unbounded_send(Message::text(j))
                 {
@@ -291,7 +291,7 @@ fn receive_message(ws_uid_of_message: usize, message: &Message, users: &Users) {
                     Err(_disconnected) => {}
                 }
                 // send to other users for reconnect. Do nothing if there is not yet other users.
-                // send_to_msg_receivers(users, ws_uid_of_message, &new_msg, &json_msg_receivers)
+                // send_to_msg_receivers(users, msg_sender_ws_uid, &new_msg, &json_msg_receivers)
             }
             WsMessageKindToServer::MsgPing { msg_id } => {
                 // info!("MsgPing: {}", msg_id);
@@ -303,7 +303,7 @@ fn receive_message(ws_uid_of_message: usize, message: &Message, users: &Users) {
                 match users
                     .lock()
                     .expect("error users.lock()")
-                    .get(&ws_uid_of_message)
+                    .get(&msg_sender_ws_uid)
                     .unwrap()
                     .unbounded_send(Message::text(j))
                 {
@@ -314,7 +314,7 @@ fn receive_message(ws_uid_of_message: usize, message: &Message, users: &Users) {
         }
     } else {
         if let Ok(msg) = serde_json::from_str::<WsMessageForReceivers>(&new_msg) {
-            send_to_msg_receivers(users, ws_uid_of_message, &new_msg, &msg.json_msg_receivers);
+            send_to_msg_receivers(users, msg_sender_ws_uid, &new_msg, &msg.json_msg_receivers);
         }
     }
 }
@@ -322,7 +322,7 @@ fn receive_message(ws_uid_of_message: usize, message: &Message, users: &Users) {
 /// New message from this user send to all other players except sender.
 fn send_to_msg_receivers(
     users: &Users,
-    ws_uid_of_message: usize,
+    msg_sender_ws_uid: usize,
     new_msg: &str,
     json_msg_receivers: &str,
 ) {
@@ -338,7 +338,7 @@ fn send_to_msg_receivers(
                 is_player = true;
             }
         }
-        if ws_uid_of_message != uid && is_player {
+        if msg_sender_ws_uid != uid && is_player {
             match tx.unbounded_send(Message::text(String::from(new_msg))) {
                 Ok(()) => (),
                 Err(_disconnected) => {

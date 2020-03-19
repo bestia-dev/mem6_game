@@ -243,7 +243,7 @@ fn user_connected(
 }
 
 /// on receive WebSocket message
-fn user_message(ws_uid_of_message: usize, message: Message, users: &Users) {
+fn user_message(msg_sender_ws_uid: usize, message: Message, users: &Users) {
     // Skip any non-Text messages...
     let msg = if let Ok(s) = message.to_str() {
         s
@@ -271,24 +271,24 @@ fn user_message(ws_uid_of_message: usize, message: Message, users: &Users) {
         } => {
             info!("MsgRequestWsUid: {} {}", my_ws_uid, json_msg_receivers);
             let j = unwrap!(serde_json::to_string(&WsMessageData::MsgResponseWsUid {
-                your_ws_uid: ws_uid_of_message,
+                your_ws_uid: msg_sender_ws_uid,
                 server_version: env!("CARGO_PKG_VERSION").to_string(),
             }));
             info!("send MsgResponseWsUid: {}", j);
-            match unwrap!(unwrap!(users.lock()).get(&ws_uid_of_message)).send(Ok(Message::text(j)))
+            match unwrap!(unwrap!(users.lock()).get(&msg_sender_ws_uid)).send(Ok(Message::text(j)))
             {
                 Ok(()) => (),
                 Err(_disconnected) => {}
             }
             // send to other users for reconnect. Do nothing if there is not yet other users.
-            send_to_msg_receivers(users, ws_uid_of_message, &new_msg, &json_msg_receivers)
+            send_to_msg_receivers(users, msg_sender_ws_uid, &new_msg, &json_msg_receivers)
         }
         WsMessageData::MsgPing { msg_id } => {
             // info!("MsgPing: {}", msg_id);
 
             let j = unwrap!(serde_json::to_string(&WsMessageData::MsgPong { msg_id }));
             // info!("send MsgPong: {}", j);
-            match unwrap!(unwrap!(users.lock()).get(&ws_uid_of_message)).send(Ok(Message::text(j)))
+            match unwrap!(unwrap!(users.lock()).get(&msg_sender_ws_uid)).send(Ok(Message::text(j)))
             {
                 Ok(()) => (),
                 Err(_disconnected) => {}
@@ -332,14 +332,14 @@ fn user_message(ws_uid_of_message: usize, message: Message, users: &Users) {
         }
         | WsMessageData::MsgAskPlayer1ForResync {
             json_msg_receivers, ..
-        } => send_to_msg_receivers(users, ws_uid_of_message, &new_msg, &json_msg_receivers),
+        } => send_to_msg_receivers(users, msg_sender_ws_uid, &new_msg, &json_msg_receivers),
     }
 }
 
 /// New message from this user send to all other players except sender.
 fn send_to_msg_receivers(
     users: &Users,
-    ws_uid_of_message: usize,
+    msg_sender_ws_uid: usize,
     new_msg: &str,
     json_msg_receivers: &str,
 ) {
@@ -355,11 +355,11 @@ fn send_to_msg_receivers(
                 is_player = true;
             }
         }
-        if ws_uid_of_message != uid && is_player {
+        if msg_sender_ws_uid != uid && is_player {
             match tx.send(Ok(Message::text(String::from(new_msg)))) {
                 Ok(()) => (),
                 Err(_disconnected) => {
-                    info!("Err(_disconnected) {}", ws_uid_of_message);
+                    info!("Err(_disconnected) {}", msg_sender_ws_uid);
                     // The tx is disconnected, our `user_disconnected` code
                     // should be happening in another task, nothing more to
                     // do here.
