@@ -109,6 +109,8 @@ pub struct GameConfig {
     pub grid_items_hor: usize,
     /// number of card vertically
     pub grid_items_ver: usize,
+    /// is there big image available
+    pub big_img: bool,
 }
 
 /// the 3 possible statuses of one card

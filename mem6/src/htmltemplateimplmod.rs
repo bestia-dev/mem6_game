@@ -5,7 +5,7 @@ use crate::htmltemplatemod::HtmlTemplating;
 // use qrcode53bytes::*;
 
 use unwrap::unwrap;
-
+use wasm_bindgen::{JsCast};
 use dodrio::{
     Node, RenderContext, RootRender,
     bumpalo::{self},
@@ -66,7 +66,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 return format!("{} ", self.game_data.my_player().points,);
             }
             "player_turn_nickname" => {
-                websysmod::debug_write("player_turn_nickname");
+                //websysmod::debug_write("player_turn_nickname");
                 return self.game_data.player_turn_now().nickname.to_string();
             }
             _ => {
@@ -207,6 +207,9 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 "on_click_img_status2nd" => {
                     status2ndcardmod::on_click_img_status2nd(root, &vdom, &event);
                 }
+                "hide_big_img" => {
+                    hide_big_img();
+                }
                 _ => {
                     let x = format!("Error: Unrecognized call_fn_listener: \"{}\"", fn_name);
                     websysmod::debug_write(&x);
@@ -346,4 +349,20 @@ pub fn blink_or_not_group_id(rrc: &RootRenderingComponent) -> String {
     } else {
         "".to_owned()
     }
+}
+
+pub fn hide_big_img() {
+    let img_element = websysmod::get_element_by_id("big_img");
+    let img_html_element = unwrap!(img_element.dyn_into::<web_sys::HtmlImageElement>());
+    let _x = img_html_element.style().set_property("display", "none");
+}
+
+pub fn visible_big_img(img_file_name: &str) {
+    websysmod::debug_write(img_file_name);
+    //change png in jpg for big img
+    let img_file_name = img_file_name.replace(".png", ".jpg");
+    let img_element = websysmod::get_element_by_id("big_img");
+    let img_html_element = unwrap!(img_element.dyn_into::<web_sys::HtmlImageElement>());
+    img_html_element.set_src(&img_file_name);
+    let _x = img_html_element.style().set_property("display", "initial");
 }

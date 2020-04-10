@@ -23,5 +23,6 @@
     "card_width": 74,
     "card_height": 115,
     "grid_items_hor": 3,
-    "grid_items_ver": 2
+    "grid_items_ver": 2,
+    "big_img": false
 }

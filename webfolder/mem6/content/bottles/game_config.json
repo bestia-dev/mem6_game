@@ -1,9 +1,4 @@
 {
-	"card_width": 116,
-    "card_height": 116,
-    "grid_items_hor": 3,
-    "grid_items_ver": 3,
-	"big_img":true,
     "card_moniker": [
         "",
         "Kaiser beer",
@@ -90,5 +85,10 @@
         "jackdaniels.mp3",
         "absolut100.mp3",
         "absolut.mp3"
-    ]
+    ],
+    "card_width": 116,
+    "card_height": 116,
+    "grid_items_hor": 3,
+    "grid_items_ver": 3,
+    "big_img": true
 }

@@ -189,3 +189,17 @@ I use the <https://google-webfonts-helper.herokuapp.com> to download fonts.
 
 Crazy stuff. I used the website <https://www.favicon-generator.org/> to generate
 all the different imgs, sizes and code. And than add all this into index.html. There is more lines for icons than anything else now. Just crazy world.  
+
+
+## audio normalize
+
+Different audio files had very different volume levels. That was not nice.
+I used Audacity with the ffmpeg plugin. I opened the audio file and then used
+Effect normalize. The songs were normalized at -4dB and the voice moniker at -1 dB.
+So the songs are not too loud, like they were before.  
+
+## big img
+
+Some types of images are simply too small (like bottles). You cannot see any details.
+I will try to add a second big image, that will open on a click on the small image.
+So the details will be visible.  

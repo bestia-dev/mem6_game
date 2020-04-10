@@ -99,7 +99,7 @@ pub fn on_msg_ack_click_1st_card(
 
 /// update game data
 pub fn update_on_1st_card(rrc: &mut RootRenderingComponent) {
-    websysmod::debug_write("update_on_1st_card");
+    //websysmod::debug_write("update_on_1st_card");
     // flip the card up
     rrc.game_data.get_1st_card_mut().status = CardStatusCardFace::UpTemporary;
     rrc.game_data.game_status = GameStatus::Status2ndCard;
@@ -145,6 +145,21 @@ pub fn on_click_img_status1st(
         status1stcardmod::on_click_1st_card(rrc, vdom, this_click_card_index);
         // Finally, re-render the component on the next animation frame.
         vdom.schedule_render();
+    } else {
+        //only if there is big_img, then make it visible
+        websysmod::debug_write("click on img");
+        if unwrap!(rrc.game_data.game_config.clone()).big_img == true {
+            htmltemplateimplmod::visible_big_img(&format!(
+                "content/{}/big_img/{}",
+                rrc.game_data.game_name,
+                unwrap!(unwrap!(rrc.game_data.game_config.as_ref())
+                    .img_filename
+                    .get(
+                        unwrap!(rrc.game_data.card_grid_data.get(this_click_card_index))
+                            .card_number
+                    ))
+            ));
+        }
     }
 }
 // div_grid_container() is in divgridcontainermod.rs

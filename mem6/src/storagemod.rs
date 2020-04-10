@@ -41,6 +41,7 @@ pub fn nickname_onkeyup(rrc: &mut RootRenderingComponent, event: web_sys::Event)
 pub fn save_nickname_to_local_storage(rrc: &mut RootRenderingComponent) {
     let nickname = websysmod::get_input_element_value_string_by_id("input_nickname");
     websysmod::save_to_local_storage("nickname", &nickname);
+    websysmod::debug_write(&format!("save nickname to local storage: {}", &nickname));
 
     rrc.game_data.my_nickname = nickname.clone();
     // change it also in players, if the player exists

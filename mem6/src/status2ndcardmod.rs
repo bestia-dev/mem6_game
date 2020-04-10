@@ -184,6 +184,21 @@ pub fn on_click_img_status2nd(
         status2ndcardmod::on_click_2nd_card(rrc, vdom, this_click_card_index);
         // Finally, re-render the component on the next animation frame.
         vdom.schedule_render();
+    } else {
+         //only if there is big_img, then make it visible
+         websysmod::debug_write("click on img");
+         if unwrap!(rrc.game_data.game_config.clone()).big_img == true {
+             htmltemplateimplmod::visible_big_img(&format!(
+                 "content/{}/big_img/{}",
+                 rrc.game_data.game_name,
+                 unwrap!(unwrap!(rrc.game_data.game_config.as_ref())
+                     .img_filename
+                     .get(
+                         unwrap!(rrc.game_data.card_grid_data.get(this_click_card_index))
+                             .card_number
+                     ))
+             ));
+         }
     }
 }
 // div_grid_container() is in divgridcontainermod.rs
