@@ -272,7 +272,7 @@ fn user_message(msg_sender_ws_uid: usize, message: Message, users: &Users) {
             info!("MsgRequestWsUid: {} {}", my_ws_uid, msg_receivers_json);
             let j = unwrap!(serde_json::to_string(
                 &WsMessageGameData::MsgResponseWsUid {
-                    your_ws_uid: msg_sender_ws_uid,
+                    msg_receiver_ws_uid: msg_sender_ws_uid,
                     server_version: env!("CARGO_PKG_VERSION").to_string(),
                 }
             ));

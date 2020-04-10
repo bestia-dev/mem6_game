@@ -51,7 +51,6 @@ use serde_derive::{Serialize, Deserialize};
 
 /// WsMessageToServer enum for WebSocket
 /// The ws server will perform an action according to this type.
-#[allow(clippy::pub_enum_variant_names)]
 #[derive(Serialize, Deserialize, Clone)]
 pub enum WsMessageToServer {
     /// Request WebSocket Uid - first message to WebSocket server
@@ -68,13 +67,12 @@ pub enum WsMessageToServer {
 
 /// WsMessageFromServer enum for WebSocket
 /// The ws server will send this kind of msgs.
-#[allow(clippy::pub_enum_variant_names)]
 #[derive(Serialize, Deserialize, Clone)]
 pub enum WsMessageFromServer {
     /// response from WebSocket server for first message
     MsgResponseWsUid {
         /// WebSocket Uid
-        your_ws_uid: usize,
+        msg_receiver_ws_uid: usize,
         /// server version
         server_version: String,
     },
@@ -86,10 +84,11 @@ pub enum WsMessageFromServer {
 }
 
 // The struct WsMessageForReceivers original is in the
-// wasm project with all the fields.
-// A copy of this struct is also in the server project, but without the msg_data field.
+// wasm project gamedatamod.rs with all the fields.
+// A copy of this struct is also in the server project,
+// but without the msg_data field.
 // They are the same struct, but the declaration is different, because
-// the server does not need all the data.
+// the server does not need the msg_data field.
 // So we need to duplicate the declaration. Not ideal, but practical.
 
 // endregion

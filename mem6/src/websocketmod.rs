@@ -137,11 +137,11 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                         // websysmod::debug_write(format!("MsgPong {}", msg_id).as_str())
                                     }
                                     WsMessageFromServer::MsgResponseWsUid {
-                                        your_ws_uid,
+                                        msg_receiver_ws_uid,
                                         server_version: _,
                                     } => {
-                                        // websysmod::debug_write(&format!("MsgResponseWsUid: {}  ", your_ws_uid));
-                                        on_response_ws_uid(rrc, your_ws_uid);
+                                        // websysmod::debug_write(&format!("MsgResponseWsUid: {}  ", msg_receiver_ws_uid));
+                                        on_response_ws_uid(rrc, msg_receiver_ws_uid);
                                     }
                                 }
                             }
@@ -448,8 +448,8 @@ pub fn ws_send_msg(ws: &WebSocket, ws_message: &WsMessageForReceivers) {
 }
 
 /// msg response with ws_uid, just to check.
-pub fn on_response_ws_uid(rrc: &mut RootRenderingComponent, your_ws_uid: usize) {
-    if rrc.web_data.my_ws_uid != your_ws_uid {
+pub fn on_response_ws_uid(rrc: &mut RootRenderingComponent, msg_receiver_ws_uid: usize) {
+    if rrc.web_data.my_ws_uid != msg_receiver_ws_uid {
         rrc.web_data.error_text = "my_ws_uid is incorrect!".to_string();
     }
 }

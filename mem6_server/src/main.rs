@@ -292,10 +292,10 @@ fn receive_message(msg_sender_ws_uid: usize, message: &Message, ws_users: &WsUse
                 info!("MsgRequestWsUid: {}", msg_sender_ws_uid);
                 let j = serde_json::to_string(
                     &WsMessageFromServer::MsgResponseWsUid {
-                        your_ws_uid: msg_sender_ws_uid,
+                        msg_receiver_ws_uid: msg_sender_ws_uid,
                         server_version: env!("CARGO_PKG_VERSION").to_string(),
                          })
-                    .expect("serde_json::to_string(&WsMessageGameData::MsgResponseWsUid { your_ws_uid: msg_sender_ws_uid })");
+                    .expect("serde_json::to_string(&WsMessageGameData::MsgResponseWsUid { msg_receiver_ws_uid: msg_sender_ws_uid })");
                 info!("send MsgResponseWsUid: {}", j);
                 match ws_users
                     .lock()
