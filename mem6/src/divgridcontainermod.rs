@@ -56,7 +56,7 @@ pub fn div_grid_container<'a>(
     let html_template = rrc
         .web_data
         .get_sub_template("grid_container")
-        .replace("container_style", &container_style);
+        .replace("src:replace_in_code_container_style", &container_style);
 
     // return grid_container
     unwrap!(rrc.render_template(cx, &html_template, htmltemplatemod::HtmlOrSvg::Html))
@@ -114,7 +114,7 @@ pub fn div_grid_all_items<'a>(
             let img_style = if img_src
                 == format!("content/{}/{}", game_data.game_name, SRC_FOR_CARD_FACE_DOWN)
             {
-                bumpalo::format!(in bump, "opacity:{}", 0.2).into_bump_str()
+                bumpalo::format!(in bump, "opacity:{}", 0.6).into_bump_str()
             } else {
                 bumpalo::format!(in bump, "opacity:{}", 1).into_bump_str()
             };
@@ -154,7 +154,7 @@ pub fn render_template_grid_item<'a>(
         .get_sub_template(template_name)
         .replace("img_src", &img_src)
         .replace("img_id", &img_id)
-        .replace("img_style", &img_style)
+        .replace("src:replace_in_code_img_style", &img_style)
         .replace("on_click_img", on_click_img);
     //websysmod::debug_write(&html_template);
     unwrap!(rrc.render_template(cx, &html_template, htmltemplatemod::HtmlOrSvg::Html))

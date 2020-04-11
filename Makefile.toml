@@ -85,11 +85,11 @@ skip_core_tasks = true
     # and then another time I have to escape the backslash. So 4 backslash for one backslash.
     script = [
         "rsync -avz --delete-after /home/luciano/rustprojects/mem6_game/webfolder/ /home/luciano/rustprojects/googlecloud/var/www/webapps/mem6_game/",
-        "ssh -tt -i /home/luciano/.ssh/luciano_googlecloud luciano_bestia@34.87.17.103 screen -dr mem6-8086 -X stuff $'\\\\003'",
-        "ssh -tt -i /home/luciano/.ssh/luciano_googlecloud luciano_bestia@34.87.17.103 screen -dr mem6-8086 -X stuff 'cd\\ \\/var\\/www\\/webapps\\/mem6_game\\\\n'",
-        "rsync -e ssh -avz --delete-after /home/luciano/rustprojects/googlecloud/var/www/webapps/mem6_game/ luciano_bestia@34.87.17.103:/var/www/webapps/mem6_game/",
-        "ssh -tt -i /home/luciano/.ssh/luciano_googlecloud luciano_bestia@34.87.17.103 screen -dr mem6-8086 -X stuff 'chmod\\ \\+x\\ mem6_server\\\\n'",
-        "ssh -tt -i /home/luciano/.ssh/luciano_googlecloud luciano_bestia@34.87.17.103 screen -dr mem6-8086 -X stuff 'sudo\\ \\.\\/mem6_server\\\\n'",
+        "ssh -tt -i /home/luciano/.ssh/luciano_googlecloud luciano_bestia@35.199.190.85 screen -dr mem6-8086 -X stuff $'\\\\003'",
+        "ssh -tt -i /home/luciano/.ssh/luciano_googlecloud luciano_bestia@35.199.190.85 screen -dr mem6-8086 -X stuff 'cd\\ \\/var\\/www\\/webapps\\/mem6_game\\\\n'",
+        "rsync -e ssh -avz --delete-after /home/luciano/rustprojects/googlecloud/var/www/webapps/mem6_game/ luciano_bestia@35.199.190.85:/var/www/webapps/mem6_game/",
+        "ssh -tt -i /home/luciano/.ssh/luciano_googlecloud luciano_bestia@35.199.190.85 screen -dr mem6-8086 -X stuff 'chmod\\ \\+x\\ mem6_server\\\\n'",
+        "ssh -tt -i /home/luciano/.ssh/luciano_googlecloud luciano_bestia@35.199.190.85 screen -dr mem6-8086 -X stuff 'sudo\\ \\.\\/mem6_server\\\\n'",
     ]
 
     [tasks.udeps]

@@ -5,7 +5,7 @@
     html_logo_url = "https://github.com/LucianoBestia/mem6_game/raw/master/webfolder/mem6/images/icons-192.png"
 )]
 // region: lmake_readme insert "readme.md"
-//! # "unForGetTable"  (development name: mem6)
+//! # unForGetTable  (development name: mem6)
 //!
 //! version: 2020.225.1404  
 //!

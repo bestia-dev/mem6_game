@@ -351,12 +351,14 @@ pub fn blink_or_not_group_id(rrc: &RootRenderingComponent) -> String {
     }
 }
 
+/// hide big img
 pub fn hide_big_img() {
     let img_element = websysmod::get_element_by_id("big_img");
     let img_html_element = unwrap!(img_element.dyn_into::<web_sys::HtmlImageElement>());
     let _x = img_html_element.style().set_property("display", "none");
 }
 
+/// visible big img
 pub fn visible_big_img(img_file_name: &str) {
     websysmod::debug_write(img_file_name);
     //change png in jpg for big img

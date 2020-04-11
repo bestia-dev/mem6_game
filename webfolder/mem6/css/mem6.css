@@ -4,7 +4,7 @@
 @font-face {
     font-family: 'Roboto';
     font-style: normal;
-    font-weight: 400;
+    /*font-weight: 400;*/
     src: local('Roboto'), local('Roboto-Regular'),
          url('../fonts/roboto-v20-latin-ext_latin-regular.woff2') format('woff2'), 
          url('../fonts/roboto-v20-latin-ext_latin-regular.woff') format('woff'); 
@@ -150,6 +150,10 @@ rect.btn{
 .blue{
     fill:blue;
     color: blue;
+}
+
+.bold{
+    font-weight: bold;
 }
 
 rect.rounded{
@@ -401,8 +405,9 @@ img.center{
   }
 
   #big_img {
+    display: none;
     width: 100%;
-    height:65%;
+    height: auto;
     position: absolute;
     z-index:999;
     top:0%;
@@ -414,13 +419,9 @@ img.center{
 
 @keyframes enlarge {
     0% {
-        top:0%;
-        left:0%;
       transform: scale(.20);
     }
       100% {
-          top:0%;
-          left:0%;
       transform: scale(1.00);
     }
   }

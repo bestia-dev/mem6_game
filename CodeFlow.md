@@ -1,7 +1,7 @@
 
 # CodeFlow for dodrio::vdom + router + htmltemplate
 
-The funny game "unForGetTable" (development name mem6)
+The funny game unForGetTable (development name mem6)
 is a PWA - progressive web app.  
 <https://github.com/LucianoBestia/mem6_game>  
 It works completely in the browser with wasm/webassembly.  
@@ -51,7 +51,7 @@ This is a "single page" app so the start of wasm is only one time here:
 - `update_rrc_local_route` - updates the `rrc.local_route` with the filename ex. `p03_join_a_group.html`
 - `async_spwloc_fetch_text` - fetch the html template
 - `between_body_tag()` - the html_template is a complete html file. It can be viewed correctly in the browser. It does not yet have any dynamic parts. This is great because the graphical designer can make changes on a true html file. The programmer after that adds comments that are actions for the templating engine. For the templating engine we need only the body part.
-- searches for <template> nodes, drains them and saves them in `rrc.html_sub_templates`for later use
+- searches for "template" nodes, drains them and saves them in `rrc.html_sub_templates`for later use
 - `update_rrc_html_template` - updates `rrc.html_template`
 
 ## Render (rootrenderingcomponentmod)

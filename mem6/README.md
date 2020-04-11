@@ -1,4 +1,4 @@
-# "unForGetTable"  (development name: mem6)
+# unForGetTable  (development name: mem6)
 
 [comment]: # (lmake_readme version)  
 
@@ -190,7 +190,6 @@ I use the <https://google-webfonts-helper.herokuapp.com> to download fonts.
 Crazy stuff. I used the website <https://www.favicon-generator.org/> to generate
 all the different imgs, sizes and code. And than add all this into index.html. There is more lines for icons than anything else now. Just crazy world.  
 
-
 ## audio normalize
 
 Different audio files had very different volume levels. That was not nice.
@@ -201,5 +200,9 @@ So the songs are not too loud, like they were before.
 ## big img
 
 Some types of images are simply too small (like bottles). You cannot see any details.
-I will try to add a second big image, that will open on a click on the small image.
-So the details will be visible.  
+I added a second big image. It opens with a smooth animation on click on the small image.
+So the details are nice visible.  
+
+## Easter egg
+
+Click on the title unForGetTable opens a new browser tab with music about memory and forgetting.  
