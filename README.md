@@ -6,7 +6,7 @@
 a drinking game to lose memory  
 
 **Learning Rust Wasm/WebAssembly, Virtual Dom Dodrio, WebSocket communication and PWA (Progressive Web Apps) - part six**  
-*Things are changing fast. This is the situation on 2020-02-16.*
+*Things are changing fast. This is the situation on 2020-04-11.*
 
 ## Documentation
 
