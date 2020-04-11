@@ -15,10 +15,11 @@ use dodrio::{
 impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
     /// html_templating boolean id the next node is rendered or not
     fn call_fn_boolean(&self, fn_name: &str) -> bool {
-        websysmod::debug_write(&format!("call_fn_boolean: {}", &fn_name));
+        // websysmod::debug_write(&format!("call_fn_boolean: {}", &fn_name));
         match fn_name {
             "is_first_player" => self.game_data.my_player_number == 1,
             "player_joined" => self.game_data.players.len() > 1,
+            "sounds_and_labels" => self.game_data.sounds_and_labels,
             _ => {
                 let x = format!("Error: Unrecognized call_fn_boolean: \"{}\"", fn_name);
                 websysmod::debug_write(&x);
@@ -69,6 +70,13 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 //websysmod::debug_write("player_turn_nickname");
                 return self.game_data.player_turn_now().nickname.to_string();
             }
+            "sounds_and_labels" => {
+                return if self.game_data.sounds_and_labels == true {
+                    "sounds and labels ON".to_string()
+                } else {
+                    "sounds and labels OFF".to_string()
+                };
+            }
             _ => {
                 let x = format!("Error: Unrecognized call_fn_string: \"{}\"", fn_name);
                 websysmod::debug_write(&x);
@@ -108,8 +116,23 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 "open_menu" => {
                     websysmod::open_new_local_page_push_to_history("#p21");
                 }
-                "rejoin_resync" => {
-                    statusreconnectmod::send_msg_for_resync(rrc);
+                "sounds_and_labels" => {
+                    // toggle sound and label on/off
+                    websysmod::debug_write(&format!("on click sounds and labels: {}", ""));
+                    if rrc.game_data.sounds_and_labels == true {
+                        rrc.game_data.sounds_and_labels = false;
+                    } else {
+                        rrc.game_data.sounds_and_labels = true;
+                    }
+                    rrc.web_data
+                        .send_ws_msg(&websocketmod::WsMessageForReceivers {
+                            msg_sender_ws_uid: rrc.web_data.my_ws_uid,
+                            msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
+                            msg_data: gamedatamod::WsMessageGameData::MsgSoundsAndLabels {
+                                sounds_and_labels: rrc.game_data.sounds_and_labels,
+                            },
+                        });
+                    vdom.schedule_render();
                 }
                 "back_to_game" => {
                     let h = unwrap!(websysmod::window().history());

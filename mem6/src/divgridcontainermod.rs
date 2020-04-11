@@ -162,22 +162,23 @@ pub fn render_template_grid_item<'a>(
 
 /// play sound mp3
 pub fn play_sound(rrc: &RootRenderingComponent, this_click_card_index: usize) {
-    // prepare the audio element with src filename of mp3
-    let src_mp3 = format!(
-        "content/{}/sound/{}",
-        rrc.game_data.game_name,
-        unwrap!(unwrap!(rrc.game_data.game_config.as_ref())
-            .sound_filename
-            .get(
-                unwrap!(
-                    rrc.game_data.card_grid_data.get(this_click_card_index),
-                    "error this_click_card_index"
-                )
-                .card_number
-            ))
-    );
-
-    websysmod::play_sound(&src_mp3);
+    if rrc.game_data.sounds_and_labels == true {
+        // prepare the audio element with src filename of mp3
+        let src_mp3 = format!(
+            "content/{}/sound/{}",
+            rrc.game_data.game_name,
+            unwrap!(unwrap!(rrc.game_data.game_config.as_ref())
+                .sound_filename
+                .get(
+                    unwrap!(
+                        rrc.game_data.card_grid_data.get(this_click_card_index),
+                        "error this_click_card_index"
+                    )
+                    .card_number
+                ))
+        );
+        websysmod::play_sound(&src_mp3);
+    }
 }
 
 /// grid width in pixels

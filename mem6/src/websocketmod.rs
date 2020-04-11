@@ -245,6 +245,14 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                                                                    } => {
                                             statusgameovermod::on_msg_play_again(rrc);
                                         }
+                                        WsMessageGameData::MsgSoundsAndLabels {
+                                            sounds_and_labels,
+                                        
+                                           
+                                        } => {
+                                            rrc.game_data.sounds_and_labels=sounds_and_labels;
+                                            vdom.schedule_render();
+                                        }
                                         WsMessageGameData::MsgAck {
                                            
                                             msg_id,

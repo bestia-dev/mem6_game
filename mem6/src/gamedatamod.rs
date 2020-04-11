@@ -166,6 +166,8 @@ pub struct GameData {
     pub videos: Vec<String>,
     /// audio for fun
     pub audio: Vec<String>,
+    /// sounds and labels toggle
+    pub sounds_and_labels: bool,
 }
 
 /// `WsMessageGameData` enum for WebSocket
@@ -217,6 +219,11 @@ pub enum WsMessageGameData {
     MsgTakeTurn {
         /// msg id (random)
         msg_id: usize,
+    },
+    /// sounds and labels toggle
+    MsgSoundsAndLabels {
+        /// sounds and labels toggle
+        sounds_and_labels: bool,
     },
     /// acknowledge msg, that the receiver received the message
     MsgAck {
@@ -286,6 +293,7 @@ impl GameData {
             games_metadata: None,
             videos: vec![],
             audio: vec![],
+            sounds_and_labels: true,
         }
     }
     /// reset the data to play again the game
