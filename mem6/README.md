@@ -206,3 +206,18 @@ So the details are nice visible.
 ## Easter egg
 
 Click on the title unForGetTable opens a new browser tab with music about memory and forgetting.  
+
+## text to speech
+
+When creating a new kind of game I prepare images and labels.  
+Then usually I use an online "text to speech" to produce the sound from the labels.  
+The best so far I found is:  
+<https://text-to-speech-demo.ng.bluemix.net/>  
+This is the IBM Watson text to speech service.  
+I prepare the text so every label is in a separate line and be sure to put a full stop on every line.  
+I copy/paste it and press Speak.  
+Then on the right side I click on the Kebap Button and click on Download.  
+The downloaded file has the name "synthesize" with no extension. I think it is in reality an ".mp3", but it doesn't really matter.  
+I open the file in Audacity. Ctrl+A to select the track. Then Analyze - Silence Finder. Tweak a little with the settings.  
+When I'm happy with the result then File - Export -Export Multiple as mp3.  
+Finally I rename the files to match the names in the game_config.json file.  
