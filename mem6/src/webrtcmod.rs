@@ -169,7 +169,9 @@ pub fn web_rtc_receive_answer(
     rrc: &mut RootRenderingComponent,
     sdp: String,
 ) {
-    let pc = rrc.web_data.rtc_peer_connection.as_ref().unwrap().clone();
+    let mut pc = rrc.web_data.rtc_peer_connection.as_ref().unwrap().clone();
+    //set local ice candidate event
+    set_on_local_icecandidate(&mut pc);
     spawn_local(async move {
         websysmod::debug_write(&format!("web_rtc_receive_answer: {}", &sdp));
 
@@ -180,6 +182,27 @@ pub fn web_rtc_receive_answer(
         websysmod::debug_write(&format!("result set_remote_description: {:?}", &r));
     });
 }
+
+/// this is candidate for the local object (not remote)
+pub fn set_on_local_icecandidate(pc: &mut web_sys::RtcPeerConnection) {
+    let handler = Box::new(move || {
+        websysmod::debug_write("on local icecandidate");
+        //send the candidate to the remote peer over ws
+    });
+    let cb_oh: Closure<dyn Fn()> = Closure::wrap(handler);
+    pc.set_onicecandidate(Some(cb_oh.as_ref().unchecked_ref()));
+    websysmod::debug_write(&format!("set_on_local_icecandidate: {}", ""));
+    cb_oh.forget();
+}
+
+/*
+//local ice candidates
+pub fn add_ice_candidate_with_opt_rtc_ice_candidate(
+    &self,
+    candidate: Option<&RtcIceCandidate>
+) -> Promise
+pub fn set_onicecandidate(&self, onicecandidate: Option<&Function>)
+*/
 
 /// send over webrtc
 pub fn web_rtc_send_chat(rrc: &RootRenderingComponent, msg: String) {
