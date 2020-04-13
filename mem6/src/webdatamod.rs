@@ -23,8 +23,12 @@ pub struct MsgInQueue {
 
 /// game data
 pub struct WebData {
-    /// web socket. used it to send message onclick.
+    /// web socket communication between players
     pub ws: Option<WebSocket>,
+    /// webrtc connection
+    pub rtc_peer_connection: Option<web_sys::RtcPeerConnection>,
+    /// rtc data channel
+    pub rtc_data_channel: Option<web_sys::RtcDataChannel>,
     /// local # hash route
     pub local_route: String,
     /// downloaded html template for main page
@@ -56,6 +60,8 @@ impl WebData {
         // return from constructor
         WebData {
             ws: None,
+            rtc_peer_connection: None,
+            rtc_data_channel: None,
             local_route: "".to_owned(),
             html_template: "".to_owned(),
             html_sub_templates: vec![],

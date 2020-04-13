@@ -303,6 +303,18 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                             );
                                             vdom.schedule_render();
                                         }
+                                        WsMessageGameData::MsgWebrtcOffer{
+                                            sdp
+                                        }=>{
+                                            let v2=vdom.clone();
+                                            webrtcmod::web_rtc_receive_offer(v2,rrc,sdp);
+                                        }
+                                        WsMessageGameData::MsgWebrtcAnswer{
+                                            sdp
+                                        }=>{
+                                            let v2=vdom.clone();
+                                            webrtcmod::web_rtc_receive_answer(v2,rrc,sdp);
+                                        }
                                     }
                                 }
                             })

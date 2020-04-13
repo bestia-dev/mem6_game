@@ -31,6 +31,15 @@ pub fn get_input_element_value_string_by_id(element_id: &str) -> String {
     input_html_element.value()
 }
 
+/// get input element value string by id
+pub fn set_input_element_value_string_by_id(element_id: &str, value: &str) {
+    // debug_write("before get_element_by_id");
+    let input_element = get_element_by_id(element_id);
+    // debug_write("before dyn_into");
+    let input_html_element = unwrap!(input_element.dyn_into::<web_sys::HtmlInputElement>());
+    // debug_write("before value()");
+    input_html_element.set_value(value);
+}
 /// save to local storage
 pub fn save_to_local_storage(name: &str, value: &str) {
     let ls = unwrap!(unwrap!(window().local_storage()));
@@ -143,7 +152,7 @@ pub fn play_sound(src: &str) {
 pub fn debug_write(text: &str) {
     // writing to the console is futile for mobile phones
     // I must write it on the UI.
-    // so I must access this string from the UI rendere
+    // so I must access this string from the UI renderer
     add_to_begin_of_debug_text(text);
     console::log_1(&JsValue::from_str(text));
 }

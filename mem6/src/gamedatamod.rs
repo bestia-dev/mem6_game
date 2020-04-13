@@ -249,6 +249,12 @@ pub enum WsMessageGameData {
         /// game status (isize is the enum variant datatype)
         game_status: String,
     },
+    /// webrtc offer msg
+    MsgWebrtcOffer { sdp: String },
+    /// webrtc answer msg
+    MsgWebrtcAnswer { sdp: String },
+    // chat msg to send over webrtc
+    //MsgWebrtcChatMsg { text: String },
 }
 
 #[derive(Display, AsRefStr, Serialize, Deserialize, Clone)]
@@ -422,7 +428,6 @@ impl GameData {
         // return
         unwrap!(serde_json::to_string(&vec_msg_receivers))
     }
-
     /// every smartphone grid starts and ends at a specific index of the card vector
     pub fn grid_start_end_index(&self) -> (usize, usize) {
         let start_index = unwrap!(unwrap!((unwrap!(self.my_player_number.checked_sub(1)))
@@ -503,4 +508,12 @@ impl GameData {
     pub fn get_2nd_card_mut(&mut self) -> &mut Card {
         unwrap!(self.card_grid_data.get_mut(self.card_index_of_2nd_click))
     }
+}
+
+/// prepare json string for one ws receiver
+pub fn prepare_json_msg_receivers_for_one(receiver_ws_uid: usize) -> String {
+    let mut vec_msg_receivers = Vec::new();
+    vec_msg_receivers.push(receiver_ws_uid);
+    // return
+    unwrap!(serde_json::to_string(&vec_msg_receivers))
 }

@@ -42,7 +42,7 @@ skip_core_tasks = true
     ]
 
     [tasks.check]
-    description = "cargo check"
+    description = "cargo check --release"
     clear = true
     command = "cargo"
     args = ["check","--release"]

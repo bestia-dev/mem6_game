@@ -2,36 +2,9 @@
 <html>
 
 <head>
-
-  <script type='text/javascript'
-          src='https://cdn.scaledrone.com/scaledrone.min.js'></script>
-
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width" />
-  <script type="text/javascript"
-          src="https://cdn.scaledrone.com/scaledrone.min.js"></script>
   <style>
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      font-size: 16px;
-      height: 100vh;
-    }
-
-    .content {
-      box-shadow: rgba(156, 172, 172, 0.2) 0px 2px 2px, rgba(156, 172, 172, 0.2) 0px 4px 4px, rgba(156, 172, 172, 0.2) 0px 8px 8px, rgba(156, 172, 172, 0.2) 0px 16px 16px, rgba(156, 172, 172, 0.2) 0px 32px 32px, rgba(156, 172, 172, 0.2) 0px 64px 64px;
-      border-radius: 3px;
-      height: 100vh;
-      max-height: 600px;
-      width: 100vw;
-      max-width: 400px;
-      display: flex;
-      flex-direction: column;
-    }
-
     .messages {
       flex-grow: 1;
       padding: 20px 30px;
@@ -98,23 +71,32 @@
 <body>
 
   <div class="content">
-    <div class="messages">
-
-    </div>
-    <form class="footer" onsubmit="return false;">
-      <input type="text" placeholder="Your message.." />
-      <button type="submit">Send</button>
+    <button data-on-click="web_rtc_start">Start</button>
+    <form onsubmit="return false;">
+      <label>my_ws_uid:<br />
+        <input id="my_ws_uid" type="text" data-t-value="my_ws_uid"
+               value="my_ws_uid:0000" />
+      </label><br />
+      <label>receiver ws_uid:<br />
+        <input id="receiver_ws_uid" type="text" placeholder="Receiver ws_uid" />
+      </label><br />
+      <label>message:<br />
+        <input id="message_text" type="text" placeholder="Your message.." />
+      </label><br />
     </form>
-    <button onclick="web_rtc_start()">Start</button>
+    <button data-on-click="web_rtc_send">Send</button>
+    <label>received_message:<br />
+      <input id="received_message" type="text" value="......" />
+    </label><br />
   </div>
-
-  <template data-template="message">
+  <!--
+  <x_template data-template="message">
     <div class="message">
       <div class="message__name"></div>
       <div class="message__bubble"></div>
     </div>
-  </template>
-
+  </x_template>
+-->
 </body>
 
 </html>

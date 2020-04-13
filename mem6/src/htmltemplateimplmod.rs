@@ -147,6 +147,15 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 "webrtc" => {
                     open_new_local_page("#p41");
                 }
+                "web_rtc_start" => {
+                    let v2 = vdom.clone();
+                    webrtcmod::web_rtc_start(v2, rrc);
+                }
+                "web_rtc_send" => {
+                    let message_text =
+                        websysmod::get_input_element_value_string_by_id("message_text");
+                    webrtcmod::web_rtc_send_chat(rrc, message_text);
+                }
                 "start_a_group_onclick" => {
                     let v2 = vdom.clone();
                     rrc.web_data.start_websocket(v2);
