@@ -26,6 +26,9 @@ struct MyCandidate {
 /// I must send vdom, because rrc cannot be used inside async block
 pub fn web_rtc_start(vdom: dodrio::VdomWeak, rrc: &mut RootRenderingComponent) {
     websysmod::debug_write("web_rtc_start()");
+    let receiver_ws_uid = websysmod::get_input_element_value_string_by_id("receiver_ws_uid");
+    let receiver_ws_uid = unwrap!(receiver_ws_uid.parse::<usize>());
+    rrc.web_data.rtc_receiver_ws_uid = receiver_ws_uid;
     //Result<RtcPeerConnection, JsValue>
     let result_pc = web_sys::RtcPeerConnection::new();
     if let Ok(pc) = result_pc {
@@ -60,7 +63,7 @@ pub fn web_rtc_start(vdom: dodrio::VdomWeak, rrc: &mut RootRenderingComponent) {
                     move |root| {
                         let rrc = root.unwrap_mut::<RootRenderingComponent>();
                         rrc.web_data.rtc_data_channel = Some(data_channel);
-                        web_rtc_send_offer(rrc, 9785, x.sdp());
+                        web_rtc_send_offer(rrc, rrc.web_data.rtc_receiver_ws_uid, x.sdp());
                     }
                 })
                 .await
@@ -87,9 +90,12 @@ pub fn web_rtc_receive_offer(
     vdom: dodrio::VdomWeak,
     rrc: &mut RootRenderingComponent,
     sdp: String,
+    msg_sender_ws_uid: usize,
 ) {
     let result_pc = web_sys::RtcPeerConnection::new();
     if let Ok(pc) = result_pc {
+        rrc.web_data.rtc_receiver_ws_uid = msg_sender_ws_uid;
+        vdom.schedule_render();
         // move the connection to the struct that is globally available
         rrc.web_data.rtc_peer_connection = Some(pc);
         let pc = rrc.web_data.rtc_peer_connection.as_ref().unwrap().clone();
@@ -119,7 +125,7 @@ pub fn web_rtc_receive_offer(
                 vdom.with_component({
                     move |root| {
                         let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                        web_rtc_send_answer(rrc, 9569, x.sdp());
+                        web_rtc_send_answer(rrc, rrc.web_data.rtc_receiver_ws_uid, x.sdp());
                         rrc.web_data.rtc_data_channel = Some(data_channel);
                     }
                 })
@@ -194,7 +200,7 @@ pub fn web_rtc_receive_answer(
                 move |root| {
                     let rrc = root.unwrap_mut::<RootRenderingComponent>();
                     rrc.web_data.rtc_accepted_call = true;
-                    web_rtc_send_ice_candidates(rrc, 9785);
+                    web_rtc_send_ice_candidates(rrc, rrc.web_data.rtc_receiver_ws_uid);
                 }
             })
             .await
@@ -228,7 +234,7 @@ pub fn set_on_local_icecandidate(vdom: dodrio::VdomWeak, pc: &mut web_sys::RtcPe
                             //save to queue
                             rrc.web_data.rtc_ice_queue.push(candidate_json);
                             if rrc.web_data.rtc_accepted_call == true {
-                                web_rtc_send_ice_candidates(rrc, 9785);
+                                web_rtc_send_ice_candidates(rrc, rrc.web_data.rtc_receiver_ws_uid);
                             }
                         }
                     })

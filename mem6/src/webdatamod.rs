@@ -29,6 +29,8 @@ pub struct WebData {
     pub rtc_peer_connection: Option<web_sys::RtcPeerConnection>,
     /// rtc data channel
     pub rtc_data_channel: Option<web_sys::RtcDataChannel>,
+    /// receiver for webrtc
+    pub rtc_receiver_ws_uid: usize,
     /// accepted call
     pub rtc_accepted_call: bool,
     /// queue for ice candidate
@@ -68,6 +70,7 @@ impl WebData {
             rtc_data_channel: None,
             rtc_accepted_call: false,
             rtc_ice_queue: vec![],
+            rtc_receiver_ws_uid: 0,
             local_route: "".to_owned(),
             html_template: "".to_owned(),
             html_sub_templates: vec![],

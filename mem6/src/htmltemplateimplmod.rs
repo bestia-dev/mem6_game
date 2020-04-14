@@ -41,6 +41,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             "blink_or_not_nickname" => storagemod::blink_or_not_nickname(self),
             "blink_or_not_group_id" => blink_or_not_group_id(self),
             "my_ws_uid" => format!("{}", self.web_data.my_ws_uid),
+            "receiver_ws_uid" => format!("{}", self.web_data.rtc_receiver_ws_uid),
             "players_count" => format!("{} ", self.game_data.players.len() - 1),
             "game_name" => self.game_data.game_name.to_string(),
             "group_id" => self.game_data.group_id.to_string(),

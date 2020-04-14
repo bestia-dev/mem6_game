@@ -307,7 +307,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                             sdp
                                         }=>{
                                             let v2=vdom.clone();
-                                            webrtcmod::web_rtc_receive_offer(v2,rrc,sdp);
+                                            webrtcmod::web_rtc_receive_offer(v2,rrc,sdp, msg.msg_sender_ws_uid);
                                         }
                                         WsMessageGameData::MsgWebrtcAnswer{
                                             sdp

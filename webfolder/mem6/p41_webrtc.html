@@ -1,102 +1,45 @@
-<!DOCTYPE html>
 <html>
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width" />
-  <style>
-    .messages {
-      flex-grow: 1;
-      padding: 20px 30px;
-      overflow: auto;
-    }
-
-    .message {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .message--mine {
-      align-items: flex-end;
-    }
-
-    .message--theirs {
-      align-items: flex-start;
-    }
-
-    .message__name {
-      padding: 10px 0;
-    }
-
-    .message__bubble {
-      padding: 20px;
-      border-radius: 3px;
-    }
-
-    .message--theirs .message__bubble {
-      background: #6363bf;
-      color: white;
-    }
-
-    .message--mine .message__bubble {
-      background: rgba(156, 172, 172, 0.2);
-    }
-
-    .footer {
-      line-height: 76px;
-      border-top: 1px solid rgba(156, 172, 172, 0.2);
-      display: flex;
-      flex-shrink: 0;
-    }
-
-    input {
-      height: 76px;
-      border: none;
-      flex-grow: 1;
-      padding: 0 30px;
-      font-size: 16px;
-      background: transparent;
-    }
-
-    button {
-      border: none;
-      background: transparent;
-      padding: 0 30px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-  </style>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>dodrio_templating</title>
+  <link rel="stylesheet" href="css/mem6.css">
 </head>
 
 <body>
+  <div>
+    <h5>Testing webrtc communication with a small chat web app</h5>
+    <h6 class="blue">The ws_uid is like a telephone number to call the other
+      browser.
+      In the field "receiver ws_uid" write the my_ws_uid from the other browser.
+      Then press "Start" to "call" the other browser.
+      Write a message and click "Send".
+    </h6>
+    <table>
+      <tr>
+        <td> <label>my_ws_uid:<br />
+            <input id="my_ws_uid" type="text" style="width:50%;"
+                   data-t-value="my_ws_uid" value="0000" />
+          </label></td>
+        <td><label>receiver ws_uid:<br />
+            <input id="receiver_ws_uid" type="text" style="width:50%;"
+                   data-t-value="receiver_ws_uid" value="0000" />
+          </label></td>
+        <td style="vertical-align: bottom;">
+          <button data-on-click="web_rtc_start">Start</button>
+        </td>
+      </tr>
+    </table>
 
-  <div class="content">
-    <button data-on-click="web_rtc_start">Start</button>
-    <form onsubmit="return false;">
-      <label>my_ws_uid:<br />
-        <input id="my_ws_uid" type="text" data-t-value="my_ws_uid"
-               value="my_ws_uid:0000" />
-      </label><br />
-      <label>receiver ws_uid:<br />
-        <input id="receiver_ws_uid" type="text" placeholder="Receiver ws_uid" />
-      </label><br />
-      <label>message:<br />
-        <input id="message_text" type="text" placeholder="Your message.." />
-      </label><br />
-    </form>
-    <button data-on-click="web_rtc_send">Send</button>
+    <label>message:
+      <input id="message_text" type="text" placeholder="Your message.." />
+    </label>
+    <button width="50%" data-on-click="web_rtc_send">Send</button>
     <label>received_message:<br />
       <input id="received_message" type="text" value="......" />
-    </label><br />
+    </label>
   </div>
-  <!--
-  <x_template data-template="message">
-    <div class="message">
-      <div class="message__name"></div>
-      <div class="message__bubble"></div>
-    </div>
-  </x_template>
--->
 </body>
 
 </html>
