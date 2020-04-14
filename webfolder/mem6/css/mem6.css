@@ -382,6 +382,7 @@ img.center{
         color:white;
         font-size:16px;
         padding:8px 15px;
+        vertical-align: bottom;
   }
 
   .input_small{
@@ -400,18 +401,15 @@ img.center{
 .left{
     text-align: left;
 }
-
-.flexrow {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
+.grid-container {
+    display: grid;
+  }
+.grid-item {
+    padding: 5px;
+    text-align: center;
+    justify-items: center;
     align-items: center;
-    flex: 1;
-}
-.item {
-    flex:1;
-    margin: auto 10px;
-    border-radius: 5px;
-    border:1px solid black;
-}
+    margin-top: auto;
+    margin-bottom: -1.2%;
+  }
 /* end of webrtc*/
