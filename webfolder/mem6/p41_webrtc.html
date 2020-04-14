@@ -9,36 +9,39 @@
 
 <body>
   <div>
-    <h5>Testing webrtc communication with a small chat web app</h5>
-    <h6 class="blue">The ws_uid is like a telephone number to call the other
-      browser.
-      In the field "receiver ws_uid" write the my_ws_uid from the other browser.
-      Then press "Start" to "call" the other browser.
-      Write a message and click "Send".
-    </h6>
-    <table>
-      <tr>
-        <td> <label>my_ws_uid:<br />
-            <input id="my_ws_uid" type="text" style="width:50%;"
-                   data-t-value="my_ws_uid" value="0000" />
-          </label></td>
-        <td><label>receiver ws_uid:<br />
-            <input id="receiver_ws_uid" type="text" style="width:50%;"
-                   data-t-value="receiver_ws_uid" value="0000" />
-          </label></td>
-        <td style="vertical-align: bottom;">
-          <button data-on-click="web_rtc_start">Start</button>
-        </td>
-      </tr>
-    </table>
+    <div height="80%"></div>
+    <h5>Webrtc chat</h5>
+    <section class="flexrow">
+      <div class="item"><label>my_id:<br />
+          <input id="my_ws_uid" class="input_small center" type="text"
+                 readonly="true" style="width:50%;" data-t-value="my_ws_uid"
+                 value="0000" />
+        </label></div>
+      <div class="item"><label>receiver_id:<br />
+          <input id="receiver_ws_uid" class="input_small center" type="text"
+                 style="width:50%;" data-t-value="receiver_ws_uid"
+                 value="0000" />
+        </label></div>
+      <div class="item"><button id="web_rtc_start" class="small_button"
+                data-on-click="web_rtc_start">Start</button></div>
+    </section>
+    <section class="flexrow">
+      <div class="item"> <label>your message:<br />
+          <input id="message_text" class="input_small left" type="text"
+                 value="" />
+        </label></div>
+      <div class="item"> <button id="web_rtc_send" class="small_button"
+                data-on-click="web_rtc_send">Send</button>
+      </div>
+    </section>
 
-    <label>message:
-      <input id="message_text" type="text" placeholder="Your message.." />
-    </label>
-    <button width="50%" data-on-click="web_rtc_send">Send</button>
-    <label>received_message:<br />
+    <label>received_messages:<br />
       <input id="received_message" type="text" value="......" />
     </label>
+
+
+
+
   </div>
 </body>
 
