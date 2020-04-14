@@ -253,6 +253,8 @@ pub enum WsMessageGameData {
     MsgWebrtcOffer { sdp: String },
     /// webrtc answer msg
     MsgWebrtcAnswer { sdp: String },
+    /// webrtc answer msg
+    MsgWebrtcIceCandidate { sdp: String },
     // chat msg to send over webrtc
     //MsgWebrtcChatMsg { text: String },
 }

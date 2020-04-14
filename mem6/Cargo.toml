@@ -1,6 +1,6 @@
 [package]
 name = "mem6"
-version = "2020.413.1829"
+version = "2020.414.1511"
 authors = ["Luciano Furlan <Luciano.Bestia@gmail.com>"]
 edition = "2018"
 description = "Learning Rust Wasm/WebAssembly with Virtual Dom Dodrio"
@@ -86,6 +86,7 @@ features = [
   "RtcSessionDescriptionInit",
   "RtcIceCandidate",
   "RtcIceCandidateInit",
+  "RtcPeerConnectionIceEvent",
   "RtcPeerConnection",
   "RtcSdpType",
   "Screen",

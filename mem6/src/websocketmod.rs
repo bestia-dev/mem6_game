@@ -315,6 +315,12 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
                                             let v2=vdom.clone();
                                             webrtcmod::web_rtc_receive_answer(v2,rrc,sdp);
                                         }
+                                        WsMessageGameData::MsgWebrtcIceCandidate{
+                                            sdp
+                                        }=>{
+                                            let v2=vdom.clone();
+                                            webrtcmod::web_rtc_receive_ice_candidate(v2,rrc,sdp);
+                                        }
                                     }
                                 }
                             })

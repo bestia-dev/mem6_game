@@ -1,6 +1,6 @@
 # mem6 TODO
 
-- 13.4.2020 send cadidate over ws to the other peer. That must addice candidate.
+- 13.4.2020 send candidate over ws to the other peer. That must add ice candidate.
 
 - webRTC instead of WebSockets 1st version with a web server
 - STUN server for NAT traversal <https://github.com/sile/rustun>
