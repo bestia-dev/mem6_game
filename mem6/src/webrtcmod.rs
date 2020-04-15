@@ -29,9 +29,9 @@ pub fn web_rtc_receiver_ws_uid_onkeyup(
     vdom:VdomWeak,rrc: &mut RootRenderingComponent, 
     event: web_sys::Event) {
     let keyboard_event = event.dyn_into::<web_sys::KeyboardEvent>();
-    websysmod::debug_write(&format!("web_rtc_receiver_ws_uid_onkeyup: {:?}",&keyboard_event));
+    //websysmod::debug_write(&format!("web_rtc_receiver_ws_uid_onkeyup: {:?}",&keyboard_event));
     if let Ok(keyboard_event)=keyboard_event{
-        websysmod::debug_write(&keyboard_event.key());
+        //websysmod::debug_write(&keyboard_event.key());
         if keyboard_event.key() == "Enter" {
             // same as button click
             web_rtc_start(vdom,rrc);
@@ -110,6 +110,7 @@ pub fn web_rtc_receive_offer(
     sdp: String,
     msg_sender_ws_uid: usize,
 ) {
+    websysmod::debug_write("web_rtc_receive_offer()");
     let result_pc = web_sys::RtcPeerConnection::new();
     if let Ok(pc) = result_pc {
         rrc.web_data.rtc_receiver_ws_uid = msg_sender_ws_uid;
@@ -182,7 +183,7 @@ pub fn web_rtc_set_on_open(vdom:VdomWeak,dc: &mut web_sys::RtcDataChannel) {
     let msg_recv_handler = Box::new(move |_msg: JsValue| {
         let vdom=vdom.clone();
         let v2 = vdom.clone();
-        websysmod::debug_write("on open handle");
+        websysmod::debug_write("web_rtc on_open");
         spawn_local(async move {
         unwrap!(
             vdom.with_component({
@@ -221,9 +222,10 @@ pub fn web_rtc_receive_answer(
     rrc: &mut RootRenderingComponent,
     sdp: String,
 ) {
+    websysmod::debug_write("web_rtc_receive_answer");
     let pc = rrc.web_data.rtc_peer_connection.as_ref().unwrap().clone();
     spawn_local(async move {
-        //websysmod::debug_write(&format!("web_rtc_receive_answer: {}", &sdp));
+        
 
         let mut rd = web_sys::RtcSessionDescriptionInit::new(web_sys::RtcSdpType::Answer);
         //set_sdp with a wrong name
@@ -247,7 +249,7 @@ pub fn web_rtc_receive_answer(
 pub fn web_rtc_set_on_local_icecandidate(vdom: VdomWeak, pc: &mut web_sys::RtcPeerConnection) {
     let handler = Box::new(move |event: JsValue| {
         let v2 = vdom.clone();
-        //websysmod::debug_write("on local icecandidate");
+        websysmod::debug_write("on local icecandidate");
         //send the candidate to the remote peer over ws
         let event = unwrap!(event.dyn_into::<web_sys::RtcPeerConnectionIceEvent>());
         if let Some(candidate) = event.candidate() {
@@ -308,7 +310,7 @@ pub fn web_rtc_receive_ice_candidate(
 ) {
     let pc = rrc.web_data.rtc_peer_connection.as_ref().unwrap().clone();
     spawn_local(async move {
-        //websysmod::debug_write(&format!("web_rtc_receive_ice_candidate{}", ""));
+        websysmod::debug_write("web_rtc_receive_ice_candidate");
         let my_candidate: MyCandidate = unwrap!(serde_json::from_str(&sdp));
         let mut icecandidate_init = web_sys::RtcIceCandidateInit::new("");
         icecandidate_init.candidate(&my_candidate.candidate);

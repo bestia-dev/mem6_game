@@ -129,7 +129,7 @@ pub fn get_url_and_hash() -> (String, String) {
     let mut location_href = unwrap!(window().location().href());
     // without /index.html
     location_href = location_href.to_lowercase().replace("index.html", "");
-    debug_write(&format!("location_href: {}", &location_href));
+    //debug_write(&format!("location_href: {}", &location_href));
 
     // split it by # hash
     let cl = location_href.clone();
@@ -137,8 +137,8 @@ pub fn get_url_and_hash() -> (String, String) {
     location_href = unwrap!(spl.next()).to_string();
     let href_hash = spl.next().unwrap_or("").to_string();
 
-    debug_write(&format!("location_href: {}", &location_href));
-    debug_write(&format!("href_hash: {}", &href_hash));
+    //debug_write(&format!("location_href: {}", &location_href));
+    //debug_write(&format!("href_hash: {}", &href_hash));
     (location_href, href_hash)
 }
 
