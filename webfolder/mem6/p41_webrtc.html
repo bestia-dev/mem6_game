@@ -8,37 +8,34 @@
 </head>
 
 <body>
-  <div>
-    <div height="80%"></div>
+  <div style="padding-left:2%;padding-right:4%;">
     <h5 class="orange">Webrtc Chat (exp.)</h5>
     <!--b=is_not_rtc_data_channel_open-->
-    <div class="grid-container"
-         style="grid-template-columns: 40% 40% 20%;border-top: 5px white;">
-      <div class="grid-item" style="border-top: 2px white;"><label>my id:<br />
+    <div class="grid-container" style="grid-template-columns: 40% 40% 20%;">
+      <div class="grid-item"><label>my id:<br />
           <input id="my_ws_uid" class="input_small center" type="text"
-                 readonly="true" style="width:50%;" data-t-value="my_ws_uid"
-                 value="0000" />
+                 readonly="true" data-t-value="my_ws_uid" value="0000" />
         </label></div>
-      <div class="grid-item" style="border-top: 5px white;"><label>receiver
+      <div class="grid-item"><label>receiver
           id:<br />
           <input id="receiver_ws_uid" class="input_small center" type="text"
-                 style="width:50%;" data-t-value="receiver_ws_uid"
-                 data-on-keyup="web_rtc_receiver_ws_uid_onkeyup" value="0000" />
+                 data-t-value="receiver_ws_uid" value="0000"
+                 data-on-keyup="web_rtc_receiver_ws_uid_onkeyup" />
         </label></div>
-      <div class="grid-item" style="border-top: 5px white;"><button
-                id="web_rtc_start" class="small_button"
+      <div class="grid-item for_button">
+        <button id="web_rtc_start" class="small_button"
                 data-on-click="web_rtc_start">Start</button></div>
     </div>
     <!--b=is_rtc_data_channel_open-->
-    <div class="grid-container"
-         style="grid-template-columns: 80% 20%;border-top: 2px white;">
-      <div class="grid-item" style="justify-items: left;text-align: left;">
+    <div class="grid-container" style="grid-template-columns: 80% 20%;">
+      <div class="grid-item">
         <label>your
           message:<br />
           <input id="web_rtc_chat_text" class="input_small left" type="text"
                  data-on-keyup="web_rtc_chat_text_onkeyup" value="" />
         </label></div>
-      <div class="grid-item"><button id="web_rtc_send_chat" class="small_button"
+      <div class="grid-item for_button">
+        <button id="web_rtc_send_chat" class="small_button"
                 data-on-click="web_rtc_send_chat">Send</button></div>
     </div>
     <hr />

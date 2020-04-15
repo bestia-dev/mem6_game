@@ -374,14 +374,14 @@ img.center{
 /*web rtc experimental*/
 .small_button {
         background-color:green;
-        border-radius:5px;
+        border-radius:8px;
         border:2px solid yellow;
         display:inline-block;
         cursor:pointer;
         color:white;
         font-size:0.9rem;
-        padding:8px 15px;
-        margin-top: 15px;
+        padding:10% 20%;
+        margin-top: 10%;
   }
 
 .input_small{
@@ -392,8 +392,14 @@ img.center{
     display:inline-block;    
     color: white;
     font-size: 0.8rem ;
-    padding:4px;
-    border-radius: 5px;
+    padding-top:5px;
+    padding-bottom:5px;
+    padding-left:20px;
+    padding-right:20px;
+    border-radius: 8px;
+}
+textarea:focus, input:focus{
+    outline: none;
 }
 .center{
     text-align: center;
@@ -405,12 +411,14 @@ img.center{
     display: grid;
   }
 .grid-item {
-    padding: 5px;
+    padding: 1%;
     text-align: center;
     justify-items: center;
-    align-items: center;
-    
-    
+    margin-left:10px;
+    margin-right:10px;
+  }
+  .for_button{
+    padding-top: 32%;
   }
 .messages{
     display: flex;
@@ -420,20 +428,20 @@ img.center{
   }
 .message{
     display: flex;
-    width: 70%;
+    width: 80%;
     flex-direction: column;
-    margin: 5px 5px 5px 5px;
-    border-radius: 5px;
-    padding: 2%;
-
+    margin-top: 2%;
+    border-radius: 8px;
+    padding-left: 2%;
+    padding-right: 2%;
   }
-.sender1{
-    align-self: flex-start;
-    background: slategrey;
+  .sender1{
+    align-self: flex-end;
+    background: darkslategrey;
     color: white;
   }
-.sender2{
-    align-self: flex-end;
+  .sender2{
+    align-self: flex-start;
     background: purple;
     color: white;
 }

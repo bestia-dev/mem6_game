@@ -416,13 +416,8 @@ pub fn web_rtc_div_messages<'a>(
         index -= 1;
         loop{
             let chat_msg=&rrc.web_data.rtc_chat[index];
-            let template_name = if chat_msg.sender==1 {
-                "message_sender2"
-            }
-            else{
-                    "message_sender1"
-            };
-            let mut html_template = rrc.web_data.get_sub_template(template_name);
+            let template_name = format!("message_sender{}",chat_msg.sender);
+            let mut html_template = rrc.web_data.get_sub_template(&template_name);
             html_template = html_template.replace("replace_in_code_with_msg",&chat_msg.msg);
             let node = unwrap!(rrc.render_template (cx, &html_template, htmltemplatemod::HtmlOrSvg::Html));
             vec_nodes.push(node);
