@@ -1,6 +1,6 @@
 [package]
 name = "mem6"
-version = "2020.415.1435"
+version = "2020.415.1922"
 authors = ["Luciano Furlan <Luciano.Bestia@gmail.com>"]
 edition = "2018"
 description = "Learning Rust Wasm/WebAssembly with Virtual Dom Dodrio"
@@ -79,6 +79,7 @@ features = [
   "RequestMode",
   "RequestRedirect",
   "Response",
+  "RtcConfiguration",
   "RtcDataChannelInit",
   "RtcDataChannel",
   "RtcDataChannelState",

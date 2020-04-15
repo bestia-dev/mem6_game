@@ -45,8 +45,16 @@ pub fn web_rtc_start(vdom: VdomWeak, rrc: &mut RootRenderingComponent) {
     let receiver_ws_uid = websysmod::get_input_element_value_string_by_id("receiver_ws_uid");
     let receiver_ws_uid = unwrap!(receiver_ws_uid.parse::<usize>());
     rrc.web_data.rtc_receiver_ws_uid = receiver_ws_uid;
+    let conf_str = r#"[{ "url": "stun:stun.bestia.dev" }] "#;
+    let res_jsval_jsval=js_sys::JSON::parse(conf_str);
+    websysmod::debug_write(&format!("res_jsval_jsval {:?}",res_jsval_jsval));
+    let js_value = unwrap!(res_jsval_jsval);
+    //ice_servers(&mut self, val: &JsValue) -> &mut Self
+    let mut rtc_conf = web_sys::RtcConfiguration::new();
+    let rtc_conf = rtc_conf.ice_servers(&js_value);
     //Result<RtcPeerConnection, JsValue>
-    let result_pc = web_sys::RtcPeerConnection::new();
+    let result_pc = web_sys::RtcPeerConnection::new_with_configuration_and_constraints(&rtc_conf,None);
+     websysmod::debug_write(&format!("result_pc {:?}",result_pc));
     if let Ok(pc) = result_pc {
         //websysmod::debug_write("web_rtc_start ok");
         // move the connection to the struct that is globally available
