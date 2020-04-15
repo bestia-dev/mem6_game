@@ -6,13 +6,14 @@ use crate::*;
 
 use unwrap::unwrap;
 use wasm_bindgen::JsCast;
+use dodrio::VdomWeak;
 // endregion
 
 /// on msg
 pub fn on_msg_drink_end(
     _rrc: &mut RootRenderingComponent,
     _msg_sender_ws_uid: usize,
-    _vdom: &dodrio::VdomWeak,
+    _vdom: &VdomWeak,
 ) {
     htmltemplateimplmod::open_new_local_page("#p11");
 }

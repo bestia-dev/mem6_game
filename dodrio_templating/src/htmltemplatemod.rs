@@ -9,6 +9,7 @@ use dodrio::{
     Node, Listener, Attribute, RenderContext, RootRender,
     bumpalo::{self},
     builder::{ElementBuilder, text},
+    VdomWeak
 };
 // use crate::*;
 use unwrap::unwrap;
@@ -34,7 +35,7 @@ pub trait HtmlTemplating {
     fn call_fn_listener(
         &self,
         fn_name: String,
-    ) -> Box<dyn Fn(&mut dyn RootRender, dodrio::VdomWeak, web_sys::Event) + 'static>;
+    ) -> Box<dyn Fn(&mut dyn RootRender, VdomWeak, web_sys::Event) + 'static>;
     // endregion: specific implementation code
 
     // region: generic code (in trait definition)

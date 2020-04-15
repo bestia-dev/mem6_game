@@ -7,7 +7,7 @@
 use crate::*;
 
 use unwrap::unwrap;
-use dodrio::{RenderContext, Node};
+use dodrio::{RenderContext, Node,VdomWeak};
 use wasm_bindgen::JsCast;
 use crate::htmltemplatemod::HtmlTemplating;
 // endregion
@@ -15,7 +15,7 @@ use crate::htmltemplatemod::HtmlTemplating;
 /// on click
 pub fn on_click_1st_card(
     rrc: &mut RootRenderingComponent,
-    vdom: &dodrio::VdomWeak,
+    vdom: &VdomWeak,
     this_click_card_index: usize,
 ) {
     // websysmod::debug_write("on_click_1st_card");
@@ -52,7 +52,7 @@ pub fn flip_back(rrc: &mut RootRenderingComponent) {
 /// on msg
 pub fn on_msg_click_1st_card(
     rrc: &mut RootRenderingComponent,
-    vdom: &dodrio::VdomWeak,
+    vdom: &VdomWeak,
     msg_sender_ws_uid: usize,
     card_index_of_1st_click: usize,
     msg_id: usize,
@@ -120,7 +120,7 @@ pub fn div_on_1st_card<'a>(rrc: &RootRenderingComponent, cx: &mut RenderContext<
 #[allow(clippy::indexing_slicing)]
 pub fn on_click_img_status1st(
     root: &mut dyn dodrio::RootRender,
-    vdom: &dodrio::VdomWeak,
+    vdom: &VdomWeak,
     event: &web_sys::Event,
 ) {
     // websysmod::debug_write("img click");

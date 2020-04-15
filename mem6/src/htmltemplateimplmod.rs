@@ -10,6 +10,7 @@ use dodrio::{
     Node, RenderContext, RootRender,
     bumpalo::{self},
     builder::{ElementBuilder, text},
+    VdomWeak
 };
 
 impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
@@ -20,6 +21,8 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             "is_first_player" => self.game_data.my_player_number == 1,
             "player_joined" => self.game_data.players.len() > 1,
             "sounds_and_labels" => self.game_data.sounds_and_labels,
+            "is_rtc_data_channel_open"=> self.web_data.is_rtc_data_channel_open,
+            "is_not_rtc_data_channel_open"=> !self.web_data.is_rtc_data_channel_open,
             _ => {
                 let x = format!("Error: Unrecognized call_fn_boolean: \"{}\"", fn_name);
                 websysmod::debug_write(&x);
@@ -91,7 +94,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
     fn call_fn_listener(
         &self,
         fn_name: String,
-    ) -> Box<dyn Fn(&mut dyn RootRender, dodrio::VdomWeak, web_sys::Event) + 'static> {
+    ) -> Box<dyn Fn(&mut dyn RootRender, VdomWeak, web_sys::Event) + 'static> {
         Box::new(move |root, vdom, event| {
             let fn_name = fn_name.clone();
             let fn_name = fn_name.as_str();
@@ -148,14 +151,21 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 "webrtc" => {
                     open_new_local_page("#p41");
                 }
+                "web_rtc_receiver_ws_uid_onkeyup" => {
+                    let v2 = vdom.clone();
+                    webrtcmod::web_rtc_receiver_ws_uid_onkeyup(v2,rrc,event);
+                }
                 "web_rtc_start" => {
                     let v2 = vdom.clone();
                     webrtcmod::web_rtc_start(v2, rrc);
                 }
-                "web_rtc_send" => {
-                    let message_text =
-                        websysmod::get_input_element_value_string_by_id("message_text");
-                    webrtcmod::web_rtc_send_chat(rrc, message_text);
+                "web_rtc_chat_text_onkeyup" => {
+                    let v2 = vdom.clone();
+                    webrtcmod::web_rtc_chat_text_onkeyup(v2,rrc,event);
+                }
+                "web_rtc_send_chat" => {
+                    let v2 = vdom.clone();
+                    webrtcmod::web_rtc_send_chat(v2,rrc);
                 }
                 "start_a_group_onclick" => {
                     let v2 = vdom.clone();
@@ -294,9 +304,8 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             "div_grid_all_items" => {
                 return divgridcontainermod::div_grid_all_items(self, cx);
             }
-            "dummy" => {
-                // just to avoid the one match clippy
-                return vec![];
+            "web_rtc_div_messages" => {
+                return webrtcmod::web_rtc_div_messages(self, cx);
             }
             _ => {
                 let node = ElementBuilder::new(bump, "h2")
@@ -328,7 +337,7 @@ pub fn svg_qrcode_to_node<'a>(
 }
 
 /// the arrow to the right
-pub fn game_type_right_onclick(rrc: &mut RootRenderingComponent, vdom: dodrio::VdomWeak) {
+pub fn game_type_right_onclick(rrc: &mut RootRenderingComponent, vdom: VdomWeak) {
     let gmd = &unwrap!(rrc.game_data.games_metadata.as_ref()).vec_game_metadata;
     let mut last_name = unwrap!(gmd.last()).name.to_string();
     for x in gmd {
@@ -343,7 +352,7 @@ pub fn game_type_right_onclick(rrc: &mut RootRenderingComponent, vdom: dodrio::V
 }
 
 /// left arrow button
-pub fn game_type_left_onclick(rrc: &mut RootRenderingComponent, vdom: dodrio::VdomWeak) {
+pub fn game_type_left_onclick(rrc: &mut RootRenderingComponent, vdom: VdomWeak) {
     let gmd = &unwrap!(rrc.game_data.games_metadata.as_ref()).vec_game_metadata;
     let mut last_name = unwrap!(gmd.first()).name.to_string();
     for x in gmd.iter().rev() {

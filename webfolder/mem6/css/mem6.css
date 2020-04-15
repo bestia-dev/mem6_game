@@ -372,7 +372,6 @@ img.center{
   }
 
 /*web rtc experimental*/
-
 .small_button {
         background-color:green;
         border-radius:5px;
@@ -380,20 +379,21 @@ img.center{
         display:inline-block;
         cursor:pointer;
         color:white;
-        font-size:16px;
+        font-size:0.9rem;
         padding:8px 15px;
-        vertical-align: bottom;
+        margin-top: 15px;
   }
 
-  .input_small{
-      border:none;
+.input_small{
+    border:none;
     background-color: darkslategrey ;
     width:100%;
     margin:auto;
-    display:inline-block;
-    
+    display:inline-block;    
     color: white;
-    font-size: 1.0rem ;
+    font-size: 0.8rem ;
+    padding:4px;
+    border-radius: 5px;
 }
 .center{
     text-align: center;
@@ -409,7 +409,32 @@ img.center{
     text-align: center;
     justify-items: center;
     align-items: center;
-    margin-top: auto;
-    margin-bottom: -1.2%;
+    
+    
   }
+.messages{
+    display: flex;
+    flex-direction:column;
+    flex-grow: 1;
+    font-size: 0.8rem ;
+  }
+.message{
+    display: flex;
+    width: 70%;
+    flex-direction: column;
+    margin: 5px 5px 5px 5px;
+    border-radius: 5px;
+    padding: 2%;
+
+  }
+.sender1{
+    align-self: flex-start;
+    background: slategrey;
+    color: white;
+  }
+.sender2{
+    align-self: flex-end;
+    background: purple;
+    color: white;
+}
 /* end of webrtc*/

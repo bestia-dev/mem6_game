@@ -15,6 +15,7 @@ use wasm_bindgen_futures::spawn_local;
 use web_sys::{ErrorEvent, WebSocket};
 use gloo_timers::future::TimeoutFuture;
 use serde_derive::{Serialize, Deserialize};
+use dodrio::VdomWeak;
 // endregion
 
 /// message for receivers
@@ -108,7 +109,7 @@ pub fn u32_size() -> u32 {
 /// receive WebSocket msg callback.
 #[allow(clippy::unneeded_field_pattern)]
 #[allow(clippy::too_many_lines)] // I know is long
-pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
+pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: VdomWeak) {
     let msg_recv_handler = Box::new(move |msg: JsValue| {
         let data: JsValue = unwrap!(Reflect::get(&msg, &"data".into()));
         let data = unwrap!(data.as_string());
@@ -343,7 +344,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: dodrio::VdomWeak) {
 
 /// on error write it on the screen for debugging
 #[allow(clippy::as_conversions)]
-pub fn setup_ws_onerror(ws: &WebSocket, vdom: dodrio::VdomWeak) {
+pub fn setup_ws_onerror(ws: &WebSocket, vdom: VdomWeak) {
     let onerror_callback = Closure::wrap(Box::new(move |e: ErrorEvent| {
         let err_text = format!("error event {:?}", e);
         // websysmod::debug_write(&err_text);
@@ -371,7 +372,7 @@ pub fn setup_ws_onerror(ws: &WebSocket, vdom: dodrio::VdomWeak) {
 
 /// on close WebSocket connection
 #[allow(clippy::as_conversions)]
-pub fn setup_ws_onclose(ws: &WebSocket, vdom: dodrio::VdomWeak) {
+pub fn setup_ws_onclose(ws: &WebSocket, vdom: VdomWeak) {
     let onclose_callback = Closure::wrap(Box::new(move |e: ErrorEvent| {
         let err_text = format!("ws_onclose {:?}", e);
         websysmod::debug_write(&format!("onclose_callback {}", &err_text));
@@ -398,7 +399,7 @@ pub fn setup_ws_onclose(ws: &WebSocket, vdom: dodrio::VdomWeak) {
     onclose_callback.forget();
 }
 /// setup all ws events
-pub fn setup_all_ws_events(ws: &WebSocket, vdom: dodrio::VdomWeak) {
+pub fn setup_all_ws_events(ws: &WebSocket, vdom: VdomWeak) {
     // WebSocket on receive message callback
     setup_ws_msg_recv(ws, vdom.clone());
 

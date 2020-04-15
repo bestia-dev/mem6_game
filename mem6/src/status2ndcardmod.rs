@@ -7,7 +7,7 @@
 use crate::*;
 
 use unwrap::unwrap;
-use dodrio::{RenderContext, Node};
+use dodrio::{RenderContext, Node,VdomWeak};
 use wasm_bindgen::JsCast;
 use crate::htmltemplatemod::HtmlTemplating;
 // endregion
@@ -18,7 +18,7 @@ use crate::htmltemplatemod::HtmlTemplating;
 /// That struct is the only permanent data storage for later render the virtual dom.
 pub fn on_click_2nd_card(
     rrc: &mut RootRenderingComponent,
-    vdom: &dodrio::VdomWeak,
+    vdom: &VdomWeak,
     this_click_card_index: usize,
 ) {
     rrc.game_data.card_index_of_2nd_click = this_click_card_index;
@@ -94,7 +94,7 @@ pub fn on_msg_ack_player_click2nd_card(
     rrc: &mut RootRenderingComponent,
     player_ws_uid: usize,
     msg_id: usize,
-    vdom: &dodrio::VdomWeak,
+    vdom: &VdomWeak,
 ) {
     if ackmsgmod::remove_ack_msg_from_queue(rrc, player_ws_uid, msg_id) {
         let is_point = is_point(rrc);
@@ -160,7 +160,7 @@ pub fn div_click_2nd_card<'a>(
 #[allow(clippy::indexing_slicing)]
 pub fn on_click_img_status2nd(
     root: &mut dyn dodrio::RootRender,
-    vdom: &dodrio::VdomWeak,
+    vdom: &VdomWeak,
     event: &web_sys::Event,
 ) {
     let rrc = root.unwrap_mut::<RootRenderingComponent>();

@@ -7,6 +7,7 @@ use crate::*;
 use web_sys::WebSocket;
 use serde_derive::{Serialize, Deserialize};
 use unwrap::unwrap;
+use dodrio::VdomWeak;
 // endregion
 
 // region: structs
@@ -20,7 +21,12 @@ pub struct MsgInQueue {
     /// the content of the message if it needs to be resend
     pub msg: websocketmod::WsMessageForReceivers,
 }
-
+/// one chat message looks like this
+pub struct ChatMessage{
+    pub time:usize,
+    pub sender:usize,
+    pub msg:String,
+}
 /// game data
 pub struct WebData {
     /// web socket communication between players
@@ -35,6 +41,10 @@ pub struct WebData {
     pub rtc_accepted_call: bool,
     /// queue for ice candidate
     pub rtc_ice_queue: Vec<String>,
+    /// chat messages
+    pub rtc_chat:Vec<ChatMessage>,
+    /// is_rtc_data_channel_open
+    pub is_rtc_data_channel_open:bool,
     /// local # hash route
     pub local_route: String,
     /// downloaded html template for main page
@@ -71,6 +81,8 @@ impl WebData {
             rtc_accepted_call: false,
             rtc_ice_queue: vec![],
             rtc_receiver_ws_uid: 0,
+            rtc_chat:vec![],
+            is_rtc_data_channel_open:false,
             local_route: "".to_owned(),
             html_template: "".to_owned(),
             html_sub_templates: vec![],
@@ -99,7 +111,7 @@ impl WebData {
     }
 
     /// create websocket connection
-    pub fn start_websocket(&mut self, vdom: dodrio::VdomWeak) {
+    pub fn start_websocket(&mut self, vdom: VdomWeak) {
         let (location_href, _href_hash) = websysmod::get_url_and_hash();
         let ws = websocketmod::setup_ws_connection(location_href.clone(), self.my_ws_uid);
         websocketmod::setup_all_ws_events(&ws, vdom);

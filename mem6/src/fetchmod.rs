@@ -5,12 +5,13 @@
 use crate::*;
 use unwrap::unwrap;
 use wasm_bindgen_futures::spawn_local;
+use dodrio::VdomWeak;
 // endregion
 
 /// async fetch for gameconfig.json and update rrc
 pub fn async_fetch_game_config_and_update(
     rrc: &mut RootRenderingComponent,
-    vdom: dodrio::VdomWeak,
+    vdom: VdomWeak,
 ) {
     let url_config = format!(
         "{}/content/{}/game_config.json",
@@ -33,7 +34,7 @@ pub fn async_fetch_game_config_and_update(
 }
 
 /// async fetch for gamesmetadata.json and update rrc
-pub fn fetch_games_metadata_and_update(href: &str, vdom: dodrio::VdomWeak) {
+pub fn fetch_games_metadata_and_update(href: &str, vdom: VdomWeak) {
     let url_config = format!("{}/content/gamesmetadata.json", href);
     spawn_local(async move {
         // websysmod::debug_write(format!("respbody: {}", respbody).as_str());
@@ -57,7 +58,7 @@ pub fn fetch_games_metadata_and_update(href: &str, vdom: dodrio::VdomWeak) {
 }
 
 /// async fetch for videos.json and update rrc
-pub fn fetch_videos_and_update(href: &str, vdom: dodrio::VdomWeak) {
+pub fn fetch_videos_and_update(href: &str, vdom: VdomWeak) {
     let url = format!("{}/content/videos.json", href);
     spawn_local(async move {
         let respbody = websysmod::fetch_response(url).await;
@@ -76,7 +77,7 @@ pub fn fetch_videos_and_update(href: &str, vdom: dodrio::VdomWeak) {
 }
 
 /// async fetch for audio.json and update rrc
-pub fn fetch_audio_and_update(href: &str, vdom: dodrio::VdomWeak) {
+pub fn fetch_audio_and_update(href: &str, vdom: VdomWeak) {
     let url = format!("{}/content/audio.json", href);
     spawn_local(async move {
         let respbody = websysmod::fetch_response(url).await;
