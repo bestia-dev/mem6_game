@@ -16,6 +16,8 @@ pub struct RootRenderingComponent {
     pub web_data: webdatamod::WebData,
     /// game data will be inside of Root
     pub game_data: gamedatamod::GameData,
+    /// data for web rtc communication
+    pub web_rtc_data: webrtcmod::WebRtcData,
 }
 
 /// impl
@@ -25,10 +27,12 @@ impl RootRenderingComponent {
         let game_data = gamedatamod::GameData::new(my_ws_uid);
         let msg_receivers_json = game_data.prepare_json_msg_receivers();
         let web_data = webdatamod::WebData::new(my_ws_uid, msg_receivers_json);
+        let web_rtc_data = webrtcmod::WebRtcData::new();
 
         RootRenderingComponent {
             web_data,
             game_data,
+            web_rtc_data
         }
     }
 }

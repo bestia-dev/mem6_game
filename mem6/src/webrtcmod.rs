@@ -1,5 +1,5 @@
 // webrtcmod.rs
-//! module that cares about WebRTC communication
+//! module for WebRTC communication
 
 #![allow(clippy::panic)]
 
@@ -13,64 +13,91 @@ use unwrap::unwrap;
 use wasm_bindgen::{prelude::*, JsCast};
 use wasm_bindgen_futures::spawn_local;
 use js_sys::Reflect;
-use dodrio::{RenderContext, Node,VdomWeak};
+use dodrio::{RenderContext, Node, VdomWeak};
 use serde_derive::{Serialize, Deserialize};
 // endregion
 
+/// one chat message looks like this
+pub struct ChatMessage {
+    pub time: usize,
+    pub sender: usize,
+    pub msg: String,
+}
+/// game data
+pub struct WebRtcData {
+    /// webrtc connection
+    pub rtc_peer_connection: Option<web_sys::RtcPeerConnection>,
+    /// rtc data channel
+    pub rtc_data_channel: Option<web_sys::RtcDataChannel>,
+    /// receiver for webrtc
+    pub rtc_receiver_ws_uid: usize,
+    /// accepted call
+    pub rtc_accepted_call: bool,
+    /// queue for ice candidate
+    pub rtc_ice_queue: Vec<String>,
+    /// chat messages
+    pub rtc_chat: Vec<ChatMessage>,
+    /// is_rtc_data_channel_open
+    pub is_rtc_data_channel_open: bool,
+}
+
 #[derive(Serialize, Deserialize, Clone)]
-struct MyCandidate {
+struct IceCandidate {
     candidate: String,
     sdp_m_line_index: Option<u16>,
     sdp_mid: Option<String>,
 }
 
-/// on key up only for Enter
-pub fn web_rtc_receiver_ws_uid_onkeyup(
-    vdom:VdomWeak,rrc: &mut RootRenderingComponent, 
-    event: web_sys::Event) {
-    let keyboard_event = event.dyn_into::<web_sys::KeyboardEvent>();
-    //websysmod::debug_write(&format!("web_rtc_receiver_ws_uid_onkeyup: {:?}",&keyboard_event));
-    if let Ok(keyboard_event)=keyboard_event{
-        //websysmod::debug_write(&keyboard_event.key());
-        if keyboard_event.key() == "Enter" {
-            // same as button click
-            web_rtc_start(vdom,rrc);
+impl WebRtcData {
+    /// constructor
+    pub fn new() -> Self {
+        // return from constructor
+        WebRtcData {
+            rtc_peer_connection: None,
+            rtc_data_channel: None,
+            rtc_accepted_call: false,
+            rtc_ice_queue: vec![],
+            rtc_receiver_ws_uid: 0,
+            rtc_chat: vec![],
+            is_rtc_data_channel_open: false,
         }
     }
 }
 
 /// I must send vdom, because rrc cannot be used inside async block
-pub fn web_rtc_start(vdom: VdomWeak, rrc: &mut RootRenderingComponent) {
+/// if it is not static. But for me it is static, but how to say to rust?
+pub fn web_rtc_start(vdom: VdomWeak, wrtc: &mut WebRtcData) {
     websysmod::debug_write("web_rtc_start()");
     let receiver_ws_uid = websysmod::get_input_element_value_string_by_id("receiver_ws_uid");
     let receiver_ws_uid = unwrap!(receiver_ws_uid.parse::<usize>());
-    rrc.web_data.rtc_receiver_ws_uid = receiver_ws_uid;
+    wrtc.rtc_receiver_ws_uid = receiver_ws_uid;
     let conf_str = r#"[{ "url": "stun:stun.bestia.dev" }] "#;
-    let res_jsval_jsval=js_sys::JSON::parse(conf_str);
-    websysmod::debug_write(&format!("res_jsval_jsval {:?}",res_jsval_jsval));
-    let js_value = unwrap!(res_jsval_jsval);
+    let res_jsvalue_jsvalue = js_sys::JSON::parse(conf_str);
+    websysmod::debug_write(&format!("res_jsvalue_jsvalue {:?}", res_jsvalue_jsvalue));
+    let js_value = unwrap!(res_jsvalue_jsvalue);
     //ice_servers(&mut self, val: &JsValue) -> &mut Self
     let mut rtc_conf = web_sys::RtcConfiguration::new();
     let rtc_conf = rtc_conf.ice_servers(&js_value);
     //Result<RtcPeerConnection, JsValue>
-    let result_pc = web_sys::RtcPeerConnection::new_with_configuration_and_constraints(&rtc_conf,None);
-     websysmod::debug_write(&format!("result_pc {:?}",result_pc));
+    let result_pc =
+        web_sys::RtcPeerConnection::new_with_configuration_and_constraints(&rtc_conf, None);
+    websysmod::debug_write(&format!("result_pc {:?}", result_pc));
     if let Ok(pc) = result_pc {
         //websysmod::debug_write("web_rtc_start ok");
         // move the connection to the struct that is globally available
-        rrc.web_data.rtc_peer_connection = Some(pc);
-        let mut pc = rrc.web_data.rtc_peer_connection.as_ref().unwrap().clone();
+        wrtc.rtc_peer_connection = Some(pc);
+        let mut pc = wrtc.rtc_peer_connection.as_ref().unwrap().clone();
         //set local ice candidate event
         let v2 = vdom.clone();
-        web_rtc_set_on_local_icecandidate(v2, &mut pc);
+        web_rtc_set_on_local_ice_candidate(v2, &mut pc);
         spawn_local(async move {
-            let v3=vdom.clone();
-            let v4=vdom.clone();
+            let v3 = vdom.clone();
+            let v4 = vdom.clone();
             //websysmod::debug_write("web_rtc_start async");
 
-            let mut data_channel = web_rtc_set_on_msg(v3,&pc);
+            let mut data_channel = web_rtc_set_on_msg(v3, &pc);
             //on open must be second, because the on_msg creates the datachannel
-            web_rtc_set_on_open(v4,&mut data_channel);
+            web_rtc_set_on_open(v4, &mut data_channel);
 
             //promise to future and await returns RtcIdentityAssertion
             let o = wasm_bindgen_futures::JsFuture::from(pc.create_offer()).await;
@@ -88,8 +115,8 @@ pub fn web_rtc_start(vdom: VdomWeak, rrc: &mut RootRenderingComponent) {
                 vdom.with_component({
                     move |root| {
                         let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                        rrc.web_data.rtc_data_channel = Some(data_channel);
-                        web_rtc_send_offer(rrc, rrc.web_data.rtc_receiver_ws_uid, x.sdp());
+                        rrc.web_rtc_data.rtc_data_channel = Some(data_channel);
+                        web_rtc_send_offer(rrc, rrc.web_rtc_data.rtc_receiver_ws_uid, x.sdp());
                     }
                 })
                 .await
@@ -121,12 +148,17 @@ pub fn web_rtc_receive_offer(
     websysmod::debug_write("web_rtc_receive_offer()");
     let result_pc = web_sys::RtcPeerConnection::new();
     if let Ok(pc) = result_pc {
-        rrc.web_data.rtc_receiver_ws_uid = msg_sender_ws_uid;
+        rrc.web_rtc_data.rtc_receiver_ws_uid = msg_sender_ws_uid;
         vdom.schedule_render();
         // move the connection to the struct that is globally available
-        rrc.web_data.rtc_peer_connection = Some(pc);
-        let pc = rrc.web_data.rtc_peer_connection.as_ref().unwrap().clone();
-        
+        rrc.web_rtc_data.rtc_peer_connection = Some(pc);
+        let pc = rrc
+            .web_rtc_data
+            .rtc_peer_connection
+            .as_ref()
+            .unwrap()
+            .clone();
+
         spawn_local(async move {
             let v2 = vdom.clone();
             //websysmod::debug_write(&format!("web_rtc_receive_offer: {}", &sdp));
@@ -136,7 +168,7 @@ pub fn web_rtc_receive_offer(
             let _r = wasm_bindgen_futures::JsFuture::from(pc.set_remote_description(&rd)).await;
             //websysmod::debug_write(&format!("result set_remote_description: {:?}", &r));
 
-            let mut data_channel = web_rtc_set_on_msg(v2,&pc);
+            let mut data_channel = web_rtc_set_on_msg(v2, &pc);
             //on open must be second, because the on_msg creates the datachannel
             web_rtc_set_on_open(vdom.clone(), &mut data_channel);
 
@@ -154,8 +186,8 @@ pub fn web_rtc_receive_offer(
                 vdom.with_component({
                     move |root| {
                         let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                        web_rtc_send_answer(rrc, rrc.web_data.rtc_receiver_ws_uid, x.sdp());
-                        rrc.web_data.rtc_data_channel = Some(data_channel);
+                        web_rtc_send_answer(rrc, rrc.web_rtc_data.rtc_receiver_ws_uid, x.sdp());
+                        rrc.web_rtc_data.rtc_data_channel = Some(data_channel);
                     }
                 })
                 .await
@@ -165,7 +197,10 @@ pub fn web_rtc_receive_offer(
 }
 
 /// set callbacks for on receive webrtc message
-pub fn web_rtc_set_on_msg(vdom:VdomWeak, pc: &web_sys::RtcPeerConnection) -> web_sys::RtcDataChannel {
+pub fn web_rtc_set_on_msg(
+    vdom: VdomWeak,
+    pc: &web_sys::RtcPeerConnection,
+) -> web_sys::RtcDataChannel {
     //websysmod::debug_write(&format!("web_rtc_set_on_msg: {}", ""));
     let mut dic = web_sys::RtcDataChannelInit::new();
     dic.negotiated(true);
@@ -176,7 +211,7 @@ pub fn web_rtc_set_on_msg(vdom:VdomWeak, pc: &web_sys::RtcPeerConnection) -> web
         let v3 = vdom.clone();
         let data: JsValue = unwrap!(Reflect::get(&msg, &"data".into()));
         let data = unwrap!(data.as_string());
-        web_rtc_receive_chat(v3,data);
+        web_rtc_receive_chat(v3, data);
     });
     let cb_oh: Closure<dyn Fn(JsValue)> = Closure::wrap(msg_recv_handler);
     dc.set_onmessage(Some(cb_oh.as_ref().unchecked_ref()));
@@ -187,22 +222,22 @@ pub fn web_rtc_set_on_msg(vdom:VdomWeak, pc: &web_sys::RtcPeerConnection) -> web
 }
 
 /// on receive webrtc message
-pub fn web_rtc_set_on_open(vdom:VdomWeak,dc: &mut web_sys::RtcDataChannel) {
+pub fn web_rtc_set_on_open(vdom: VdomWeak, dc: &mut web_sys::RtcDataChannel) {
     let msg_recv_handler = Box::new(move |_msg: JsValue| {
-        let vdom=vdom.clone();
+        let vdom = vdom.clone();
         let v2 = vdom.clone();
         websysmod::debug_write("web_rtc on_open");
         spawn_local(async move {
-        unwrap!(
-            vdom.with_component({
-                move |root| {
-                    let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                    rrc.web_data.is_rtc_data_channel_open = true;
-                    v2.schedule_render();
-    }
-            })
-            .await
-        );
+            unwrap!(
+                vdom.with_component({
+                    move |root| {
+                        let rrc = root.unwrap_mut::<RootRenderingComponent>();
+                        rrc.web_rtc_data.is_rtc_data_channel_open = true;
+                        v2.schedule_render();
+                    }
+                })
+                .await
+            );
         });
     });
     let cb_oh: Closure<dyn Fn(JsValue)> = Closure::wrap(msg_recv_handler);
@@ -225,16 +260,15 @@ pub fn web_rtc_send_answer(rrc: &RootRenderingComponent, receiver_ws_uid: usize,
 }
 
 /// receive answer
-pub fn web_rtc_receive_answer(
-    vdom: VdomWeak,
-    rrc: &mut RootRenderingComponent,
-    sdp: String,
-) {
+pub fn web_rtc_receive_answer(vdom: VdomWeak, rrc: &mut RootRenderingComponent, sdp: String) {
     websysmod::debug_write("web_rtc_receive_answer");
-    let pc = rrc.web_data.rtc_peer_connection.as_ref().unwrap().clone();
+    let pc = rrc
+        .web_rtc_data
+        .rtc_peer_connection
+        .as_ref()
+        .unwrap()
+        .clone();
     spawn_local(async move {
-        
-
         let mut rd = web_sys::RtcSessionDescriptionInit::new(web_sys::RtcSdpType::Answer);
         //set_sdp with a wrong name
         rd.sdp(&sdp);
@@ -244,8 +278,8 @@ pub fn web_rtc_receive_answer(
             vdom.with_component({
                 move |root| {
                     let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                    rrc.web_data.rtc_accepted_call = true;
-                    web_rtc_send_ice_candidates(rrc, rrc.web_data.rtc_receiver_ws_uid);
+                    rrc.web_rtc_data.rtc_accepted_call = true;
+                    web_rtc_send_ice_candidates(rrc, rrc.web_rtc_data.rtc_receiver_ws_uid);
                 }
             })
             .await
@@ -254,16 +288,16 @@ pub fn web_rtc_receive_answer(
 }
 
 /// this is candidate for the local object (not remote)
-pub fn web_rtc_set_on_local_icecandidate(vdom: VdomWeak, pc: &mut web_sys::RtcPeerConnection) {
+pub fn web_rtc_set_on_local_ice_candidate(vdom: VdomWeak, pc: &mut web_sys::RtcPeerConnection) {
     let handler = Box::new(move |event: JsValue| {
         let v2 = vdom.clone();
-        websysmod::debug_write("on local icecandidate");
+        websysmod::debug_write("on local ice_candidate");
         //send the candidate to the remote peer over ws
         let event = unwrap!(event.dyn_into::<web_sys::RtcPeerConnectionIceEvent>());
         if let Some(candidate) = event.candidate() {
             //websysmod::debug_write(&format!("candidate: {:?}", &candidate));
             //workaround because to_json dows not work well
-            let candidate_json = MyCandidate {
+            let candidate_json = IceCandidate {
                 candidate: candidate.candidate(),
                 sdp_m_line_index: candidate.sdp_m_line_index(),
                 sdp_mid: candidate.sdp_mid(),
@@ -277,9 +311,12 @@ pub fn web_rtc_set_on_local_icecandidate(vdom: VdomWeak, pc: &mut web_sys::RtcPe
                         move |root| {
                             let rrc = root.unwrap_mut::<RootRenderingComponent>();
                             //save to queue
-                            rrc.web_data.rtc_ice_queue.push(candidate_json);
-                            if rrc.web_data.rtc_accepted_call == true {
-                                web_rtc_send_ice_candidates(rrc, rrc.web_data.rtc_receiver_ws_uid);
+                            rrc.web_rtc_data.rtc_ice_queue.push(candidate_json);
+                            if rrc.web_rtc_data.rtc_accepted_call == true {
+                                web_rtc_send_ice_candidates(
+                                    rrc,
+                                    rrc.web_rtc_data.rtc_receiver_ws_uid,
+                                );
                             }
                         }
                     })
@@ -290,14 +327,14 @@ pub fn web_rtc_set_on_local_icecandidate(vdom: VdomWeak, pc: &mut web_sys::RtcPe
     });
     let cb_oh: Closure<dyn Fn(JsValue)> = Closure::wrap(handler);
     pc.set_onicecandidate(Some(cb_oh.as_ref().unchecked_ref()));
-    //websysmod::debug_write(&format!("web_rtc_set_on_local_icecandidate: {}", ""));
+    //websysmod::debug_write(&format!("web_rtc_set_on_local_ice_candidate: {}", ""));
     cb_oh.forget();
 }
 
 /// send offer over websocket to establish peer connection
 pub fn web_rtc_send_ice_candidates(rrc: &mut RootRenderingComponent, receiver_ws_uid: usize) {
-    for sdp in &rrc.web_data.rtc_ice_queue {
-        //websysmod::debug_write("web_rtc_send_icecandidate()");
+    for sdp in &rrc.web_rtc_data.rtc_ice_queue {
+        //websysmod::debug_write("web_rtc_send_ice_candidate()");
         let msg_receivers_json = gamedatamod::prepare_json_msg_receivers_for_one(receiver_ws_uid);
         let sdp = sdp.to_string();
         let msg = websocketmod::WsMessageForReceivers {
@@ -307,7 +344,7 @@ pub fn web_rtc_send_ice_candidates(rrc: &mut RootRenderingComponent, receiver_ws
         };
         rrc.web_data.send_ws_msg(&msg);
     }
-    rrc.web_data.rtc_ice_queue.truncate(0);
+    rrc.web_rtc_data.rtc_ice_queue.truncate(0);
 }
 
 /// receive ice candidate
@@ -316,25 +353,30 @@ pub fn web_rtc_receive_ice_candidate(
     rrc: &mut RootRenderingComponent,
     sdp: String,
 ) {
-    let pc = rrc.web_data.rtc_peer_connection.as_ref().unwrap().clone();
+    let pc = rrc
+        .web_rtc_data
+        .rtc_peer_connection
+        .as_ref()
+        .unwrap()
+        .clone();
     spawn_local(async move {
         websysmod::debug_write("web_rtc_receive_ice_candidate");
-        let my_candidate: MyCandidate = unwrap!(serde_json::from_str(&sdp));
-        let mut icecandidate_init = web_sys::RtcIceCandidateInit::new("");
-        icecandidate_init.candidate(&my_candidate.candidate);
-        icecandidate_init.sdp_mid(Some(unwrap!(my_candidate.sdp_mid).as_str()));
-        icecandidate_init.sdp_m_line_index(my_candidate.sdp_m_line_index);
-        //websysmod::debug_write(&format!("icecandidate_init: {:?}", &icecandidate_init));
-        let icecandidate = web_sys::RtcIceCandidate::new(&icecandidate_init);
-        //websysmod::debug_write(&format!("icecandidate: {:?}", &icecandidate));
-        let icecandidate = unwrap!(icecandidate);
-        // if the WebRtcPeerConnection is not in the right state, then queue the icecandidate in a vector
+        let ice_candidate: IceCandidate = unwrap!(serde_json::from_str(&sdp));
+        let mut ice_candidate_init = web_sys::RtcIceCandidateInit::new("");
+        ice_candidate_init.candidate(&ice_candidate.candidate);
+        ice_candidate_init.sdp_mid(Some(unwrap!(ice_candidate.sdp_mid).as_str()));
+        ice_candidate_init.sdp_m_line_index(ice_candidate.sdp_m_line_index);
+        //websysmod::debug_write(&format!("ice_candidate_init: {:?}", &ice_candidate_init));
+        let ice_candidate = web_sys::RtcIceCandidate::new(&ice_candidate_init);
+        //websysmod::debug_write(&format!("ice_candidate: {:?}", &ice_candidate));
+        let ice_candidate = unwrap!(ice_candidate);
+        // if the WebRtcPeerConnection is not in the right state, then queue the ice_candidate in a vector
 
         if pc.remote_description().is_some() {
             //websysmod::debug_write(&format!("remote type: {:?}",&pc.remote_description().unwrap().type_()));
             //websysmod::debug_write(&format!("add_ice_candidate: {}", ""));
             let _r = wasm_bindgen_futures::JsFuture::from(
-                pc.add_ice_candidate_with_opt_rtc_ice_candidate(Some(&icecandidate)),
+                pc.add_ice_candidate_with_opt_rtc_ice_candidate(Some(&ice_candidate)),
             )
             .await;
         //websysmod::debug_write(&format!("result add_ice_candidate: {:?}", &r));
@@ -344,24 +386,10 @@ pub fn web_rtc_receive_ice_candidate(
     });
 }
 
-/// on key up only for Enter
-pub fn web_rtc_chat_text_onkeyup(vdom:VdomWeak,rrc: &mut RootRenderingComponent, 
-    event: web_sys::Event) {
-    let keyboard_event = event.dyn_into::<web_sys::KeyboardEvent>();
-    //websysmod::debug_write(&format!("on key up: {:?}",&keyboard_event));
-    if let Ok(keyboard_event)=keyboard_event{
-        // websysmod::debug_write(&keyboard_event.key());
-        if keyboard_event.key() == "Enter" {
-            // same as button click
-            web_rtc_send_chat(vdom,rrc);
-        }
-    }
-}
-
 /// button click or enter key
-pub fn web_rtc_send_chat(vdom:VdomWeak, rrc: &mut RootRenderingComponent){
+pub fn web_rtc_send_chat(vdom: VdomWeak, rrc: &mut RootRenderingComponent) {
     let web_rtc_chat_text = websysmod::get_input_element_value_string_by_id("web_rtc_chat_text");
-    let dc = unwrap!(rrc.web_data.rtc_data_channel.as_ref());
+    let dc = unwrap!(rrc.web_rtc_data.rtc_data_channel.as_ref());
     match dc.ready_state() {
         web_sys::RtcDataChannelState::Connecting => {
             websysmod::debug_write("Connection not open; queueing: ");
@@ -369,10 +397,10 @@ pub fn web_rtc_send_chat(vdom:VdomWeak, rrc: &mut RootRenderingComponent){
         web_sys::RtcDataChannelState::Open => {
             unwrap!(dc.send_with_str(&web_rtc_chat_text));
             //save to chat vector
-            rrc.web_data.rtc_chat.push(webdatamod::ChatMessage{
-                time:0,
-                sender:1,
-                msg:web_rtc_chat_text,
+            rrc.web_rtc_data.rtc_chat.push(ChatMessage {
+                time: 0,
+                sender: 1,
+                msg: web_rtc_chat_text,
             })
         }
         web_sys::RtcDataChannelState::Closing => {
@@ -389,19 +417,19 @@ pub fn web_rtc_send_chat(vdom:VdomWeak, rrc: &mut RootRenderingComponent){
 }
 
 /// receive msg
-pub fn web_rtc_receive_chat(vdom:VdomWeak, text: String) {
+pub fn web_rtc_receive_chat(vdom: VdomWeak, text: String) {
     websysmod::debug_write(&format!("web_rtc_receive: {}", &text));
-    let v2=vdom.clone();
+    let v2 = vdom.clone();
     //save to chat vector
     spawn_local(async move {
         unwrap!(
             vdom.with_component({
                 move |root| {
                     let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                    rrc.web_data.rtc_chat.push(webdatamod::ChatMessage{
-                        time:0,
-                        sender:2,
-                        msg:text,
+                    rrc.web_rtc_data.rtc_chat.push(ChatMessage {
+                        time: 0,
+                        sender: 2,
+                        msg: text,
                     })
                 }
             })
@@ -409,34 +437,4 @@ pub fn web_rtc_receive_chat(vdom:VdomWeak, text: String) {
         );
     });
     v2.schedule_render();
-}
-
-/// render messages
-pub fn web_rtc_div_messages<'a>(
-    rrc: & RootRenderingComponent,
-    cx: &mut RenderContext<'a>,
-) -> Vec<Node<'a>> {
-    let mut vec_nodes=Vec::<Node>::new();
-
-    let mut index = rrc.web_data.rtc_chat.len();
-    // reverse a vector old school
-    if index > 0{
-        index -= 1;
-        loop{
-            let chat_msg=&rrc.web_data.rtc_chat[index];
-            let template_name = format!("message_sender{}",chat_msg.sender);
-            let mut html_template = rrc.web_data.get_sub_template(&template_name);
-            html_template = html_template.replace("replace_in_code_with_msg",&chat_msg.msg);
-            let node = unwrap!(rrc.render_template (cx, &html_template, htmltemplatemod::HtmlOrSvg::Html));
-            vec_nodes.push(node);
-            if index == 0{
-                break;
-            }
-            else{
-                index -= 1;
-            }
-        }
-    }
-    //return
-    vec_nodes
 }

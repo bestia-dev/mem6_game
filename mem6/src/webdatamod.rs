@@ -21,30 +21,11 @@ pub struct MsgInQueue {
     /// the content of the message if it needs to be resend
     pub msg: websocketmod::WsMessageForReceivers,
 }
-/// one chat message looks like this
-pub struct ChatMessage{
-    pub time:usize,
-    pub sender:usize,
-    pub msg:String,
-}
+
 /// game data
 pub struct WebData {
     /// web socket communication between players
     pub ws: Option<WebSocket>,
-    /// webrtc connection
-    pub rtc_peer_connection: Option<web_sys::RtcPeerConnection>,
-    /// rtc data channel
-    pub rtc_data_channel: Option<web_sys::RtcDataChannel>,
-    /// receiver for webrtc
-    pub rtc_receiver_ws_uid: usize,
-    /// accepted call
-    pub rtc_accepted_call: bool,
-    /// queue for ice candidate
-    pub rtc_ice_queue: Vec<String>,
-    /// chat messages
-    pub rtc_chat:Vec<ChatMessage>,
-    /// is_rtc_data_channel_open
-    pub is_rtc_data_channel_open:bool,
     /// local # hash route
     pub local_route: String,
     /// downloaded html template for main page
@@ -76,13 +57,6 @@ impl WebData {
         // return from constructor
         WebData {
             ws: None,
-            rtc_peer_connection: None,
-            rtc_data_channel: None,
-            rtc_accepted_call: false,
-            rtc_ice_queue: vec![],
-            rtc_receiver_ws_uid: 0,
-            rtc_chat:vec![],
-            is_rtc_data_channel_open:false,
             local_route: "".to_owned(),
             html_template: "".to_owned(),
             html_sub_templates: vec![],
