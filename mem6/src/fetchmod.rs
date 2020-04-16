@@ -9,89 +9,102 @@ use dodrio::VdomWeak;
 // endregion
 
 /// async fetch for gameconfig.json and update rrc
-pub fn async_fetch_game_config_and_update(
-    rrc: &mut RootRenderingComponent,
-    vdom: VdomWeak,
-) {
+pub fn async_fetch_game_config_and_update(rrc: &mut RootRenderingComponent, vdom: VdomWeak) {
     let url_config = format!(
         "{}/content/{}/game_config.json",
         rrc.web_data.href, rrc.game_data.game_name
     );
-    spawn_local(async move {
-        let respbody = websysmod::fetch_response(url_config).await;
-        let json = unwrap!(serde_json::from_str(respbody.as_str()));
-        // websysmod::debug_write(format!("respbody: {}", respbody).as_str());
-        unwrap!(
-            vdom.with_component({
-                move |root| {
-                    let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                    rrc.game_data.game_config = json;
-                }
-            })
-            .await
-        );
+    spawn_local({
+        let vdom_on_next_tick = vdom.clone();
+        async move {
+            let respbody = websysmod::fetch_response(url_config).await;
+            let json = unwrap!(serde_json::from_str(respbody.as_str()));
+            // websysmod::debug_write(format!("respbody: {}", respbody).as_str());
+            unwrap!(
+                vdom_on_next_tick
+                    .with_component({
+                        move |root| {
+                            let rrc = root.unwrap_mut::<RootRenderingComponent>();
+                            rrc.game_data.game_config = json;
+                        }
+                    })
+                    .await
+            );
+        }
     });
 }
 
 /// async fetch for gamesmetadata.json and update rrc
 pub fn fetch_games_metadata_and_update(href: &str, vdom: VdomWeak) {
     let url_config = format!("{}/content/gamesmetadata.json", href);
-    spawn_local(async move {
-        // websysmod::debug_write(format!("respbody: {}", respbody).as_str());
-        let respbody = websysmod::fetch_response(url_config).await;
-        let v: gamedatamod::GamesMetadata = unwrap!(serde_json::from_str(&respbody));
-        unwrap!(
-            vdom.with_component({
-                move |root| {
-                    let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                    // fill the vector
-                    rrc.game_data.content_folders.clear();
-                    for x in &v.vec_game_metadata {
-                        rrc.game_data.content_folders.push(x.folder.clone());
-                    }
-                    rrc.game_data.games_metadata = Some(v);
-                }
-            })
-            .await
-        );
+    spawn_local({
+        let vdom_on_next_tick = vdom.clone();
+        async move {
+            // websysmod::debug_write(format!("respbody: {}", respbody).as_str());
+            let respbody = websysmod::fetch_response(url_config).await;
+            let v: gamedatamod::GamesMetadata = unwrap!(serde_json::from_str(&respbody));
+            unwrap!(
+                vdom_on_next_tick
+                    .with_component({
+                        move |root| {
+                            let rrc = root.unwrap_mut::<RootRenderingComponent>();
+                            // fill the vector
+                            rrc.game_data.content_folders.clear();
+                            for x in &v.vec_game_metadata {
+                                rrc.game_data.content_folders.push(x.folder.clone());
+                            }
+                            rrc.game_data.games_metadata = Some(v);
+                        }
+                    })
+                    .await
+            );
+        }
     });
 }
 
 /// async fetch for videos.json and update rrc
 pub fn fetch_videos_and_update(href: &str, vdom: VdomWeak) {
     let url = format!("{}/content/videos.json", href);
-    spawn_local(async move {
-        let respbody = websysmod::fetch_response(url).await;
-        let vid_json: gamedatamod::Videos = unwrap!(serde_json::from_str(&respbody));
-        unwrap!(
-            vdom.with_component({
-                move |root| {
-                    let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                    // fill the vector
-                    rrc.game_data.videos = vid_json.videos;
-                }
-            })
-            .await
-        );
+    spawn_local({
+        let vdom_on_next_tick = vdom.clone();
+        async move {
+            let respbody = websysmod::fetch_response(url).await;
+            let vid_json: gamedatamod::Videos = unwrap!(serde_json::from_str(&respbody));
+            unwrap!(
+                vdom_on_next_tick
+                    .with_component({
+                        move |root| {
+                            let rrc = root.unwrap_mut::<RootRenderingComponent>();
+                            // fill the vector
+                            rrc.game_data.videos = vid_json.videos;
+                        }
+                    })
+                    .await
+            );
+        }
     });
 }
 
 /// async fetch for audio.json and update rrc
 pub fn fetch_audio_and_update(href: &str, vdom: VdomWeak) {
     let url = format!("{}/content/audio.json", href);
-    spawn_local(async move {
-        let respbody = websysmod::fetch_response(url).await;
-        let aud_json: gamedatamod::Audio = unwrap!(serde_json::from_str(&respbody));
-        unwrap!(
-            vdom.with_component({
-                move |root| {
-                    let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                    // fill the vector
-                    rrc.game_data.audio = aud_json.audio;
-                }
-            })
-            .await
-        );
+    spawn_local({
+        let vdom_on_next_tick = vdom.clone();
+        async move {
+            let respbody = websysmod::fetch_response(url).await;
+            let aud_json: gamedatamod::Audio = unwrap!(serde_json::from_str(&respbody));
+            unwrap!(
+                vdom_on_next_tick
+                    .with_component({
+                        move |root| {
+                            let rrc = root.unwrap_mut::<RootRenderingComponent>();
+                            // fill the vector
+                            rrc.game_data.audio = aud_json.audio;
+                        }
+                    })
+                    .await
+            );
+        }
     });
 }
 

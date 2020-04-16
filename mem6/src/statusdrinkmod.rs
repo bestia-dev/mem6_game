@@ -13,7 +13,7 @@ use dodrio::VdomWeak;
 pub fn on_msg_drink_end(
     _rrc: &mut RootRenderingComponent,
     _msg_sender_ws_uid: usize,
-    _vdom: &VdomWeak,
+    _vdom: VdomWeak,
 ) {
     htmltemplateimplmod::open_new_local_page("#p11");
 }
@@ -27,8 +27,7 @@ pub fn play_sound_for_drink(rrc: &RootRenderingComponent) {
     #[allow(clippy::indexing_slicing)]
     // indexing cannot panic if the random num is created from 0..len()
     let src_mp3 = format!("audio/{}", rrc.game_data.audio[num]);
-    let audio_element = websysmod::get_element_by_id("audio");
-    let audio_element = unwrap!(audio_element.dyn_into::<web_sys::HtmlAudioElement>());
+    let audio_element = websysmod::get_audio_element_by_id("audio");
     audio_element.set_src(&src_mp3);
     let _x = unwrap!(audio_element.play());
 }

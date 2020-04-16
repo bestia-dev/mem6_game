@@ -313,26 +313,18 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     rrc.web_data.href = location_href.to_string();
     rrc.web_data.href_hash = href_hash;
     // Mount the component to the `<div id="div_for_virtual_dom">`.
-    let vdom = dodrio::Vdom::new(&div_for_virtual_dom, rrc);
-
+    let vdom_object = dodrio::Vdom::new(&div_for_virtual_dom, rrc);
+    let vdom = vdom_object.weak();
     // async fetch_response() for gamesmetadata.json
-    let v2 = vdom.weak();
-    // TODO: this could be a trait for vdomweak
-    fetchmod::fetch_games_metadata_and_update(&location_href, v2);
-
-    let v3 = vdom.weak();
-    fetchmod::fetch_videos_and_update(&location_href, v3);
-
-    let v5 = vdom.weak();
-    fetchmod::fetch_audio_and_update(&location_href, v5);
-
+    fetchmod::fetch_games_metadata_and_update(&location_href, vdom.clone());
+    fetchmod::fetch_videos_and_update(&location_href, vdom.clone());
+    fetchmod::fetch_audio_and_update(&location_href, vdom.clone());
     // Start the URL router.
-    let v4 = vdom.weak();
     let router = routerimplmod::Router {};
-    router.start_router(v4);
+    router.start_router(vdom.clone());
 
     // Run the component forever. Forget to drop the memory.
-    vdom.forget();
+    vdom_object.forget();
 
     Ok(())
 }

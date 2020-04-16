@@ -36,11 +36,11 @@ pub trait Routing {
             }
             // websysmod::debug_write("after .hash");
             wasm_bindgen_futures::spawn_local({
-                let vdom = vdom.clone();
+                let vdom_on_next_tick = vdom.clone();
                 async move {
-                    let _ = vdom
+                    let _ = vdom_on_next_tick
                         .with_component({
-                            let vdom = vdom.clone();
+                            let vdom = vdom_on_next_tick.clone();
                             // Callback fired whenever the URL hash fragment changes.
                             // Keeps the rrc.web_data.local_route in sync with the `#` fragment.
                             move |root| {
@@ -50,23 +50,31 @@ pub trait Routing {
                                 // don't match, then we need to update the rrc' local_route
                                 // and re-render.
                                 if Self::get_rrc_local_route(root) != short_local_route {
-                                    let v2 = vdom.clone();
                                     // the function that recognizes routes and urls
-                                    let url =
-                                        Self::update_rrc_local_route(short_local_route, root, v2);
+                                    let url = Self::update_rrc_local_route(
+                                        short_local_route,
+                                        root,
+                                        vdom.clone(),
+                                    );
                                     // I cannot simply await here because this closure is not async
-                                    spawn_local(async move {
-                                        //websysmod::debug_write(&format!("fetch {}", &url));
-                                        let resp_body_text: String =
-                                            websysmod::async_spwloc_fetch_text(url).await;
-                                        // update values in rrc is async.
-                                        unwrap!(
-                                            vdom.with_component({
-                                                Self::update_rrc_html_template(resp_body_text)
-                                            })
-                                            .await
-                                        );
-                                        vdom.schedule_render();
+                                    spawn_local({
+                                        let vdom_on_next_tick = vdom.clone();
+                                        async move {
+                                            //websysmod::debug_write(&format!("fetch {}", &url));
+                                            let resp_body_text: String =
+                                                websysmod::async_spwloc_fetch_text(url).await;
+                                            // update values in rrc is async.
+                                            unwrap!(
+                                                vdom_on_next_tick
+                                                    .with_component({
+                                                        Self::update_rrc_html_template(
+                                                            resp_body_text,
+                                                        )
+                                                    })
+                                                    .await
+                                            );
+                                            vdom.schedule_render();
+                                        }
                                     });
                                 }
                             }

@@ -34,10 +34,7 @@ pub fn remove_ack_msg_from_queue(
 }
 
 /// prepare for ack msg waiting - return random msg_id
-pub fn prepare_for_ack_msg_waiting(
-    rrc: &mut RootRenderingComponent,
-    vdom: &VdomWeak,
-) -> usize {
+pub fn prepare_for_ack_msg_waiting(rrc: &mut RootRenderingComponent, vdom: VdomWeak) -> usize {
     let msg_id = websysmod::get_random(1, 0xFFFF_FFFF);
     rrc.game_data.game_status = GameStatus::StatusWaitingAckMsg;
     vdom.schedule_render();

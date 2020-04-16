@@ -152,24 +152,19 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     open_new_local_page("#p41");
                 }
                 "web_rtc_receiver_ws_uid_onkeyup" => {
-                    let v2 = vdom.clone();
-                    webrtcimplmod::web_rtc_receiver_ws_uid_onkeyup(v2, rrc, event);
+                    webrtcimplmod::web_rtc_receiver_ws_uid_onkeyup(vdom, rrc, event);
                 }
                 "web_rtc_start" => {
-                    let v2 = vdom.clone();
-                    webrtcmod::web_rtc_start(v2, &mut rrc.web_rtc_data);
+                    webrtcmod::web_rtc_start(vdom, &mut rrc.web_rtc_data);
                 }
                 "web_rtc_chat_text_onkeyup" => {
-                    let v2 = vdom.clone();
-                    webrtcimplmod::web_rtc_chat_text_onkeyup(v2, rrc, event);
+                    webrtcimplmod::web_rtc_chat_text_onkeyup(vdom, rrc, event);
                 }
                 "web_rtc_send_chat" => {
-                    let v2 = vdom.clone();
-                    webrtcmod::web_rtc_send_chat(v2, rrc);
+                    webrtcmod::web_rtc_send_chat(vdom, rrc);
                 }
                 "start_a_group_onclick" => {
-                    let v2 = vdom.clone();
-                    rrc.web_data.start_websocket(v2);
+                    rrc.web_data.start_websocket(vdom);
                     open_new_local_page("#p02");
                 }
                 "restart_game" => {
@@ -187,7 +182,6 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     statusgamedatainitmod::on_click_start_game(rrc);
                     // async fetch all imgs and put them in service worker cache
                     fetchmod::fetch_all_img_for_cache_request(rrc);
-                    vdom.schedule_render();
                     // websysmod::debug_write(&format!("start_game_onclick players: {:?}",rrc.game_data.players));
                     open_new_local_page("#p11");
                 }
@@ -202,8 +196,6 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 }
                 "drink_end" => {
                     // send a msg to end drinking to all players
-                    // let audio_element = unwrap!(web_sys::HtmlAudioElement::new_with_src(src));
-                    // unwrap!(audio_element.stop());
 
                     websysmod::debug_write(&format!("MsgDrinkEnd send{}", ""));
                     rrc.web_data
@@ -225,7 +217,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                                 msg_data: gamedatamod::WsMessageGameData::MsgGameOver {},
                             });
                     } else {
-                        statustaketurnmod::on_click_take_turn(rrc, &vdom);
+                        statustaketurnmod::on_click_take_turn(rrc, vdom.clone());
                     }
                     // end the drink page
                     open_new_local_page("#p11");
@@ -245,10 +237,10 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     open_new_local_page("#p05");
                 }
                 "on_click_img_status1st" => {
-                    status1stcardmod::on_click_img_status1st(root, &vdom, &event);
+                    status1stcardmod::on_click_img_status1st(root, vdom.clone(), &event);
                 }
                 "on_click_img_status2nd" => {
-                    status2ndcardmod::on_click_img_status2nd(root, &vdom, &event);
+                    status2ndcardmod::on_click_img_status2nd(root, vdom.clone(), &event);
                 }
                 "hide_big_img" => {
                     hide_big_img();
@@ -396,8 +388,7 @@ pub fn blink_or_not_group_id(rrc: &RootRenderingComponent) -> String {
 
 /// hide big img
 pub fn hide_big_img() {
-    let img_element = websysmod::get_element_by_id("big_img");
-    let img_html_element = unwrap!(img_element.dyn_into::<web_sys::HtmlImageElement>());
+    let img_html_element = websysmod::get_image_element_by_id("big_img");
     let _x = img_html_element.style().set_property("display", "none");
 }
 
@@ -406,8 +397,7 @@ pub fn visible_big_img(img_file_name: &str) {
     websysmod::debug_write(img_file_name);
     //change png in jpg for big img
     let img_file_name = img_file_name.replace(".png", ".jpg");
-    let img_element = websysmod::get_element_by_id("big_img");
-    let img_html_element = unwrap!(img_element.dyn_into::<web_sys::HtmlImageElement>());
+    let img_html_element = websysmod::get_image_element_by_id("big_img");
     img_html_element.set_src(&img_file_name);
     let _x = img_html_element.style().set_property("display", "initial");
 }

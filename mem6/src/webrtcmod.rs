@@ -39,6 +39,10 @@ pub struct WebRtcData {
     pub rtc_chat: Vec<ChatMessage>,
     /// is_rtc_data_channel_open
     pub is_rtc_data_channel_open: bool,
+    /// if a render event comes while we are typing in input
+    /// we will loose the content. So on every keyup, I have to store it
+    /// in a field in rrc
+    pub rtc_my_message: String,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -60,6 +64,7 @@ impl WebRtcData {
             rtc_receiver_ws_uid: 0,
             rtc_chat: vec![],
             is_rtc_data_channel_open: false,
+            rtc_my_message: "".to_string(),
         }
     }
 }
@@ -88,39 +93,46 @@ pub fn web_rtc_start(vdom: VdomWeak, wrtc: &mut WebRtcData) {
         wrtc.rtc_peer_connection = Some(pc);
         let mut pc = wrtc.rtc_peer_connection.as_ref().unwrap().clone();
         //set local ice candidate event
-        let v2 = vdom.clone();
-        web_rtc_set_on_local_ice_candidate(v2, &mut pc);
-        spawn_local(async move {
-            let v3 = vdom.clone();
-            let v4 = vdom.clone();
-            //websysmod::debug_write("web_rtc_start async");
+        web_rtc_set_on_local_ice_candidate(vdom.clone(), &mut pc);
+        let mut data_channel = web_rtc_set_on_msg(vdom.clone(), &pc);
+        //on open must be second, because the on_msg creates the datachannel
+        web_rtc_set_on_open(vdom.clone(), &mut data_channel);
 
-            let mut data_channel = web_rtc_set_on_msg(v3, &pc);
-            //on open must be second, because the on_msg creates the datachannel
-            web_rtc_set_on_open(v4, &mut data_channel);
+        spawn_local({
+            let vdom_on_next_tick = vdom.clone();
+            async move {
+                //websysmod::debug_write("web_rtc_start async");
+                //promise to future and await returns RtcIdentityAssertion
+                let offer_init = wasm_bindgen_futures::JsFuture::from(pc.create_offer()).await;
+                let offer_init = unwrap!(offer_init);
+                let offer_init =
+                    unwrap!(offer_init.dyn_into::<web_sys::RtcSessionDescriptionInit>());
+                //websysmod::debug_write(&format!("RtcSessionDescriptionInit: {:?}", &o));
 
-            //promise to future and await returns RtcIdentityAssertion
-            let o = wasm_bindgen_futures::JsFuture::from(pc.create_offer()).await;
-            let o = unwrap!(o);
-            let o = unwrap!(o.dyn_into::<web_sys::RtcSessionDescriptionInit>());
-            //websysmod::debug_write(&format!("RtcSessionDescriptionInit: {:?}", &o));
+                let _result =
+                    wasm_bindgen_futures::JsFuture::from(pc.set_local_description(&offer_init))
+                        .await;
+                //websysmod::debug_write(&format!("result set_local_description: {:?}", &r));
+                // Option<RtcSessionDescription>
+                let local_description = unwrap!(pc.local_description());
 
-            let _r = wasm_bindgen_futures::JsFuture::from(pc.set_local_description(&o)).await;
-            //websysmod::debug_write(&format!("result set_local_description: {:?}", &r));
-            // Option<RtcSessionDescription>
-            let x = unwrap!(pc.local_description());
-
-            //websysmod::debug_write(&format!("local_description: {:?}", &x.sdp()));
-            unwrap!(
-                vdom.with_component({
-                    move |root| {
-                        let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                        rrc.web_rtc_data.rtc_data_channel = Some(data_channel);
-                        web_rtc_send_offer(rrc, rrc.web_rtc_data.rtc_receiver_ws_uid, x.sdp());
-                    }
-                })
-                .await
-            );
+                //websysmod::debug_write(&format!("local_description: {:?}", &local_description.sdp()));
+                unwrap!(
+                    vdom_on_next_tick
+                        .with_component({
+                            move |root| {
+                                let rrc = root.unwrap_mut::<RootRenderingComponent>();
+                                rrc.web_rtc_data.rtc_data_channel = Some(data_channel);
+                                web_rtc_send_offer(
+                                    rrc,
+                                    rrc.web_rtc_data.rtc_receiver_ws_uid,
+                                    local_description.sdp(),
+                                );
+                            }
+                        })
+                        .await
+                );
+            }
         });
     }
 }
@@ -158,40 +170,51 @@ pub fn web_rtc_receive_offer(
             .as_ref()
             .unwrap()
             .clone();
+        //websysmod::debug_write(&format!("web_rtc_receive_offer: {}", &sdp));
+        let mut init_offer = web_sys::RtcSessionDescriptionInit::new(web_sys::RtcSdpType::Offer);
+        //set_sdp with a wrong name
+        init_offer.sdp(&sdp);
+        spawn_local({
+            let vdom_on_next_tick = vdom.clone();
+            async move {
+                let _result =
+                    wasm_bindgen_futures::JsFuture::from(pc.set_remote_description(&init_offer))
+                        .await;
+                //websysmod::debug_write(&format!("result set_remote_description: {:?}", &r));
 
-        spawn_local(async move {
-            let v2 = vdom.clone();
-            //websysmod::debug_write(&format!("web_rtc_receive_offer: {}", &sdp));
-            let mut rd = web_sys::RtcSessionDescriptionInit::new(web_sys::RtcSdpType::Offer);
-            //set_sdp with a wrong name
-            rd.sdp(&sdp);
-            let _r = wasm_bindgen_futures::JsFuture::from(pc.set_remote_description(&rd)).await;
-            //websysmod::debug_write(&format!("result set_remote_description: {:?}", &r));
+                let mut data_channel = web_rtc_set_on_msg(vdom.clone(), &pc);
+                //on open must be second, because the on_msg creates the datachannel
+                web_rtc_set_on_open(vdom.clone(), &mut data_channel);
 
-            let mut data_channel = web_rtc_set_on_msg(v2, &pc);
-            //on open must be second, because the on_msg creates the datachannel
-            web_rtc_set_on_open(vdom.clone(), &mut data_channel);
+                let answer_init = wasm_bindgen_futures::JsFuture::from(pc.create_answer()).await;
+                let answer_init = unwrap!(answer_init);
+                let answer_init =
+                    unwrap!(answer_init.dyn_into::<web_sys::RtcSessionDescriptionInit>());
+                let _result =
+                    wasm_bindgen_futures::JsFuture::from(pc.set_local_description(&answer_init))
+                        .await;
+                //websysmod::debug_write(&format!("result set_local_description: {:?}", &r));
 
-            let o = wasm_bindgen_futures::JsFuture::from(pc.create_answer()).await;
-            let o = unwrap!(o);
-            let o = unwrap!(o.dyn_into::<web_sys::RtcSessionDescriptionInit>());
-            let _r = wasm_bindgen_futures::JsFuture::from(pc.set_local_description(&o)).await;
-            //websysmod::debug_write(&format!("result set_local_description: {:?}", &r));
+                // Option<RtcSessionDescription>
+                let local_description = unwrap!(pc.local_description());
+                //websysmod::debug_write(&format!("local_description: {:?}", &local_description.sdp()));
 
-            // Option<RtcSessionDescription>
-            let x = unwrap!(pc.local_description());
-            //websysmod::debug_write(&format!("local_description: {:?}", &x.sdp()));
-
-            unwrap!(
-                vdom.with_component({
-                    move |root| {
-                        let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                        web_rtc_send_answer(rrc, rrc.web_rtc_data.rtc_receiver_ws_uid, x.sdp());
-                        rrc.web_rtc_data.rtc_data_channel = Some(data_channel);
-                    }
-                })
-                .await
-            );
+                unwrap!(
+                    vdom_on_next_tick
+                        .with_component({
+                            move |root| {
+                                let rrc = root.unwrap_mut::<RootRenderingComponent>();
+                                web_rtc_send_answer(
+                                    rrc,
+                                    rrc.web_rtc_data.rtc_receiver_ws_uid,
+                                    local_description.sdp(),
+                                );
+                                rrc.web_rtc_data.rtc_data_channel = Some(data_channel);
+                            }
+                        })
+                        .await
+                );
+            }
         });
     }
 }
@@ -208,10 +231,9 @@ pub fn web_rtc_set_on_msg(
     let dc = pc.create_data_channel_with_data_channel_dict("BackChannel", &dic);
     //websysmod::debug_write(&format!("create_data_channel: {:?}", &dc));
     let msg_recv_handler = Box::new(move |msg: JsValue| {
-        let v3 = vdom.clone();
         let data: JsValue = unwrap!(Reflect::get(&msg, &"data".into()));
         let data = unwrap!(data.as_string());
-        web_rtc_receive_chat(v3, data);
+        web_rtc_receive_chat(vdom.clone(), data);
     });
     let cb_oh: Closure<dyn Fn(JsValue)> = Closure::wrap(msg_recv_handler);
     dc.set_onmessage(Some(cb_oh.as_ref().unchecked_ref()));
@@ -224,20 +246,23 @@ pub fn web_rtc_set_on_msg(
 /// on receive webrtc message
 pub fn web_rtc_set_on_open(vdom: VdomWeak, dc: &mut web_sys::RtcDataChannel) {
     let msg_recv_handler = Box::new(move |_msg: JsValue| {
-        let vdom = vdom.clone();
-        let v2 = vdom.clone();
         websysmod::debug_write("web_rtc on_open");
-        spawn_local(async move {
-            unwrap!(
-                vdom.with_component({
-                    move |root| {
-                        let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                        rrc.web_rtc_data.is_rtc_data_channel_open = true;
-                        v2.schedule_render();
-                    }
-                })
-                .await
-            );
+        spawn_local({
+            let vdom_on_next_tick = vdom.clone();
+            async move {
+                unwrap!(
+                    vdom_on_next_tick
+                        .with_component({
+                            let vdom = vdom_on_next_tick.clone();
+                            move |root| {
+                                let rrc = root.unwrap_mut::<RootRenderingComponent>();
+                                rrc.web_rtc_data.is_rtc_data_channel_open = true;
+                                vdom.schedule_render();
+                            }
+                        })
+                        .await
+                );
+            }
         });
     });
     let cb_oh: Closure<dyn Fn(JsValue)> = Closure::wrap(msg_recv_handler);
@@ -268,29 +293,35 @@ pub fn web_rtc_receive_answer(vdom: VdomWeak, rrc: &mut RootRenderingComponent, 
         .as_ref()
         .unwrap()
         .clone();
-    spawn_local(async move {
-        let mut rd = web_sys::RtcSessionDescriptionInit::new(web_sys::RtcSdpType::Answer);
-        //set_sdp with a wrong name
-        rd.sdp(&sdp);
-        let _r = wasm_bindgen_futures::JsFuture::from(pc.set_remote_description(&rd)).await;
-        //websysmod::debug_write(&format!("result set_remote_description: {:?}", &r));
-        unwrap!(
-            vdom.with_component({
-                move |root| {
-                    let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                    rrc.web_rtc_data.rtc_accepted_call = true;
-                    web_rtc_send_ice_candidates(rrc, rrc.web_rtc_data.rtc_receiver_ws_uid);
-                }
-            })
-            .await
-        );
+    spawn_local({
+        async move {
+            let vdom_on_next_tick = vdom.clone();
+            let mut init_answer =
+                web_sys::RtcSessionDescriptionInit::new(web_sys::RtcSdpType::Answer);
+            //set_sdp with a wrong name
+            init_answer.sdp(&sdp);
+            let _result =
+                wasm_bindgen_futures::JsFuture::from(pc.set_remote_description(&init_answer)).await;
+            //websysmod::debug_write(&format!("result set_remote_description: {:?}", &r));
+            unwrap!(
+                vdom_on_next_tick
+                    .with_component({
+                        move |root| {
+                            let rrc = root.unwrap_mut::<RootRenderingComponent>();
+                            rrc.web_rtc_data.rtc_accepted_call = true;
+                            web_rtc_send_ice_candidates(rrc, rrc.web_rtc_data.rtc_receiver_ws_uid);
+                        }
+                    })
+                    .await
+            );
+        }
     });
 }
 
 /// this is candidate for the local object (not remote)
 pub fn web_rtc_set_on_local_ice_candidate(vdom: VdomWeak, pc: &mut web_sys::RtcPeerConnection) {
     let handler = Box::new(move |event: JsValue| {
-        let v2 = vdom.clone();
+        let vdom_on_next_tick = vdom.clone();
         websysmod::debug_write("on local ice_candidate");
         //send the candidate to the remote peer over ws
         let event = unwrap!(event.dyn_into::<web_sys::RtcPeerConnectionIceEvent>());
@@ -307,20 +338,21 @@ pub fn web_rtc_set_on_local_ice_candidate(vdom: VdomWeak, pc: &mut web_sys::RtcP
             //websysmod::debug_write(&format!("candidate_json: {:?}", &candidate_json));
             spawn_local(async move {
                 unwrap!(
-                    v2.with_component({
-                        move |root| {
-                            let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                            //save to queue
-                            rrc.web_rtc_data.rtc_ice_queue.push(candidate_json);
-                            if rrc.web_rtc_data.rtc_accepted_call == true {
-                                web_rtc_send_ice_candidates(
-                                    rrc,
-                                    rrc.web_rtc_data.rtc_receiver_ws_uid,
-                                );
+                    vdom_on_next_tick
+                        .with_component({
+                            move |root| {
+                                let rrc = root.unwrap_mut::<RootRenderingComponent>();
+                                //save to queue
+                                rrc.web_rtc_data.rtc_ice_queue.push(candidate_json);
+                                if rrc.web_rtc_data.rtc_accepted_call == true {
+                                    web_rtc_send_ice_candidates(
+                                        rrc,
+                                        rrc.web_rtc_data.rtc_receiver_ws_uid,
+                                    );
+                                }
                             }
-                        }
-                    })
-                    .await
+                        })
+                        .await
                 );
             });
         }
@@ -419,22 +451,27 @@ pub fn web_rtc_send_chat(vdom: VdomWeak, rrc: &mut RootRenderingComponent) {
 /// receive msg
 pub fn web_rtc_receive_chat(vdom: VdomWeak, text: String) {
     websysmod::debug_write(&format!("web_rtc_receive: {}", &text));
-    let v2 = vdom.clone();
+
     //save to chat vector
-    spawn_local(async move {
-        unwrap!(
-            vdom.with_component({
-                move |root| {
-                    let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                    rrc.web_rtc_data.rtc_chat.push(ChatMessage {
-                        time: 0,
-                        sender: 2,
-                        msg: text,
+    spawn_local({
+        let vdom_on_next_tick = vdom.clone();
+        async move {
+            unwrap!(
+                vdom_on_next_tick
+                    .with_component({
+                        let vdom = vdom_on_next_tick.clone();
+                        move |root| {
+                            let rrc = root.unwrap_mut::<RootRenderingComponent>();
+                            rrc.web_rtc_data.rtc_chat.push(ChatMessage {
+                                time: 0,
+                                sender: 2,
+                                msg: text,
+                            });
+                            vdom.schedule_render();
+                        }
                     })
-                }
-            })
-            .await
-        );
+                    .await
+            );
+        }
     });
-    v2.schedule_render();
 }

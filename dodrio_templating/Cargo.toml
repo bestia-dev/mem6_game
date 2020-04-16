@@ -45,6 +45,7 @@ features = [
   "History",
   "HtmlAudioElement",
   "HtmlElement",
+  "HtmlImageElement",
   "HtmlInputElement",
   "HtmlMediaElement",
   "KeyboardEvent",

@@ -125,11 +125,11 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: VdomWeak) {
         if let Ok(msg) = serde_json::from_str::<WsMessageFromServer>(&data) {
             //msg from ws server
             spawn_local({
-                let vdom = vdom.clone();
+                let vdom_on_next_tick = vdom.clone();
                 async move {
-                    let _result = vdom
+                    let _result = vdom_on_next_tick
                         .with_component({
-                            //let vdom = vdom.clone();
+                            //let vdom = vdom_on_next_tick.clone();
                             move |root| {
                                 let rrc = root.unwrap_mut::<RootRenderingComponent>();
                                 // msgs from server
@@ -159,11 +159,11 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: VdomWeak) {
                 // in this big enum I put only boilerplate code that don't change any data.
                 // for changing data I put code in separate functions for easy reading.
                 spawn_local({
-                    let vdom = vdom.clone();
+                    let vdom_on_next_tick = vdom.clone();
                     async move {
-                        let _result = vdom
+                        let _result = vdom_on_next_tick
                             .with_component({
-                                let vdom = vdom.clone();
+                                let vdom = vdom_on_next_tick.clone();
                                 move |root| {
                                     let rrc = root.unwrap_mut::<RootRenderingComponent>();
                                     match msg.msg_data {
@@ -181,7 +181,6 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: VdomWeak) {
                                             game_name,
                                             player_turn,
                                         } => {
-                                            let vdom = vdom.clone();
                                             statusgamedatainitmod::on_msg_start_game(
                                                 rrc,
                                                 &card_grid_data,
@@ -200,7 +199,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: VdomWeak) {
                                         } => {
                                             status1stcardmod::on_msg_click_1st_card(
                                                 rrc,
-                                                &vdom,
+                                                vdom.clone(),
                                                 msg.msg_sender_ws_uid,
                                                 card_index_of_1st_click,
                                                 msg_id,
@@ -208,7 +207,6 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: VdomWeak) {
                                             vdom.schedule_render();
                                         }
                                         WsMessageGameData::MsgClick2ndCard {
-                                          
                                             card_index_of_2nd_click,
                                             is_point,
                                             msg_id,
@@ -225,7 +223,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: VdomWeak) {
                                         WsMessageGameData::MsgDrinkEnd {
                                            
                                         } => {
-                                            statusdrinkmod::on_msg_drink_end(rrc, msg.msg_sender_ws_uid, &vdom);
+                                            statusdrinkmod::on_msg_drink_end(rrc, msg.msg_sender_ws_uid, vdom.clone());
                                             vdom.schedule_render();
                                         }
                                         WsMessageGameData::MsgTakeTurn {
@@ -272,7 +270,7 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: VdomWeak) {
                                                 }
                                                 MsgAckKind::MsgClick2ndCard => {
                                                     status2ndcardmod::on_msg_ack_player_click2nd_card(
-                                                        rrc, msg.msg_sender_ws_uid, msg_id, &vdom,
+                                                        rrc, msg.msg_sender_ws_uid, msg_id, vdom.clone(),
                                                     );
                                                 }
                                             }
@@ -307,20 +305,17 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: VdomWeak) {
                                         WsMessageGameData::MsgWebrtcOffer{
                                             sdp
                                         }=>{
-                                            let v2=vdom.clone();
-                                            webrtcmod::web_rtc_receive_offer(v2,rrc,sdp, msg.msg_sender_ws_uid);
+                                            webrtcmod::web_rtc_receive_offer(vdom.clone(),rrc,sdp, msg.msg_sender_ws_uid);
                                         }
                                         WsMessageGameData::MsgWebrtcAnswer{
                                             sdp
                                         }=>{
-                                            let v2=vdom.clone();
-                                            webrtcmod::web_rtc_receive_answer(v2,rrc,sdp);
+                                            webrtcmod::web_rtc_receive_answer(vdom.clone(),rrc,sdp);
                                         }
                                         WsMessageGameData::MsgWebrtcIceCandidate{
                                             sdp
                                         }=>{
-                                            let v2=vdom.clone();
-                                            webrtcmod::web_rtc_receive_ice_candidate(v2,rrc,sdp);
+                                            webrtcmod::web_rtc_receive_ice_candidate(vdom.clone(),rrc,sdp);
                                         }
                                     }
                                 }
@@ -350,11 +345,11 @@ pub fn setup_ws_onerror(ws: &WebSocket, vdom: VdomWeak) {
         // websysmod::debug_write(&err_text);
         {
             spawn_local({
-                let vdom = vdom.clone();
+                let vdom_on_next_tick = vdom.clone();
                 async move {
-                    let _result = vdom
+                    let _result = vdom_on_next_tick
                         .with_component({
-                            let vdom = vdom.clone();
+                            let vdom = vdom_on_next_tick.clone();
                             move |root| {
                                 let rrc = root.unwrap_mut::<RootRenderingComponent>();
                                 rrc.web_data.error_text = err_text;
@@ -378,11 +373,11 @@ pub fn setup_ws_onclose(ws: &WebSocket, vdom: VdomWeak) {
         websysmod::debug_write(&format!("onclose_callback {}", &err_text));
         {
             spawn_local({
-                let vdom = vdom.clone();
+                let vdom_on_next_tick = vdom.clone();
                 async move {
-                    let _result = vdom
+                    let _result = vdom_on_next_tick
                         .with_component({
-                            let vdom = vdom.clone();
+                            let vdom = vdom_on_next_tick.clone();
                             move |root| {
                                 let rrc = root.unwrap_mut::<RootRenderingComponent>();
                                 // I want to show a reconnect button to the user
@@ -407,7 +402,7 @@ pub fn setup_all_ws_events(ws: &WebSocket, vdom: VdomWeak) {
     setup_ws_onerror(ws, vdom.clone());
 
     // WebSocket on close message callback
-    setup_ws_onclose(ws, vdom);
+    setup_ws_onclose(ws, vdom.clone());
 }
 
 /// send ws message to server

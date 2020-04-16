@@ -7,7 +7,7 @@
 use crate::*;
 
 use unwrap::unwrap;
-use dodrio::{RenderContext, Node,VdomWeak};
+use dodrio::{RenderContext, Node, VdomWeak};
 use wasm_bindgen::JsCast;
 use crate::htmltemplatemod::HtmlTemplating;
 // endregion
@@ -15,7 +15,7 @@ use crate::htmltemplatemod::HtmlTemplating;
 /// on click
 pub fn on_click_1st_card(
     rrc: &mut RootRenderingComponent,
-    vdom: &VdomWeak,
+    vdom: VdomWeak,
     this_click_card_index: usize,
 ) {
     // websysmod::debug_write("on_click_1st_card");
@@ -23,7 +23,7 @@ pub fn on_click_1st_card(
     // change card status and game status
     rrc.game_data.card_index_of_1st_click = this_click_card_index;
 
-    let msg_id = ackmsgmod::prepare_for_ack_msg_waiting(rrc, vdom);
+    let msg_id = ackmsgmod::prepare_for_ack_msg_waiting(rrc, vdom.clone());
     let msg = websocketmod::WsMessageForReceivers {
         msg_sender_ws_uid: rrc.web_data.my_ws_uid,
         msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
@@ -52,7 +52,7 @@ pub fn flip_back(rrc: &mut RootRenderingComponent) {
 /// on msg
 pub fn on_msg_click_1st_card(
     rrc: &mut RootRenderingComponent,
-    vdom: &VdomWeak,
+    vdom: VdomWeak,
     msg_sender_ws_uid: usize,
     card_index_of_1st_click: usize,
     msg_id: usize,
@@ -71,9 +71,9 @@ pub fn on_msg_click_1st_card(
     {
         websysmod::debug_write("CONFLICT on_msg_click_1st_card");
         // do the whole click1st process
-        on_click_1st_card(rrc, vdom, rrc.game_data.card_index_of_1st_click);
+        on_click_1st_card(rrc, vdom.clone(), rrc.game_data.card_index_of_1st_click);
         // do the whole click2nd process
-        status2ndcardmod::on_click_2nd_card(rrc, vdom, card_index_of_1st_click)
+        status2ndcardmod::on_click_2nd_card(rrc, vdom.clone(), card_index_of_1st_click)
     } else {
         // websysmod::debug_write("on_msg_click_1st_card");
         rrc.game_data.card_index_of_1st_click = card_index_of_1st_click;
@@ -120,7 +120,7 @@ pub fn div_on_1st_card<'a>(rrc: &RootRenderingComponent, cx: &mut RenderContext<
 #[allow(clippy::indexing_slicing)]
 pub fn on_click_img_status1st(
     root: &mut dyn dodrio::RootRender,
-    vdom: &VdomWeak,
+    vdom: VdomWeak,
     event: &web_sys::Event,
 ) {
     // websysmod::debug_write("img click");
@@ -142,7 +142,7 @@ pub fn on_click_img_status1st(
         .as_ref()
         == CardStatusCardFace::Down.as_ref()
     {
-        status1stcardmod::on_click_1st_card(rrc, vdom, this_click_card_index);
+        status1stcardmod::on_click_1st_card(rrc, vdom.clone(), this_click_card_index);
         // Finally, re-render the component on the next animation frame.
         vdom.schedule_render();
     } else {

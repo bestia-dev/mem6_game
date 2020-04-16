@@ -45,6 +45,9 @@ pub fn web_rtc_chat_text_onkeyup(
         if keyboard_event.key() == "Enter" {
             // same as button click
             webrtcmod::web_rtc_send_chat(vdom, rrc);
+        } else {
+            rrc.web_rtc_data.rtc_my_message =
+                websysmod::get_input_element_value_string_by_id("web_rtc_chat_text");
         }
     }
 }

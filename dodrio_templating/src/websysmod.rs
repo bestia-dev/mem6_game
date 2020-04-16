@@ -40,6 +40,21 @@ pub fn set_input_element_value_string_by_id(element_id: &str, value: &str) {
     // debug_write("before value()");
     input_html_element.set_value(value);
 }
+
+/// get input element value string by id
+pub fn get_image_element_by_id(element_id: &str) -> web_sys::HtmlImageElement {
+    let img_element = get_element_by_id(element_id);
+    //return
+    unwrap!(img_element.dyn_into::<web_sys::HtmlImageElement>())
+}
+
+/// get input element value string by id
+pub fn get_audio_element_by_id(element_id: &str) -> web_sys::HtmlAudioElement {
+    let audio_element = get_element_by_id(element_id);
+    //return
+    unwrap!(audio_element.dyn_into::<web_sys::HtmlAudioElement>())
+}
+
 /// save to local storage
 pub fn save_to_local_storage(name: &str, value: &str) {
     let ls = unwrap!(unwrap!(window().local_storage()));

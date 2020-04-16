@@ -7,7 +7,7 @@
 use crate::*;
 
 use unwrap::unwrap;
-use dodrio::{RenderContext, Node,VdomWeak};
+use dodrio::{RenderContext, Node, VdomWeak};
 use wasm_bindgen::JsCast;
 use crate::htmltemplatemod::HtmlTemplating;
 // endregion
@@ -18,7 +18,7 @@ use crate::htmltemplatemod::HtmlTemplating;
 /// That struct is the only permanent data storage for later render the virtual dom.
 pub fn on_click_2nd_card(
     rrc: &mut RootRenderingComponent,
-    vdom: &VdomWeak,
+    vdom: VdomWeak,
     this_click_card_index: usize,
 ) {
     rrc.game_data.card_index_of_2nd_click = this_click_card_index;
@@ -32,7 +32,7 @@ pub fn on_click_2nd_card(
     if is_point {
         update_click_2nd_card_flip_permanently(rrc, is_point);
     }
-    let msg_id = ackmsgmod::prepare_for_ack_msg_waiting(rrc, vdom);
+    let msg_id = ackmsgmod::prepare_for_ack_msg_waiting(rrc, vdom.clone());
     let msg = websocketmod::WsMessageForReceivers {
         msg_sender_ws_uid: rrc.web_data.my_ws_uid,
         msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
@@ -94,7 +94,7 @@ pub fn on_msg_ack_player_click2nd_card(
     rrc: &mut RootRenderingComponent,
     player_ws_uid: usize,
     msg_id: usize,
-    vdom: &VdomWeak,
+    vdom: VdomWeak,
 ) {
     if ackmsgmod::remove_ack_msg_from_queue(rrc, player_ws_uid, msg_id) {
         let is_point = is_point(rrc);
@@ -103,7 +103,7 @@ pub fn on_msg_ack_player_click2nd_card(
             // nothing because all happens after the Drink/no drink page
         } else {
             websysmod::debug_write("no");
-            statustaketurnmod::on_click_take_turn(rrc, vdom);
+            statustaketurnmod::on_click_take_turn(rrc, vdom.clone());
         }
     }
     // TODO: timer if after 3 seconds the ack is not received resend the msg
@@ -160,7 +160,7 @@ pub fn div_click_2nd_card<'a>(
 #[allow(clippy::indexing_slicing)]
 pub fn on_click_img_status2nd(
     root: &mut dyn dodrio::RootRender,
-    vdom: &VdomWeak,
+    vdom: VdomWeak,
     event: &web_sys::Event,
 ) {
     let rrc = root.unwrap_mut::<RootRenderingComponent>();
@@ -181,24 +181,24 @@ pub fn on_click_img_status2nd(
         .as_ref()
         == CardStatusCardFace::Down.as_ref()
     {
-        status2ndcardmod::on_click_2nd_card(rrc, vdom, this_click_card_index);
+        status2ndcardmod::on_click_2nd_card(rrc, vdom.clone(), this_click_card_index);
         // Finally, re-render the component on the next animation frame.
         vdom.schedule_render();
     } else {
-         //only if there is big_img, then make it visible
-         websysmod::debug_write("click on img");
-         if unwrap!(rrc.game_data.game_config.clone()).big_img == true {
-             htmltemplateimplmod::visible_big_img(&format!(
-                 "content/{}/big_img/{}",
-                 rrc.game_data.game_name,
-                 unwrap!(unwrap!(rrc.game_data.game_config.as_ref())
-                     .img_filename
-                     .get(
-                         unwrap!(rrc.game_data.card_grid_data.get(this_click_card_index))
-                             .card_number
-                     ))
-             ));
-         }
+        //only if there is big_img, then make it visible
+        websysmod::debug_write("click on img");
+        if unwrap!(rrc.game_data.game_config.clone()).big_img == true {
+            htmltemplateimplmod::visible_big_img(&format!(
+                "content/{}/big_img/{}",
+                rrc.game_data.game_name,
+                unwrap!(unwrap!(rrc.game_data.game_config.as_ref())
+                    .img_filename
+                    .get(
+                        unwrap!(rrc.game_data.card_grid_data.get(this_click_card_index))
+                            .card_number
+                    ))
+            ));
+        }
     }
 }
 // div_grid_container() is in divgridcontainermod.rs
