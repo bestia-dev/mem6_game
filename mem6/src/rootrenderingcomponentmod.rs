@@ -27,12 +27,12 @@ impl RootRenderingComponent {
         let game_data = gamedatamod::GameData::new(my_ws_uid);
         let msg_receivers_json = game_data.prepare_json_msg_receivers();
         let web_data = webdatamod::WebData::new(my_ws_uid, msg_receivers_json);
-        let web_rtc_data = webrtcmod::WebRtcData::new();
+        let web_rtc_data = webrtcmod::WebRtcData::new(my_ws_uid);
 
         RootRenderingComponent {
             web_data,
             game_data,
-            web_rtc_data
+            web_rtc_data,
         }
     }
 }

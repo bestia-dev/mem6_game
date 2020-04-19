@@ -5,7 +5,6 @@
 use crate::*;
 
 use unwrap::unwrap;
-use wasm_bindgen::JsCast;
 use dodrio::VdomWeak;
 // endregion
 

@@ -5,7 +5,7 @@ use crate::htmltemplatemod::HtmlTemplating;
 // use qrcode53bytes::*;
 
 use unwrap::unwrap;
-use wasm_bindgen::{JsCast};
+//use wasm_bindgen::{JsCast};
 use dodrio::{
     Node, RenderContext, RootRender,
     bumpalo::{self},
@@ -21,8 +21,8 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             "is_first_player" => self.game_data.my_player_number == 1,
             "player_joined" => self.game_data.players.len() > 1,
             "sounds_and_labels" => self.game_data.sounds_and_labels,
-            "is_rtc_data_channel_open" => self.web_rtc_data.is_rtc_data_channel_open,
-            "is_not_rtc_data_channel_open" => !self.web_rtc_data.is_rtc_data_channel_open,
+            "rtc_is_data_channel_open" => self.web_rtc_data.rtc_is_data_channel_open,
+            "is_not_rtc_data_channel_open" => !self.web_rtc_data.rtc_is_data_channel_open,
             _ => {
                 let x = format!("Error: Unrecognized call_fn_boolean: \"{}\"", fn_name);
                 websysmod::debug_write(&x);
@@ -155,7 +155,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     webrtcimplmod::web_rtc_receiver_ws_uid_onkeyup(vdom, rrc, event);
                 }
                 "web_rtc_start" => {
-                    webrtcmod::web_rtc_start(vdom, &mut rrc.web_rtc_data);
+                    webrtcmod::web_rtc_start(rrc, vdom);
                 }
                 "web_rtc_chat_text_onkeyup" => {
                     webrtcimplmod::web_rtc_chat_text_onkeyup(vdom, rrc, event);

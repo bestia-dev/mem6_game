@@ -31,6 +31,12 @@ pub fn get_input_element_value_string_by_id(element_id: &str) -> String {
     input_html_element.value()
 }
 
+/// get input element value usize by id
+pub fn get_input_element_value_usize_by_id(element_id: &str) -> usize {
+    let receiver_ws_uid = get_input_element_value_string_by_id(element_id);
+    unwrap!(receiver_ws_uid.parse::<usize>())
+}
+
 /// get input element value string by id
 pub fn set_input_element_value_string_by_id(element_id: &str, value: &str) {
     // debug_write("before get_element_by_id");
