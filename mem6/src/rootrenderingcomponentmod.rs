@@ -6,7 +6,8 @@ use crate::*;
 use crate::htmltemplatemod::HtmlTemplating;
 
 use unwrap::unwrap;
-use dodrio::{Node, Render, RenderContext};
+use dodrio::{Node, Render, RenderContext, VdomWeak};
+
 // endregion
 
 /// Root Rendering Component has all
@@ -34,6 +35,12 @@ impl RootRenderingComponent {
             game_data,
             web_rtc_data,
         }
+    }
+
+    /// start websocket and store in web_data and web_rtc_data
+    pub fn start_websocket(&mut self, vdom: VdomWeak) {
+        self.web_data.start_websocket(vdom);
+        self.web_rtc_data.rtc_ws = self.web_data.ws.clone();
     }
 }
 

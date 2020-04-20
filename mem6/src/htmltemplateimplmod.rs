@@ -155,16 +155,18 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     webrtcimplmod::web_rtc_receiver_ws_uid_onkeyup(vdom, rrc, event);
                 }
                 "web_rtc_start" => {
-                    webrtcmod::web_rtc_start(rrc, vdom);
+                    rrc.web_rtc_data
+                        .web_rtc_start(vdom, unwrap!(rrc.web_data.ws.clone()));
                 }
                 "web_rtc_chat_text_onkeyup" => {
                     webrtcimplmod::web_rtc_chat_text_onkeyup(vdom, rrc, event);
                 }
                 "web_rtc_send_chat" => {
-                    webrtcmod::web_rtc_send_chat(vdom, rrc);
+                    rrc.web_rtc_data.web_rtc_send_chat(vdom);
                 }
                 "start_a_group_onclick" => {
-                    rrc.web_data.start_websocket(vdom);
+                    // entry point for the game
+                    rrc.start_websocket(vdom);
                     open_new_local_page("#p02");
                 }
                 "restart_game" => {

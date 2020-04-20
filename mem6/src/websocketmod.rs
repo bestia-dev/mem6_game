@@ -305,17 +305,17 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: VdomWeak) {
                                         WsMessageGameData::MsgWebrtcOffer{
                                             sdp
                                         }=>{
-                                            webrtcmod::web_rtc_receive_offer(vdom.clone(),rrc,sdp, msg.msg_sender_ws_uid);
+                                            rrc.web_rtc_data.web_rtc_receive_offer(vdom.clone(),sdp, msg.msg_sender_ws_uid);
                                         }
                                         WsMessageGameData::MsgWebrtcAnswer{
                                             sdp
                                         }=>{
-                                            webrtcmod::web_rtc_receive_answer(vdom.clone(),rrc,sdp);
+                                            rrc.web_rtc_data.web_rtc_receive_answer(vdom.clone(),sdp);
                                         }
                                         WsMessageGameData::MsgWebrtcIceCandidate{
                                             sdp
                                         }=>{
-                                            webrtcmod::web_rtc_receive_ice_candidate(vdom.clone(),rrc,sdp);
+                                            rrc.web_rtc_data.web_rtc_receive_ice_candidate(vdom.clone(),sdp);
                                         }
                                     }
                                 }

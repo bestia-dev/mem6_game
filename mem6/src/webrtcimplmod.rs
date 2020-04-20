@@ -5,15 +5,22 @@
 use crate::*;
 //for trait rrc.render_template
 use crate::htmltemplatemod::HtmlTemplating;
-//use crate::webrtcmod::{WebRtcData};
+use crate::webrtcmod::{WebRtcData};
 
 use unwrap::unwrap;
 use wasm_bindgen::{JsCast};
 //use wasm_bindgen_futures::spawn_local;
-use dodrio::{RenderContext, Node, VdomWeak};
+use dodrio::{RenderContext, Node, VdomWeak, RootRender};
 //use serde_derive::{Serialize, Deserialize};
 // endregion
 
+impl webrtcmod::WebRtcTrait for WebRtcData {
+    fn get_web_rtc_data_from_root_render(root: &mut dyn RootRender) -> &mut WebRtcData {
+        let rrc = root.unwrap_mut::<RootRenderingComponent>();
+        //return
+        &mut rrc.web_rtc_data
+    }
+}
 /// on key up only for Enter
 pub fn web_rtc_receiver_ws_uid_onkeyup(
     vdom: VdomWeak,
@@ -26,7 +33,8 @@ pub fn web_rtc_receiver_ws_uid_onkeyup(
         //websysmod::debug_write(&keyboard_event.key());
         if keyboard_event.key() == "Enter" {
             // same as button click
-            webrtcmod::web_rtc_start(rrc, vdom);
+            rrc.web_rtc_data
+                .web_rtc_start(vdom, unwrap!(rrc.web_data.ws.clone()));
         }
     }
 }
@@ -43,7 +51,7 @@ pub fn web_rtc_chat_text_onkeyup(
         // websysmod::debug_write(&keyboard_event.key());
         if keyboard_event.key() == "Enter" {
             // same as button click
-            webrtcmod::web_rtc_send_chat(vdom, rrc);
+            rrc.web_rtc_data.web_rtc_send_chat(vdom);
         } else {
             rrc.web_rtc_data.rtc_my_message =
                 websysmod::get_input_element_value_string_by_id("web_rtc_chat_text");

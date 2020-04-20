@@ -36,7 +36,7 @@ impl routermod::Routing for Router {
             rrc.web_data.local_route = "p02_start_a_group.html".to_owned();
         } else if local_route.starts_with("#p03") {
             // entry point for join game
-            rrc.web_data.start_websocket(vdom.clone());
+            rrc.start_websocket(vdom.clone());
             rrc.game_data.my_player_number = 2;
             if local_route.contains('.') {
                 let gr = routermod::get_url_param_in_hash_after_dot(&local_route);
@@ -64,7 +64,7 @@ impl routermod::Routing for Router {
             rrc.web_data.local_route = "p31_debug_text.html".to_owned();
         } else if local_route == "#p41" {
             // entry point for webrtc chat
-            rrc.web_data.start_websocket(vdom.clone());
+            rrc.start_websocket(vdom.clone());
             rrc.web_data.local_route = "p41_webrtc.html".to_owned();
         } else {
             // main entry point
