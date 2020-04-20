@@ -12,6 +12,11 @@ categories = ["game","learning"]
 publish = false
 
 [dependencies]
+rust_wasm_websys_utils = {path = "../rust_wasm_websys_utils"}
+rust_wasm_router = {path = "../rust_wasm_router"}
+reader_for_microxml = "1.0.4"
+
+
 unwrap = "1.2.1"
 #dodrio =  { git = "https://github.com/fitzgen/dodrio", branch = "master" }
 dodrio = {path = "../../dodrio"}
@@ -23,7 +28,6 @@ serde ="1.0.104"
 serde_json = "1.0"
 # newer futures have unstable .await
 wasm-bindgen-futures = "0.4.8"
-reader_for_microxml = "1.0.4"
 
 [dependencies.web-sys]
 version = "0.3.33"

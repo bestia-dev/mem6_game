@@ -287,7 +287,8 @@ use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::gamedatamod::*;
 
 use rust_wasm_dodrio_templating::*;
-use rust_wasm_dodrio_templating::routermod::Routing;
+
+use rust_wasm_websys_utils::*;
 
 // use unwrap::unwrap;
 use wasm_bindgen::prelude::*;
@@ -320,7 +321,8 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     fetchmod::fetch_videos_and_update(&location_href, vdom.clone());
     fetchmod::fetch_audio_and_update(&location_href, vdom.clone());
     // Start the URL router.
-    let router = routerimplmod::Router {};
+    use rust_wasm_router::routermod::RouterTrait;
+    let router = routerimplmod::Router::new();
     router.start_router(vdom.clone());
 
     // Run the component forever. Forget to drop the memory.

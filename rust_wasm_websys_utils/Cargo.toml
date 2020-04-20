@@ -1,0 +1,60 @@
+[package]
+name = "rust_wasm_websys_utils"
+version = "2020.218.1306"
+authors = ["Luciano Furlan <Luciano.Bestia@gmail.com>"]
+edition = "2018"
+description = "web_sys and js_sys functions for the project"
+repository = "https://github.com/LucianoBestia/rust_wasm_websys_utils"
+readme = "README.md"
+license = "MIT"
+keywords = ["wasm","web_sys","js_sys"]
+categories = ["game","learning"]
+publish = false
+
+[dependencies]
+unwrap = "1.2.1"
+
+
+wasm-bindgen = { version = "0.2.58", features = ["serde-serialize"] }
+#newer version of rand do not have smallring
+rand = { version = "0.7.3", features = ["wasm-bindgen","small_rng"] }
+js-sys = "0.3"
+serde ="1.0.104"
+serde_json = "1.0"
+# newer futures have unstable .await
+wasm-bindgen-futures = "0.4.8"
+
+[dependencies.web-sys]
+version = "0.3.33"
+features = [
+  "console",
+  "Document",
+  "Element",
+  "ErrorEvent",
+  "Event",
+  "EventListener",
+  "EventTarget",
+  "History",
+  "HtmlAudioElement",
+  "HtmlElement",
+  "HtmlImageElement",
+  "HtmlInputElement",
+  "HtmlMediaElement",
+  "KeyboardEvent",
+  "Location",
+  "MouseEvent",
+  "Navigator",
+  "Node",
+  "Request",
+  "RequestCache",
+  "RequestCredentials",
+  "RequestInit",
+  "RequestMode",
+  "RequestRedirect",
+  "Response",
+  "Storage",
+  "Window",
+]
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3.8"

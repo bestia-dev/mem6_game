@@ -1,5 +1,6 @@
 //! rust_wasm_dodrio_templating
 
-pub mod websysmod;
-pub mod routermod;
 pub mod htmltemplatemod;
+
+//use rust_wasm_websys_utils::*;
+

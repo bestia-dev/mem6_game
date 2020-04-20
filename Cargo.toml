@@ -1,9 +1,15 @@
 [workspace]
 
 members = [
+    "rust_wasm_websys_utils",
+    "rust_wasm_router",
     "rust_wasm_dodrio_templating",
     "mem6_common",
     "mem6",
     "mem6_server",
 ]
 
+# Rust does not have yet 2020-04-20 profiles on webspave projects
+# I can put it only on the workspace alone.
+[profile.release]
+panic = "abort"

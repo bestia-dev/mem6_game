@@ -5,7 +5,7 @@
 use crate::*;
 //for trait rrc.render_template
 use crate::htmltemplatemod::HtmlTemplating;
-use crate::webrtcmod::{WebRtcData};
+use crate::webrtcmod::{WebRtcData,WebRtcTrait};
 
 use unwrap::unwrap;
 use wasm_bindgen::{JsCast};
@@ -14,7 +14,7 @@ use dodrio::{RenderContext, Node, VdomWeak, RootRender};
 //use serde_derive::{Serialize, Deserialize};
 // endregion
 
-impl webrtcmod::WebRtcTrait for WebRtcData {
+impl WebRtcTrait for WebRtcData {
     fn get_web_rtc_data_from_root_render(root: &mut dyn RootRender) -> &mut WebRtcData {
         let rrc = root.unwrap_mut::<RootRenderingComponent>();
         //return

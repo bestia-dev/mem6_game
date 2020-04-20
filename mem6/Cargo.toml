@@ -1,6 +1,6 @@
 [package]
 name = "mem6"
-version = "2020.420.1431"
+version = "2020.420.1814"
 authors = ["Luciano Furlan <Luciano.Bestia@gmail.com>"]
 edition = "2018"
 description = "Learning Rust Wasm/WebAssembly with Virtual Dom Dodrio"
@@ -15,11 +15,16 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
-unwrap = "1.2.1"
+# my dependencies
 mem6_common = { path = "../mem6_common" }
+rust_wasm_router = { path = "../rust_wasm_router" }
 rust_wasm_dodrio_templating = { path = "../rust_wasm_dodrio_templating" }
+rust_wasm_websys_utils = { path = "../rust_wasm_websys_utils" }
 #qrcode53bytes = { path = "../../qrcode53bytes" }
 qrcode53bytes ="1.0.0"
+
+# other dependencies
+unwrap = "1.2.1"
 #dodrio =  { git = "https://github.com/fitzgen/dodrio", branch = "master" }
 dodrio = {path = "../../dodrio"}
 wasm-bindgen = { version = "0.2.58", features = ["serde-serialize"] }
@@ -99,5 +104,7 @@ features = [
 [dev-dependencies]
 wasm-bindgen-test = "0.3.8"
 
-[profile.release]
-panic = "abort"
+# Rust does not have yet 2020-04-20 profiles on webspave projects
+# I can put it only on the workspace alone.
+#[profile.release]
+#panic = "abort"

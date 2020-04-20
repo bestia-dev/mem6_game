@@ -27,7 +27,8 @@ pub enum HtmlOrSvg {
 /// the RootRenderingComponent struct must implement this trait
 /// it must have the fields for local_route and html_template fields
 pub trait HtmlTemplating {
-    // region: specific implementation code. while rendering, cannot mut rrc
+    // region: methods to be implemented for a specific project
+    // while rendering, cannot mut rrc
     fn call_fn_string(&self, fn_name: &str) -> String;
     fn call_fn_boolean<'a>(&self, fn_name: &str) -> bool;
     fn call_fn_node<'a>(&self, cx: &mut RenderContext<'a>, fn_name: &str) -> Node<'a>;
@@ -36,7 +37,7 @@ pub trait HtmlTemplating {
         &self,
         fn_name: String,
     ) -> Box<dyn Fn(&mut dyn RootRender, VdomWeak, web_sys::Event) + 'static>;
-    // endregion: specific implementation code
+    // endregion: methods to be implemented
 
     // region: generic code (in trait definition)
 

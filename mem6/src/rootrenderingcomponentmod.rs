@@ -19,6 +19,7 @@ pub struct RootRenderingComponent {
     pub game_data: gamedatamod::GameData,
     /// data for web rtc communication
     pub web_rtc_data: webrtcmod::WebRtcData,
+    pub router_data: routerimplmod::Router,
 }
 
 /// impl
@@ -29,11 +30,13 @@ impl RootRenderingComponent {
         let msg_receivers_json = game_data.prepare_json_msg_receivers();
         let web_data = webdatamod::WebData::new(my_ws_uid, msg_receivers_json);
         let web_rtc_data = webrtcmod::WebRtcData::new(my_ws_uid);
+        let router_data = routerimplmod::Router::new();
 
         RootRenderingComponent {
             web_data,
             game_data,
             web_rtc_data,
+            router_data,
         }
     }
 

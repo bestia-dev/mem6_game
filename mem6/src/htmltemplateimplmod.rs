@@ -403,3 +403,66 @@ pub fn visible_big_img(img_file_name: &str) {
     img_html_element.set_src(&img_file_name);
     let _x = img_html_element.style().set_property("display", "initial");
 }
+
+/// update html_template and extract and saves html_sub_templates
+#[allow(clippy::integer_arithmetic)]
+#[allow(clippy::indexing_slicing)]
+pub fn update_html_template_and_sub_templates(rrc:&mut RootRenderingComponent, resp_body_text: &str,)  {
+        // only the html inside the <body> </body>
+        let mut tm = between_body_tag(&resp_body_text);
+        // parse and save sub_templates <template name="xxx"></template>
+        rrc.web_data.html_sub_templates.clear();
+        loop {
+            let mut exist_template = false;
+
+            let pos1 = tm.find("<template ");
+            let del2 = "</template>";
+            let pos2 = tm.find(del2);
+            if let Some(pos_start) = pos1 {
+                if let Some(pos_end) = pos2 {
+                    exist_template = true;
+                    // drain - extract a substring and remove it from the original
+                    let sub1: String = tm.drain(pos_start..pos_end + del2.len()).collect();
+
+                    let del3 = "name=\"";
+                    let pos_name_start = unwrap!(sub1.find(del3));
+                    let sub2 = &sub1[pos_name_start + del3.len()..];
+                    //websysmod::debug_write(sub2);
+
+                    let pos_name_end = unwrap!(sub2.find('"'));
+                    let name = &sub2[0..pos_name_end];
+                    //websysmod::debug_write(name);
+
+                    let del5 = '>';
+                    let pos_name_end_tag = unwrap!(sub1.find(del5));
+                    let pos6 = unwrap!(sub1.find(del2));
+                    let sub_template = &sub1[pos_name_end_tag + 1..pos6];
+                    //websysmod::debug_write(sub_template);
+
+                    rrc.web_data
+                        .html_sub_templates
+                        .push((name.to_string(), sub_template.to_string()));
+                }
+            }
+            if !exist_template {
+                break;
+            }
+        }
+        rrc.web_data.html_template = tm;
+}
+
+/// only the html between the <body> </body>
+/// it must be a SINGLE root node
+fn between_body_tag(resp_body_text: &str) -> String {
+    let pos1 = resp_body_text.find("<body>").unwrap_or(0);
+    let pos2 = resp_body_text.find("</body>").unwrap_or(0);
+    // return
+    if pos1 == 0 {
+        resp_body_text.to_string()
+    } else {
+        #[allow(clippy::integer_arithmetic)]
+        {
+            unwrap!(resp_body_text.get(pos1 + 6..pos2)).to_string()
+        }
+    }
+}

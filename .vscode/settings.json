@@ -68,6 +68,7 @@
         "webrtcimplmod",
         "websocketcommunication",
         "websocketmod",
+        "websys",
         "websysmod",
         "wrtc"
     ]

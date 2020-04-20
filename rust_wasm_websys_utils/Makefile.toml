@@ -1,0 +1,95 @@
+# mem6_game/rust_wasm_websys_utils/Makefile.toml
+#https://github.com/sagiegurari/cargo-make/blob/master/src/lib/Makefile.stable.toml
+
+[config]
+skip_core_tasks = true
+
+#region: public callable tasks/flows
+
+    [tasks.default]
+    description = "show list of public callable tasks"
+    clear = true
+    command = "cargo"
+    args = ["make","--list-all-steps"]
+
+    [tasks.dev]
+    description = "cargo build development"
+    clear=true
+    dependencies = [
+        "build-dev"]
+
+    [tasks.release]
+    description = "cargo build release"
+    clear=true
+    dependencies = [
+        "build-release"]
+    
+    [tasks.check]
+    description = "cargo check --release"
+    clear = true
+    command = "cargo"
+    args = ["check","--release"]
+
+    [tasks.audit]
+    description = "cargo audit - for warning dependencies"
+    clear = true
+    dependencies = [
+        "cargo_audit",
+    ]
+
+    [tasks.fmt]
+    description = "cargo fmt - format code"
+    clear = true
+    dependencies = [
+        "cargo_fmt",
+    ]
+
+    [tasks.doc]
+    description = "call cargo doc"
+    clear=true
+    dependencies = [
+        "insert-readme",
+        "cargo_doc"
+    ]
+#endregion
+
+
+[tasks.build-dev]
+clear=true
+private=true
+command = "cargo"
+args = ["build"]
+
+[tasks.build-release]
+clear=true
+private=true
+command = "cargo"
+args = ["build","--release"]
+
+[tasks.cargo_audit]
+description = "cargo audit - no cargo.lock for library?"
+clear = true
+private = true
+#command = "cargo"
+#args = ["audit"]
+
+[tasks.cargo_fmt]
+description = "cargo fmt"
+clear = true
+private = true
+command = "cargo"
+args = ["fmt"]
+
+[tasks.insert-readme]
+clear = true
+private = true
+description = "copy the content of readme.md into *.rs comments (for the docs)"
+script= ["../../utils_linux/lmake_readme"]
+
+[tasks.cargo_doc]
+clear = true
+private = true
+description = "call cargo doc"
+command="cargo"
+args=["doc","--no-deps","--document-private-items"]
+

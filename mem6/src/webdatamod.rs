@@ -26,8 +26,6 @@ pub struct MsgInQueue {
 pub struct WebData {
     /// web socket communication between players
     pub ws: Option<WebSocket>,
-    /// local # hash route
-    pub local_route: String,
     /// downloaded html template for main page
     pub html_template: String,
     /// vector of named sub_templates <template name=xxx>...</template>
@@ -57,7 +55,6 @@ impl WebData {
         // return from constructor
         WebData {
             ws: None,
-            local_route: "".to_owned(),
             html_template: "".to_owned(),
             html_sub_templates: vec![],
             is_reconnect: false,
