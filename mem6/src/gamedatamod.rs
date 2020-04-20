@@ -512,10 +512,4 @@ impl GameData {
     }
 }
 
-/// prepare json string for one ws receiver
-pub fn prepare_json_msg_receivers_for_one(receiver_ws_uid: usize) -> String {
-    let mut vec_msg_receivers = Vec::new();
-    vec_msg_receivers.push(receiver_ws_uid);
-    // return
-    unwrap!(serde_json::to_string(&vec_msg_receivers))
-}
+

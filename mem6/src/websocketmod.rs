@@ -5,7 +5,7 @@
 
 // region: use
 use crate::*;
-
+use rust_wasm_webrtc::webrtcmod::WebRtcTrait;
 use mem6_common::*;
 
 use unwrap::unwrap;

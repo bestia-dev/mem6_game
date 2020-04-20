@@ -59,7 +59,7 @@ pub fn send_msg_and_write_in_queue(
             });
         }
     }
-    rrc.web_data.send_ws_msg(msg);
+    rrc.web_data.send_ws_msg_from_web_data(msg);
 }
 
 /// send ack
@@ -72,7 +72,7 @@ pub fn send_ack(
     // websysmod::debug_write(&format!("send_ack players: {:?}", rrc.game_data.players));
     // send back the ACK msg to the sender
     rrc.web_data
-        .send_ws_msg(&websocketmod::WsMessageForReceivers {
+        .send_ws_msg_from_web_data(&websocketmod::WsMessageForReceivers {
             msg_sender_ws_uid: rrc.web_data.my_ws_uid,
             msg_receivers_json: unwrap!(serde_json::to_string(&vec![msg_sender_ws_uid])),
             msg_data: gamedatamod::WsMessageGameData::MsgAck {

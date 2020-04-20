@@ -278,7 +278,6 @@ mod statusreconnectmod;
 mod routerimplmod;
 mod htmltemplateimplmod;
 mod webdatamod;
-mod webrtcmod;
 mod webrtcimplmod;
 // endregion
 

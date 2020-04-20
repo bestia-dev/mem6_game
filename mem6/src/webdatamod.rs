@@ -89,9 +89,9 @@ impl WebData {
         let ws_c = ws.clone();
         self.ws = Some(ws_c);
     }
-
     /// send msg over ws
-    pub fn send_ws_msg(&self, ws_message: &websocketmod::WsMessageForReceivers) {
+    pub fn send_ws_msg_from_web_data(&self, ws_message: &websocketmod::WsMessageForReceivers) {
         websocketmod::ws_send_msg(unwrap!(self.ws.as_ref()), ws_message);
     }
 }
+    

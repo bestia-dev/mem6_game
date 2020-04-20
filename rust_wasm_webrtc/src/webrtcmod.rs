@@ -4,22 +4,20 @@
 #![allow(clippy::panic)]
 
 // region: use
-use crate::*;
-
-//use mem6_common::*;
-
 use unwrap::unwrap;
+use js_sys::Reflect;
 use wasm_bindgen::{prelude::*, JsCast};
 use wasm_bindgen_futures::spawn_local;
-use js_sys::Reflect;
 use dodrio::{VdomWeak, RootRender};
 use serde_derive::{Serialize, Deserialize};
 use web_sys::{
-    RtcPeerConnection, RtcDataChannel, RtcSessionDescriptionInit, RtcConfiguration, RtcSdpType,
-    RtcDataChannelInit, RtcPeerConnectionIceEvent, RtcIceCandidateInit, RtcIceCandidate,
-    RtcDataChannelState,
+    RtcPeerConnection, RtcDataChannel,RtcPeerConnectionIceEvent,RtcConfiguration,
+    RtcDataChannelInit,RtcSessionDescriptionInit,RtcSdpType,RtcIceCandidateInit,
+    RtcIceCandidate,RtcDataChannelState
 };
 use web_sys::{WebSocket};
+
+use rust_wasm_websys_utils::*;
 // endregion
 
 /// one chat message looks like this
@@ -27,30 +25,6 @@ pub struct ChatMessage {
     pub time: usize,
     pub sender: usize,
     pub msg: String,
-}
-/// game data
-pub struct WebRtcData {
-    /// web socket communication between players - cloned
-    pub rtc_ws: Option<WebSocket>,
-    /// webrtc connection
-    pub rtc_peer_connection: Option<RtcPeerConnection>,
-    /// rtc data channel
-    pub rtc_data_channel: Option<RtcDataChannel>,
-    /// my ws uid
-    pub rtc_my_ws_uid: usize,
-    /// receiver for webrtc
-    pub rtc_receiver_ws_uid: usize,
-    /// accepted call
-    pub rtc_accepted_call: bool,
-    /// queue for ice candidate
-    pub rtc_ice_queue: Vec<String>,
-    /// chat messages
-    pub rtc_chat: Vec<ChatMessage>,
-    /// rtc_is_data_channel_open
-    pub rtc_is_data_channel_open: bool,
-    /// if a render event comes while we are typing in input
-    /// we will loose the content. So on every onkeyup, I have to store it in the struct.
-    pub rtc_my_message: String,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -60,40 +34,42 @@ struct IceCandidate {
     sdp_mid: Option<String>,
 }
 
-impl WebRtcData {
-    /// constructor
-    pub fn new(my_ws_uid: usize) -> Self {
-        // return from constructor
-        WebRtcData {
-            rtc_ws: None,
-            rtc_peer_connection: None,
-            rtc_data_channel: None,
-            rtc_accepted_call: false,
-            rtc_ice_queue: vec![],
-            rtc_my_ws_uid: my_ws_uid,
-            rtc_receiver_ws_uid: 0,
-            rtc_chat: vec![],
-            rtc_is_data_channel_open: false,
-            rtc_my_message: "".to_string(),
-        }
-    }
-    /// send msg over ws
-    pub fn send_ws_msg(&self, ws_message: &websocketmod::WsMessageForReceivers) {
-        websocketmod::ws_send_msg(unwrap!(self.rtc_ws.as_ref()), ws_message);
-    }
-
+pub trait WebRtcTrait {
+    
+    // region: getter setter
+    fn get_rtc_ws(&self)->&WebSocket;   
+    fn set_rtc_ws(&mut self,ws:WebSocket);
+    fn get_rtc_my_ws_uid(&self)->usize;
+    fn get_rtc_receiver_ws_uid(&self)->usize;
+    fn set_rtc_receiver_ws_uid(&mut self, ws_uid:usize);
+    fn get_rtc_peer_connection(&self)->RtcPeerConnection;
+    fn set_rtc_peer_connection(&mut self,rpc:RtcPeerConnection);
+    fn set_rtc_data_channel(&mut self, channel:RtcDataChannel);
+    fn set_rtc_is_data_channel_open(&mut self,is_open:bool);
+    fn get_rtc_accepted_call(&self)->bool;
+    fn set_rtc_accepted_call(&mut self,accepted:bool);
+    fn get_mut_rtc_chat(&mut self)->&mut Vec<ChatMessage>;
+    fn get_rtc_ice_queue(&self)->&Vec<String>;
+    fn get_mut_rtc_ice_queue(&mut self)->&mut Vec<String>;
+    fn get_rtc_data_channel(&self)->&RtcDataChannel;
+    /// endregion getter setter
+    fn get_web_rtc_data_from_root_render(root: &mut dyn RootRender) -> &mut Self;
+    fn web_rtc_send_offer(&mut self, sdp: String);
+    fn web_rtc_send_answer(&self, sdp: String);
+    fn web_rtc_send_ice_candidates(&mut self);
+    
     /// I must use vdom.with_components, because rrc cannot be used inside async block
     /// because its lifetime is not static
-    pub fn web_rtc_start(&mut self, vdom: VdomWeak, ws: WebSocket) {
+    fn web_rtc_start(&mut self, vdom: VdomWeak, ws: WebSocket) {
         websysmod::debug_write("web_rtc_start()");
-        self.rtc_ws = Some(ws);
-        self.rtc_receiver_ws_uid =
-            websysmod::get_input_element_value_usize_by_id("receiver_ws_uid");
+        self.set_rtc_ws(ws);
+        self.set_rtc_receiver_ws_uid (
+            websysmod::get_input_element_value_usize_by_id("receiver_ws_uid"));
         if let Ok(pc) = Self::web_rtc_new_connection() {
             //websysmod::debug_write("web_rtc_start ok");
             // move the connection to the struct that is globally available
-            self.rtc_peer_connection = Some(pc);
-            let mut pc = self.rtc_peer_connection.as_ref().unwrap().clone();
+            self.set_rtc_peer_connection(pc);
+            let mut pc =  self.get_rtc_peer_connection();
             //set local ice candidate event
             Self::web_rtc_setup_on_local_ice_candidate(vdom.clone(), &mut pc);
             let data_channel = Self::web_rtc_new_data_channel_with_callbacks(vdom.clone(), &pc);
@@ -121,7 +97,7 @@ impl WebRtcData {
                             .with_component({
                                 move |root| {
                                     let wrtc = Self::get_web_rtc_data_from_root_render(root);
-                                    wrtc.rtc_data_channel = Some(data_channel);
+                                    wrtc.set_rtc_data_channel(data_channel);
                                     wrtc.web_rtc_send_offer(local_description.sdp());
                                 }
                             })
@@ -186,7 +162,7 @@ impl WebRtcData {
                                 let vdom = vdom_on_next_tick.clone();
                                 move |root| {
                                     let wrtc = Self::get_web_rtc_data_from_root_render(root);
-                                    wrtc.rtc_is_data_channel_open = true;
+                                    wrtc.set_rtc_is_data_channel_open (true);
                                     vdom.schedule_render();
                                 }
                             })
@@ -201,29 +177,16 @@ impl WebRtcData {
         cb_oh.forget();
     }
 
-    /// send offer over websocket to establish peer connection
-    fn web_rtc_send_offer(&mut self, sdp: String) {
-        //websysmod::debug_write("web_rtc_send_offer()");
-        let msg_receivers_json =
-            gamedatamod::prepare_json_msg_receivers_for_one(self.rtc_receiver_ws_uid);
-
-        let msg = websocketmod::WsMessageForReceivers {
-            msg_sender_ws_uid: self.rtc_my_ws_uid,
-            msg_receivers_json: msg_receivers_json,
-            msg_data: gamedatamod::WsMessageGameData::MsgWebrtcOffer { sdp },
-        };
-        self.send_ws_msg(&msg);
-    }
-
     /// receive offer
-    pub fn web_rtc_receive_offer(&mut self, vdom: VdomWeak, sdp: String, msg_sender_ws_uid: usize) {
+    fn web_rtc_receive_offer(&mut self, vdom: VdomWeak, sdp: String, msg_sender_ws_uid: usize) {
         websysmod::debug_write("web_rtc_receive_offer()");
         if let Ok(pc) = Self::web_rtc_new_connection() {
-            self.rtc_receiver_ws_uid = msg_sender_ws_uid;
+
+            self.set_rtc_receiver_ws_uid (msg_sender_ws_uid);
             vdom.schedule_render();
             // move the connection to the struct that is globally available
-            self.rtc_peer_connection = Some(pc);
-            let pc = self.rtc_peer_connection.as_ref().unwrap().clone();
+            self.set_rtc_peer_connection(pc);
+            let pc = self.get_rtc_peer_connection();
             //websysmod::debug_write(&format!("web_rtc_receive_offer: {}", &sdp));
             let mut init_offer = RtcSessionDescriptionInit::new(RtcSdpType::Offer);
             //set_sdp but with a strange name
@@ -261,7 +224,7 @@ impl WebRtcData {
                                 move |root| {
                                     let wrtc = Self::get_web_rtc_data_from_root_render(root);
                                     wrtc.web_rtc_send_answer(local_description.sdp());
-                                    wrtc.rtc_data_channel = Some(data_channel_clone);
+                                    wrtc.set_rtc_data_channel (data_channel_clone);
                                 }
                             })
                             .await
@@ -271,24 +234,10 @@ impl WebRtcData {
         }
     }
 
-    /// send answer over websocket to establish peer connection
-    fn web_rtc_send_answer(&self, sdp: String) {
-        //websysmod::debug_write("web_rtc_send_answer()");
-        let msg_receivers_json =
-            gamedatamod::prepare_json_msg_receivers_for_one(self.rtc_receiver_ws_uid);
-
-        let msg = websocketmod::WsMessageForReceivers {
-            msg_sender_ws_uid: self.rtc_my_ws_uid,
-            msg_receivers_json: msg_receivers_json,
-            msg_data: gamedatamod::WsMessageGameData::MsgWebrtcAnswer { sdp: sdp },
-        };
-        self.send_ws_msg(&msg);
-    }
-
     /// receive answer
-    pub fn web_rtc_receive_answer(&mut self, vdom: VdomWeak, sdp: String) {
+    fn web_rtc_receive_answer(&mut self, vdom: VdomWeak, sdp: String) {
         websysmod::debug_write("web_rtc_receive_answer");
-        let pc = self.rtc_peer_connection.as_ref().unwrap().clone();
+        let pc = self.get_rtc_peer_connection();
         spawn_local({
             async move {
                 let vdom_on_next_tick = vdom.clone();
@@ -304,7 +253,7 @@ impl WebRtcData {
                         .with_component({
                             move |root| {
                                 let wrtc = Self::get_web_rtc_data_from_root_render(root);
-                                wrtc.rtc_accepted_call = true;
+                                wrtc.set_rtc_accepted_call (true);
                                 wrtc.web_rtc_send_ice_candidates();
                             }
                         })
@@ -339,8 +288,8 @@ impl WebRtcData {
                                 move |root| {
                                     let wrtc = Self::get_web_rtc_data_from_root_render(root);
                                     //save to queue
-                                    wrtc.rtc_ice_queue.push(candidate_json);
-                                    if wrtc.rtc_accepted_call == true {
+                                    wrtc.get_mut_rtc_ice_queue().push(candidate_json);
+                                    if wrtc.get_rtc_accepted_call() == true {
                                         wrtc.web_rtc_send_ice_candidates();
                                     }
                                 }
@@ -356,26 +305,9 @@ impl WebRtcData {
         cb_oh.forget();
     }
 
-    /// send offer over websocket to establish peer connection
-    fn web_rtc_send_ice_candidates(&mut self) {
-        for sdp in &self.rtc_ice_queue {
-            //websysmod::debug_write("web_rtc_send_ice_candidate()");
-            let msg_receivers_json =
-                gamedatamod::prepare_json_msg_receivers_for_one(self.rtc_receiver_ws_uid);
-            let sdp = sdp.to_string();
-            let msg = websocketmod::WsMessageForReceivers {
-                msg_sender_ws_uid: self.rtc_my_ws_uid,
-                msg_receivers_json: msg_receivers_json,
-                msg_data: gamedatamod::WsMessageGameData::MsgWebrtcIceCandidate { sdp },
-            };
-            self.send_ws_msg(&msg);
-        }
-        self.rtc_ice_queue.truncate(0);
-    }
-
     /// receive ice candidate
-    pub fn web_rtc_receive_ice_candidate(&mut self, _vdom: VdomWeak, sdp: String) {
-        let pc = self.rtc_peer_connection.as_ref().unwrap().clone();
+    fn web_rtc_receive_ice_candidate(&mut self, _vdom: VdomWeak, sdp: String) {
+        let pc = self.get_rtc_peer_connection();
         spawn_local(async move {
             websysmod::debug_write("web_rtc_receive_ice_candidate");
             let ice_candidate: IceCandidate = unwrap!(serde_json::from_str(&sdp));
@@ -404,10 +336,10 @@ impl WebRtcData {
     }
 
     /// button click or enter key
-    pub fn web_rtc_send_chat(&mut self, vdom: VdomWeak) {
+    fn web_rtc_send_chat(&mut self, vdom: VdomWeak) {
         let web_rtc_chat_text =
             websysmod::get_input_element_value_string_by_id("web_rtc_chat_text");
-        let dc = unwrap!(self.rtc_data_channel.as_ref());
+        let dc = self.get_rtc_data_channel();
         match dc.ready_state() {
             RtcDataChannelState::Connecting => {
                 websysmod::debug_write("Connection not open; queueing: ");
@@ -415,7 +347,7 @@ impl WebRtcData {
             RtcDataChannelState::Open => {
                 unwrap!(dc.send_with_str(&web_rtc_chat_text));
                 //save to chat vector
-                self.rtc_chat.push(ChatMessage {
+                self.get_mut_rtc_chat().push(ChatMessage {
                     time: 0,
                     sender: 1,
                     msg: web_rtc_chat_text,
@@ -435,7 +367,7 @@ impl WebRtcData {
     }
 
     /// receive msg
-    pub fn web_rtc_receive_chat(vdom: VdomWeak, text: String) {
+    fn web_rtc_receive_chat(vdom: VdomWeak, text: String) {
         websysmod::debug_write(&format!("web_rtc_receive: {}", &text));
 
         //save to chat vector
@@ -448,7 +380,7 @@ impl WebRtcData {
                             let vdom = vdom_on_next_tick.clone();
                             move |root| {
                                 let wrtc = Self::get_web_rtc_data_from_root_render(root);
-                                wrtc.rtc_chat.push(ChatMessage {
+                                wrtc.get_mut_rtc_chat().push(ChatMessage {
                                     time: 0,
                                     sender: 2,
                                     msg: text,
@@ -461,7 +393,4 @@ impl WebRtcData {
             }
         });
     }
-}
-pub trait WebRtcTrait {
-    fn get_web_rtc_data_from_root_render(root: &mut dyn RootRender) -> &mut WebRtcData;
 }

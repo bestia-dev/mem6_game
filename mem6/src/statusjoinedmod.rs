@@ -19,7 +19,7 @@ pub fn on_load_joined(rrc: &mut RootRenderingComponent) {
     ));
 
     rrc.web_data
-        .send_ws_msg(&websocketmod::WsMessageForReceivers {
+        .send_ws_msg_from_web_data(&websocketmod::WsMessageForReceivers {
             msg_sender_ws_uid: rrc.web_data.my_ws_uid,
             msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
             msg_data: gamedatamod::WsMessageGameData::MsgJoin {
