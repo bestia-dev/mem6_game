@@ -270,7 +270,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "dodrio_templating"
+name = "rust_wasm_dodrio_templating"
 version = "2020.218.1306"
 dependencies = [
  "dodrio",
@@ -658,7 +658,7 @@ dependencies = [
  "console_error_panic_hook",
  "conv",
  "dodrio",
- "dodrio_templating",
+ "rust_wasm_dodrio_templating",
  "gloo-timers",
  "js-sys",
  "mem6_common",

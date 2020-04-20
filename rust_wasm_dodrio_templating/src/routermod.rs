@@ -12,13 +12,13 @@ use wasm_bindgen_futures::spawn_local;
 /// trait intended to be added to VdomWeakWrapper
 pub trait Routing {
     // region: specific code to be implemented on Router struct
-    fn get_rrc_local_route(root: &mut dyn dodrio::RootRender) -> &str;
-    fn update_rrc_local_route(
+    fn get_local_route(root: &mut dyn dodrio::RootRender) -> &str;
+    fn update_local_route(
         local_route: String,
         root: &mut dyn dodrio::RootRender,
         vdom: VdomWeak,
     ) -> String;
-    fn update_rrc_html_template(
+    fn update_html_template_and_sub_templates(
         resp_body_text: String,
     ) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static>;
     // endregion: specific code
@@ -49,9 +49,9 @@ pub trait Routing {
                                 // short_local_route, then there is nothing to do (ha). If they
                                 // don't match, then we need to update the rrc' local_route
                                 // and re-render.
-                                if Self::get_rrc_local_route(root) != short_local_route {
+                                if Self::get_local_route(root) != short_local_route {
                                     // the function that recognizes routes and urls
-                                    let url = Self::update_rrc_local_route(
+                                    let url = Self::update_local_route(
                                         short_local_route,
                                         root,
                                         vdom.clone(),
@@ -67,9 +67,7 @@ pub trait Routing {
                                             unwrap!(
                                                 vdom_on_next_tick
                                                     .with_component({
-                                                        Self::update_rrc_html_template(
-                                                            resp_body_text,
-                                                        )
+                                                        Self::update_html_template_and_sub_templates(resp_body_text)
                                                     })
                                                     .await
                                             );
@@ -116,6 +114,7 @@ pub fn get_url_param_in_hash_after_dot(short_local_route: &str) -> &str {
 }
 
 /// only the html between the <body> </body>
+/// it must be a SINGLE root node
 pub fn between_body_tag(resp_body_text: &str) -> String {
     let pos1 = resp_body_text.find("<body>").unwrap_or(0);
     let pos2 = resp_body_text.find("</body>").unwrap_or(0);

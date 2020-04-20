@@ -1,4 +1,4 @@
-# dodrio_templating
+# rust_wasm_dodrio_templating
 
 ## Html templating
 

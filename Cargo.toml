@@ -1,7 +1,7 @@
 [workspace]
 
 members = [
-    "dodrio_templating",
+    "rust_wasm_dodrio_templating",
     "mem6_common",
     "mem6",
     "mem6_server",

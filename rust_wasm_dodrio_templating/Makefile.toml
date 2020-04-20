@@ -1,4 +1,4 @@
-# mem6_game/dodrio_templating/Makefile.toml
+# mem6_game/rust_wasm_dodrio_templating/Makefile.toml
 #https://github.com/sagiegurari/cargo-make/blob/master/src/lib/Makefile.stable.toml
 
 [config]

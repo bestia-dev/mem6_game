@@ -286,8 +286,8 @@ mod webrtcimplmod;
 use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::gamedatamod::*;
 
-use dodrio_templating::*;
-use dodrio_templating::routermod::Routing;
+use rust_wasm_dodrio_templating::*;
+use rust_wasm_dodrio_templating::routermod::Routing;
 
 // use unwrap::unwrap;
 use wasm_bindgen::prelude::*;

@@ -18,13 +18,13 @@ pub struct Router {}
 
 impl routermod::Routing for Router {
     /// get rrc.local_route
-    fn get_rrc_local_route(root: &mut dyn dodrio::RootRender) -> &str {
+    fn get_local_route(root: &mut dyn dodrio::RootRender) -> &str {
         let rrc = root.unwrap_mut::<RootRenderingComponent>();
         &rrc.web_data.local_route
     }
 
     /// update local_route with filenames dependent on short_local_route.
-    fn update_rrc_local_route(
+    fn update_local_route(
         local_route: String,
         root: &mut dyn dodrio::RootRender,
         vdom: VdomWeak,
@@ -74,10 +74,10 @@ impl routermod::Routing for Router {
         rrc.web_data.local_route.to_string()
     }
 
-    /// update html_template and save html_sub_templates
+    /// update html_template and extract and saves html_sub_templates
     #[allow(clippy::integer_arithmetic)]
     #[allow(clippy::indexing_slicing)]
-    fn update_rrc_html_template(
+    fn update_html_template_and_sub_templates(
         resp_body_text: String,
     ) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static> {
         // Callback fired whenever the URL hash fragment changes.

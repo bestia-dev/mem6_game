@@ -1,10 +1,10 @@
 [package]
-name = "dodrio_templating"
+name = "rust_wasm_dodrio_templating"
 version = "2020.218.1306"
 authors = ["Luciano Furlan <Luciano.Bestia@gmail.com>"]
 edition = "2018"
 description = "html templating for dodrio"
-repository = "https://github.com/LucianoBestia/dodrio_templating"
+repository = "https://github.com/LucianoBestia/rust_wasm_dodrio_templating"
 readme = "README.md"
 license = "MIT"
 keywords = ["wasm","dodrio","virtual dom"]
@@ -20,16 +20,9 @@ wasm-bindgen = { version = "0.2.58", features = ["serde-serialize"] }
 rand = { version = "0.7.3", features = ["wasm-bindgen","small_rng"] }
 js-sys = "0.3"
 serde ="1.0.104"
-#udep serde_derive = "1.0.104"
 serde_json = "1.0"
-#udep futures = "0.3.1"
 # newer futures have unstable .await
 wasm-bindgen-futures = "0.4.8"
-#log = "0.4.8"
-#udep strum = "0.17.1"
-#udep strum_macros = "0.17.1"
-#udep conv = "0.3.3"
-#udep gloo-timers = {version="0.2.0", features=["futures"]}
 reader_for_microxml = "1.0.4"
 
 [dependencies.web-sys]
