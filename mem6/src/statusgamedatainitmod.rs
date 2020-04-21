@@ -17,7 +17,7 @@ pub fn on_click_start_game(rrc: &mut RootRenderingComponent) {
         websysmod::get_random(1, unwrap!(rrc.game_data.players.len().checked_add(1)));
 
     rrc.web_data
-        .send_ws_msg_from_web_data(&websocketimplmod::WsMessageForReceivers {
+        .send_ws_msg_from_web_data(&websocketboilermod::WsMessageForReceivers {
             msg_sender_ws_uid: rrc.web_data.my_ws_uid,
             msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
             msg_data: gamedatamod::WsMessageGameData::MsgStartGame {

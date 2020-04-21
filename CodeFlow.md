@@ -39,7 +39,7 @@ All starts with `index.html`. It contains this parts:
 This is a "single page" app so the start of wasm is only one time here:
 
 - console_error_panic_hook
-- websocketimplmod::setup_ws_connection - the main way of communication is ws
+- websocketboilermod::setup_ws_connection - the main way of communication is ws
 - RootRenderingComponent::new - all the data is here and the Render trait
 - dodrio::Vdom::new - the main object of dodrio virtual dom is always present everywhere
 - fetch data from server: game_config, videos, audio,

@@ -14,7 +14,7 @@ pub fn on_click_take_turn(rrc: &mut RootRenderingComponent, vdom: VdomWeak) {
 
     let msg_id = ackmsgmod::prepare_for_ack_msg_waiting(rrc, vdom.clone());
 
-    let msg = websocketimplmod::WsMessageForReceivers {
+    let msg = websocketboilermod::WsMessageForReceivers {
         msg_sender_ws_uid: rrc.web_data.my_ws_uid,
         msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
         msg_data: gamedatamod::WsMessageGameData::MsgTakeTurn { msg_id },

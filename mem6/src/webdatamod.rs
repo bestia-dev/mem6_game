@@ -20,13 +20,13 @@ pub struct MsgInQueue {
     /// the msg id is a random number
     pub msg_id: usize,
     /// the content of the message if it needs to be resend
-    pub msg: websocketimplmod::WsMessageForReceivers,
+    pub msg: websocketboilermod::WsMessageForReceivers,
 }
 
 /// game data
 pub struct WebData {
     /// websocket data
-    pub websocket_data: websocketimplmod::WebSocketData,
+    pub websocket_data: websocketboilermod::WebSocketData,
     /// data for web rtc communication
     pub web_rtc_data: webrtcimplmod::WebRtcData,
     /// downloaded html template for main page
@@ -55,7 +55,7 @@ pub struct WebData {
 impl WebData {
     /// constructor
     pub fn new(my_ws_uid: usize, msg_receivers_json: String) -> Self {
-        let websocket_data = websocketimplmod::WebSocketData::new();
+        let websocket_data = websocketboilermod::WebSocketData::new();
         let web_rtc_data = webrtcimplmod::WebRtcData::new(my_ws_uid);
         // return from constructor
         WebData {
@@ -90,13 +90,14 @@ impl WebData {
     /// create websocket connection
     pub fn start_websocket(&mut self, vdom: VdomWeak) {
         let (location_href, _href_hash) = websysmod::get_url_and_hash();
-        //let websocket_data = websocketimplmod::WebSocketData::new();
+        //let websocket_data = websocketboilermod::WebSocketData::new();
         let ws = self.websocket_data.setup_ws_connection(location_href.clone(), self.my_ws_uid);
-        websocketimplmod::setup_all_ws_events(&ws, vdom);
+        websocketboilermod::WebSocketData::setup_all_ws_events(&ws, vdom);
     }
     /// send msg over ws
-    pub fn send_ws_msg_from_web_data(&self, ws_message: &websocketimplmod::WsMessageForReceivers) {
-        websocketimplmod::ws_send_msg(unwrap!(self.websocket_data.ws.as_ref()), ws_message);
+    pub fn send_ws_msg_from_web_data(&self, ws_message: &websocketboilermod::WsMessageForReceivers) {
+        let json_message = unwrap!(serde_json::to_string(ws_message));
+        websocketboilermod::WebSocketData::ws_send_msg_with_retry(unwrap!(self.websocket_data.ws.as_ref()), json_message);
     }
 }
     

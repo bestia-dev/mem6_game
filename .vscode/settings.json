@@ -23,6 +23,7 @@
         "endindex",
         "errormod",
         "fetchmod",
+        "filedate",
         "flexrow",
         "gameconfig",
         "gamedatamod",
@@ -66,8 +67,9 @@
         "vdomweak",
         "webdatamod",
         "webrtcimplmod",
+        "websocketboilermod",
         "websocketcommunication",
-        "websocketimplmod",
+        "websocketspecmod",
         "websys",
         "websysmod",
         "wrtc"

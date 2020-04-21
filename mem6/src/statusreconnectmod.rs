@@ -46,7 +46,7 @@ pub fn div_reconnect<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<
 
             let msg_receivers_json = rrc.web_data.msg_receivers_json.clone();
             let ws = websocketmod::setup_ws_connection(href, my_ws_uid,msg_receivers_json);
-            websocketimplmod::setup_all_ws_events(&ws,vdom.clone());
+            websocketboilermod::setup_all_ws_events(&ws,vdom.clone());
 
             rrc.web_data.ws=ws;
             // websysmod::debug_write(&"before game_data.web_data.is_reconnect = false and schedule_render");
@@ -68,7 +68,7 @@ pub fn div_reconnect<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<
 pub fn send_msg_for_resync(rrc: &RootRenderingComponent) {
     websysmod::debug_write("send_msg_for_resync MsgAllGameData");
     rrc.web_data
-        .send_ws_msg_from_web_data(&websocketimplmod::WsMessageForReceivers {
+        .send_ws_msg_from_web_data(&websocketboilermod::WsMessageForReceivers {
             msg_sender_ws_uid: rrc.web_data.my_ws_uid,
             /// only the players that resync
             msg_receivers_json: rrc.web_data.msg_receivers_json.clone(),
