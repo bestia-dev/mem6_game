@@ -1,10 +1,11 @@
-// websocketmod.rs
+// websocketimplmod.rs
 //! module that cares about WebSocket communication
 
 #![allow(clippy::panic)]
 
 // region: use
 use crate::*;
+use rust_wasm_websocket::websocketmod::WebSocketTrait;
 use rust_wasm_webrtc::webrtcmod::WebRtcTrait;
 use mem6_common::*;
 
@@ -18,6 +19,7 @@ use serde_derive::{Serialize, Deserialize};
 use dodrio::VdomWeak;
 // endregion
 
+
 /// message for receivers
 /// The server has a copy of this declaration, but without the msg_data
 #[derive(Serialize, Deserialize, Clone)]
@@ -30,80 +32,57 @@ pub struct WsMessageForReceivers {
     pub msg_data: WsMessageGameData,
 }
 
-// the location_href is not consumed in this function and Clippy wants a reference instead a value
-// but I don't want references, because they have the lifetime problem.
-#[allow(clippy::needless_pass_by_value)]
-/// setup WebSocket connection
-pub fn setup_ws_connection(location_href: String, client_ws_id: usize) -> WebSocket {
-    // web-sys has WebSocket for Rust exactly like JavaScript has¸
-    // location_href comes in this format  http:// localhost:4000/
-    let mut loc_href = location_href
-        .replace("http://", "ws://")
-        .replace("https://", "wss://");
-    // Only for debugging in the development environment
-    // let mut loc_href = String::from("ws://192.168.1.57:80/");
-    websysmod::debug_write(&loc_href);
-    // remove the hash at the end
-    if let Some(pos) = loc_href.find('#') {
-        loc_href = unwrap!(loc_href.get(..pos)).to_string();
-    }
-    websysmod::debug_write(&loc_href);
-    loc_href.push_str("mem6ws/");
-
-    // send the client ws id as url_param for the first connect
-    // and reconnect on lost connection
-    loc_href.push_str(client_ws_id.to_string().as_str());
-    /*
-        websysmod::debug_write(&format!(
-            "location_href {}  loc_href {} client_ws_id {}",
-            location_href, loc_href, client_ws_id
-        ));
-    */
-
-    // same server address and port as http server
-    // for reconnect the old ws id will be an url param
-    let ws = unwrap!(WebSocket::new(&loc_href), "WebSocket failed to connect.");
-
-    // I don't know why is clone needed
-    let ws_c = ws.clone();
-    // It looks that the first send is in some way a handshake and is part of the connection
-    // it will be execute on open as a closure
-    let open_handler = Box::new(move || {
-        // websysmod::debug_write("Connection opened, sending MsgRequestWsUid to server");
-        unwrap!(ws_c.send_with_str(&unwrap!(serde_json::to_string(
-            &WsMessageToServer::MsgRequestWsUid {
-                msg_sender_ws_uid: client_ws_id
-            }
-        ))));
-        // region heartbeat ping pong keepalive
-        let ws2 = ws_c.clone();
-        let timeout = gloo_timers::callback::Interval::new(10_000, move || {
-            // Do something after the one second timeout is up!
-            let u32_size = u32_size();
-            let msg = WsMessageToServer::MsgPing { msg_id: u32_size };
-            ws_send_msg_to_server(ws2.as_ref(), &msg);
-            // websysmod::console_log(format!("gloo timer: {}", u32_size).as_str());
-        });
-        // Since we don't plan on cancelling the timeout, call `forget`.
-        timeout.forget();
-        // endregion
-    });
-
-    let cb_oh: Closure<dyn Fn()> = Closure::wrap(open_handler);
-    ws.set_onopen(Some(cb_oh.as_ref().unchecked_ref()));
-
-    // don't drop the open_handler memory
-    cb_oh.forget();
-
-    ws
+pub struct WebSocketData{
+    /// web socket communication between players
+    pub ws: Option<WebSocket>,
 }
 
-/// usize of time
-#[allow(clippy::integer_arithmetic)]
-// u32 will not overflow, the minutes are max 60, so 6 mio
-pub fn u32_size() -> u32 {
-    let now = js_sys::Date::new_0();
-    now.get_minutes() * 100_000 + now.get_seconds() * 1_000 + now.get_milliseconds()
+impl WebSocketData {
+    /// constructor
+    pub fn new() -> Self {
+        // return from constructor
+        Self {ws:None}
+    }
+}
+
+impl WebSocketTrait for WebSocketData {
+    
+    fn send_to_server_msg_ping(ws2:WebSocket ,msg_id:u32){
+        let msg = WsMessageToServer::MsgPing { msg_id };
+        Self::ws_send_msg_to_server(&ws2, &msg);
+    }
+    /// send ws message to server
+    fn ws_send_msg_to_server(ws: &WebSocket, ws_message: &WsMessageToServer) {
+        let x = ws.send_with_str(&unwrap!(serde_json::to_string(ws_message)));
+        // retry send a 10 times before panicking
+        if let Err(_err) = x {
+            let ws = ws.clone();
+            let ws_message = ws_message.clone();
+            spawn_local({
+                async move {
+                    let mut retries: usize = 1;
+                    while retries <= 10 {
+                        websysmod::debug_write(&format!("send retries: {}", retries));
+                        // Wait 100 ms
+                        TimeoutFuture::new(100).await;
+                        let x = ws.send_with_str(&unwrap!(serde_json::to_string(&ws_message)));
+                        if let Ok(_y) = x {
+                            break;
+                        }
+                        // this will go until 10 and cannot overflow
+                        #[allow(clippy::integer_arithmetic)]
+                        {
+                            retries += 1;
+                        }
+                    }
+                    if retries == 0 {
+                        panic!("error 10 times retry ws_send_msg");
+                    }
+                }
+            });
+        }
+    }
+
 }
 
 /// receive WebSocket msg callback.
@@ -405,37 +384,6 @@ pub fn setup_all_ws_events(ws: &WebSocket, vdom: VdomWeak) {
     setup_ws_onclose(ws, vdom.clone());
 }
 
-/// send ws message to server
-pub fn ws_send_msg_to_server(ws: &WebSocket, ws_message: &WsMessageToServer) {
-    let x = ws.send_with_str(&unwrap!(serde_json::to_string(ws_message)));
-    // retry send a 10 times before panicking
-    if let Err(_err) = x {
-        let ws = ws.clone();
-        let ws_message = ws_message.clone();
-        spawn_local({
-            async move {
-                let mut retries: usize = 1;
-                while retries <= 10 {
-                    websysmod::debug_write(&format!("send retries: {}", retries));
-                    // Wait 100 ms
-                    TimeoutFuture::new(100).await;
-                    let x = ws.send_with_str(&unwrap!(serde_json::to_string(&ws_message)));
-                    if let Ok(_y) = x {
-                        break;
-                    }
-                    // this will go until 10 and cannot overflow
-                    #[allow(clippy::integer_arithmetic)]
-                    {
-                        retries += 1;
-                    }
-                }
-                if retries == 0 {
-                    panic!("error 10 times retry ws_send_msg");
-                }
-            }
-        });
-    }
-}
 
 /// send ws message to other players
 pub fn ws_send_msg(ws: &WebSocket, ws_message: &WsMessageForReceivers) {

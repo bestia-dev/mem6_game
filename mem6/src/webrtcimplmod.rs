@@ -60,8 +60,8 @@ impl WebRtcData {
         }
     }
     /// send msg over ws
-    pub fn send_ws_msg_from_webrtc(&self, ws_message: &websocketmod::WsMessageForReceivers) {
-        websocketmod::ws_send_msg(unwrap!(self.rtc_ws.as_ref()), ws_message);
+    pub fn send_ws_msg_from_webrtc(&self, ws_message: &websocketimplmod::WsMessageForReceivers) {
+        websocketimplmod::ws_send_msg(unwrap!(self.rtc_ws.as_ref()), ws_message);
     }
 }
 
@@ -124,7 +124,7 @@ impl WebRtcTrait for WebRtcData {
         let msg_receivers_json =
             websysmod::prepare_json_msg_receivers_for_one(self.get_rtc_receiver_ws_uid());
 
-        let msg = websocketmod::WsMessageForReceivers {
+        let msg = websocketimplmod::WsMessageForReceivers {
             msg_sender_ws_uid: self.get_rtc_my_ws_uid(),
             msg_receivers_json: msg_receivers_json,
             msg_data: gamedatamod::WsMessageGameData::MsgWebrtcOffer { sdp },
@@ -137,7 +137,7 @@ impl WebRtcTrait for WebRtcData {
         let msg_receivers_json =
         websysmod::prepare_json_msg_receivers_for_one(self.get_rtc_receiver_ws_uid());
 
-        let msg = websocketmod::WsMessageForReceivers {
+        let msg = websocketimplmod::WsMessageForReceivers {
             msg_sender_ws_uid: self.get_rtc_my_ws_uid(),
             msg_receivers_json: msg_receivers_json,
             msg_data: gamedatamod::WsMessageGameData::MsgWebrtcAnswer { sdp: sdp },
@@ -151,7 +151,7 @@ impl WebRtcTrait for WebRtcData {
             let msg_receivers_json =
             websysmod::prepare_json_msg_receivers_for_one(self.get_rtc_receiver_ws_uid());
             let sdp = sdp.to_string();
-            let msg = websocketmod::WsMessageForReceivers {
+            let msg = websocketimplmod::WsMessageForReceivers {
                 msg_sender_ws_uid: self.get_rtc_my_ws_uid(),
                 msg_receivers_json: msg_receivers_json,
                 msg_data: gamedatamod::WsMessageGameData::MsgWebrtcIceCandidate { sdp },

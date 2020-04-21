@@ -3,6 +3,7 @@
 
 // region: use
 use crate::*;
+use rust_wasm_websocket::websocketmod::WebSocketTrait;
 
 use web_sys::WebSocket;
 use serde_derive::{Serialize, Deserialize};
@@ -19,11 +20,13 @@ pub struct MsgInQueue {
     /// the msg id is a random number
     pub msg_id: usize,
     /// the content of the message if it needs to be resend
-    pub msg: websocketmod::WsMessageForReceivers,
+    pub msg: websocketimplmod::WsMessageForReceivers,
 }
 
 /// game data
 pub struct WebData {
+    /// websocket data
+    pub websocket_data: websocketimplmod::WebSocketData,
     /// web socket communication between players
     pub ws: Option<WebSocket>,
     /// downloaded html template for main page
@@ -52,8 +55,10 @@ pub struct WebData {
 impl WebData {
     /// constructor
     pub fn new(my_ws_uid: usize, msg_receivers_json: String) -> Self {
+        let websocket_data = websocketimplmod::WebSocketData::new();
         // return from constructor
         WebData {
+            websocket_data,
             ws: None,
             html_template: "".to_owned(),
             html_sub_templates: vec![],
@@ -84,14 +89,17 @@ impl WebData {
     /// create websocket connection
     pub fn start_websocket(&mut self, vdom: VdomWeak) {
         let (location_href, _href_hash) = websysmod::get_url_and_hash();
-        let ws = websocketmod::setup_ws_connection(location_href.clone(), self.my_ws_uid);
-        websocketmod::setup_all_ws_events(&ws, vdom);
+        //let websocket_data = websocketimplmod::WebSocketData::new();
+        let ws = websocketimplmod::WebSocketData::setup_ws_connection(location_href.clone(), self.my_ws_uid);
+        websocketimplmod::setup_all_ws_events(&ws, vdom);
         let ws_c = ws.clone();
         self.ws = Some(ws_c);
+        let ws_c = ws.clone();
+        self.websocket_data.ws=Some(ws_c);
     }
     /// send msg over ws
-    pub fn send_ws_msg_from_web_data(&self, ws_message: &websocketmod::WsMessageForReceivers) {
-        websocketmod::ws_send_msg(unwrap!(self.ws.as_ref()), ws_message);
+    pub fn send_ws_msg_from_web_data(&self, ws_message: &websocketimplmod::WsMessageForReceivers) {
+        websocketimplmod::ws_send_msg(unwrap!(self.ws.as_ref()), ws_message);
     }
 }
     

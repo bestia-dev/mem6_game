@@ -273,7 +273,7 @@ mod status2ndcardmod;
 mod statusdrinkmod;
 mod statustaketurnmod;
 mod statuswaitingackmsgmod;
-mod websocketmod;
+mod websocketimplmod;
 mod statusreconnectmod;
 mod routerimplmod;
 mod htmltemplateimplmod;
@@ -286,8 +286,8 @@ use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::gamedatamod::*;
 
 use rust_wasm_dodrio_templating::*;
-
 use rust_wasm_websys_utils::*;
+//use rust_wasm_websocket::*;
 
 // use unwrap::unwrap;
 use wasm_bindgen::prelude::*;
@@ -305,7 +305,7 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     let div_for_virtual_dom = websysmod::get_element_by_id("div_for_virtual_dom");
 
     // load from storage or get random (and then save)
-    let my_ws_uid = websocketmod::load_or_random_ws_uid();
+    let my_ws_uid = websocketimplmod::load_or_random_ws_uid();
 
     let (location_href, href_hash) = websysmod::get_url_and_hash();
     // Construct a new RootRenderingComponent.

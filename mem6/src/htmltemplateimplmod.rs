@@ -129,7 +129,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                         rrc.game_data.sounds_and_labels = true;
                     }
                     rrc.web_data
-                        .send_ws_msg_from_web_data(&websocketmod::WsMessageForReceivers {
+                        .send_ws_msg_from_web_data(&websocketimplmod::WsMessageForReceivers {
                             msg_sender_ws_uid: rrc.web_data.my_ws_uid,
                             msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
                             msg_data: gamedatamod::WsMessageGameData::MsgSoundsAndLabels {
@@ -201,7 +201,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
 
                     websysmod::debug_write(&format!("MsgDrinkEnd send{}", ""));
                     rrc.web_data
-                        .send_ws_msg_from_web_data(&websocketmod::WsMessageForReceivers {
+                        .send_ws_msg_from_web_data(&websocketimplmod::WsMessageForReceivers {
                             msg_sender_ws_uid: rrc.web_data.my_ws_uid,
                             msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
                             msg_data: gamedatamod::WsMessageGameData::MsgDrinkEnd {},
@@ -213,7 +213,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                         statusgameovermod::on_msg_game_over(rrc);
                         // send message
                         rrc.web_data
-                            .send_ws_msg_from_web_data(&websocketmod::WsMessageForReceivers {
+                            .send_ws_msg_from_web_data(&websocketimplmod::WsMessageForReceivers {
                                 msg_sender_ws_uid: rrc.web_data.my_ws_uid,
                                 msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
                                 msg_data: gamedatamod::WsMessageGameData::MsgGameOver {},
@@ -230,7 +230,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 }
                 "play_again" => {
                     rrc.web_data
-                        .send_ws_msg_from_web_data(&websocketmod::WsMessageForReceivers {
+                        .send_ws_msg_from_web_data(&websocketimplmod::WsMessageForReceivers {
                             msg_sender_ws_uid: rrc.web_data.my_ws_uid,
                             msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
                             msg_data: gamedatamod::WsMessageGameData::MsgPlayAgain {},

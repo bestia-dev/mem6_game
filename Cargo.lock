@@ -636,7 +636,7 @@ checksum = "7ffc5c5338469d4d3ea17d269fa8ea3512ad247247c30bd2df69e68309ed0a08"
 
 [[package]]
 name = "mem6"
-version = "2020.420.2145"
+version = "2020.421.1101"
 dependencies = [
  "console_error_panic_hook",
  "conv",
@@ -650,6 +650,7 @@ dependencies = [
  "rust_wasm_dodrio_templating",
  "rust_wasm_router",
  "rust_wasm_webrtc",
+ "rust_wasm_websocket",
  "rust_wasm_websys_utils",
  "serde",
  "serde_derive",
@@ -1196,6 +1197,26 @@ version = "2020.218.1306"
 dependencies = [
  "dodrio",
  "js-sys",
+ "rand 0.7.3",
+ "rust_wasm_websys_utils",
+ "serde",
+ "serde_derive",
+ "serde_json",
+ "unwrap",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "wasm-bindgen-test",
+ "web-sys",
+]
+
+[[package]]
+name = "rust_wasm_websocket"
+version = "2020.218.1306"
+dependencies = [
+ "dodrio",
+ "gloo-timers",
+ "js-sys",
+ "mem6_common",
  "rand 0.7.3",
  "rust_wasm_websys_utils",
  "serde",
