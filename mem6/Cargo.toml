@@ -1,6 +1,6 @@
 [package]
 name = "mem6"
-version = "2020.421.1122"
+version = "2020.421.1336"
 authors = ["Luciano Furlan <Luciano.Bestia@gmail.com>"]
 edition = "2018"
 description = "Learning Rust Wasm/WebAssembly with Virtual Dom Dodrio"
@@ -16,7 +16,6 @@ crate-type = ["cdylib"]
 
 [dependencies]
 # my dependencies
-mem6_common = { path = "../mem6_common" }
 rust_wasm_websys_utils = { path = "../rust_wasm_websys_utils" }
 rust_wasm_router = { path = "../rust_wasm_router" }
 rust_wasm_dodrio_templating = { path = "../rust_wasm_dodrio_templating" }

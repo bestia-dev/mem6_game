@@ -12,7 +12,6 @@ categories = ["game","learning"]
 publish = false
 
 [dependencies]
-mem6_common = { path = "../mem6_common" }
 rust_wasm_websys_utils = {path = "../rust_wasm_websys_utils"}
 
 unwrap = "1.2.1"

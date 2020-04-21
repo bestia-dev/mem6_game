@@ -4,8 +4,7 @@
 #![allow(clippy::panic)]
 
 // region: use
-use crate::*;
-use mem6_common::*;
+use rust_wasm_websys_utils::*;
 
 use unwrap::unwrap;
 //use js_sys::Reflect;
@@ -14,22 +13,57 @@ use wasm_bindgen::{prelude::*, JsCast};
 //use web_sys::{ErrorEvent, WebSocket};
 use web_sys::{ WebSocket};
 //use gloo_timers::future::TimeoutFuture;
-//use serde_derive::{Serialize, Deserialize};
+use serde_derive::{Serialize, Deserialize};
 //use dodrio::VdomWeak;
 // endregion
 
+/// WsMessageToServer enum for WebSocket
+/// The ws server will perform an action according to this type.
+#[derive(Serialize, Deserialize, Clone)]
+pub enum WsMessageToServer {
+    /// Request WebSocket Uid - first message to WebSocket server
+    MsgRequestWsUid {
+        /// ws client instance unique id. To not listen the echo to yourself.
+        msg_sender_ws_uid: usize,
+    },
+    /// MsgPing
+    MsgPing {
+        /// random msg_id
+        msg_id: u32,
+    },
+}
+
+/// WsMessageFromServer enum for WebSocket
+/// The ws server will send this kind of msgs.
+#[derive(Serialize, Deserialize, Clone)]
+pub enum WsMessageFromServer {
+    /// response from WebSocket server for first message
+    MsgResponseWsUid {
+        /// WebSocket Uid
+        msg_receiver_ws_uid: usize,
+        /// server version
+        server_version: String,
+    },
+    /// MsgPong
+    MsgPong {
+        /// random msg_id
+        msg_id: u32,
+    },
+}
+
 pub trait WebSocketTrait {
     // region: getter setter
+    fn get_ws_clone(&self)->WebSocket;
+    fn set_ws(&mut self,ws:WebSocket);
     //fn get_rtc_ws(&self)->&WebSocket;   
     // endregion getter setter
-    fn ws_send_msg_to_server(ws: &WebSocket, ws_message: &WsMessageToServer);
-    fn send_to_server_msg_ping(ws2:WebSocket ,msg_id:u32);
+    fn send_to_server_msg_ping(ws:WebSocket  ,msg_id:u32);
     fn send_to_server_msg_request_ws_uid(ws:WebSocket,client_ws_id:usize );
     // the location_href is not consumed in this function and Clippy wants a reference instead a value
     // but I don't want references, because they have the lifetime problem.
     #[allow(clippy::needless_pass_by_value)]
     /// setup WebSocket connection
-    fn setup_ws_connection(location_href: String, client_ws_id: usize) -> WebSocket {
+    fn setup_ws_connection(&mut self, location_href: String, client_ws_id: usize) -> WebSocket {
         // web-sys has WebSocket for Rust exactly like JavaScript has¸
         // location_href comes in this format  http:// localhost:4000/
         let mut loc_href = location_href
@@ -58,36 +92,34 @@ pub trait WebSocketTrait {
         // same server address and port as http server
         // for reconnect the old ws id will be an url param
         let ws = unwrap!(WebSocket::new(&loc_href), "WebSocket failed to connect.");
-
+        self.set_ws(ws);
+        let ws0 = self.get_ws_clone();
         // I don't know why is clone needed
-        let ws_c = ws.clone();
         // It looks that the first send is in some way a handshake and is part of the connection
         // it will be execute on open as a closure
+        let ws1 = self.get_ws_clone();
         let open_handler = Box::new(move || {
             // websysmod::debug_write("Connection opened, sending MsgRequestWsUid to server");
-            let ws4 = ws_c.clone();
-            Self::send_to_server_msg_request_ws_uid(ws4,client_ws_id);
-
-            let ws2 = ws_c.clone();
+            Self::send_to_server_msg_request_ws_uid(ws1.clone(),client_ws_id);
             // region heartbeat ping pong keepalive
-            let timeout = gloo_timers::callback::Interval::new(10_000, move || {
-                let ws3 = ws2.clone();
-                // Do something after the one second timeout is up!
-                Self::send_to_server_msg_ping(ws3,time_now_in_minutes());
+            let ws2 = ws1.clone();
+            let timer_interval = gloo_timers::callback::Interval::new(10_000, move || {
+                // Do something after the one second timer_interval is up!
+                Self::send_to_server_msg_ping(ws2.clone(),time_now_in_minutes());
                 // websysmod::console_log(format!("gloo timer: {}", time_now_in_minutes).as_str());
             });
-            // Since we don't plan on cancelling the timeout, call `forget`.
-            timeout.forget();
+            // Since we don't plan on cancelling the timer_interval, call `forget`.
+            timer_interval.forget();
             // endregion
         });
 
         let cb_oh: Closure<dyn Fn()> = Closure::wrap(open_handler);
-        ws.set_onopen(Some(cb_oh.as_ref().unchecked_ref()));
+        ws0.set_onopen(Some(cb_oh.as_ref().unchecked_ref()));
 
         // don't drop the open_handler memory
         cb_oh.forget();
 
-        ws
+        ws0
     }
 }
 

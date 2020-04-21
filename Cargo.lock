@@ -636,14 +636,13 @@ checksum = "7ffc5c5338469d4d3ea17d269fa8ea3512ad247247c30bd2df69e68309ed0a08"
 
 [[package]]
 name = "mem6"
-version = "2020.421.1122"
+version = "2020.421.1336"
 dependencies = [
  "console_error_panic_hook",
  "conv",
  "dodrio",
  "gloo-timers",
  "js-sys",
- "mem6_common",
  "qrcode53bytes",
  "rand 0.7.3",
  "reader_for_microxml",
@@ -1216,7 +1215,6 @@ dependencies = [
  "dodrio",
  "gloo-timers",
  "js-sys",
- "mem6_common",
  "rand 0.7.3",
  "rust_wasm_websys_utils",
  "serde",

@@ -5,9 +5,8 @@
 
 // region: use
 use crate::*;
-use rust_wasm_websocket::websocketmod::WebSocketTrait;
+use rust_wasm_websocket::websocketmod::{WebSocketTrait,WsMessageFromServer,WsMessageToServer};
 use rust_wasm_webrtc::webrtcmod::WebRtcTrait;
-use mem6_common::*;
 
 use unwrap::unwrap;
 use js_sys::Reflect;
@@ -32,6 +31,7 @@ pub struct WsMessageForReceivers {
     pub msg_data: WsMessageGameData,
 }
 
+#[derive( Clone)]
 pub struct WebSocketData{
     /// web socket communication between players
     pub ws: Option<WebSocket>,
@@ -42,21 +42,6 @@ impl WebSocketData {
     pub fn new() -> Self {
         // return from constructor
         Self {ws:None}
-    }
-}
-
-impl WebSocketTrait for WebSocketData {
-    
-    fn send_to_server_msg_ping(ws:WebSocket ,msg_id:u32){
-        let msg = WsMessageToServer::MsgPing { msg_id };
-        Self::ws_send_msg_to_server(&ws, &msg);
-    }
-    fn send_to_server_msg_request_ws_uid(ws:WebSocket,client_ws_id:usize ){
-        unwrap!(ws.send_with_str(&unwrap!(serde_json::to_string(
-            &WsMessageToServer::MsgRequestWsUid {
-                msg_sender_ws_uid: client_ws_id
-            }
-        ))));
     }
     /// send ws message to server
     fn ws_send_msg_to_server(ws: &WebSocket, ws_message: &WsMessageToServer) {
@@ -88,8 +73,29 @@ impl WebSocketTrait for WebSocketData {
                 }
             });
         }
-    }
+    }    
+}
 
+impl WebSocketTrait for WebSocketData {
+    // region: getter setter
+    fn get_ws_clone(&self)->WebSocket{
+        unwrap!(self.ws.clone())
+    }
+    fn set_ws(&mut self,ws:WebSocket){
+        self.ws=Some(ws);
+    }
+    // endregion getter setter
+    fn send_to_server_msg_ping(ws:WebSocket ,msg_id:u32){
+        let msg = WsMessageToServer::MsgPing { msg_id };
+        Self::ws_send_msg_to_server(&ws, &msg);
+    }
+    fn send_to_server_msg_request_ws_uid(ws:WebSocket,client_ws_id:usize ){
+        unwrap!(ws.send_with_str(&unwrap!(serde_json::to_string(
+            &WsMessageToServer::MsgRequestWsUid {
+                msg_sender_ws_uid: client_ws_id
+            }
+        ))));
+    }
 }
 
 /// receive WebSocket msg callback.

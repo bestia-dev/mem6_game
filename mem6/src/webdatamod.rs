@@ -91,10 +91,8 @@ impl WebData {
     pub fn start_websocket(&mut self, vdom: VdomWeak) {
         let (location_href, _href_hash) = websysmod::get_url_and_hash();
         //let websocket_data = websocketimplmod::WebSocketData::new();
-        let ws = websocketimplmod::WebSocketData::setup_ws_connection(location_href.clone(), self.my_ws_uid);
+        let ws = self.websocket_data.setup_ws_connection(location_href.clone(), self.my_ws_uid);
         websocketimplmod::setup_all_ws_events(&ws, vdom);
-        let ws_c = ws.clone();
-        self.websocket_data.ws=Some(ws_c);
     }
     /// send msg over ws
     pub fn send_ws_msg_from_web_data(&self, ws_message: &websocketimplmod::WsMessageForReceivers) {
