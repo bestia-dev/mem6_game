@@ -24,6 +24,7 @@ pub trait WebSocketTrait {
     // endregion getter setter
     fn ws_send_msg_to_server(ws: &WebSocket, ws_message: &WsMessageToServer);
     fn send_to_server_msg_ping(ws2:WebSocket ,msg_id:u32);
+    fn send_to_server_msg_request_ws_uid(ws:WebSocket,client_ws_id:usize );
     // the location_href is not consumed in this function and Clippy wants a reference instead a value
     // but I don't want references, because they have the lifetime problem.
     #[allow(clippy::needless_pass_by_value)]
@@ -64,11 +65,9 @@ pub trait WebSocketTrait {
         // it will be execute on open as a closure
         let open_handler = Box::new(move || {
             // websysmod::debug_write("Connection opened, sending MsgRequestWsUid to server");
-            unwrap!(ws_c.send_with_str(&unwrap!(serde_json::to_string(
-                &WsMessageToServer::MsgRequestWsUid {
-                    msg_sender_ws_uid: client_ws_id
-                }
-            ))));
+            let ws4 = ws_c.clone();
+            Self::send_to_server_msg_request_ws_uid(ws4,client_ws_id);
+
             let ws2 = ws_c.clone();
             // region heartbeat ping pong keepalive
             let timeout = gloo_timers::callback::Interval::new(10_000, move || {

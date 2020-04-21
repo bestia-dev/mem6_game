@@ -47,9 +47,16 @@ impl WebSocketData {
 
 impl WebSocketTrait for WebSocketData {
     
-    fn send_to_server_msg_ping(ws2:WebSocket ,msg_id:u32){
+    fn send_to_server_msg_ping(ws:WebSocket ,msg_id:u32){
         let msg = WsMessageToServer::MsgPing { msg_id };
-        Self::ws_send_msg_to_server(&ws2, &msg);
+        Self::ws_send_msg_to_server(&ws, &msg);
+    }
+    fn send_to_server_msg_request_ws_uid(ws:WebSocket,client_ws_id:usize ){
+        unwrap!(ws.send_with_str(&unwrap!(serde_json::to_string(
+            &WsMessageToServer::MsgRequestWsUid {
+                msg_sender_ws_uid: client_ws_id
+            }
+        ))));
     }
     /// send ws message to server
     fn ws_send_msg_to_server(ws: &WebSocket, ws_message: &WsMessageToServer) {
@@ -284,17 +291,17 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: VdomWeak) {
                                         WsMessageGameData::MsgWebrtcOffer{
                                             sdp
                                         }=>{
-                                            rrc.web_rtc_data.web_rtc_receive_offer(vdom.clone(),sdp, msg.msg_sender_ws_uid);
+                                            rrc.web_data.web_rtc_data.web_rtc_receive_offer(vdom.clone(),sdp, msg.msg_sender_ws_uid);
                                         }
                                         WsMessageGameData::MsgWebrtcAnswer{
                                             sdp
                                         }=>{
-                                            rrc.web_rtc_data.web_rtc_receive_answer(vdom.clone(),sdp);
+                                            rrc.web_data.web_rtc_data.web_rtc_receive_answer(vdom.clone(),sdp);
                                         }
                                         WsMessageGameData::MsgWebrtcIceCandidate{
                                             sdp
                                         }=>{
-                                            rrc.web_rtc_data.web_rtc_receive_ice_candidate(vdom.clone(),sdp);
+                                            rrc.web_data.web_rtc_data.web_rtc_receive_ice_candidate(vdom.clone(),sdp);
                                         }
                                     }
                                 }

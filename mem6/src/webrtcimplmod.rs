@@ -116,7 +116,7 @@ impl WebRtcTrait for WebRtcData {
     fn get_web_rtc_data_from_root_render(root: &mut dyn RootRender) -> &mut WebRtcData {
         let rrc = root.unwrap_mut::<RootRenderingComponent>();
         //return
-        &mut rrc.web_rtc_data
+        &mut rrc.web_data.web_rtc_data
     }
     /// send offer over websocket to establish peer connection
     fn web_rtc_send_offer(&mut self, sdp: String) {
@@ -174,8 +174,8 @@ pub fn web_rtc_receiver_ws_uid_onkeyup(
         //websysmod::debug_write(&keyboard_event.key());
         if keyboard_event.key() == "Enter" {
             // same as button click
-            rrc.web_rtc_data
-                .web_rtc_start(vdom, unwrap!(rrc.web_data.ws.clone()));
+            rrc.web_data.web_rtc_data
+                .web_rtc_start(vdom, unwrap!(rrc.web_data.websocket_data.ws.clone()));
         }
     }
 }
@@ -192,9 +192,9 @@ pub fn web_rtc_chat_text_onkeyup(
         // websysmod::debug_write(&keyboard_event.key());
         if keyboard_event.key() == "Enter" {
             // same as button click
-            rrc.web_rtc_data.web_rtc_send_chat(vdom);
+            rrc.web_data.web_rtc_data.web_rtc_send_chat(vdom);
         } else {
-            rrc.web_rtc_data.rtc_my_message =
+            rrc.web_data.web_rtc_data.rtc_my_message =
                 websysmod::get_input_element_value_string_by_id("web_rtc_chat_text");
         }
     }
@@ -207,12 +207,12 @@ pub fn web_rtc_div_messages<'a>(
 ) -> Vec<Node<'a>> {
     let mut vec_nodes = Vec::<Node>::new();
 
-    let mut index = rrc.web_rtc_data.rtc_chat.len();
+    let mut index = rrc.web_data.web_rtc_data.rtc_chat.len();
     // reverse a vector old school
     if index > 0 {
         index -= 1;
         loop {
-            let chat_msg = &rrc.web_rtc_data.rtc_chat[index];
+            let chat_msg = &rrc.web_data.web_rtc_data.rtc_chat[index];
             let template_name = format!("message_sender{}", chat_msg.sender);
             let mut html_template = rrc.web_data.get_sub_template(&template_name);
             html_template = html_template.replace("replace_in_code_with_msg", &chat_msg.msg);

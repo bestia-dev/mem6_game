@@ -42,7 +42,7 @@ pub fn div_reconnect<'a>(_rrc: &RootRenderingComponent, bump: &'a Bump) -> Node<
             ));
             // websysmod::debug_write(&"before reconnect");
             // first disconnect if is possible, than reconnect
-            let _x = rrc.web_data.ws.close();
+            let _x = rrc.web_data.websocket_data.ws.close();
 
             let msg_receivers_json = rrc.web_data.msg_receivers_json.clone();
             let ws = websocketmod::setup_ws_connection(href, my_ws_uid,msg_receivers_json);

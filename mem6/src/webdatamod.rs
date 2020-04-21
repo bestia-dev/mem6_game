@@ -5,7 +5,7 @@
 use crate::*;
 use rust_wasm_websocket::websocketmod::WebSocketTrait;
 
-use web_sys::WebSocket;
+//use web_sys::WebSocket;
 use serde_derive::{Serialize, Deserialize};
 use unwrap::unwrap;
 use dodrio::VdomWeak;
@@ -27,8 +27,8 @@ pub struct MsgInQueue {
 pub struct WebData {
     /// websocket data
     pub websocket_data: websocketimplmod::WebSocketData,
-    /// web socket communication between players
-    pub ws: Option<WebSocket>,
+    /// data for web rtc communication
+    pub web_rtc_data: webrtcimplmod::WebRtcData,
     /// downloaded html template for main page
     pub html_template: String,
     /// vector of named sub_templates <template name=xxx>...</template>
@@ -56,10 +56,11 @@ impl WebData {
     /// constructor
     pub fn new(my_ws_uid: usize, msg_receivers_json: String) -> Self {
         let websocket_data = websocketimplmod::WebSocketData::new();
+        let web_rtc_data = webrtcimplmod::WebRtcData::new(my_ws_uid);
         // return from constructor
         WebData {
             websocket_data,
-            ws: None,
+            web_rtc_data,
             html_template: "".to_owned(),
             html_sub_templates: vec![],
             is_reconnect: false,
@@ -93,13 +94,11 @@ impl WebData {
         let ws = websocketimplmod::WebSocketData::setup_ws_connection(location_href.clone(), self.my_ws_uid);
         websocketimplmod::setup_all_ws_events(&ws, vdom);
         let ws_c = ws.clone();
-        self.ws = Some(ws_c);
-        let ws_c = ws.clone();
         self.websocket_data.ws=Some(ws_c);
     }
     /// send msg over ws
     pub fn send_ws_msg_from_web_data(&self, ws_message: &websocketimplmod::WsMessageForReceivers) {
-        websocketimplmod::ws_send_msg(unwrap!(self.ws.as_ref()), ws_message);
+        websocketimplmod::ws_send_msg(unwrap!(self.websocket_data.ws.as_ref()), ws_message);
     }
 }
     

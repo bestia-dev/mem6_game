@@ -17,8 +17,7 @@ pub struct RootRenderingComponent {
     pub web_data: webdatamod::WebData,
     /// game data will be inside of Root
     pub game_data: gamedatamod::GameData,
-    /// data for web rtc communication
-    pub web_rtc_data: webrtcimplmod::WebRtcData,
+    /// router data
     pub router_data: routerimplmod::Router,
 }
 
@@ -29,13 +28,11 @@ impl RootRenderingComponent {
         let game_data = gamedatamod::GameData::new(my_ws_uid);
         let msg_receivers_json = game_data.prepare_json_msg_receivers();
         let web_data = webdatamod::WebData::new(my_ws_uid, msg_receivers_json);
-        let web_rtc_data = webrtcimplmod::WebRtcData::new(my_ws_uid);
         let router_data = routerimplmod::Router::new();
 
         RootRenderingComponent {
             web_data,
             game_data,
-            web_rtc_data,
             router_data,
         }
     }
@@ -43,7 +40,7 @@ impl RootRenderingComponent {
     /// start websocket and store in web_data and web_rtc_data
     pub fn start_websocket(&mut self, vdom: VdomWeak) {
         self.web_data.start_websocket(vdom);
-        self.web_rtc_data.rtc_ws = self.web_data.ws.clone();
+        self.web_data.web_rtc_data.rtc_ws = self.web_data.websocket_data.ws.clone();
     }
 }
 
