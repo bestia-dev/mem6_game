@@ -246,3 +246,7 @@ Open <https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/>
 to test your STUN server:  
 `stun:stun.bestia.dev`  
 GoogleCloud has only ipv4. So there is no ipv6 at all.  
+
+## CodeTour
+
+CodeTour is an extension to VSCode. With it I can prepare a tour through the code step by step. In that way it is very easy to understand how the code works. Every step opens a file on a line number that is than described in the context of the tour step.  
