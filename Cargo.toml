@@ -1,10 +1,6 @@
 [workspace]
 
 members = [
-    "rust_wasm_websys_utils",
-    "rust_wasm_router",
-    "rust_wasm_dodrio_templating",
-    "rust_wasm_webrtc",
     "mem6_common",
     "mem6",
     "mem6_server",

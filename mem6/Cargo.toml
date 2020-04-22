@@ -16,11 +16,11 @@ crate-type = ["cdylib"]
 
 [dependencies]
 # my dependencies
-rust_wasm_websys_utils = { path = "../rust_wasm_websys_utils" }
-rust_wasm_router = { path = "../rust_wasm_router" }
-rust_wasm_dodrio_templating = { path = "../rust_wasm_dodrio_templating" }
-rust_wasm_websocket = { path = "../rust_wasm_websocket" }
-rust_wasm_webrtc = { path = "../rust_wasm_webrtc" }
+rust_wasm_websys_utils = { path = "../../rust_wasm_websys_utils" }
+rust_wasm_router = { path = "../../rust_wasm_router" }
+rust_wasm_dodrio_templating = { path = "../../rust_wasm_dodrio_templating" }
+rust_wasm_websocket = { path = "../../rust_wasm_websocket" }
+rust_wasm_webrtc = { path = "../../rust_wasm_webrtc" }
 #qrcode53bytes = { path = "../../qrcode53bytes" }
 qrcode53bytes ="1.0.0"
 
