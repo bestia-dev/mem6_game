@@ -78,7 +78,7 @@ pub trait RouterTrait {
                                         async move {
                                             //websysmod::debug_write(&format!("fetch {}", &url));
                                             let resp_body_text: String =
-                                                websysmod::async_spwloc_fetch_text(url).await;
+                                                websysmod::fetch_response(url).await;
                                             // update values in rrc is async.
                                             unwrap!(
                                                 vdom_on_next_tick

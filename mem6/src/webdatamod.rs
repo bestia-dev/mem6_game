@@ -5,7 +5,6 @@
 use crate::*;
 use rust_wasm_websocket::websocketmod::WebSocketTrait;
 
-//use web_sys::WebSocket;
 use serde_derive::{Serialize, Deserialize};
 use unwrap::unwrap;
 use dodrio::VdomWeak;

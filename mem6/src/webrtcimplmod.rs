@@ -11,8 +11,7 @@ use unwrap::unwrap;
 use wasm_bindgen::{JsCast};
 //use wasm_bindgen_futures::spawn_local;
 use dodrio::{RenderContext, Node, VdomWeak, RootRender};
-use web_sys::{WebSocket};
-use web_sys::{
+use web_sys::{Event,WebSocket,KeyboardEvent,
     RtcPeerConnection, RtcDataChannel, 
 };
 // endregion
@@ -168,9 +167,9 @@ impl WebRtcTrait for WebRtcData {
 pub fn web_rtc_receiver_ws_uid_onkeyup(
     vdom: VdomWeak,
     rrc: &mut RootRenderingComponent,
-    event: web_sys::Event,
+    event: Event,
 ) {
-    let keyboard_event = event.dyn_into::<web_sys::KeyboardEvent>();
+    let keyboard_event = event.dyn_into::<KeyboardEvent>();
     //websysmod::debug_write(&format!("web_rtc_receiver_ws_uid_onkeyup: {:?}",&keyboard_event));
     if let Ok(keyboard_event) = keyboard_event {
         //websysmod::debug_write(&keyboard_event.key());
@@ -186,9 +185,9 @@ pub fn web_rtc_receiver_ws_uid_onkeyup(
 pub fn web_rtc_chat_text_onkeyup(
     vdom: VdomWeak,
     rrc: &mut RootRenderingComponent,
-    event: web_sys::Event,
+    event: Event,
 ) {
-    let keyboard_event = event.dyn_into::<web_sys::KeyboardEvent>();
+    let keyboard_event = event.dyn_into::<KeyboardEvent>();
     //websysmod::debug_write(&format!("on key up: {:?}",&keyboard_event));
     if let Ok(keyboard_event) = keyboard_event {
         // websysmod::debug_write(&keyboard_event.key());

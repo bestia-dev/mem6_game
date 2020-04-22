@@ -636,7 +636,7 @@ checksum = "7ffc5c5338469d4d3ea17d269fa8ea3512ad247247c30bd2df69e68309ed0a08"
 
 [[package]]
 name = "mem6"
-version = "2020.421.1540"
+version = "2020.422.1045"
 dependencies = [
  "console_error_panic_hook",
  "conv",
@@ -665,11 +665,10 @@ dependencies = [
 
 [[package]]
 name = "mem6_common"
-version = "2020.322.1223"
+version = "2020.421.1549"
 dependencies = [
  "serde",
  "serde_derive",
- "strum_macros",
 ]
 
 [[package]]
@@ -1160,10 +1159,7 @@ version = "2020.218.1306"
 dependencies = [
  "dodrio",
  "js-sys",
- "rand 0.7.3",
  "reader_for_microxml",
- "rust_wasm_router",
- "rust_wasm_websys_utils",
  "serde",
  "serde_json",
  "unwrap",

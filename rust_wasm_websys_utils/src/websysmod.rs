@@ -97,20 +97,6 @@ pub fn get_random(min: usize, max: usize) -> usize {
 }
 
 // region: fetch
-/// fetch in Rust with async await for executor spawn_local()
-/// return the response as JsValue. Any error will panic.
-pub async fn async_spwloc_fetch_text(url: String) -> String {
-    // Request init
-    let mut opts = RequestInit::new();
-    opts.method("GET");
-    let request = unwrap!(Request::new_with_str_and_init(&url, &opts));
-    let resp_jsvalue = unwrap!(JsFuture::from(window().fetch_with_request(&request)).await);
-    let resp: Response = unwrap!(resp_jsvalue.dyn_into());
-    let resp_body_text = unwrap!(JsFuture::from(unwrap!(resp.text())).await);
-    // debug_write(&unwrap!(JsValue::as_string(&resp_body_text)));
-    // returns response as String
-    unwrap!(JsValue::as_string(&resp_body_text))
-}
 
 /// fetch in Rust with async await for executor spawn_local()
 /// return the response as String. Any error will panic.

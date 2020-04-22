@@ -10,12 +10,11 @@ use wasm_bindgen::{prelude::*, JsCast};
 use wasm_bindgen_futures::spawn_local;
 use dodrio::{VdomWeak, RootRender};
 use serde_derive::{Serialize, Deserialize};
-use web_sys::{
+use web_sys::{WebSocket,
     RtcPeerConnection, RtcDataChannel,RtcPeerConnectionIceEvent,RtcConfiguration,
     RtcDataChannelInit,RtcSessionDescriptionInit,RtcSdpType,RtcIceCandidateInit,
     RtcIceCandidate,RtcDataChannelState
 };
-use web_sys::{WebSocket};
 
 use rust_wasm_websys_utils::*;
 // endregion

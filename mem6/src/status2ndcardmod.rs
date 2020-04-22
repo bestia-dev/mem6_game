@@ -10,6 +10,7 @@ use unwrap::unwrap;
 use dodrio::{RenderContext, Node, VdomWeak};
 use wasm_bindgen::JsCast;
 use crate::htmltemplatemod::HtmlTemplating;
+use web_sys::{Event,HtmlImageElement};
 // endregion
 
 /// on second click
@@ -161,13 +162,13 @@ pub fn div_click_2nd_card<'a>(
 pub fn on_click_img_status2nd(
     root: &mut dyn dodrio::RootRender,
     vdom: VdomWeak,
-    event: &web_sys::Event,
+    event: &Event,
 ) {
     let rrc = root.unwrap_mut::<RootRenderingComponent>();
     // If the event's target is our image...
     let img = match event
         .target()
-        .and_then(|t| t.dyn_into::<web_sys::HtmlImageElement>().ok())
+        .and_then(|t| t.dyn_into::<HtmlImageElement>().ok())
     {
         None => return,
         // ?? Don't understand what this does. The original was written for Input element.

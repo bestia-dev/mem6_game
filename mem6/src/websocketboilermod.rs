@@ -2,7 +2,7 @@
 //! Boilerplate code that is part of the library `rust_wasm_websocket`,  
 //! but sadly it cannot be encapsulated in the external crate.  
 //! This mod should not be modified by the project author.  
-//! The specific code for the project must be coded inside `websocketspecmod`.  
+//! The specific code for the project is in the file `websocketspecmod`.  
 
 #![allow(clippy::panic)]
 
@@ -11,12 +11,10 @@ use crate::*;
 use rust_wasm_websocket::websocketmod::{WebSocketTrait};
 
 use unwrap::unwrap;
-//use wasm_bindgen::{prelude::*, JsCast};
 use wasm_bindgen_futures::spawn_local;
 use web_sys::{ WebSocket};
 use serde_derive::{Serialize, Deserialize};
 use dodrio::{VdomWeak,RootRender};
-//use gloo_timers::future::TimeoutFuture;
 // endregion
 
 /// message for receivers

@@ -12,6 +12,7 @@ use dodrio::{
     builder::{ElementBuilder, text},
     VdomWeak,
 };
+use web_sys::{Event};
 
 impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
     /// html_templating boolean id the next node is rendered or not
@@ -94,7 +95,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
     fn call_fn_listener(
         &self,
         fn_name: String,
-    ) -> Box<dyn Fn(&mut dyn RootRender, VdomWeak, web_sys::Event) + 'static> {
+    ) -> Box<dyn Fn(&mut dyn RootRender, VdomWeak, Event) + 'static> {
         Box::new(move |root, vdom, event| {
             let fn_name = fn_name.clone();
             let fn_name = fn_name.as_str();

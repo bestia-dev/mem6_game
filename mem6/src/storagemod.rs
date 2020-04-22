@@ -5,6 +5,7 @@
 use crate::*;
 use wasm_bindgen::JsCast; // don't remove this. It is needed for dyn_into.
 use unwrap::unwrap;
+use web_sys::{Event,KeyboardEvent};
 
 // region: my_ws_uid
 /// save my_ws_uid to session storage so we can restart the game and preserve the ws_uid
@@ -24,9 +25,9 @@ pub fn load_my_ws_uid() -> usize {
 
 // region: nickname
 /// save on every key stroke
-pub fn nickname_onkeyup(rrc: &mut RootRenderingComponent, event: web_sys::Event) {
+pub fn nickname_onkeyup(rrc: &mut RootRenderingComponent, event: Event) {
     // websysmod::debug_write("on key up");
-    let keyboard_event = unwrap!(event.dyn_into::<web_sys::KeyboardEvent>());
+    let keyboard_event = unwrap!(event.dyn_into::<KeyboardEvent>());
     // websysmod::debug_write(&keyboard_event.key());
     if keyboard_event.key() == "Enter" {
         // open page start group
@@ -69,9 +70,9 @@ pub fn blink_or_not_nickname(rrc: &RootRenderingComponent) -> String {
 
 // region: group_id
 /// group id key stroke
-pub fn group_id_onkeyup(rrc: &mut RootRenderingComponent, event: web_sys::Event) {
+pub fn group_id_onkeyup(rrc: &mut RootRenderingComponent, event: Event) {
     // websysmod::debug_write("on key up");
-    let keyboard_event = unwrap!(event.dyn_into::<web_sys::KeyboardEvent>());
+    let keyboard_event = unwrap!(event.dyn_into::<KeyboardEvent>());
     // websysmod::debug_write(&keyboard_event.key());
     if keyboard_event.key() == "Enter" {
         // open page start group

@@ -15,8 +15,6 @@ use dodrio::{
     bumpalo::{self},
     Node,
 };
-// use wasm_bindgen::prelude::*;
-// use web_sys::console;
 
 /// fixed filename for card face down
 const SRC_FOR_CARD_FACE_DOWN: &str = "img/mem_cardfacedown.png";
