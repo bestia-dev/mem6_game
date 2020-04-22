@@ -26,7 +26,8 @@ qrcode53bytes ="1.0.0"
 
 # other dependencies
 unwrap = "1.2.1"
-#dodrio =  { git = "https://github.com/fitzgen/dodrio", branch = "master" }
+# dodrio = "0.1.0"
+# dodrio =  { git = "https://github.com/fitzgen/dodrio", branch = "master" }
 dodrio = {path = "../../dodrio"}
 wasm-bindgen = { version = "0.2.58", features = ["serde-serialize"] }
 console_error_panic_hook = "0.1.6"

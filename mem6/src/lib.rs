@@ -307,7 +307,6 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
 
     // load from storage or get random (and then save)
     let my_ws_uid = websocketboilermod::load_or_random_ws_uid();
-
     let (location_href, href_hash) = websysmod::get_url_and_hash();
     // Construct a new RootRenderingComponent.
     let mut rrc = RootRenderingComponent::new(my_ws_uid);
