@@ -5,18 +5,27 @@
 
 a drinking game to lose memory  
 
-**Learning Rust Wasm/WebAssembly, Virtual Dom Dodrio, WebSocket communication and PWA (Progressive Web Apps) - part six**  
-*Things are changing fast. This is the situation on 2020-04-11.*
+**Learning Rust Wasm/WebAssembly, Virtual Dom Dodrio, WebSocket communication, PWA (Progressive Web Apps) and WebRtc DataChannel - part six**  
+*Things are changing fast. This is the situation on 2020-04-22.*
 
 ## Documentation
 
 Documentation generated from source code:  
 <https://lucianobestia.github.io/mem6_game/mem6/index.html>  
+
+## CodeTour
+
+For better understanding of the code I use the VSCode extension CodeTour.  
+The Tours are a sequence of steps with a description and jump to a line in the code.  
+That way is very natural and easy to understand the main parts how the code flows.  
+
+## Workspace
+
 The workspace mem6_game is made of projects:  
 
-1. Wasm/WebAssembly (for browsers) frontend - mem6  
-2. web server Warp backend - mem6_server  
-3. common structures - mem6_common  
+1. mem6 - Wasm/WebAssembly (for browsers) frontend  
+2. mem6_server - web server Warp backend  
+3. mem6_common - common structures  
 4. webfolder - contains files copied to the web folder
 
 Every project has its own readme.md.  
@@ -28,6 +37,18 @@ https://github.com/LucianoBestia/mem6_game/blob/master/mem6/README.md)
   
 Read also my `Previous projects` on Github:  
 <https://github.com/LucianoBestia/mem5_game>  
+
+## other crates
+
+The projects use also other libraries of mine  
+(micro crates available in GitHub and crates.io):
+
+- rust_wasm_websys_utils
+- rust_wasm_dodrio_templating
+- rust_wasm_websocket
+- rust_wasm_web_rtc
+- reader_for_microxml
+- qrcode53bytes
 
 ## Working game server
 

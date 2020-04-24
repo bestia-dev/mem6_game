@@ -1,6 +1,8 @@
 # unForGetTable  (development name: mem6)
 
-[comment]: # (lmake_readme version)  
+[comment]: # (lmake_readme cargo.toml data start)
+
+[comment]: # (lmake_readme cargo.toml data end)  
 
 mem6 is a simple drinking game to lose memory. It is made primarily for learning the Rust programming language and Wasm/WebAssembly with Virtual Dom Dodrio, WebSocket communication and PWA (Progressive Web App).  
 

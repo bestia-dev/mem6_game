@@ -4,7 +4,7 @@
 #![doc(
     html_logo_url = "https://github.com/LucianoBestia/mem6_game/raw/master/webfolder/mem6/images/icons-192.png"
 )]
-// region: lmake_readme insert "readme.md"
+// region: lmake_readme include "readme.md" //! A
 //! # unForGetTable  (development name: mem6)
 //!
 //! version: 2020.225.1404  
@@ -197,7 +197,7 @@
 //! Crazy stuff. I used the website <https://www.favicon-generator.org/> to generate
 //! all the different imgs, sizes and code. And than add all this into index.html. There is more lines for icons than anything else now. Just crazy world.  
 
-// endregion: lmake_readme insert "readme.md"
+// endregion: lmake_readme include "readme.md" //! A
 
 // needed for dodrio ! macro (typed-html)
 #![recursion_limit = "512"]

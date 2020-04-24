@@ -86,7 +86,7 @@ args = ["fmt"]
 clear = true
 private = true
 description = "copy the content of readme.md into *.rs comments (for the docs)"
-script= ["../../utils_linux/lmake_readme"]
+script= ["lmake_readme"]
 
 [tasks.cargo_doc]
 clear = true
