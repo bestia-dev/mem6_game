@@ -8,20 +8,19 @@ Warning: the index.html cannot be served from local file without a server, becau
 I will try to use only Rust+Wasm and avoid JavaScript as much as possible.
 
 ##### step 1 of 18 [GitHub link to code](https://github.com/LucianoBestia/mem6_game/blob/master/webfolder/mem6/index.html#L82)
-```
-                  the game...<br>
+```.html                  the game...<br>
                   This is <br>
                   very quick on fast<br>
                   networks...<br>
             </h2>
       </div>
----------------------- selection start ---------------------------------------------------
+---------------------- selection start ----------------------
       <!-- import and init the wasm code -->
       <script type="module">
             import init from "./pkg/mem6.js";
             init("./pkg/mem6_bg.wasm");
       </script>
------------------------ selection end ----------------------------------------------------
+----------------------- selection end -----------------------
 ```
 ### wasm_bindgen_start
 Rust is a great language to compile to Wasm/WebAssembly.
@@ -29,8 +28,7 @@ With the use of libraries wasm_bindgen, web_sys and js_sys Rust has access to th
 The imported Wasm module will automatically start the function with attribute `#[wasm_bindgen(start)]`. This function is called only once. 
 
 ##### step 2 of 18 [GitHub link to code](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/lib.rs#L299)
-```rust
-use crate::rootrenderingcomponentmod::RootRenderingComponent;
+```.rsuse crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::gamedatamod::*;
 
 use rust_wasm_dodrio_templating::*;
@@ -40,17 +38,16 @@ use rust_wasm_websys_utils::*;
 // use unwrap::unwrap;
 use wasm_bindgen::prelude::*;
 
----------------------- selection start ---------------------------------------------------
+---------------------- selection start ----------------------
 #[wasm_bindgen(start)]
------------------------ selection end ----------------------------------------------------
+----------------------- selection end -----------------------
 ```
 ### div_for_virtual_dom
 The Rust code will change just the content of the \<div id="div_for_virtual_dom"\>. 
 This is a "single page web app". For the browser the index.html is always the same, we only change the interior content of it's dom. 
 
 ##### step 3 of 18 [GitHub link to code](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/lib.rs#L306)
-```rust
-#[wasm_bindgen(start)]
+```.rs#[wasm_bindgen(start)]
 #[allow(clippy::shadow_same)]
 /// To start the Wasm application, wasm_bindgen runs this functions
 pub fn wasm_bindgen_start() -> Result<(), JsValue> {
@@ -60,17 +57,16 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     websysmod::debug_write(&format!("wasm app version: {}", env!("CARGO_PKG_VERSION")));
 
     // Get the container to render the virtual Dom component.
----------------------- selection start ---------------------------------------------------
+---------------------- selection start ----------------------
     let div_for_virtual_dom = websysmod::get_element_by_id("div_for_virtual_dom");
------------------------ selection end ----------------------------------------------------
+----------------------- selection end -----------------------
 ```
 ### div_for_virtual_dom in index.html
 This div is the only part of the index.html that will be dynamically changed by the Rust code.  
 The download of a big wasm file can take some time on slow network. It is nice to warn the user about that.  
 
 ##### step 4 of 18 [GitHub link to code](https://github.com/LucianoBestia/mem6_game/blob/master/webfolder/mem6/index.html#L77)
-```
-      <!-- display a text while waiting for wasm download. It can take some time. -->
+```.html      <!-- display a text while waiting for wasm download. It can take some time. -->
       <div id="div_for_virtual_dom">
             <h2>
                   Waiting to<br>
@@ -81,16 +77,15 @@ The download of a big wasm file can take some time on slow network. It is nice t
                   networks...<br>
             </h2>
       </div>
------------------------ selection end ----------------------------------------------------
+----------------------- selection end -----------------------
 ```
 ### noscript warning
 Wasm is using the javascript engine deep inside.  
 If JavaScript is disabled, also wasm cannot run.  
 
 ##### step 5 of 18 [GitHub link to code](https://github.com/LucianoBestia/mem6_game/blob/master/webfolder/mem6/index.html#L66)
-```
-      <script src="start_service_worker.js"></script>
----------------------- selection start ---------------------------------------------------
+```.html      <script src="start_service_worker.js"></script>
+---------------------- selection start ----------------------
       <!-- warning if javascript iis not enabled -->
       <noscript>
             <h2>
@@ -101,15 +96,14 @@ If JavaScript is disabled, also wasm cannot run.
                   enabled<br>
                   !!!???!!!</h2>
       </noscript>
------------------------ selection end ----------------------------------------------------
+----------------------- selection end -----------------------
 ```
  ### start_router
  After preparing the environment (websocket, RootRenderingComponent, vdom, fetch config data) I start the router. It will listen to the event `hashchange`.  
  For example when the URL changes to index.html#p04.
 
 ##### step 6 of 18 [GitHub link to code](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/lib.rs#L325)
-```rust
-    // Mount the component to the `<div id="div_for_virtual_dom">`.
+```.rs    // Mount the component to the `<div id="div_for_virtual_dom">`.
     let vdom_object = dodrio::Vdom::new(&div_for_virtual_dom, rrc);
     let vdom = vdom_object.weak();
     // async fetch_response() for gamesmetadata.json
@@ -119,17 +113,16 @@ If JavaScript is disabled, also wasm cannot run.
     // Start the URL router.
     use rust_wasm_router::routermod::RouterTrait;
     let router = routerimplmod::Router::new();
----------------------- selection start ---------------------------------------------------
+---------------------- selection start ----------------------
     router.start_router(vdom.clone());
------------------------ selection end ----------------------------------------------------
+----------------------- selection end -----------------------
 ```
 ### update_local_route_from_root
 The short_local_route (url hash) `ex. #p04` defines a `local_route`. This is the name of the html template to fetch from the web server. Than it is prepared and saved in html_template sub_templates fields.
 The data in the struct is prepared, finally we call `vdom.schedule_render();`.
 
 ##### step 7 of 18 [GitHub link to code](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/routerimplmod.rs#L45)
-```rust
-        //return
+```.rs        //return
         &self.local_route
     }
     /// get rrc.local_route
@@ -139,9 +132,9 @@ The data in the struct is prepared, finally we call `vdom.schedule_render();`.
     }
 
     /// update local_route with filenames dependent on short_local_route.
----------------------- selection start ---------------------------------------------------
+---------------------- selection start ----------------------
     fn update_local_route_from_root(
------------------------ selection end ----------------------------------------------------
+----------------------- selection end -----------------------
 ```
 ### render()
 This is the only method that is called when the rendering is scheduled. 
@@ -149,8 +142,7 @@ It is defined in the crate `dodrio: the vdom library`.
 From here we then call functions to render different UI depending on the data state. 
 
 ##### step 8 of 18 [GitHub link to code](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/rootrenderingcomponentmod.rs#L51)
-```rust
-    pub fn start_websocket(&mut self, vdom: VdomWeak) {
+```.rs    pub fn start_websocket(&mut self, vdom: VdomWeak) {
         self.web_data.start_websocket(vdom);
         self.web_data.web_rtc_data.rtc_ws = self.web_data.websocket_data.ws.clone();
     }
@@ -160,9 +152,9 @@ From here we then call functions to render different UI depending on the data st
 /// It is called for every Dodrio animation frame to render the vdom.
 /// Only when render is scheduled after some change id the game data.
 impl<'a> Render<'a> for RootRenderingComponent {
----------------------- selection start ---------------------------------------------------
+---------------------- selection start ----------------------
     fn render(&self, cx: &mut RenderContext<'a>) -> Node<'a> {
------------------------ selection end ----------------------------------------------------
+----------------------- selection end -----------------------
 ```
 ### dodrio
 \<github.com/fitzgen/dodrio\> is a virtual DOM library for Rust+Wasm.  
@@ -172,8 +164,7 @@ Then the original dom is modified to resemble the vdom. Modifying the dom is slo
 In this way we have a clear separation between data (RootRenderingComponent) and UI (code to render html virtual dom).  
 
 ##### step 9 of 18 [GitHub link to code](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/Cargo.toml#L29)
-```toml
-# region: my dependencies
+```.toml# region: my dependencies
 rust_wasm_websys_utils = "0.4.2"
 # rust_wasm_websys_utils = { path = "../../rust_wasm_websys_utils" }
 rust_wasm_router = { path = "../../rust_wasm_router" }
@@ -191,8 +182,7 @@ in cargo.toml we can depend on github or local path also.
 So we can follow the codeflow and change something if we need to.  
 
 ##### step 10 of 18 [GitHub link to code](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/Cargo.toml#L31)
-```toml
-# rust_wasm_websys_utils = { path = "../../rust_wasm_websys_utils" }
+```.toml# rust_wasm_websys_utils = { path = "../../rust_wasm_websys_utils" }
 rust_wasm_router = { path = "../../rust_wasm_router" }
 rust_wasm_dodrio_templating = { path = "../../rust_wasm_dodrio_templating" }
 rust_wasm_websocket = { path = "../../rust_wasm_websocket" }
@@ -200,11 +190,11 @@ rust_wasm_webrtc = { path = "../../rust_wasm_webrtc" }
 #qrcode53bytes = { path = "../../qrcode53bytes" }
 qrcode53bytes ="1.0.0"
 # endregion: my dependencies
----------------------- selection start ---------------------------------------------------
+---------------------- selection start ----------------------
 
 # region: other dependencies
 unwrap = "1.2.1"
------------------------ selection end ----------------------------------------------------
+----------------------- selection end -----------------------
 ```
 ### data model
 The struct RootRenderingComponent contains ALL the data that is needed to render the UI. I separated the data in sub-structs, just for clarity.  
@@ -214,9 +204,8 @@ We have a clear separation between data and User-Interface because of that.
 
 
 ##### step 11 of 18 [GitHub link to code](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/rootrenderingcomponentmod.rs#L22)
-```rust
-
----------------------- selection start ---------------------------------------------------
+```.rs
+---------------------- selection start ----------------------
 /// Root Rendering Component has all
 /// the data needed for play logic and rendering
 pub struct RootRenderingComponent {
@@ -227,7 +216,7 @@ pub struct RootRenderingComponent {
     /// router data
     pub router_data: routerimplmod::Router,
 }
------------------------ selection end ----------------------------------------------------
+----------------------- selection end -----------------------
 ```
 ### render_template ()
 The function `render_template` will read the html of the template and create dodrio vdom elements in the same sort order. Before some elements/attributes there are comments or `data-` attributes that change the next element/attribute. These are not visible, so the template is still a regular html document that the graphical designer can look and modify statically without dinamic elements. The programmer than adds/modify the `replace elements or attributes`.  
@@ -235,12 +224,11 @@ The result is the `dodrio:Node` that represents the vdom.
 The vdom library then diffs and modify the real dom.  
 
 ##### step 12 of 18 [GitHub link to code](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/rootrenderingcomponentmod.rs#L64)
-```rust
-        // html fragment from html_template defined in # local_route
+```.rs        // html fragment from html_template defined in # local_route
         if self.web_data.html_template.is_empty() {
             htmltemplatemod::empty_div(cx)
         } else {
----------------------- selection start ---------------------------------------------------
+---------------------- selection start ----------------------
             // i must add use crate::htmltemplatemod::HtmlTemplating;
             // to allow this trait to be used here on self
             unwrap!(self.render_template(
@@ -248,14 +236,13 @@ The vdom library then diffs and modify the real dom.
                 &self.web_data.html_template,
                 htmltemplatemod::HtmlOrSvg::Html,
             ))
------------------------ selection end ----------------------------------------------------
+----------------------- selection end -----------------------
 ```
 ### templating variables
 Here we can see a html template with the replace `comments` ex. \<!--t=game_name--\> and `data- attributes` ex. `data-on-click="game_type_left_onclick"`.
 
 ##### step 13 of 18 [GitHub link to code](https://github.com/LucianoBestia/mem6_game/blob/master/webfolder/mem6/p05_choose_game.html#L23)
-```
-  <link rel="stylesheet" href="css/mem6.css">
+```.html  <link rel="stylesheet" href="css/mem6.css">
 </head>
 
 <body>
@@ -265,16 +252,15 @@ Here we can see a html template with the replace `comments` ex. \<!--t=game_name
 
     <text x="50%" y="50%" class="h6">Choose a type of game</text>
     <rect class="rounded green clickable" x="5%" y="52.5%" width="10%"
----------------------- selection start ---------------------------------------------------
+---------------------- selection start ----------------------
           height="10%" data-on-click="game_type_left_onclick" />
------------------------ selection end ----------------------------------------------------
+----------------------- selection end -----------------------
 ```
 ### call_fn_string
 This fn will replace the next text element after \<!--t=fn_name--\> or the next attribute value after `data-t-style="fn_name"` with a string.
 
 ##### step 14 of 18 [GitHub link to code](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/htmltemplateimplmod.rs#L41)
-```rust
-            }
+```.rs            }
         }
     }
 
@@ -284,16 +270,15 @@ This fn will replace the next text element after \<!--t=fn_name--\> or the next 
         clippy::integer_arithmetic,
         clippy::indexing_slicing
     )]
----------------------- selection start ---------------------------------------------------
+---------------------- selection start ----------------------
     fn call_fn_string(&self, fn_name: &str) -> String {
------------------------ selection end ----------------------------------------------------
+----------------------- selection end -----------------------
 ```
 ### call_fn_node
 This fn will replace the next element after \<!--n=fn_name--\> with a Node.
 
 ##### step 15 of 18 [GitHub link to code](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/htmltemplateimplmod.rs#L261)
-```rust
-                _ => {
+```.rs                _ => {
                     let x = format!("Error: Unrecognized call_fn_listener: \"{}\"", fn_name);
                     websysmod::debug_write(&x);
                 }
@@ -303,16 +288,15 @@ This fn will replace the next element after \<!--n=fn_name--\> with a Node.
 
     /// html_templating functions that return a Node
     #[allow(clippy::needless_return)]
----------------------- selection start ---------------------------------------------------
+---------------------- selection start ----------------------
     fn call_fn_node<'a>(&self, cx: &mut RenderContext<'a>, fn_name: &str) -> Node<'a> {
------------------------ selection end ----------------------------------------------------
+----------------------- selection end -----------------------
 ```
 ### call_fn_vec_nodes
 This fn will replace the next element after \<!--vn=fn_name--\> with a Vector of Nodes.
 
 ##### step 16 of 18 [GitHub link to code](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/htmltemplateimplmod.rs#L296)
-```rust
-                    )])
+```.rs                    )])
                     .finish();
 
                 return node;
@@ -322,16 +306,15 @@ This fn will replace the next element after \<!--vn=fn_name--\> with a Vector of
 
     /// html_templating functions that return a vector of Nodes
     #[allow(clippy::needless_return)]
----------------------- selection start ---------------------------------------------------
+---------------------- selection start ----------------------
     fn call_fn_vec_nodes<'a>(&self, cx: &mut RenderContext<'a>, fn_name: &str) -> Vec<Node<'a>> {
------------------------ selection end ----------------------------------------------------
+----------------------- selection end -----------------------
 ```
 ### call_fn_boolean
 This fn will remove the next element after \<!--b=fn_name--\> if the result is `false`.
 
 ##### step 17 of 18 [GitHub link to code](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/htmltemplateimplmod.rs#L19)
-```rust
-use dodrio::{
+```.rsuse dodrio::{
     Node, RenderContext, RootRender,
     bumpalo::{self},
     builder::{ElementBuilder, text},
@@ -341,16 +324,15 @@ use web_sys::{Event};
 
 impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
     /// html_templating boolean id the next node is rendered or not
----------------------- selection start ---------------------------------------------------
+---------------------- selection start ----------------------
     fn call_fn_boolean(&self, fn_name: &str) -> bool {
------------------------ selection end ----------------------------------------------------
+----------------------- selection end -----------------------
 ```
 ### call_fn_listener
 This fn will add a listener to the element after `data-on-click="fn_name"`.
 
 ##### step 18 of 18 [GitHub link to code](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/htmltemplateimplmod.rs#L98)
-```rust
-            _ => {
+```.rs            _ => {
                 let x = format!("Error: Unrecognized call_fn_string: \"{}\"", fn_name);
                 websysmod::debug_write(&x);
                 x
@@ -360,7 +342,7 @@ This fn will add a listener to the element after `data-on-click="fn_name"`.
 
     /// return a closure for the listener.
     #[allow(clippy::too_many_lines, clippy::type_complexity)]
----------------------- selection start ---------------------------------------------------
+---------------------- selection start ----------------------
     fn call_fn_listener(
------------------------ selection end ----------------------------------------------------
+----------------------- selection end -----------------------
 ```
