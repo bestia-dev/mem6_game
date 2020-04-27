@@ -1,4 +1,4 @@
-# start_route_template_render_tour
+# codetour_start_route_template_render
 The first tour describes the start of the wasm module, the routing, the html templating and finally rendering.
 ### index.html wasm import script
 The browser downloads the index.html file as usual. 
