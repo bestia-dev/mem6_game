@@ -252,3 +252,11 @@ GoogleCloud has only ipv4. So there is no ipv6 at all.
 ## CodeTour
 
 CodeTour is an extension to VSCode. With it I can prepare a tour through the code step by step. In that way it is very easy to understand how the code works. Every step opens a file on a line number that is than described in the context of the tour step.  
+
+## cargo crev reviews and advisory
+
+It is recommended to always use [cargo-crev](https://github.com/crev-dev/cargo-crev)  
+to verify the trustworthiness of each of your dependencies.  
+Please, spread this info.  
+On the web use this url to read crate reviews. Example:  
+<https://bestia.dev/cargo_crev_web/query/num-traits>  

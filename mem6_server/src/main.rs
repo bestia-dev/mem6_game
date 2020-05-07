@@ -1,3 +1,4 @@
+
 #![doc(
     html_favicon_url = "https://github.com/LucianoBestia/mem6_game/raw/master/webfolder/mem6/images/icons-16.png"
 )]

@@ -30,9 +30,9 @@ skip_core_tasks = true
     clear = true
     dependencies = [
 		# Binaries version is date
-         "lmake_version_from_date"
+         "lmake_version_from_date",
         # Library version is semver
-        # "semver_increment_patch",	
+        # "semver_increment_patch",
         "build_release",
 		"post_build_release",
     ]
@@ -163,7 +163,7 @@ script= ["lmake_semver --increment=patch"]
 description = "in cargo.toml change version to today date"
 clear = true
 private = true
-script= ["lmake_version_from_date ]
+script= ["lmake_version_from_date" ]
 
 [tasks.build_release]
 description = "build for release"
@@ -217,10 +217,10 @@ script = [
 [tasks.gittag]
 clear = true
 private = true
-description = "git tag -a v${CARGO_MAKE_CRATE_VERSION} -m version_${CARGO_MAKE_CRATE_VERSION}"
+description = "git tag -f -a v${CARGO_MAKE_CRATE_VERSION} -m version_${CARGO_MAKE_CRATE_VERSION}"
 script = [
-	"echo git tag -a v${CARGO_MAKE_CRATE_VERSION} -m version_${CARGO_MAKE_CRATE_VERSION}",
-    "git tag -a v${CARGO_MAKE_CRATE_VERSION} -m version_${CARGO_MAKE_CRATE_VERSION}"
+	"echo git tag -f -a v${CARGO_MAKE_CRATE_VERSION} -m version_${CARGO_MAKE_CRATE_VERSION}",
+    "git tag -f -a v${CARGO_MAKE_CRATE_VERSION} -m version_${CARGO_MAKE_CRATE_VERSION}"
 ]		  
 
 [tasks.private_crates_io_publish]
@@ -248,7 +248,7 @@ script = ["echo build dev end",
 [tasks.post_build_release]
 clear=true
 private=true
-script = ["echo build release end"
+script = ["echo build release end",
     "\\cp ~/rustprojects/mem6_game/target/release/mem6_server -rf -v ~/rustprojects/mem6_game/webfolder",
     # I cannot script the exact IP here.  
     # It must be copied from the mem6_server.exe output.

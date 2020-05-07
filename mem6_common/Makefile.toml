@@ -35,7 +35,7 @@ skip_core_tasks = true
     clear = true
     dependencies = [
 		# Binaries version is date
-        # "lmake_version_from_date"
+        # "lmake_version_from_date",
         # Library version is semver
         "semver_increment_patch",	
         "build_release",
@@ -168,7 +168,7 @@ script= ["lmake_semver --increment=patch"]
 description = "in cargo.toml change version to today date"
 clear = true
 private = true
-script= ["lmake_version_from_date ../webfolder/${CARGO_MAKE_CRATE_NAME}/service_worker.js"]
+script= ["lmake_version_from_date"]
 
 [tasks.build_release]
 description = "build for release"
@@ -222,10 +222,10 @@ script = [
 [tasks.gittag]
 clear = true
 private = true
-description = "git tag -a v${CARGO_MAKE_CRATE_VERSION} -m version_${CARGO_MAKE_CRATE_VERSION}"
+description = "git tag -f -a v${CARGO_MAKE_CRATE_VERSION} -m version_${CARGO_MAKE_CRATE_VERSION}"
 script = [
-	"echo git tag -a v${CARGO_MAKE_CRATE_VERSION} -m version_${CARGO_MAKE_CRATE_VERSION}",
-    "git tag -a v${CARGO_MAKE_CRATE_VERSION} -m version_${CARGO_MAKE_CRATE_VERSION}"
+	"echo git tag -f -a v${CARGO_MAKE_CRATE_VERSION} -m version_${CARGO_MAKE_CRATE_VERSION}",
+    "git tag -f -a v${CARGO_MAKE_CRATE_VERSION} -m version_${CARGO_MAKE_CRATE_VERSION}"
 ]		  
 
 [tasks.private_crates_io_publish]
