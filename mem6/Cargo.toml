@@ -1,6 +1,6 @@
 [package]
 name = "mem6"
-version = "2020.422.1045"
+version = "2020.509.1450"
 authors = ["Luciano Bestia <Luciano.Bestia@gmail.com>"]
 edition = "2018"
 description = "Learning Rust Wasm/WebAssembly with Virtual Dom Dodrio"
@@ -29,9 +29,9 @@ qrcode53bytes ="1.0.0"
 
 # region: other dependencies
 unwrap = "1.2.1"
-# dodrio = "0.1.0"
+dodrio = "0.2.0"
 # dodrio =  { git = "https://github.com/fitzgen/dodrio", branch = "master" }
-dodrio = {path = "../../dodrio"}
+# dodrio = {path = "../../rust_wasm_dodrio_copy"}
 wasm-bindgen = { version = "0.2.58", features = ["serde-serialize"] }
 console_error_panic_hook = "0.1.6"
 #newer version of rand do not have smallring

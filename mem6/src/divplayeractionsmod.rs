@@ -19,7 +19,7 @@ pub fn div_player_actions_from_game_status<'a>(
         GameStatus::Status1stCard => status1stcardmod::div_on_1st_card(rrc, cx),
         GameStatus::Status2ndCard => status2ndcardmod::div_click_2nd_card(rrc, cx),
         GameStatus::StatusGameOver => statusgameovermod::div_game_over(rrc, cx),
-        GameStatus::StatusWaitingAckMsg => statuswaitingackmsgmod::div_waiting_ack_msg(rrc, cx),
+        GameStatus::StatusWaitingAckMsg => statuswaitingack_msg_mod::div_waiting_ack_msg(rrc, cx),
         _ => div_unpredicted(rrc, cx),
     }
 }

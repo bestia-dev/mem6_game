@@ -10,7 +10,7 @@ use unwrap::unwrap;
 use dodrio::{RenderContext, Node, VdomWeak};
 use wasm_bindgen::JsCast;
 use crate::htmltemplatemod::HtmlTemplating;
-use web_sys::{Event,HtmlImageElement};
+use web_sys::{Event, HtmlImageElement};
 // endregion
 
 /// on click
@@ -24,7 +24,7 @@ pub fn on_click_1st_card(
     // change card status and game status
     rrc.game_data.card_index_of_1st_click = this_click_card_index;
 
-    let msg_id = ackmsgmod::prepare_for_ack_msg_waiting(rrc, vdom.clone());
+    let msg_id = ack_msg_mod::prepare_for_ack_msg_waiting(rrc, vdom.clone());
     let msg = websocketboilermod::WsMessageForReceivers {
         msg_sender_ws_uid: rrc.web_data.my_ws_uid,
         msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
@@ -33,9 +33,9 @@ pub fn on_click_1st_card(
             msg_id,
         },
     };
-    ackmsgmod::send_msg_and_write_in_queue(rrc, &msg, msg_id);
+    ack_msg_mod::send_msg_and_write_in_queue(rrc, &msg, msg_id);
     // websysmod::debug_write(&format!("send_msg_and_write_in_queue: {}", msg_id));
-    divgridcontainermod::play_sound(rrc, this_click_card_index);
+    div_grid_container_mod::play_sound(rrc, this_click_card_index);
     // after ack for this message call on_msg_click_1st_card(rrc, this_click_card_index);
 }
 
@@ -59,7 +59,7 @@ pub fn on_msg_click_1st_card(
     msg_id: usize,
 ) {
     flip_back(rrc);
-    ackmsgmod::send_ack(
+    ack_msg_mod::send_ack(
         rrc,
         msg_sender_ws_uid,
         msg_id,
@@ -90,7 +90,7 @@ pub fn on_msg_ack_click_1st_card(
 ) {
     // websysmod::debug_write("on_msg_ack_click_1st_card");
     // websysmod::debug_write(&format!("remove_ack_msg_from_queue: {} {}",player_ws_uid, msg_id));
-    if ackmsgmod::remove_ack_msg_from_queue(rrc, player_ws_uid, msg_id) {
+    if ack_msg_mod::remove_ack_msg_from_queue(rrc, player_ws_uid, msg_id) {
         // websysmod::debug_write("update_on_1st_card (rrc)");
         update_on_1st_card(rrc);
     }
@@ -119,11 +119,7 @@ pub fn div_on_1st_card<'a>(rrc: &RootRenderingComponent, cx: &mut RenderContext<
 
 /// on click for image in status 1s
 #[allow(clippy::indexing_slicing)]
-pub fn on_click_img_status1st(
-    root: &mut dyn dodrio::RootRender,
-    vdom: VdomWeak,
-    event: &Event,
-) {
+pub fn on_click_img_status1st(root: &mut dyn dodrio::RootRender, vdom: VdomWeak, event: &Event) {
     // websysmod::debug_write("img click");
     let rrc = root.unwrap_mut::<RootRenderingComponent>();
     // If the event's target is our image...
@@ -163,4 +159,4 @@ pub fn on_click_img_status1st(
         }
     }
 }
-// div_grid_container() is in divgridcontainermod.rs
+// div_grid_container() is in div_grid_container_mod.rs

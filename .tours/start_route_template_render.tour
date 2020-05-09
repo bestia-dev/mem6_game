@@ -93,9 +93,9 @@
       }
     },
     {
-      "file": "mem6/src/routerimplmod.rs",
+      "file": "mem6/src/router_impl_mod.rs",
       "line": 45,
-      "description": "### update_local_route_from_root\nThe short_local_route (url hash) `ex. #p04` defines a `local_route`. This is the name of the html template to fetch from the web server. Than it is prepared and saved in html_template sub_templates fields.\nThe data in the struct is prepared, finally we call `vdom.schedule_render();`.",
+      "description": "### set_file_name_to_fetch_from_dodrio\nThe short_route (url hash) `ex. #p04` defines a `file_name_to_fetch`. This is the name of the html template to fetch from the web server. Than it is prepared and saved in html_template sub_templates fields.\nThe data in the struct is prepared, finally we call `vdom.schedule_render();`.",
       "selection": {
         "start": {
           "line": 41,

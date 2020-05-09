@@ -12,14 +12,14 @@ use dodrio::VdomWeak;
 pub fn on_click_take_turn(rrc: &mut RootRenderingComponent, vdom: VdomWeak) {
     // websysmod::debug_write(&format!("on_click_take_turn {}", ""));
 
-    let msg_id = ackmsgmod::prepare_for_ack_msg_waiting(rrc, vdom.clone());
+    let msg_id = ack_msg_mod::prepare_for_ack_msg_waiting(rrc, vdom.clone());
 
     let msg = websocketboilermod::WsMessageForReceivers {
         msg_sender_ws_uid: rrc.web_data.my_ws_uid,
         msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
         msg_data: gamedatamod::WsMessageGameData::MsgTakeTurn { msg_id },
     };
-    ackmsgmod::send_msg_and_write_in_queue(rrc, &msg, msg_id);
+    ack_msg_mod::send_msg_and_write_in_queue(rrc, &msg, msg_id);
 
     // Here I wait for on_MsgAck from
     // every player before call update_take_turn(rrc);
@@ -27,7 +27,7 @@ pub fn on_click_take_turn(rrc: &mut RootRenderingComponent, vdom: VdomWeak) {
 
 /// on msg
 pub fn on_msg_take_turn(rrc: &mut RootRenderingComponent, msg_sender_ws_uid: usize, msg_id: usize) {
-    ackmsgmod::send_ack(
+    ack_msg_mod::send_ack(
         rrc,
         msg_sender_ws_uid,
         msg_id,
@@ -39,7 +39,7 @@ pub fn on_msg_take_turn(rrc: &mut RootRenderingComponent, msg_sender_ws_uid: usi
 /// on msg ack
 #[allow(clippy::needless_pass_by_value)]
 pub fn on_msg_ack_take_turn(rrc: &mut RootRenderingComponent, player_ws_uid: usize, msg_id: usize) {
-    if ackmsgmod::remove_ack_msg_from_queue(rrc, player_ws_uid, msg_id) {
+    if ack_msg_mod::remove_ack_msg_from_queue(rrc, player_ws_uid, msg_id) {
         update_on_take_turn(rrc);
     }
     // TODO: timer if after 3 seconds the ack is not received resend the msg

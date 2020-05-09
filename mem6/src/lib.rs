@@ -258,8 +258,8 @@
 // endregion
 
 // region: mod is used only in lib file. All the rest use use crate
-mod ackmsgmod;
-mod divgridcontainermod;
+mod ack_msg_mod;
+mod div_grid_container_mod;
 mod divplayeractionsmod;
 mod fetchmod;
 mod gamedatamod;
@@ -272,11 +272,11 @@ mod status1stcardmod;
 mod status2ndcardmod;
 mod statusdrinkmod;
 mod statustaketurnmod;
-mod statuswaitingackmsgmod;
+mod statuswaitingack_msg_mod;
 mod websocketboilermod;
 mod websocketspecmod;
 mod statusreconnectmod;
-mod routerimplmod;
+mod router_impl_mod;
 mod htmltemplateimplmod;
 mod webdatamod;
 mod webrtcimplmod;
@@ -320,8 +320,8 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     fetchmod::fetch_videos_and_update(&location_href, vdom.clone());
     fetchmod::fetch_audio_and_update(&location_href, vdom.clone());
     // Start the URL router.
-    use rust_wasm_router::routermod::RouterTrait;
-    let router = routerimplmod::Router::new();
+    use rust_wasm_router::router_mod::RouterTrait;
+    let router = router_impl_mod::Router::new();
     router.start_router(vdom.clone());
 
     // Run the component forever. Forget to drop the memory.

@@ -45,14 +45,14 @@ This is a "single page" app so the start of wasm is only one time here:
 - fetch data from server: game_config, videos, audio,
 - start_router - run immediately and on every hash_change
 
-## Router (routermod + routerimplmod)
+## Router (router_mod + router_impl_mod)
 
 - `start_router`: the Closure takes `location.hash`. This is a short_route ex. `#p03`
-- `update_local_route` - updates the `rrc.local_route` with the filename ex. `p03_join_a_group.html`
+- `update_file_name_to_fetch` - updates the `rrc.file_name_to_fetch` with the filename ex. `p03_join_a_group.html`
 - `fetch_response` - fetch the html template
 - `between_body_tag()` - the html_template is a complete html file. It can be viewed correctly in the browser. It does not yet have any dynamic parts. This is great because the graphical designer can make changes on a true html file. The programmer after that adds comments that are actions for the templating engine. For the templating engine we need only the body part.
 - searches for "template" nodes, drains them and saves them in `rrc.html_sub_templates`for later use
-- `update_html_template_and_sub_templates` - updates `rrc.html_template`
+- `set_fetched_file_and_sub_templates` - updates `rrc.html_template`
 
 ## Render (rootrenderingcomponentmod)
 

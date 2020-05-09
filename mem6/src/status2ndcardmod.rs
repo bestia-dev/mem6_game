@@ -10,7 +10,7 @@ use unwrap::unwrap;
 use dodrio::{RenderContext, Node, VdomWeak};
 use wasm_bindgen::JsCast;
 use crate::htmltemplatemod::HtmlTemplating;
-use web_sys::{Event,HtmlImageElement};
+use web_sys::{Event, HtmlImageElement};
 // endregion
 
 /// on second click
@@ -25,7 +25,7 @@ pub fn on_click_2nd_card(
     rrc.game_data.card_index_of_2nd_click = this_click_card_index;
     // flip the card up
     rrc.game_data.get_2nd_card_mut().status = CardStatusCardFace::UpTemporary;
-    divgridcontainermod::play_sound(rrc, this_click_card_index);
+    div_grid_container_mod::play_sound(rrc, this_click_card_index);
     // 2 possible outcomes: 1) Next Player 2) end game/play again
     // that changes: game status,CardStatusCardFace, points or/and player_turn
     // if the cards match, player get one point, but it is the next player turn.
@@ -33,7 +33,7 @@ pub fn on_click_2nd_card(
     if is_point {
         update_click_2nd_card_flip_permanently(rrc, is_point);
     }
-    let msg_id = ackmsgmod::prepare_for_ack_msg_waiting(rrc, vdom.clone());
+    let msg_id = ack_msg_mod::prepare_for_ack_msg_waiting(rrc, vdom.clone());
     let msg = websocketboilermod::WsMessageForReceivers {
         msg_sender_ws_uid: rrc.web_data.my_ws_uid,
         msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
@@ -43,7 +43,7 @@ pub fn on_click_2nd_card(
             msg_id,
         },
     };
-    ackmsgmod::send_msg_and_write_in_queue(rrc, &msg, msg_id);
+    ack_msg_mod::send_msg_and_write_in_queue(rrc, &msg, msg_id);
 }
 
 /// is all card permanently on
@@ -79,7 +79,7 @@ pub fn on_msg_click_2nd_card(
     is_point: bool,
     msg_id: usize,
 ) {
-    ackmsgmod::send_ack(
+    ack_msg_mod::send_ack(
         rrc,
         msg_sender_ws_uid,
         msg_id,
@@ -97,7 +97,7 @@ pub fn on_msg_ack_player_click2nd_card(
     msg_id: usize,
     vdom: VdomWeak,
 ) {
-    if ackmsgmod::remove_ack_msg_from_queue(rrc, player_ws_uid, msg_id) {
+    if ack_msg_mod::remove_ack_msg_from_queue(rrc, player_ws_uid, msg_id) {
         let is_point = is_point(rrc);
         update_click_2nd_card_point(rrc, is_point);
         if is_point {
@@ -159,11 +159,7 @@ pub fn div_click_2nd_card<'a>(
 
 /// on click for img in status 2
 #[allow(clippy::indexing_slicing)]
-pub fn on_click_img_status2nd(
-    root: &mut dyn dodrio::RootRender,
-    vdom: VdomWeak,
-    event: &Event,
-) {
+pub fn on_click_img_status2nd(root: &mut dyn dodrio::RootRender, vdom: VdomWeak, event: &Event) {
     let rrc = root.unwrap_mut::<RootRenderingComponent>();
     // If the event's target is our image...
     let img = match event
@@ -202,4 +198,4 @@ pub fn on_click_img_status2nd(
         }
     }
 }
-// div_grid_container() is in divgridcontainermod.rs
+// div_grid_container() is in div_grid_container_mod.rs

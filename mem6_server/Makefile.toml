@@ -234,7 +234,7 @@ args = ["publish"]
 clear=true
 private=true
 script = ["echo build dev end",
-    #"\\cp ~/rustprojects/mem6_game/target/debug/mem6_server -rf -v ~/rustprojects/mem6_game/webfolder",
+    #"\\cp /mnt/c/Users/Luciano/rustprojects/mem6_game/target/debug/mem6_server -rf -v /mnt/c/Users/Luciano/rustprojects/mem6_game/webfolder",
     # I cannot script the exact IP here.  
     # It must be copied from the mem6_server.exe output.
     #"alias chrome=\"/mnt/c/Program\\ Files\\ \\(x86\\)/Google/Chrome/Application/chrome.exe\"",
@@ -249,7 +249,7 @@ script = ["echo build dev end",
 clear=true
 private=true
 script = ["echo build release end",
-    "\\cp ~/rustprojects/mem6_game/target/release/mem6_server -rf -v ~/rustprojects/mem6_game/webfolder",
+    "\\cp /mnt/c/Users/Luciano/rustprojects/mem6_game/target/release/mem6_server -rf -v /mnt/c/Users/Luciano/rustprojects/mem6_game/webfolder",
     # I cannot script the exact IP here.  
     # It must be copied from the mem6_server.exe output.
     #"alias chrome=\"/mnt/c/Program\\ Files\\ \\(x86\\)/Google/Chrome/Application/chrome.exe\"",

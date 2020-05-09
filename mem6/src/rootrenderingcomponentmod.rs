@@ -18,7 +18,7 @@ pub struct RootRenderingComponent {
     /// game data will be inside of Root
     pub game_data: gamedatamod::GameData,
     /// router data
-    pub router_data: routerimplmod::Router,
+    pub router_data: router_impl_mod::Router,
 }
 
 /// impl
@@ -28,7 +28,7 @@ impl RootRenderingComponent {
         let game_data = gamedatamod::GameData::new(my_ws_uid);
         let msg_receivers_json = game_data.prepare_json_msg_receivers();
         let web_data = webdatamod::WebData::new(my_ws_uid, msg_receivers_json);
-        let router_data = routerimplmod::Router::new();
+        let router_data = router_impl_mod::Router::new();
 
         RootRenderingComponent {
             web_data,
@@ -51,7 +51,7 @@ impl<'a> Render<'a> for RootRenderingComponent {
     fn render(&self, cx: &mut RenderContext<'a>) -> Node<'a> {
         // let bump = cx.bump;
         // return
-        // html fragment from html_template defined in # local_route
+        // html fragment from html_template defined in # file_name_to_fetch
         if self.web_data.html_template.is_empty() {
             htmltemplatemod::empty_div(cx)
         } else {

@@ -129,14 +129,15 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     } else {
                         rrc.game_data.sounds_and_labels = true;
                     }
-                    rrc.web_data
-                        .send_ws_msg_from_web_data(&websocketboilermod::WsMessageForReceivers {
+                    rrc.web_data.send_ws_msg_from_web_data(
+                        &websocketboilermod::WsMessageForReceivers {
                             msg_sender_ws_uid: rrc.web_data.my_ws_uid,
                             msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
                             msg_data: gamedatamod::WsMessageGameData::MsgSoundsAndLabels {
                                 sounds_and_labels: rrc.game_data.sounds_and_labels,
                             },
-                        });
+                        },
+                    );
                     vdom.schedule_render();
                 }
                 "back_to_game" => {
@@ -156,7 +157,8 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     webrtcimplmod::web_rtc_receiver_ws_uid_onkeyup(vdom, rrc, event);
                 }
                 "web_rtc_start" => {
-                    rrc.web_data.web_rtc_data
+                    rrc.web_data
+                        .web_rtc_data
                         .web_rtc_start(vdom, unwrap!(rrc.web_data.websocket_data.ws.clone()));
                 }
                 "web_rtc_chat_text_onkeyup" => {
@@ -201,24 +203,26 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     // send a msg to end drinking to all players
 
                     websysmod::debug_write(&format!("MsgDrinkEnd send{}", ""));
-                    rrc.web_data
-                        .send_ws_msg_from_web_data(&websocketboilermod::WsMessageForReceivers {
+                    rrc.web_data.send_ws_msg_from_web_data(
+                        &websocketboilermod::WsMessageForReceivers {
                             msg_sender_ws_uid: rrc.web_data.my_ws_uid,
                             msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
                             msg_data: gamedatamod::WsMessageGameData::MsgDrinkEnd {},
-                        });
+                        },
+                    );
                     // if all the cards are permanently up, this is the end of the game
                     // websysmod::debug_write("if is_all_permanently(rrc)");
                     if status2ndcardmod::is_all_permanently(rrc) {
                         websysmod::debug_write("yes");
                         statusgameovermod::on_msg_game_over(rrc);
                         // send message
-                        rrc.web_data
-                            .send_ws_msg_from_web_data(&websocketboilermod::WsMessageForReceivers {
+                        rrc.web_data.send_ws_msg_from_web_data(
+                            &websocketboilermod::WsMessageForReceivers {
                                 msg_sender_ws_uid: rrc.web_data.my_ws_uid,
                                 msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
                                 msg_data: gamedatamod::WsMessageGameData::MsgGameOver {},
-                            });
+                            },
+                        );
                     } else {
                         statustaketurnmod::on_click_take_turn(rrc, vdom.clone());
                     }
@@ -230,12 +234,13 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     statusdrinkmod::play_sound_for_drink(rrc);
                 }
                 "play_again" => {
-                    rrc.web_data
-                        .send_ws_msg_from_web_data(&websocketboilermod::WsMessageForReceivers {
+                    rrc.web_data.send_ws_msg_from_web_data(
+                        &websocketboilermod::WsMessageForReceivers {
                             msg_sender_ws_uid: rrc.web_data.my_ws_uid,
                             msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
                             msg_data: gamedatamod::WsMessageGameData::MsgPlayAgain {},
-                        });
+                        },
+                    );
                     rrc.game_data.reset_for_play_again();
                     open_new_local_page("#p05");
                 }
@@ -265,8 +270,8 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             "div_grid_container" => {
                 // what is the game_status now?
                 // websysmod::debug_write(&format!("game status: {}", self.game_data.game_status));
-                let max_grid_size = divgridcontainermod::max_grid_size(self);
-                return divgridcontainermod::div_grid_container(self, cx, &max_grid_size);
+                let max_grid_size = div_grid_container_mod::max_grid_size(self);
+                return div_grid_container_mod::div_grid_container(self, cx, &max_grid_size);
             }
             "div_player_action" => {
                 let node = divplayeractionsmod::div_player_actions_from_game_status(self, cx);
@@ -298,7 +303,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
         // websysmod::debug_write(&format!("call_fn_node: {}", &fn_name));
         match fn_name {
             "div_grid_all_items" => {
-                return divgridcontainermod::div_grid_all_items(self, cx);
+                return div_grid_container_mod::div_grid_all_items(self, cx);
             }
             "web_rtc_div_messages" => {
                 return webrtcimplmod::web_rtc_div_messages(self, cx);
@@ -408,48 +413,48 @@ pub fn visible_big_img(img_file_name: &str) {
 /// update html_template and extract and saves html_sub_templates
 #[allow(clippy::integer_arithmetic)]
 #[allow(clippy::indexing_slicing)]
-pub fn update_html_template_and_sub_templates(rrc:&mut RootRenderingComponent, resp_body_text: &str,)  {
-        // only the html inside the <body> </body>
-        let mut tm = between_body_tag(&resp_body_text);
-        // parse and save sub_templates <template name="xxx"></template>
-        rrc.web_data.html_sub_templates.clear();
-        loop {
-            let mut exist_template = false;
+pub fn set_html_template_and_sub_templates(rrc: &mut RootRenderingComponent, resp_body_text: &str) {
+    // only the html inside the <body> </body>
+    let mut tm = between_body_tag(&resp_body_text);
+    // parse and save sub_templates <template name="xxx"></template>
+    rrc.web_data.html_sub_templates.clear();
+    loop {
+        let mut exist_template = false;
 
-            let pos1 = tm.find("<template ");
-            let del2 = "</template>";
-            let pos2 = tm.find(del2);
-            if let Some(pos_start) = pos1 {
-                if let Some(pos_end) = pos2 {
-                    exist_template = true;
-                    // drain - extract a substring and remove it from the original
-                    let sub1: String = tm.drain(pos_start..pos_end + del2.len()).collect();
+        let pos1 = tm.find("<template ");
+        let del2 = "</template>";
+        let pos2 = tm.find(del2);
+        if let Some(pos_start) = pos1 {
+            if let Some(pos_end) = pos2 {
+                exist_template = true;
+                // drain - extract a substring and remove it from the original
+                let sub1: String = tm.drain(pos_start..pos_end + del2.len()).collect();
 
-                    let del3 = "name=\"";
-                    let pos_name_start = unwrap!(sub1.find(del3));
-                    let sub2 = &sub1[pos_name_start + del3.len()..];
-                    //websysmod::debug_write(sub2);
+                let del3 = "name=\"";
+                let pos_name_start = unwrap!(sub1.find(del3));
+                let sub2 = &sub1[pos_name_start + del3.len()..];
+                //websysmod::debug_write(sub2);
 
-                    let pos_name_end = unwrap!(sub2.find('"'));
-                    let name = &sub2[0..pos_name_end];
-                    //websysmod::debug_write(name);
+                let pos_name_end = unwrap!(sub2.find('"'));
+                let name = &sub2[0..pos_name_end];
+                //websysmod::debug_write(name);
 
-                    let del5 = '>';
-                    let pos_name_end_tag = unwrap!(sub1.find(del5));
-                    let pos6 = unwrap!(sub1.find(del2));
-                    let sub_template = &sub1[pos_name_end_tag + 1..pos6];
-                    //websysmod::debug_write(sub_template);
+                let del5 = '>';
+                let pos_name_end_tag = unwrap!(sub1.find(del5));
+                let pos6 = unwrap!(sub1.find(del2));
+                let sub_template = &sub1[pos_name_end_tag + 1..pos6];
+                //websysmod::debug_write(sub_template);
 
-                    rrc.web_data
-                        .html_sub_templates
-                        .push((name.to_string(), sub_template.to_string()));
-                }
-            }
-            if !exist_template {
-                break;
+                rrc.web_data
+                    .html_sub_templates
+                    .push((name.to_string(), sub_template.to_string()));
             }
         }
-        rrc.web_data.html_template = tm;
+        if !exist_template {
+            break;
+        }
+    }
+    rrc.web_data.html_template = tm;
 }
 
 /// only the html between the <body> </body>

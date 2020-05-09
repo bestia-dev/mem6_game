@@ -118,30 +118,30 @@ If JavaScript is disabled, also wasm cannot run.
     fetchmod::fetch_videos_and_update(&location_href, vdom.clone());
     fetchmod::fetch_audio_and_update(&location_href, vdom.clone());
     // Start the URL router.
-    use rust_wasm_router::routermod::RouterTrait;
-    let router = routerimplmod::Router::new();
+    use rust_wasm_router::router_mod::RouterTrait;
+    let router = router_impl_mod::Router::new();
 #//---------------------- selection start ----------------------
     router.start_router(vdom.clone());
 #//----------------------- selection end -----------------------
 ```
-### update_local_route_from_root
-The short_local_route (url hash) `ex. #p04` defines a `local_route`. This is the name of the html template to fetch from the web server. Than it is prepared and saved in html_template sub_templates fields.
+### set_file_name_to_fetch_from_dodrio
+The short_route (url hash) `ex. #p04` defines a `file_name_to_fetch`. This is the name of the html template to fetch from the web server. Than it is prepared and saved in html_template sub_templates fields.
 The data in the struct is prepared, finally we call `vdom.schedule_render();`.
 
-##### step 7 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/routerimplmod.rs#L45)
+##### step 7 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/router_impl_mod.rs#L45)
 ```rust
         //return
-        &self.local_route
+        &self.file_name_to_fetch
     }
-    /// get rrc.local_route
-    fn get_local_route_from_root(root: &mut dyn dodrio::RootRender) -> &str {
+    /// get rrc.file_name_to_fetch
+    fn get_file_name_to_fetch_from_dodrio(root: &mut dyn dodrio::RootRender) -> &str {
         let rrc = root.unwrap_mut::<RootRenderingComponent>();
-        &rrc.router_data.local_route
+        &rrc.router_data.file_name_to_fetch
     }
 
-    /// update local_route with filenames dependent on short_local_route.
+    /// update file_name_to_fetch with filenames dependent on short_route.
 #//---------------------- selection start ----------------------
-    fn update_local_route_from_root(
+    fn set_file_name_to_fetch_from_dodrio(
 #//----------------------- selection end -----------------------
 ```
 ### render()
@@ -226,7 +226,7 @@ pub struct RootRenderingComponent {
     /// game data will be inside of Root
     pub game_data: gamedatamod::GameData,
     /// router data
-    pub router_data: routerimplmod::Router,
+    pub router_data: router_impl_mod::Router,
 }
 #//----------------------- selection end -----------------------
 ```
@@ -237,7 +237,7 @@ The vdom library then diffs and modify the real dom.
 
 ##### step 12 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/rootrenderingcomponentmod.rs#L64)
 ```rust
-        // html fragment from html_template defined in # local_route
+        // html fragment from html_template defined in # file_name_to_fetch
         if self.web_data.html_template.is_empty() {
             htmltemplatemod::empty_div(cx)
         } else {
