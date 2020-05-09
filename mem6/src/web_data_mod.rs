@@ -1,4 +1,4 @@
-// webdatamod.rs
+// web_data_mod.rs
 //! structs and methods around web and communication
 
 // region: use
@@ -19,15 +19,15 @@ pub struct MsgInQueue {
     /// the msg id is a random number
     pub msg_id: usize,
     /// the content of the message if it needs to be resend
-    pub msg: websocketboilermod::WsMessageForReceivers,
+    pub msg: websocket_boiler_mod::WsMessageForReceivers,
 }
 
 /// game data
 pub struct WebData {
     /// websocket data
-    pub websocket_data: websocketboilermod::WebSocketData,
+    pub websocket_data: websocket_boiler_mod::WebSocketData,
     /// data for web rtc communication
-    pub web_rtc_data: webrtcimplmod::WebRtcData,
+    pub web_rtc_data: webrtc_impl_mod::WebRtcData,
     /// downloaded html template for main page
     pub html_template: String,
     /// vector of named sub_templates <template name=xxx>...</template>
@@ -54,8 +54,8 @@ pub struct WebData {
 impl WebData {
     /// constructor
     pub fn new(my_ws_uid: usize, msg_receivers_json: String) -> Self {
-        let websocket_data = websocketboilermod::WebSocketData::new();
-        let web_rtc_data = webrtcimplmod::WebRtcData::new(my_ws_uid);
+        let websocket_data = websocket_boiler_mod::WebSocketData::new();
+        let web_rtc_data = webrtc_impl_mod::WebRtcData::new(my_ws_uid);
         // return from constructor
         WebData {
             websocket_data,
@@ -89,14 +89,14 @@ impl WebData {
     /// create websocket connection
     pub fn start_websocket(&mut self, vdom: VdomWeak) {
         let (location_href, _href_hash) = websysmod::get_url_and_hash();
-        //let websocket_data = websocketboilermod::WebSocketData::new();
+        //let websocket_data = websocket_boiler_mod::WebSocketData::new();
         let ws = self.websocket_data.setup_ws_connection(location_href.clone(), self.my_ws_uid);
-        websocketboilermod::WebSocketData::setup_all_ws_events(&ws, vdom);
+        websocket_boiler_mod::WebSocketData::setup_all_ws_events(&ws, vdom);
     }
     /// send msg over ws
-    pub fn send_ws_msg_from_web_data(&self, ws_message: &websocketboilermod::WsMessageForReceivers) {
+    pub fn send_ws_msg_from_web_data(&self, ws_message: &websocket_boiler_mod::WsMessageForReceivers) {
         let json_message = unwrap!(serde_json::to_string(ws_message));
-        websocketboilermod::WebSocketData::ws_send_msg_with_retry(unwrap!(self.websocket_data.ws.as_ref()), json_message);
+        websocket_boiler_mod::WebSocketData::ws_send_msg_with_retry(unwrap!(self.websocket_data.ws.as_ref()), json_message);
     }
 }
     

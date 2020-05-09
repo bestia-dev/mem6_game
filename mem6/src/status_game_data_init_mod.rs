@@ -1,4 +1,4 @@
-// statusgamedatainitmod.rs
+// status_game_data_init_mod.rs
 //! code flow from this status
 
 // region: use
@@ -17,10 +17,10 @@ pub fn on_click_start_game(rrc: &mut RootRenderingComponent) {
         websysmod::get_random(1, unwrap!(rrc.game_data.players.len().checked_add(1)));
 
     rrc.web_data
-        .send_ws_msg_from_web_data(&websocketboilermod::WsMessageForReceivers {
+        .send_ws_msg_from_web_data(&websocket_boiler_mod::WsMessageForReceivers {
             msg_sender_ws_uid: rrc.web_data.my_ws_uid,
             msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
-            msg_data: gamedatamod::WsMessageGameData::MsgStartGame {
+            msg_data: game_data_mod::WsMessageGameData::MsgStartGame {
                 players: unwrap!(serde_json::to_string(&rrc.game_data.players)),
                 card_grid_data: unwrap!(serde_json::to_string(&rrc.game_data.card_grid_data)),
                 game_config: unwrap!(serde_json::to_string(&rrc.game_data.game_config)),
@@ -56,7 +56,7 @@ pub fn on_msg_start_game(
     );
 
     // async fetch all imgs and put them in service worker cache
-    fetchmod::fetch_all_img_for_cache_request(rrc);
+    fetch_mod::fetch_all_img_for_cache_request(rrc);
 
     rrc.game_data.players = unwrap!(
         serde_json::from_str(players),

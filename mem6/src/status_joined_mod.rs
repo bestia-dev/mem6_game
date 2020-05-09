@@ -1,4 +1,4 @@
-// statusjoinedmod.rs
+// status_joined_mod.rs
 //! code flow for this status
 
 #![allow(clippy::panic)]
@@ -19,10 +19,10 @@ pub fn on_load_joined(rrc: &mut RootRenderingComponent) {
     ));
 
     rrc.web_data
-        .send_ws_msg_from_web_data(&websocketboilermod::WsMessageForReceivers {
+        .send_ws_msg_from_web_data(&websocket_boiler_mod::WsMessageForReceivers {
             msg_sender_ws_uid: rrc.web_data.my_ws_uid,
             msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
-            msg_data: gamedatamod::WsMessageGameData::MsgJoin {
+            msg_data: game_data_mod::WsMessageGameData::MsgJoin {
                 my_nickname: rrc.game_data.my_nickname.clone(),
             },
         });

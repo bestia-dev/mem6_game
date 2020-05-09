@@ -84,7 +84,7 @@ pub enum WsMessageFromServer {
 }
 
 // The struct WsMessageForReceivers original is in the
-// wasm project gamedatamod.rs with all the fields.
+// wasm project game_data_mod.rs with all the fields.
 // A copy of this struct is also in the server project,
 // but without the msg_data field.
 // They are the same struct, but the declaration is different, because

@@ -1,4 +1,4 @@
-// gamedatamod.rs
+// game_data_mod.rs
 //! structs and methods around game data
 
 // region: use
@@ -276,7 +276,7 @@ pub enum MsgAckKind {
 impl GameData {
     /// constructor of game data
     pub fn new(my_ws_uid: usize) -> Self {
-        let my_nickname = storagemod::load_nickname();
+        let my_nickname = storage_mod::load_nickname();
         let mut players = Vec::new();
         players.push(Player {
             ws_uid: my_ws_uid,

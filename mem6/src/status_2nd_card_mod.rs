@@ -1,4 +1,4 @@
-// status2ndcardmod.rs
+// status_2nd_card_mod.rs
 //! code flow from this status
 
 #![allow(clippy::panic)]
@@ -34,10 +34,10 @@ pub fn on_click_2nd_card(
         update_click_2nd_card_flip_permanently(rrc, is_point);
     }
     let msg_id = ack_msg_mod::prepare_for_ack_msg_waiting(rrc, vdom.clone());
-    let msg = websocketboilermod::WsMessageForReceivers {
+    let msg = websocket_boiler_mod::WsMessageForReceivers {
         msg_sender_ws_uid: rrc.web_data.my_ws_uid,
         msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
-        msg_data: gamedatamod::WsMessageGameData::MsgClick2ndCard {
+        msg_data: game_data_mod::WsMessageGameData::MsgClick2ndCard {
             card_index_of_2nd_click: rrc.game_data.card_index_of_2nd_click,
             is_point,
             msg_id,
@@ -83,7 +83,7 @@ pub fn on_msg_click_2nd_card(
         rrc,
         msg_sender_ws_uid,
         msg_id,
-        gamedatamod::MsgAckKind::MsgClick2ndCard,
+        game_data_mod::MsgAckKind::MsgClick2ndCard,
     );
     rrc.game_data.card_index_of_2nd_click = card_index_of_2nd_click;
     update_click_2nd_card_flip_permanently(rrc, is_point);
@@ -104,7 +104,7 @@ pub fn on_msg_ack_player_click2nd_card(
             // nothing because all happens after the Drink/no drink page
         } else {
             websysmod::debug_write("no");
-            statustaketurnmod::on_click_take_turn(rrc, vdom.clone());
+            status_take_turn_mod::on_click_take_turn(rrc, vdom.clone());
         }
     }
     // TODO: timer if after 3 seconds the ack is not received resend the msg
@@ -121,10 +121,10 @@ pub fn update_click_2nd_card_point(rrc: &mut RootRenderingComponent, is_point: b
 
         if rrc.game_data.is_my_turn() {
             // drink
-            htmltemplateimplmod::open_new_local_page("#p06");
+            html_template_impl_mod::open_new_local_page("#p06");
         } else {
             // do not drink
-            htmltemplateimplmod::open_new_local_page("#p07");
+            html_template_impl_mod::open_new_local_page("#p07");
         }
     }
 }
@@ -178,14 +178,14 @@ pub fn on_click_img_status2nd(root: &mut dyn dodrio::RootRender, vdom: VdomWeak,
         .as_ref()
         == CardStatusCardFace::Down.as_ref()
     {
-        status2ndcardmod::on_click_2nd_card(rrc, vdom.clone(), this_click_card_index);
+        status_2nd_card_mod::on_click_2nd_card(rrc, vdom.clone(), this_click_card_index);
         // Finally, re-render the component on the next animation frame.
         vdom.schedule_render();
     } else {
         //only if there is big_img, then make it visible
         websysmod::debug_write("click on img");
         if unwrap!(rrc.game_data.game_config.clone()).big_img == true {
-            htmltemplateimplmod::visible_big_img(&format!(
+            html_template_impl_mod::visible_big_img(&format!(
                 "content/{}/big_img/{}",
                 rrc.game_data.game_name,
                 unwrap!(unwrap!(rrc.game_data.game_config.as_ref())

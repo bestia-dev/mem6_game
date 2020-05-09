@@ -1,4 +1,4 @@
-// websocketspecmod.rs
+// websocket_spec_mod.rs
 //! Specific code for this project, that is not Boilerplate code.  
 
 #![allow(clippy::panic)]
@@ -11,12 +11,12 @@ use rust_wasm_webrtc::webrtcmod::{WebRtcTrait};
 use dodrio::{VdomWeak};
 // endregion
 
-pub fn match_msg_and_call_function( vdom: VdomWeak,rrc:&mut RootRenderingComponent,msg: websocketboilermod::WsMessageForReceivers) {
+pub fn match_msg_and_call_function( vdom: VdomWeak,rrc:&mut RootRenderingComponent,msg: websocket_boiler_mod::WsMessageForReceivers) {
     match msg.msg_data {
         WsMessageGameData::MsgJoin {
             my_nickname,
         } => {
-            statusjoinedmod::on_msg_joined(rrc, msg.msg_sender_ws_uid, my_nickname);
+            status_joined_mod::on_msg_joined(rrc, msg.msg_sender_ws_uid, my_nickname);
             vdom.schedule_render();
         }
         WsMessageGameData::MsgStartGame {
@@ -27,7 +27,7 @@ pub fn match_msg_and_call_function( vdom: VdomWeak,rrc:&mut RootRenderingCompone
             game_name,
             player_turn,
         } => {
-            statusgamedatainitmod::on_msg_start_game(
+            status_game_data_init_mod::on_msg_start_game(
                 rrc,
                 &card_grid_data,
                 &game_config,
@@ -35,7 +35,7 @@ pub fn match_msg_and_call_function( vdom: VdomWeak,rrc:&mut RootRenderingCompone
                 &game_name,
                 player_turn,
             );
-            htmltemplateimplmod::open_new_local_page("#p11");
+            html_template_impl_mod::open_new_local_page("#p11");
             vdom.schedule_render();
         }
         WsMessageGameData::MsgClick1stCard {
@@ -43,7 +43,7 @@ pub fn match_msg_and_call_function( vdom: VdomWeak,rrc:&mut RootRenderingCompone
             card_index_of_1st_click,
             msg_id,
         } => {
-            status1stcardmod::on_msg_click_1st_card(
+            status_1st_card_mod::on_msg_click_1st_card(
                 rrc,
                 vdom.clone(),
                 msg.msg_sender_ws_uid,
@@ -57,7 +57,7 @@ pub fn match_msg_and_call_function( vdom: VdomWeak,rrc:&mut RootRenderingCompone
             is_point,
             msg_id,
         } => {
-            status2ndcardmod::on_msg_click_2nd_card(
+            status_2nd_card_mod::on_msg_click_2nd_card(
                 rrc,
                 msg.msg_sender_ws_uid,
                 card_index_of_2nd_click,
@@ -69,7 +69,7 @@ pub fn match_msg_and_call_function( vdom: VdomWeak,rrc:&mut RootRenderingCompone
         WsMessageGameData::MsgDrinkEnd {
             
         } => {
-            statusdrinkmod::on_msg_drink_end(rrc, msg.msg_sender_ws_uid, vdom.clone());
+            status_drink_mod::on_msg_drink_end(rrc, msg.msg_sender_ws_uid, vdom.clone());
             vdom.schedule_render();
         }
         WsMessageGameData::MsgTakeTurn {
@@ -77,18 +77,18 @@ pub fn match_msg_and_call_function( vdom: VdomWeak,rrc:&mut RootRenderingCompone
             
             msg_id,
         } => {
-            statustaketurnmod::on_msg_take_turn(rrc, msg.msg_sender_ws_uid, msg_id);
+            status_take_turn_mod::on_msg_take_turn(rrc, msg.msg_sender_ws_uid, msg_id);
             vdom.schedule_render();
         }
         WsMessageGameData::MsgGameOver {
             
         } => {
-            statusgameovermod::on_msg_game_over(rrc);
+            status_game_over_mod::on_msg_game_over(rrc);
             vdom.schedule_render();
         }
         WsMessageGameData::MsgPlayAgain {
                                                     } => {
-            statusgameovermod::on_msg_play_again(rrc);
+            status_game_over_mod::on_msg_play_again(rrc);
         }
         WsMessageGameData::MsgSoundsAndLabels {
             sounds_and_labels,
@@ -105,17 +105,17 @@ pub fn match_msg_and_call_function( vdom: VdomWeak,rrc:&mut RootRenderingCompone
         } => {
             match msg_ack_kind {
                 MsgAckKind::MsgTakeTurn => {
-                    statustaketurnmod::on_msg_ack_take_turn(
+                    status_take_turn_mod::on_msg_ack_take_turn(
                         rrc, msg.msg_sender_ws_uid, msg_id,
                     );
                 }
                 MsgAckKind::MsgClick1stCard => {
-                    status1stcardmod::on_msg_ack_click_1st_card(
+                    status_1st_card_mod::on_msg_ack_click_1st_card(
                         rrc, msg.msg_sender_ws_uid, msg_id,
                     );
                 }
                 MsgAckKind::MsgClick2ndCard => {
-                    status2ndcardmod::on_msg_ack_player_click2nd_card(
+                    status_2nd_card_mod::on_msg_ack_player_click2nd_card(
                         rrc, msg.msg_sender_ws_uid, msg_id, vdom.clone(),
                     );
                 }
@@ -125,7 +125,7 @@ pub fn match_msg_and_call_function( vdom: VdomWeak,rrc:&mut RootRenderingCompone
         WsMessageGameData::MsgAskPlayer1ForResync {
             
         } => {
-            statusreconnectmod::send_msg_for_resync(rrc);
+            status_reconnect_mod::send_msg_for_resync(rrc);
             vdom.schedule_render();
         }
         WsMessageGameData::MsgAllGameData {
@@ -137,7 +137,7 @@ pub fn match_msg_and_call_function( vdom: VdomWeak,rrc:&mut RootRenderingCompone
             player_turn,
             game_status,
         } => {
-            statusreconnectmod::on_msg_all_game_data(
+            status_reconnect_mod::on_msg_all_game_data(
                 rrc,
                 players,
                 card_grid_data,

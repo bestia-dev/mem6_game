@@ -1,4 +1,4 @@
-// statusgameovermod.rs
+// status_game_over_mod.rs
 //! code flow from this status
 
 #![allow(clippy::panic)]
@@ -36,5 +36,5 @@ pub fn on_msg_play_again(rrc: &mut RootRenderingComponent) {
     // The first players can choose Play again and send to others.
     rrc.game_data.game_status = GameStatus::StatusJoined;
     rrc.game_data.reset_for_play_again();
-    htmltemplateimplmod::open_new_local_page("#p04");
+    html_template_impl_mod::open_new_local_page("#p04");
 }

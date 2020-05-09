@@ -1,8 +1,8 @@
-// websocketboilermod.rs
+// websocket_boiler_mod.rs
 //! Boilerplate code that is part of the library `rust_wasm_websocket`,  
 //! but sadly it cannot be encapsulated in the external crate.  
 //! This mod should not be modified by the project author.  
-//! The specific code for the project is in the file `websocketspecmod`.  
+//! The specific code for the project is in the file `websocket_spec_mod`.  
 
 #![allow(clippy::panic)]
 
@@ -75,7 +75,7 @@ impl WebSocketTrait for WebSocketData {
                             let vdom = vdom_on_next_tick.clone();
                             move |root| {
                                 let rrc = root.unwrap_mut::<RootRenderingComponent>();
-                                websocketspecmod::match_msg_and_call_function(vdom,rrc,msg);
+                                websocket_spec_mod::match_msg_and_call_function(vdom,rrc,msg);
                             }
                         })
                         .await;
@@ -101,10 +101,10 @@ impl WebSocketTrait for WebSocketData {
 /// It is saved locally to allow reconnection
 /// if there are connection problems.
 pub fn load_or_random_ws_uid() -> usize {
-    let mut my_ws_uid: usize = storagemod::load_my_ws_uid();
+    let mut my_ws_uid: usize = storage_mod::load_my_ws_uid();
     if my_ws_uid == 0 {
         my_ws_uid = websysmod::get_random(1, 9999);
-        storagemod::save_my_ws_uid(my_ws_uid);
+        storage_mod::save_my_ws_uid(my_ws_uid);
     }
     // return
     my_ws_uid

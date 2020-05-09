@@ -139,13 +139,13 @@ pub fn render_template_grid_item<'a>(
     let on_click_img = match rrc.game_data.game_status {
         GameStatus::Status1stCard => "on_click_img_status1st",
         GameStatus::Status2ndCard => "on_click_img_status2nd",
-        gamedatamod::GameStatus::StatusStartPage
-        | gamedatamod::GameStatus::StatusJoined
-        | gamedatamod::GameStatus::StatusDrink
-        | gamedatamod::GameStatus::StatusTakeTurn
-        | gamedatamod::GameStatus::StatusGameOver
-        | gamedatamod::GameStatus::StatusReconnect
-        | gamedatamod::GameStatus::StatusWaitingAckMsg => "",
+        game_data_mod::GameStatus::StatusStartPage
+        | game_data_mod::GameStatus::StatusJoined
+        | game_data_mod::GameStatus::StatusDrink
+        | game_data_mod::GameStatus::StatusTakeTurn
+        | game_data_mod::GameStatus::StatusGameOver
+        | game_data_mod::GameStatus::StatusReconnect
+        | game_data_mod::GameStatus::StatusWaitingAckMsg => "",
     };
     let html_template = rrc
         .web_data

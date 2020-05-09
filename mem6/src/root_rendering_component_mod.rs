@@ -1,4 +1,4 @@
-// rootrenderingcomponentmod.rs
+// root_rendering_component_mod.rs
 //! renders the web page
 
 // region: use, const
@@ -14,9 +14,9 @@ use dodrio::{Node, Render, RenderContext, VdomWeak};
 /// the data needed for play logic and rendering
 pub struct RootRenderingComponent {
     /// data for web and communication
-    pub web_data: webdatamod::WebData,
+    pub web_data: web_data_mod::WebData,
     /// game data will be inside of Root
-    pub game_data: gamedatamod::GameData,
+    pub game_data: game_data_mod::GameData,
     /// router data
     pub router_data: router_impl_mod::Router,
 }
@@ -25,9 +25,9 @@ pub struct RootRenderingComponent {
 impl RootRenderingComponent {
     /// Construct a new `RootRenderingComponent` at the beginning only once.
     pub fn new(my_ws_uid: usize) -> Self {
-        let game_data = gamedatamod::GameData::new(my_ws_uid);
+        let game_data = game_data_mod::GameData::new(my_ws_uid);
         let msg_receivers_json = game_data.prepare_json_msg_receivers();
-        let web_data = webdatamod::WebData::new(my_ws_uid, msg_receivers_json);
+        let web_data = web_data_mod::WebData::new(my_ws_uid, msg_receivers_json);
         let router_data = router_impl_mod::Router::new();
 
         RootRenderingComponent {

@@ -1,4 +1,4 @@
-// status1stcardmod.rs
+// status_1st_card_mod.rs
 //! code flow from this status
 
 #![allow(clippy::panic)]
@@ -25,10 +25,10 @@ pub fn on_click_1st_card(
     rrc.game_data.card_index_of_1st_click = this_click_card_index;
 
     let msg_id = ack_msg_mod::prepare_for_ack_msg_waiting(rrc, vdom.clone());
-    let msg = websocketboilermod::WsMessageForReceivers {
+    let msg = websocket_boiler_mod::WsMessageForReceivers {
         msg_sender_ws_uid: rrc.web_data.my_ws_uid,
         msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
-        msg_data: gamedatamod::WsMessageGameData::MsgClick1stCard {
+        msg_data: game_data_mod::WsMessageGameData::MsgClick1stCard {
             card_index_of_1st_click: this_click_card_index,
             msg_id,
         },
@@ -63,7 +63,7 @@ pub fn on_msg_click_1st_card(
         rrc,
         msg_sender_ws_uid,
         msg_id,
-        gamedatamod::MsgAckKind::MsgClick1stCard,
+        game_data_mod::MsgAckKind::MsgClick1stCard,
     );
     // it can happen that 2 smartphones send the msg click1st simultaneously.
     // This is a conflict.
@@ -74,7 +74,7 @@ pub fn on_msg_click_1st_card(
         // do the whole click1st process
         on_click_1st_card(rrc, vdom.clone(), rrc.game_data.card_index_of_1st_click);
         // do the whole click2nd process
-        status2ndcardmod::on_click_2nd_card(rrc, vdom.clone(), card_index_of_1st_click)
+        status_2nd_card_mod::on_click_2nd_card(rrc, vdom.clone(), card_index_of_1st_click)
     } else {
         // websysmod::debug_write("on_msg_click_1st_card");
         rrc.game_data.card_index_of_1st_click = card_index_of_1st_click;
@@ -139,14 +139,14 @@ pub fn on_click_img_status1st(root: &mut dyn dodrio::RootRender, vdom: VdomWeak,
         .as_ref()
         == CardStatusCardFace::Down.as_ref()
     {
-        status1stcardmod::on_click_1st_card(rrc, vdom.clone(), this_click_card_index);
+        status_1st_card_mod::on_click_1st_card(rrc, vdom.clone(), this_click_card_index);
         // Finally, re-render the component on the next animation frame.
         vdom.schedule_render();
     } else {
         //only if there is big_img, then make it visible
         websysmod::debug_write("click on img");
         if unwrap!(rrc.game_data.game_config.clone()).big_img == true {
-            htmltemplateimplmod::visible_big_img(&format!(
+            html_template_impl_mod::visible_big_img(&format!(
                 "content/{}/big_img/{}",
                 rrc.game_data.game_name,
                 unwrap!(unwrap!(rrc.game_data.game_config.as_ref())

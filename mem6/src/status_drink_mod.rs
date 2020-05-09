@@ -1,4 +1,4 @@
-// statusdrinkmod.rs
+// status_drink_mod.rs
 //! code flow from this status
 
 // region: use
@@ -14,7 +14,7 @@ pub fn on_msg_drink_end(
     _msg_sender_ws_uid: usize,
     _vdom: VdomWeak,
 ) {
-    htmltemplateimplmod::open_new_local_page("#p11");
+    html_template_impl_mod::open_new_local_page("#p11");
 }
 
 /// play sound mp3. The audio element is on the html page

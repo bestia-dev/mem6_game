@@ -1,4 +1,4 @@
-// fetchmod.rs
+// fetch_mod.rs
 //! fetch game_config, game metadata, imgs
 
 // region: use
@@ -42,7 +42,7 @@ pub fn fetch_games_metadata_and_update(href: &str, vdom: VdomWeak) {
         async move {
             // websysmod::debug_write(format!("respbody: {}", respbody).as_str());
             let respbody = websysmod::fetch_response(url_config).await;
-            let v: gamedatamod::GamesMetadata = unwrap!(serde_json::from_str(&respbody));
+            let v: game_data_mod::GamesMetadata = unwrap!(serde_json::from_str(&respbody));
             unwrap!(
                 vdom_on_next_tick
                     .with_component({
@@ -69,7 +69,7 @@ pub fn fetch_videos_and_update(href: &str, vdom: VdomWeak) {
         let vdom_on_next_tick = vdom.clone();
         async move {
             let respbody = websysmod::fetch_response(url).await;
-            let vid_json: gamedatamod::Videos = unwrap!(serde_json::from_str(&respbody));
+            let vid_json: game_data_mod::Videos = unwrap!(serde_json::from_str(&respbody));
             unwrap!(
                 vdom_on_next_tick
                     .with_component({
@@ -92,7 +92,7 @@ pub fn fetch_audio_and_update(href: &str, vdom: VdomWeak) {
         let vdom_on_next_tick = vdom.clone();
         async move {
             let respbody = websysmod::fetch_response(url).await;
-            let aud_json: gamedatamod::Audio = unwrap!(serde_json::from_str(&respbody));
+            let aud_json: game_data_mod::Audio = unwrap!(serde_json::from_str(&respbody));
             unwrap!(
                 vdom_on_next_tick
                     .with_component({

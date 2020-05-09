@@ -260,31 +260,31 @@
 // region: mod is used only in lib file. All the rest use use crate
 mod ack_msg_mod;
 mod div_grid_container_mod;
-mod divplayeractionsmod;
-mod fetchmod;
-mod gamedatamod;
-mod rootrenderingcomponentmod;
-mod storagemod;
-mod statusgamedatainitmod;
-mod statusgameovermod;
-mod statusjoinedmod;
-mod status1stcardmod;
-mod status2ndcardmod;
-mod statusdrinkmod;
-mod statustaketurnmod;
-mod statuswaitingack_msg_mod;
-mod websocketboilermod;
-mod websocketspecmod;
-mod statusreconnectmod;
+mod div_player_actions_mod;
+mod fetch_mod;
+mod game_data_mod;
+mod root_rendering_component_mod;
+mod storage_mod;
+mod status_game_data_init_mod;
+mod status_game_over_mod;
+mod status_joined_mod;
+mod status_1st_card_mod;
+mod status_2nd_card_mod;
+mod status_drink_mod;
+mod status_take_turn_mod;
+mod status_waiting_ack_msg_mod;
+mod websocket_boiler_mod;
+mod websocket_spec_mod;
+mod status_reconnect_mod;
 mod router_impl_mod;
-mod htmltemplateimplmod;
-mod webdatamod;
-mod webrtcimplmod;
+mod html_template_impl_mod;
+mod web_data_mod;
+mod webrtc_impl_mod;
 // endregion
 
 // this are then used in all the mods if I have there use crate::*;
-use crate::rootrenderingcomponentmod::RootRenderingComponent;
-use crate::gamedatamod::*;
+use crate::root_rendering_component_mod::RootRenderingComponent;
+use crate::game_data_mod::*;
 
 use rust_wasm_dodrio_templating::*;
 use rust_wasm_websys_utils::*;
@@ -306,7 +306,7 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     let div_for_virtual_dom = websysmod::get_element_by_id("div_for_virtual_dom");
 
     // load from storage or get random (and then save)
-    let my_ws_uid = websocketboilermod::load_or_random_ws_uid();
+    let my_ws_uid = websocket_boiler_mod::load_or_random_ws_uid();
     let (location_href, href_hash) = websysmod::get_url_and_hash();
     // Construct a new RootRenderingComponent.
     let mut rrc = RootRenderingComponent::new(my_ws_uid);
@@ -316,9 +316,9 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     let vdom_object = dodrio::Vdom::new(&div_for_virtual_dom, rrc);
     let vdom = vdom_object.weak();
     // async fetch_response() for gamesmetadata.json
-    fetchmod::fetch_games_metadata_and_update(&location_href, vdom.clone());
-    fetchmod::fetch_videos_and_update(&location_href, vdom.clone());
-    fetchmod::fetch_audio_and_update(&location_href, vdom.clone());
+    fetch_mod::fetch_games_metadata_and_update(&location_href, vdom.clone());
+    fetch_mod::fetch_videos_and_update(&location_href, vdom.clone());
+    fetch_mod::fetch_audio_and_update(&location_href, vdom.clone());
     // Start the URL router.
     use rust_wasm_router::router_mod::RouterTrait;
     let router = router_impl_mod::Router::new();

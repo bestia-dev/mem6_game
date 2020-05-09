@@ -1,4 +1,4 @@
-//! storagemod.rs
+//! storage_mod.rs
 //! local_storage for nickname and group_id
 //! session_storage for ws_uid and debug_text
 
@@ -31,7 +31,7 @@ pub fn nickname_onkeyup(rrc: &mut RootRenderingComponent, event: Event) {
     // websysmod::debug_write(&keyboard_event.key());
     if keyboard_event.key() == "Enter" {
         // open page start group
-        htmltemplateimplmod::open_new_local_page("#p02");
+        html_template_impl_mod::open_new_local_page("#p02");
     } else {
         save_nickname_to_local_storage(rrc);
     }
@@ -76,7 +76,7 @@ pub fn group_id_onkeyup(rrc: &mut RootRenderingComponent, event: Event) {
     // websysmod::debug_write(&keyboard_event.key());
     if keyboard_event.key() == "Enter" {
         // open page start group
-        htmltemplateimplmod::open_new_local_page("#p04");
+        html_template_impl_mod::open_new_local_page("#p04");
     } else {
         save_group_id_to_local_storage(rrc);
     }

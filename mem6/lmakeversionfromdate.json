@@ -13,19 +13,19 @@
             "filedate": "1588747328.247858100s"
         },
         {
-            "filename": "src/divplayeractionsmod.rs",
+            "filename": "src/div_player_actions_mod.rs",
             "filedate": "1588747328.276498800s"
         },
         {
-            "filename": "src/fetchmod.rs",
+            "filename": "src/fetch_mod.rs",
             "filedate": "1588747328.307750600s"
         },
         {
-            "filename": "src/gamedatamod.rs",
+            "filename": "src/game_data_mod.rs",
             "filedate": "1588747328.338999000s"
         },
         {
-            "filename": "src/htmltemplateimplmod.rs",
+            "filename": "src/html_template_impl_mod.rs",
             "filedate": "1589011139.534196800s"
         },
         {
@@ -33,7 +33,7 @@
             "filedate": "1588747328.397412500s"
         },
         {
-            "filename": "src/rootrenderingcomponentmod.rs",
+            "filename": "src/root_rendering_component_mod.rs",
             "filedate": "1589015872.721020000s"
         },
         {
@@ -41,59 +41,59 @@
             "filedate": "1589015968.648572500s"
         },
         {
-            "filename": "src/status1stcardmod.rs",
+            "filename": "src/status_1st_card_mod.rs",
             "filedate": "1588747328.461400700s"
         },
         {
-            "filename": "src/status2ndcardmod.rs",
+            "filename": "src/status_2nd_card_mod.rs",
             "filedate": "1588747328.477035600s"
         },
         {
-            "filename": "src/statusdrinkmod.rs",
+            "filename": "src/status_drink_mod.rs",
             "filedate": "1588747328.492681200s"
         },
         {
-            "filename": "src/statusgamedatainitmod.rs",
+            "filename": "src/status_game_data_init_mod.rs",
             "filedate": "1588747328.508304600s"
         },
         {
-            "filename": "src/statusgameovermod.rs",
+            "filename": "src/status_game_over_mod.rs",
             "filedate": "1588747328.539555800s"
         },
         {
-            "filename": "src/statusjoinedmod.rs",
+            "filename": "src/status_joined_mod.rs",
             "filedate": "1588747328.561165000s"
         },
         {
-            "filename": "src/statusreconnectmod.rs",
+            "filename": "src/status_reconnect_mod.rs",
             "filedate": "1588747328.576816300s"
         },
         {
-            "filename": "src/statustaketurnmod.rs",
+            "filename": "src/status_take_turn_mod.rs",
             "filedate": "1588747328.598450700s"
         },
         {
-            "filename": "src/statuswaitingack_msg_mod.rs",
+            "filename": "src/status_waiting_ack_msg_mod.rs",
             "filedate": "1588747328.614102800s"
         },
         {
-            "filename": "src/storagemod.rs",
+            "filename": "src/storage_mod.rs",
             "filedate": "1588747328.645353100s"
         },
         {
-            "filename": "src/webdatamod.rs",
+            "filename": "src/web_data_mod.rs",
             "filedate": "1588747328.661984300s"
         },
         {
-            "filename": "src/webrtcimplmod.rs",
+            "filename": "src/webrtc_impl_mod.rs",
             "filedate": "1588747328.677616100s"
         },
         {
-            "filename": "src/websocketboilermod.rs",
+            "filename": "src/websocket_boiler_mod.rs",
             "filedate": "1588747328.713417800s"
         },
         {
-            "filename": "src/websocketspecmod.rs",
+            "filename": "src/websocket_spec_mod.rs",
             "filedate": "1588747328.729048700s"
         }
     ]

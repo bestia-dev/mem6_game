@@ -1,4 +1,4 @@
-//! htmltemplateimplmod  
+//! html_template_impl_mod  
 
 use crate::*;
 use crate::htmltemplatemod::HtmlTemplating;
@@ -42,7 +42,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
         // websysmod::debug_write(&format!("call_fn_string: {}", &fn_name));
         match fn_name {
             "my_nickname" => self.game_data.my_nickname.to_owned(),
-            "blink_or_not_nickname" => storagemod::blink_or_not_nickname(self),
+            "blink_or_not_nickname" => storage_mod::blink_or_not_nickname(self),
             "blink_or_not_group_id" => blink_or_not_group_id(self),
             "my_ws_uid" => format!("{}", self.web_data.my_ws_uid),
             "receiver_ws_uid" => format!("{}", self.web_data.web_rtc_data.rtc_receiver_ws_uid),
@@ -103,10 +103,10 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             //websysmod::debug_write(&format!("call_fn_listener: {}", &fn_name));
             match fn_name {
                 "nickname_onkeyup" => {
-                    storagemod::nickname_onkeyup(rrc, event);
+                    storage_mod::nickname_onkeyup(rrc, event);
                 }
                 "group_id_onkeyup" => {
-                    storagemod::group_id_onkeyup(rrc, event);
+                    storage_mod::group_id_onkeyup(rrc, event);
                 }
                 "open_youtube" => {
                     // randomly choose a link from rrc.videos
@@ -130,10 +130,10 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                         rrc.game_data.sounds_and_labels = true;
                     }
                     rrc.web_data.send_ws_msg_from_web_data(
-                        &websocketboilermod::WsMessageForReceivers {
+                        &websocket_boiler_mod::WsMessageForReceivers {
                             msg_sender_ws_uid: rrc.web_data.my_ws_uid,
                             msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
-                            msg_data: gamedatamod::WsMessageGameData::MsgSoundsAndLabels {
+                            msg_data: game_data_mod::WsMessageGameData::MsgSoundsAndLabels {
                                 sounds_and_labels: rrc.game_data.sounds_and_labels,
                             },
                         },
@@ -154,7 +154,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     open_new_local_page("#p41");
                 }
                 "web_rtc_receiver_ws_uid_onkeyup" => {
-                    webrtcimplmod::web_rtc_receiver_ws_uid_onkeyup(vdom, rrc, event);
+                    webrtc_impl_mod::web_rtc_receiver_ws_uid_onkeyup(vdom, rrc, event);
                 }
                 "web_rtc_start" => {
                     rrc.web_data
@@ -162,7 +162,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                         .web_rtc_start(vdom, unwrap!(rrc.web_data.websocket_data.ws.clone()));
                 }
                 "web_rtc_chat_text_onkeyup" => {
-                    webrtcimplmod::web_rtc_chat_text_onkeyup(vdom, rrc, event);
+                    webrtc_impl_mod::web_rtc_chat_text_onkeyup(vdom, rrc, event);
                 }
                 "web_rtc_send_chat" => {
                     rrc.web_data.web_rtc_data.web_rtc_send_chat(vdom);
@@ -174,7 +174,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 }
                 "restart_game" => {
                     // send a msg to others to open #p04
-                    statusgameovermod::on_msg_play_again(rrc);
+                    status_game_over_mod::on_msg_play_again(rrc);
                     open_new_local_page("#p02");
                 }
                 "join_a_group_onclick" => {
@@ -184,9 +184,9 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     open_new_local_page("#p05");
                 }
                 "start_game_onclick" => {
-                    statusgamedatainitmod::on_click_start_game(rrc);
+                    status_game_data_init_mod::on_click_start_game(rrc);
                     // async fetch all imgs and put them in service worker cache
-                    fetchmod::fetch_all_img_for_cache_request(rrc);
+                    fetch_mod::fetch_all_img_for_cache_request(rrc);
                     // websysmod::debug_write(&format!("start_game_onclick players: {:?}",rrc.game_data.players));
                     open_new_local_page("#p11");
                 }
@@ -204,51 +204,51 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
 
                     websysmod::debug_write(&format!("MsgDrinkEnd send{}", ""));
                     rrc.web_data.send_ws_msg_from_web_data(
-                        &websocketboilermod::WsMessageForReceivers {
+                        &websocket_boiler_mod::WsMessageForReceivers {
                             msg_sender_ws_uid: rrc.web_data.my_ws_uid,
                             msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
-                            msg_data: gamedatamod::WsMessageGameData::MsgDrinkEnd {},
+                            msg_data: game_data_mod::WsMessageGameData::MsgDrinkEnd {},
                         },
                     );
                     // if all the cards are permanently up, this is the end of the game
                     // websysmod::debug_write("if is_all_permanently(rrc)");
-                    if status2ndcardmod::is_all_permanently(rrc) {
+                    if status_2nd_card_mod::is_all_permanently(rrc) {
                         websysmod::debug_write("yes");
-                        statusgameovermod::on_msg_game_over(rrc);
+                        status_game_over_mod::on_msg_game_over(rrc);
                         // send message
                         rrc.web_data.send_ws_msg_from_web_data(
-                            &websocketboilermod::WsMessageForReceivers {
+                            &websocket_boiler_mod::WsMessageForReceivers {
                                 msg_sender_ws_uid: rrc.web_data.my_ws_uid,
                                 msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
-                                msg_data: gamedatamod::WsMessageGameData::MsgGameOver {},
+                                msg_data: game_data_mod::WsMessageGameData::MsgGameOver {},
                             },
                         );
                     } else {
-                        statustaketurnmod::on_click_take_turn(rrc, vdom.clone());
+                        status_take_turn_mod::on_click_take_turn(rrc, vdom.clone());
                     }
                     // end the drink page
                     open_new_local_page("#p11");
                 }
                 "p06_load_image" => {
                     //websysmod::debug_write("p06_load_image");
-                    statusdrinkmod::play_sound_for_drink(rrc);
+                    status_drink_mod::play_sound_for_drink(rrc);
                 }
                 "play_again" => {
                     rrc.web_data.send_ws_msg_from_web_data(
-                        &websocketboilermod::WsMessageForReceivers {
+                        &websocket_boiler_mod::WsMessageForReceivers {
                             msg_sender_ws_uid: rrc.web_data.my_ws_uid,
                             msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
-                            msg_data: gamedatamod::WsMessageGameData::MsgPlayAgain {},
+                            msg_data: game_data_mod::WsMessageGameData::MsgPlayAgain {},
                         },
                     );
                     rrc.game_data.reset_for_play_again();
                     open_new_local_page("#p05");
                 }
                 "on_click_img_status1st" => {
-                    status1stcardmod::on_click_img_status1st(root, vdom.clone(), &event);
+                    status_1st_card_mod::on_click_img_status1st(root, vdom.clone(), &event);
                 }
                 "on_click_img_status2nd" => {
-                    status2ndcardmod::on_click_img_status2nd(root, vdom.clone(), &event);
+                    status_2nd_card_mod::on_click_img_status2nd(root, vdom.clone(), &event);
                 }
                 "hide_big_img" => {
                     hide_big_img();
@@ -274,7 +274,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 return div_grid_container_mod::div_grid_container(self, cx, &max_grid_size);
             }
             "div_player_action" => {
-                let node = divplayeractionsmod::div_player_actions_from_game_status(self, cx);
+                let node = div_player_actions_mod::div_player_actions_from_game_status(self, cx);
                 return node;
             }
             "svg_qrcode" => {
@@ -306,7 +306,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 return div_grid_container_mod::div_grid_all_items(self, cx);
             }
             "web_rtc_div_messages" => {
-                return webrtcimplmod::web_rtc_div_messages(self, cx);
+                return webrtc_impl_mod::web_rtc_div_messages(self, cx);
             }
             _ => {
                 let node = ElementBuilder::new(bump, "h2")
@@ -349,7 +349,7 @@ pub fn game_type_right_onclick(rrc: &mut RootRenderingComponent, vdom: VdomWeak)
         }
         last_name = x.name.to_string();
     }
-    fetchmod::async_fetch_game_config_and_update(rrc, vdom);
+    fetch_mod::async_fetch_game_config_and_update(rrc, vdom);
 }
 
 /// left arrow button
@@ -364,7 +364,7 @@ pub fn game_type_left_onclick(rrc: &mut RootRenderingComponent, vdom: VdomWeak) 
         }
         last_name = x.name.to_string();
     }
-    fetchmod::async_fetch_game_config_and_update(rrc, vdom);
+    fetch_mod::async_fetch_game_config_and_update(rrc, vdom);
 }
 
 /// fn open new local page with #

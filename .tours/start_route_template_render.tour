@@ -108,7 +108,7 @@
       }
     },
     {
-      "file": "mem6/src/rootrenderingcomponentmod.rs",
+      "file": "mem6/src/root_rendering_component_mod.rs",
       "line": 51,
       "description": "### render()\nThis is the only method that is called when the rendering is scheduled. \nIt is defined in the crate `dodrio: the vdom library`.   \nFrom here we then call functions to render different UI depending on the data state. ",
       "selection": {
@@ -143,7 +143,7 @@
       }
     },
     {
-      "file": "mem6/src/rootrenderingcomponentmod.rs",
+      "file": "mem6/src/root_rendering_component_mod.rs",
       "line": 22,
       "description": "### data model\nThe struct RootRenderingComponent contains ALL the data that is needed to render the UI. I separated the data in sub-structs, just for clarity.  \nWhen an event occures, we just change the data and then schedule the rendering.  \nInside the event code we don't bother about the dom change !    \nWe have a clear separation between data and User-Interface because of that.  \n",
       "selection": {
@@ -158,7 +158,7 @@
       }
     },
     {
-      "file": "mem6/src/rootrenderingcomponentmod.rs",
+      "file": "mem6/src/root_rendering_component_mod.rs",
       "line": 64,
       "description": "### render_template ()\nThe function `render_template` will read the html of the template and create dodrio vdom elements in the same sort order. Before some elements/attributes there are comments or `data-` attributes that change the next element/attribute. These are not visible, so the template is still a regular html document that the graphical designer can look and modify statically without dinamic elements. The programmer than adds/modify the `replace elements or attributes`.  \nThe result is the `dodrio:Node` that represents the vdom.  \nThe vdom library then diffs and modify the real dom.  ",
       "selection": {
@@ -188,7 +188,7 @@
       }
     },
     {
-      "file": "mem6/src/htmltemplateimplmod.rs",
+      "file": "mem6/src/html_template_impl_mod.rs",
       "line": 41,
       "description": "### call_fn_string\nThis fn will replace the next text element after <!--t=fn_name--> or the next attribute value after `data-t-style=\"fn_name\"` with a string.",
       "selection": {
@@ -203,7 +203,7 @@
       }
     },
     {
-      "file": "mem6/src/htmltemplateimplmod.rs",
+      "file": "mem6/src/html_template_impl_mod.rs",
       "line": 261,
       "description": "### call_fn_node\nThis fn will replace the next element after <!--n=fn_name--> with a Node.",
       "selection": {
@@ -218,7 +218,7 @@
       }
     },
     {
-      "file": "mem6/src/htmltemplateimplmod.rs",
+      "file": "mem6/src/html_template_impl_mod.rs",
       "line": 296,
       "description": "### call_fn_vec_nodes\nThis fn will replace the next element after <!--vn=fn_name--> with a Vector of Nodes.",
       "selection": {
@@ -233,7 +233,7 @@
       }
     },
     {
-      "file": "mem6/src/htmltemplateimplmod.rs",
+      "file": "mem6/src/html_template_impl_mod.rs",
       "line": 19,
       "description": "### call_fn_boolean\nThis fn will remove the next element after <!--b=fn_name--> if the result is `false`.",
       "selection": {
@@ -248,7 +248,7 @@
       }
     },
     {
-      "file": "mem6/src/htmltemplateimplmod.rs",
+      "file": "mem6/src/html_template_impl_mod.rs",
       "line": 98,
       "description": "### call_fn_listener\nThis fn will add a listener to the element after `data-on-click=\"fn_name\"`.",
       "selection": {

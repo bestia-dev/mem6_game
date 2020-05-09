@@ -43,7 +43,7 @@ impl RouterTrait for Router {
             // main entry point - no hash
             rrc.router_data.file_name_to_fetch = "p01_start.html".to_owned();
         } else if short_route == "#p02" {
-            fetchmod::async_fetch_game_config_and_update(rrc, vdom);
+            fetch_mod::async_fetch_game_config_and_update(rrc, vdom);
             rrc.router_data.file_name_to_fetch = "p02_start_a_group.html".to_owned();
         } else if short_route.starts_with("#p03") {
             // entry point for join game
@@ -51,13 +51,13 @@ impl RouterTrait for Router {
             rrc.game_data.my_player_number = 2;
             if short_route.contains('.') {
                 let gr = Self::get_url_param_in_hash_after_dot(&short_route);
-                storagemod::save_group_id_string_to_local_storage(rrc, gr);
+                storage_mod::save_group_id_string_to_local_storage(rrc, gr);
             } else {
-                storagemod::load_group_id_string(rrc);
+                storage_mod::load_group_id_string(rrc);
             }
             rrc.router_data.file_name_to_fetch = "p03_join_a_group.html".to_owned();
         } else if short_route == "#p04" {
-            statusjoinedmod::on_load_joined(rrc);
+            status_joined_mod::on_load_joined(rrc);
             rrc.router_data.file_name_to_fetch = "p04_wait_to_start.html".to_owned();
         } else if short_route == "#p05" {
             rrc.router_data.file_name_to_fetch = "p05_choose_game.html".to_owned();
@@ -93,7 +93,7 @@ impl RouterTrait for Router {
     ) -> Box<dyn Fn(&mut dyn dodrio::RootRender) + 'static> {
         Box::new(move |root| {
             let rrc = root.unwrap_mut::<RootRenderingComponent>();
-            htmltemplateimplmod::set_html_template_and_sub_templates(rrc, &resp_body_text);
+            html_template_impl_mod::set_html_template_and_sub_templates(rrc, &resp_body_text);
         })
     }
 }

@@ -45,14 +45,14 @@ pub fn prepare_for_ack_msg_waiting(rrc: &mut RootRenderingComponent, vdom: VdomW
 /// send msg and write in queue
 pub fn send_msg_and_write_in_queue(
     rrc: &mut RootRenderingComponent,
-    msg: &websocketboilermod::WsMessageForReceivers,
+    msg: &websocket_boiler_mod::WsMessageForReceivers,
     msg_id: usize,
 ) {
     // write the msgs in the queue
     for player in &rrc.game_data.players {
         if player.ws_uid != rrc.web_data.my_ws_uid {
             let msg_for_loop = msg.clone();
-            rrc.web_data.msgs_waiting_ack.push(webdatamod::MsgInQueue {
+            rrc.web_data.msgs_waiting_ack.push(web_data_mod::MsgInQueue {
                 player_ws_uid: player.ws_uid,
                 msg_id,
                 msg: msg_for_loop,
@@ -67,15 +67,15 @@ pub fn send_ack(
     rrc: &mut RootRenderingComponent,
     msg_sender_ws_uid: usize,
     msg_id: usize,
-    msg_ack_kind: gamedatamod::MsgAckKind,
+    msg_ack_kind: game_data_mod::MsgAckKind,
 ) {
     // websysmod::debug_write(&format!("send_ack players: {:?}", rrc.game_data.players));
     // send back the ACK msg to the sender
     rrc.web_data
-        .send_ws_msg_from_web_data(&websocketboilermod::WsMessageForReceivers {
+        .send_ws_msg_from_web_data(&websocket_boiler_mod::WsMessageForReceivers {
             msg_sender_ws_uid: rrc.web_data.my_ws_uid,
             msg_receivers_json: unwrap!(serde_json::to_string(&vec![msg_sender_ws_uid])),
-            msg_data: gamedatamod::WsMessageGameData::MsgAck {
+            msg_data: game_data_mod::WsMessageGameData::MsgAck {
                 msg_id,
                 msg_ack_kind,
             },

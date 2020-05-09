@@ -39,7 +39,7 @@ All starts with `index.html`. It contains this parts:
 This is a "single page" app so the start of wasm is only one time here:
 
 - console_error_panic_hook
-- websocketboilermod::setup_ws_connection - the main way of communication is ws
+- websocket_boiler_mod::setup_ws_connection - the main way of communication is ws
 - RootRenderingComponent::new - all the data is here and the Render trait
 - dodrio::Vdom::new - the main object of dodrio virtual dom is always present everywhere
 - fetch data from server: game_config, videos, audio,
@@ -54,7 +54,7 @@ This is a "single page" app so the start of wasm is only one time here:
 - searches for "template" nodes, drains them and saves them in `rrc.html_sub_templates`for later use
 - `set_fetched_file_and_sub_templates` - updates `rrc.html_template`
 
-## Render (rootrenderingcomponentmod)
+## Render (root_rendering_component_mod)
 
 Only one function Render() in `impl Render for RootRenderingComponent`.  
 It is scheduled when the data changes.  
@@ -62,7 +62,7 @@ It is scheduled when the data changes.
 - takes `rrc.html_template` and start the templating to `render_template()`.
 - after that in a tick the dodrio vdom will make its magic: find the diffs and update the real dom.
 
-## HtmlTemplate (htmltemplatemod, htmltemplateimplmod)
+## HtmlTemplate (htmltemplatemod, html_template_impl_mod)
 
 - render_template() returns a complete single `dodrio::Node`
 - parses the html_template with `ReaderForMicroXml`

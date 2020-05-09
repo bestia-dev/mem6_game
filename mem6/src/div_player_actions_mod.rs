@@ -1,4 +1,4 @@
-// divplayeractionsmod.rs
+// div_player_actions_mod.rs
 //! renders the div to inform player what to do next
 //! and get a click action from the user
 
@@ -16,10 +16,10 @@ pub fn div_player_actions_from_game_status<'a>(
     cx: &mut RenderContext<'a>,
 ) -> Node<'a> {
     match rrc.game_data.game_status {
-        GameStatus::Status1stCard => status1stcardmod::div_on_1st_card(rrc, cx),
-        GameStatus::Status2ndCard => status2ndcardmod::div_click_2nd_card(rrc, cx),
-        GameStatus::StatusGameOver => statusgameovermod::div_game_over(rrc, cx),
-        GameStatus::StatusWaitingAckMsg => statuswaitingack_msg_mod::div_waiting_ack_msg(rrc, cx),
+        GameStatus::Status1stCard => status_1st_card_mod::div_on_1st_card(rrc, cx),
+        GameStatus::Status2ndCard => status_2nd_card_mod::div_click_2nd_card(rrc, cx),
+        GameStatus::StatusGameOver => status_game_over_mod::div_game_over(rrc, cx),
+        GameStatus::StatusWaitingAckMsg => status_waiting_ack_msg_mod::div_waiting_ack_msg(rrc, cx),
         _ => div_unpredicted(rrc, cx),
     }
 }

@@ -1,4 +1,4 @@
-// statustaketurnmod.rs
+// status_take_turn_mod.rs
 //! code flow from this status
 
 // region: use
@@ -14,10 +14,10 @@ pub fn on_click_take_turn(rrc: &mut RootRenderingComponent, vdom: VdomWeak) {
 
     let msg_id = ack_msg_mod::prepare_for_ack_msg_waiting(rrc, vdom.clone());
 
-    let msg = websocketboilermod::WsMessageForReceivers {
+    let msg = websocket_boiler_mod::WsMessageForReceivers {
         msg_sender_ws_uid: rrc.web_data.my_ws_uid,
         msg_receivers_json: rrc.web_data.msg_receivers_json.to_string(),
-        msg_data: gamedatamod::WsMessageGameData::MsgTakeTurn { msg_id },
+        msg_data: game_data_mod::WsMessageGameData::MsgTakeTurn { msg_id },
     };
     ack_msg_mod::send_msg_and_write_in_queue(rrc, &msg, msg_id);
 
@@ -31,7 +31,7 @@ pub fn on_msg_take_turn(rrc: &mut RootRenderingComponent, msg_sender_ws_uid: usi
         rrc,
         msg_sender_ws_uid,
         msg_id,
-        gamedatamod::MsgAckKind::MsgTakeTurn,
+        game_data_mod::MsgAckKind::MsgTakeTurn,
     );
     update_on_take_turn(rrc);
 }

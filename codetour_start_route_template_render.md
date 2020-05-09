@@ -30,8 +30,8 @@ The imported Wasm module will automatically start the function with attribute `#
 
 ##### step 2 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/lib.rs#L299)
 ```rust
-use crate::rootrenderingcomponentmod::RootRenderingComponent;
-use crate::gamedatamod::*;
+use crate::root_rendering_component_mod::RootRenderingComponent;
+use crate::game_data_mod::*;
 
 use rust_wasm_dodrio_templating::*;
 use rust_wasm_websys_utils::*;
@@ -114,9 +114,9 @@ If JavaScript is disabled, also wasm cannot run.
     let vdom_object = dodrio::Vdom::new(&div_for_virtual_dom, rrc);
     let vdom = vdom_object.weak();
     // async fetch_response() for gamesmetadata.json
-    fetchmod::fetch_games_metadata_and_update(&location_href, vdom.clone());
-    fetchmod::fetch_videos_and_update(&location_href, vdom.clone());
-    fetchmod::fetch_audio_and_update(&location_href, vdom.clone());
+    fetch_mod::fetch_games_metadata_and_update(&location_href, vdom.clone());
+    fetch_mod::fetch_videos_and_update(&location_href, vdom.clone());
+    fetch_mod::fetch_audio_and_update(&location_href, vdom.clone());
     // Start the URL router.
     use rust_wasm_router::router_mod::RouterTrait;
     let router = router_impl_mod::Router::new();
@@ -149,7 +149,7 @@ This is the only method that is called when the rendering is scheduled.
 It is defined in the crate `dodrio: the vdom library`.   
 From here we then call functions to render different UI depending on the data state. 
 
-##### step 8 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/rootrenderingcomponentmod.rs#L51)
+##### step 8 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/root_rendering_component_mod.rs#L51)
 ```rust
     pub fn start_websocket(&mut self, vdom: VdomWeak) {
         self.web_data.start_websocket(vdom);
@@ -214,7 +214,7 @@ Inside the event code we don't bother about the dom change !
 We have a clear separation between data and User-Interface because of that.  
 
 
-##### step 11 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/rootrenderingcomponentmod.rs#L22)
+##### step 11 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/root_rendering_component_mod.rs#L22)
 ```rust
 
 #//---------------------- selection start ----------------------
@@ -222,9 +222,9 @@ We have a clear separation between data and User-Interface because of that.
 /// the data needed for play logic and rendering
 pub struct RootRenderingComponent {
     /// data for web and communication
-    pub web_data: webdatamod::WebData,
+    pub web_data: web_data_mod::WebData,
     /// game data will be inside of Root
-    pub game_data: gamedatamod::GameData,
+    pub game_data: game_data_mod::GameData,
     /// router data
     pub router_data: router_impl_mod::Router,
 }
@@ -235,7 +235,7 @@ The function `render_template` will read the html of the template and create dod
 The result is the `dodrio:Node` that represents the vdom.  
 The vdom library then diffs and modify the real dom.  
 
-##### step 12 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/rootrenderingcomponentmod.rs#L64)
+##### step 12 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/root_rendering_component_mod.rs#L64)
 ```rust
         // html fragment from html_template defined in # file_name_to_fetch
         if self.web_data.html_template.is_empty() {
@@ -273,7 +273,7 @@ Here we can see a html template with the replace `comments` ex. \<!--t=game_name
 ### call_fn_string
 This fn will replace the next text element after \<!--t=fn_name--\> or the next attribute value after `data-t-style="fn_name"` with a string.
 
-##### step 14 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/htmltemplateimplmod.rs#L41)
+##### step 14 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/html_template_impl_mod.rs#L41)
 ```rust
             }
         }
@@ -292,7 +292,7 @@ This fn will replace the next text element after \<!--t=fn_name--\> or the next 
 ### call_fn_node
 This fn will replace the next element after \<!--n=fn_name--\> with a Node.
 
-##### step 15 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/htmltemplateimplmod.rs#L261)
+##### step 15 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/html_template_impl_mod.rs#L261)
 ```rust
                 _ => {
                     let x = format!("Error: Unrecognized call_fn_listener: \"{}\"", fn_name);
@@ -311,7 +311,7 @@ This fn will replace the next element after \<!--n=fn_name--\> with a Node.
 ### call_fn_vec_nodes
 This fn will replace the next element after \<!--vn=fn_name--\> with a Vector of Nodes.
 
-##### step 16 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/htmltemplateimplmod.rs#L296)
+##### step 16 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/html_template_impl_mod.rs#L296)
 ```rust
                     )])
                     .finish();
@@ -330,7 +330,7 @@ This fn will replace the next element after \<!--vn=fn_name--\> with a Vector of
 ### call_fn_boolean
 This fn will remove the next element after \<!--b=fn_name--\> if the result is `false`.
 
-##### step 17 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/htmltemplateimplmod.rs#L19)
+##### step 17 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/html_template_impl_mod.rs#L19)
 ```rust
 use dodrio::{
     Node, RenderContext, RootRender,
@@ -349,7 +349,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
 ### call_fn_listener
 This fn will add a listener to the element after `data-on-click="fn_name"`.
 
-##### step 18 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/htmltemplateimplmod.rs#L98)
+##### step 18 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/html_template_impl_mod.rs#L98)
 ```rust
             _ => {
                 let x = format!("Error: Unrecognized call_fn_string: \"{}\"", fn_name);
