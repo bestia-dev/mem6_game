@@ -47,7 +47,7 @@ This is a "single page" app so the start of wasm is only one time here:
 
 ## Router (router_mod + router_impl_mod)
 
-- `start_router`: the Closure takes `location.hash`. This is a short_route ex. `#p03`
+- `start_router`: the Closure takes `location.hash`. This is a location_hash ex. `#p03`
 - `update_file_name_to_fetch` - updates the `rrc.file_name_to_fetch` with the filename ex. `p03_join_a_group.html`
 - `fetch_response` - fetch the html template
 - `between_body_tag()` - the html_template is a complete html file. It can be viewed correctly in the browser. It does not yet have any dynamic parts. This is great because the graphical designer can make changes on a true html file. The programmer after that adds comments that are actions for the templating engine. For the templating engine we need only the body part.

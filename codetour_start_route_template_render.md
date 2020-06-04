@@ -118,14 +118,14 @@ If JavaScript is disabled, also wasm cannot run.
     fetch_mod::fetch_videos_and_update(&location_href, vdom.clone());
     fetch_mod::fetch_audio_and_update(&location_href, vdom.clone());
     // Start the URL router.
-    use rust_wasm_router::router_mod::RouterTrait;
+    use rust_wasm_dodrio_router::router_mod::RouterTrait;
     let router = router_impl_mod::Router::new();
 #//---------------------- selection start ----------------------
     router.start_router(vdom.clone());
 #//----------------------- selection end -----------------------
 ```
 ### set_file_name_to_fetch_from_dodrio
-The short_route (url hash) `ex. #p04` defines a `file_name_to_fetch`. This is the name of the html template to fetch from the web server. Than it is prepared and saved in html_template sub_templates fields.
+The location_hash (url hash) `ex. #p04` defines a `file_name_to_fetch`. This is the name of the html template to fetch from the web server. Than it is prepared and saved in html_template sub_templates fields.
 The data in the struct is prepared, finally we call `vdom.schedule_render();`.
 
 ##### step 7 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/router_impl_mod.rs#L45)
@@ -139,7 +139,7 @@ The data in the struct is prepared, finally we call `vdom.schedule_render();`.
         &rrc.router_data.file_name_to_fetch
     }
 
-    /// update file_name_to_fetch with filenames dependent on short_route.
+    /// update file_name_to_fetch with filenames dependent on location_hash.
 #//---------------------- selection start ----------------------
     fn set_file_name_to_fetch_from_dodrio(
 #//----------------------- selection end -----------------------
@@ -177,7 +177,7 @@ In this way we have a clear separation between data (RootRenderingComponent) and
 # region: my dependencies
 rust_wasm_websys_utils = "0.4.2"
 # rust_wasm_websys_utils = { path = "../../rust_wasm_websys_utils" }
-rust_wasm_router = { path = "../../rust_wasm_router" }
+rust_wasm_dodrio_router = { path = "../../rust_wasm_dodrio_router" }
 rust_wasm_dodrio_templating = { path = "../../rust_wasm_dodrio_templating" }
 rust_wasm_websocket = { path = "../../rust_wasm_websocket" }
 rust_wasm_webrtc = { path = "../../rust_wasm_webrtc" }
@@ -194,7 +194,7 @@ So we can follow the codeflow and change something if we need to.
 ##### step 10 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/Cargo.toml#L31)
 ```toml
 # rust_wasm_websys_utils = { path = "../../rust_wasm_websys_utils" }
-rust_wasm_router = { path = "../../rust_wasm_router" }
+rust_wasm_dodrio_router = { path = "../../rust_wasm_dodrio_router" }
 rust_wasm_dodrio_templating = { path = "../../rust_wasm_dodrio_templating" }
 rust_wasm_websocket = { path = "../../rust_wasm_websocket" }
 rust_wasm_webrtc = { path = "../../rust_wasm_webrtc" }

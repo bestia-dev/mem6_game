@@ -1,6 +1,6 @@
 [package]
 name = "mem6"
-version = "2020.509.1450"
+version = "2020.510.439"
 authors = ["Luciano Bestia <Luciano.Bestia@gmail.com>"]
 edition = "2018"
 description = "Learning Rust Wasm/WebAssembly with Virtual Dom Dodrio"
@@ -17,14 +17,15 @@ crate-type = ["cdylib"]
 
 [dependencies]
 # region: my dependencies
-rust_wasm_websys_utils = "0.4.2"
+rust_wasm_websys_utils = "0.4.3"
 # rust_wasm_websys_utils = { path = "../../rust_wasm_websys_utils" }
-rust_wasm_router = { path = "../../rust_wasm_router" }
+rust_wasm_dodrio_router = { path = "../../rust_wasm_dodrio_router" }
+#rust_wasm_dodrio_router = "0.4.6"
 rust_wasm_dodrio_templating = { path = "../../rust_wasm_dodrio_templating" }
 rust_wasm_websocket = { path = "../../rust_wasm_websocket" }
 rust_wasm_webrtc = { path = "../../rust_wasm_webrtc" }
 #qrcode53bytes = { path = "../../qrcode53bytes" }
-qrcode53bytes ="1.0.0"
+#qrcode53bytes ="1.0.0"
 # endregion: my dependencies
 
 # region: other dependencies
@@ -32,28 +33,28 @@ unwrap = "1.2.1"
 dodrio = "0.2.0"
 # dodrio =  { git = "https://github.com/fitzgen/dodrio", branch = "master" }
 # dodrio = {path = "../../rust_wasm_dodrio_copy"}
-wasm-bindgen = { version = "0.2.58", features = ["serde-serialize"] }
+wasm-bindgen = { version = "0.2.62", features = ["serde-serialize"] }
 console_error_panic_hook = "0.1.6"
 #newer version of rand do not have smallring
 rand = { version = "0.7.3", features = ["wasm-bindgen","small_rng"] }
-js-sys = "0.3"
-serde ="1.0.104"
-serde_derive = "1.0.104"
-serde_json = "1.0"
+js-sys = "0.3.39"
+serde = "1.0.107"
+serde_derive ="1.0.107"
+serde_json = "1.0.52"
 #udep futures = "0.3.1"
 # newer futures have unstable .await
-wasm-bindgen-futures = "0.4.8"
+wasm-bindgen-futures = "0.4.12"
 #log = "0.4.8"
-strum = "0.17.1"
-strum_macros = "0.17.1"
+strum = "0.18.0"
+strum_macros = "0.18.0"
 conv = "0.3.3"
-gloo-timers = {version="0.2.0", features=["futures"]}
+gloo-timers = {version="0.2.1", features=["futures"]}
 reader_for_microxml = "1.0.4"
 #udep mopa = "0.2.2"
 # endregion: other dependencies
 
 [dependencies.web-sys]
-version = "0.3.33"
+version = "0.3.39"
 features = [
   "AbortController",
   "console",
@@ -108,7 +109,7 @@ features = [
 ]
 
 [dev-dependencies]
-wasm-bindgen-test = "0.3.8"
+wasm-bindgen-test = "0.3.12"
 
 # Rust does not have yet 2020-04-20 "profiles" on workspace sub-projects.
 # I can put it only on the workspace alone.

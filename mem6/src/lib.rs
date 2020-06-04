@@ -320,7 +320,7 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     fetch_mod::fetch_videos_and_update(&location_href, vdom.clone());
     fetch_mod::fetch_audio_and_update(&location_href, vdom.clone());
     // Start the URL router.
-    use rust_wasm_router::router_mod::RouterTrait;
+    use rust_wasm_dodrio_router::router_mod::RouterTrait;
     let router = router_impl_mod::Router::new();
     router.start_router(vdom.clone());
 

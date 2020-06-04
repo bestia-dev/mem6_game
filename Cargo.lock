@@ -387,9 +387,9 @@ dependencies = [
 
 [[package]]
 name = "gloo-timers"
-version = "0.2.0"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0b2d17dbd803c2fc86cb1b613adf63192046a7176f383a8302594654752c4c4a"
+checksum = "47204a46aaff920a1ea58b11d03dec6f704287d27561724a4631e450654a891f"
 dependencies = [
  "futures-channel",
  "futures-core",
@@ -632,7 +632,7 @@ checksum = "7ffc5c5338469d4d3ea17d269fa8ea3512ad247247c30bd2df69e68309ed0a08"
 
 [[package]]
 name = "mem6"
-version = "2020.509.1450"
+version = "2020.510.439"
 dependencies = [
  "console_error_panic_hook",
  "conv",
@@ -642,8 +642,8 @@ dependencies = [
  "qrcode53bytes",
  "rand 0.7.3",
  "reader_for_microxml",
+ "rust_wasm_dodrio_router",
  "rust_wasm_dodrio_templating",
- "rust_wasm_router",
  "rust_wasm_webrtc",
  "rust_wasm_websocket",
  "rust_wasm_websys_utils 0.4.3",
@@ -661,7 +661,7 @@ dependencies = [
 
 [[package]]
 name = "mem6_common"
-version = "2020.424.1253"
+version = "2020.424.1257"
 dependencies = [
  "serde",
  "serde_derive",
@@ -1140,12 +1140,13 @@ dependencies = [
 ]
 
 [[package]]
-name = "rust_wasm_dodrio_templating"
-version = "2020.218.1306"
+name = "rust_wasm_dodrio_router"
+version = "0.4.6"
 dependencies = [
  "dodrio",
  "js-sys",
- "reader_for_microxml",
+ "rand 0.7.3",
+ "rust_wasm_websys_utils 0.4.3",
  "serde",
  "serde_json",
  "unwrap",
@@ -1155,13 +1156,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "rust_wasm_router"
-version = "0.4.6"
+name = "rust_wasm_dodrio_templating"
+version = "2020.218.1306"
 dependencies = [
  "dodrio",
  "js-sys",
- "rand 0.7.3",
- "rust_wasm_websys_utils 0.4.3",
+ "reader_for_microxml",
  "serde",
  "serde_json",
  "unwrap",
@@ -1291,9 +1291,9 @@ checksum = "eba7550f2cdf88ffc23ab0f1607133486c390a8c0f89b57e589b9654ee15e04d"
 
 [[package]]
 name = "serde_derive"
-version = "1.0.104"
+version = "1.0.107"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "128f9e303a5a29922045a830221b8f78ec74a5f544944f3d5984f8ec3895ef64"
+checksum = "10be45e22e5597d4b88afcc71f9d7bfadcd604bf0c78a3ab4582b8d2b37f39f3"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1302,9 +1302,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.41"
+version = "1.0.52"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2f72eb2a68a7dc3f9a691bfda9305a1c017a6215e5a4545c258500d2099a37c2"
+checksum = "a7894c8ed05b7a3a279aeb79025fdec1d3158080b75b98a08faf2806bb799edd"
 dependencies = [
  "itoa",
  "ryu",
@@ -1370,15 +1370,15 @@ checksum = "8ea5119cdb4c55b55d432abb513a0429384878c15dde60cc77b1c99de1a95a6a"
 
 [[package]]
 name = "strum"
-version = "0.17.1"
+version = "0.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "530efb820d53b712f4e347916c5e7ed20deb76a4f0457943b3182fb889b06d2c"
+checksum = "57bd81eb48f4c437cadc685403cad539345bf703d78e63707418431cecd4522b"
 
 [[package]]
 name = "strum_macros"
-version = "0.17.1"
+version = "0.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5e6e163a520367c465f59e0a61a23cfae3b10b6546d78b6f672a382be79f7110"
+checksum = "87c85aa3f8ea653bfd3ddf25f7ee357ee4d204731f6aa9ad04002306f6e2774c"
 dependencies = [
  "heck",
  "proc-macro2",
@@ -1890,9 +1890,9 @@ checksum = "a91c2916119c17a8e316507afaaa2dd94b47646048014bbdf6bef098c1bb58ad"
 
 [[package]]
 name = "wasm-bindgen-test"
-version = "0.3.8"
+version = "0.3.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "98fd0ec352c44d1726b6c2bec524612b1c81e34a7d858f597a6c71f8e018c82e"
+checksum = "fd8e9dad8040e378f0696b017570c6bc929aac373180e06b3d67ac5059c52da3"
 dependencies = [
  "console_error_panic_hook",
  "js-sys",
@@ -1904,9 +1904,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-test-macro"
-version = "0.3.8"
+version = "0.3.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "97837a6e83ab24a4b3a38d44a257e13335b54f4b4548b2c9d71edd0bf570cb4f"
+checksum = "c358c8d2507c1bae25efa069e62ea907aa28700b25c8c33dafb0b15ba4603627"
 dependencies = [
  "proc-macro2",
  "quote",
