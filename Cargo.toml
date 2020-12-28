@@ -1,12 +1,9 @@
 [workspace]
 
 members = [
+    "dodrio_templating",
     "mem6_common",
     "mem6",
     "mem6_server",
 ]
 
-# Rust does not have yet 2020-04-20 profiles on webspave projects
-# I can put it only on the workspace alone.
-[profile.release]
-panic = "abort"

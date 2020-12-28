@@ -4,7 +4,7 @@
 #![doc(
     html_logo_url = "https://github.com/LucianoBestia/mem6_game/raw/master/webfolder/mem6/images/icons-192.png"
 )]
-// region: lmake_readme include "readme.md" //! A
+// region: lmake_readme insert "readme.md"
 //! # mem6_server
 //!
 //! version: 19.10.21-20.11  
@@ -24,7 +24,7 @@
 //! You can play the game here (hosted on google cloud platform):  
 //! https://bestia.dev/mem6  
 
-// endregion: lmake_readme include "readme.md" //! A
+// endregion: lmake_readme insert "readme.md"
 
 // region: Clippy
 #![warn(

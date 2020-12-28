@@ -1,8 +1,6 @@
 # mem6_server
 
-[comment]: # (lmake_readme cargo.toml data start)
-
-[comment]: # (lmake_readme cargo.toml data end)  
+[comment]: # (lmake_readme version)  
 
 **Html and WebSocket server for the mem6 game**  
 Primarily made for learning to code Rust for a http + WebSocket server on the same port.  
@@ -22,11 +20,3 @@ You can play the game here (hosted on google cloud platform):
 ## new version of Warp
 
 The new version looks nice, but I had the problem when a user disconnects the websocket without handshake. It happens only on Android Chrome.  
-
-## cargo crev reviews and advisory
-
-It is recommended to always use [cargo-crev](https://github.com/crev-dev/cargo-crev)  
-to verify the trustworthiness of each of your dependencies.  
-Please, spread this info.  
-On the web use this url to read crate reviews. Example:  
-<https://web.crev.dev/rust-reviews/crate/num-traits/>  

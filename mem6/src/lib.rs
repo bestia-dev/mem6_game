@@ -4,7 +4,7 @@
 #![doc(
     html_logo_url = "https://github.com/LucianoBestia/mem6_game/raw/master/webfolder/mem6/images/icons-192.png"
 )]
-// region: lmake_readme include "readme.md" //! A
+// region: lmake_readme insert "readme.md"
 //! # unForGetTable  (development name: mem6)
 //!
 //! version: 2020.225.1404  
@@ -197,7 +197,7 @@
 //! Crazy stuff. I used the website <https://www.favicon-generator.org/> to generate
 //! all the different imgs, sizes and code. And than add all this into index.html. There is more lines for icons than anything else now. Just crazy world.  
 
-// endregion: lmake_readme include "readme.md" //! A
+// endregion: lmake_readme insert "readme.md"
 
 // needed for dodrio ! macro (typed-html)
 #![recursion_limit = "512"]
@@ -258,37 +258,35 @@
 // endregion
 
 // region: mod is used only in lib file. All the rest use use crate
-mod ack_msg_mod;
-mod div_grid_container_mod;
-mod div_player_actions_mod;
-mod fetch_mod;
-mod game_data_mod;
-mod root_rendering_component_mod;
-mod storage_mod;
-mod status_game_data_init_mod;
-mod status_game_over_mod;
-mod status_joined_mod;
-mod status_1st_card_mod;
-mod status_2nd_card_mod;
-mod status_drink_mod;
-mod status_take_turn_mod;
-mod status_waiting_ack_msg_mod;
-mod websocket_boiler_mod;
-mod websocket_spec_mod;
-mod status_reconnect_mod;
-mod router_impl_mod;
-mod html_template_impl_mod;
-mod web_data_mod;
-mod webrtc_impl_mod;
+mod ackmsgmod;
+mod divgridcontainermod;
+mod divplayeractionsmod;
+mod fetchmod;
+mod gamedatamod;
+mod rootrenderingcomponentmod;
+mod storagemod;
+mod statusgamedatainitmod;
+mod statusgameovermod;
+mod statusjoinedmod;
+mod status1stcardmod;
+mod status2ndcardmod;
+mod statusdrinkmod;
+mod statustaketurnmod;
+mod statuswaitingackmsgmod;
+mod websocketmod;
+mod statusreconnectmod;
+mod routerimplmod;
+mod htmltemplateimplmod;
+mod webdatamod;
+mod webrtcmod;
 // endregion
 
 // this are then used in all the mods if I have there use crate::*;
-use crate::root_rendering_component_mod::RootRenderingComponent;
-use crate::game_data_mod::*;
+use crate::rootrenderingcomponentmod::RootRenderingComponent;
+use crate::gamedatamod::*;
 
-use rust_wasm_dodrio_templating::*;
-use rust_wasm_websys_utils::*;
-//use rust_wasm_websocket::*;
+use dodrio_templating::*;
+use dodrio_templating::routermod::Routing;
 
 // use unwrap::unwrap;
 use wasm_bindgen::prelude::*;
@@ -306,26 +304,34 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
     let div_for_virtual_dom = websysmod::get_element_by_id("div_for_virtual_dom");
 
     // load from storage or get random (and then save)
-    let my_ws_uid = websocket_boiler_mod::load_or_random_ws_uid();
+    let my_ws_uid = websocketmod::load_or_random_ws_uid();
+
     let (location_href, href_hash) = websysmod::get_url_and_hash();
     // Construct a new RootRenderingComponent.
     let mut rrc = RootRenderingComponent::new(my_ws_uid);
     rrc.web_data.href = location_href.to_string();
     rrc.web_data.href_hash = href_hash;
     // Mount the component to the `<div id="div_for_virtual_dom">`.
-    let vdom_object = dodrio::Vdom::new(&div_for_virtual_dom, rrc);
-    let vdom = vdom_object.weak();
+    let vdom = dodrio::Vdom::new(&div_for_virtual_dom, rrc);
+
     // async fetch_response() for gamesmetadata.json
-    fetch_mod::fetch_games_metadata_and_update(&location_href, vdom.clone());
-    fetch_mod::fetch_videos_and_update(&location_href, vdom.clone());
-    fetch_mod::fetch_audio_and_update(&location_href, vdom.clone());
+    let v2 = vdom.weak();
+    // TODO: this could be a trait for vdomweak
+    fetchmod::fetch_games_metadata_and_update(&location_href, v2);
+
+    let v3 = vdom.weak();
+    fetchmod::fetch_videos_and_update(&location_href, v3);
+
+    let v5 = vdom.weak();
+    fetchmod::fetch_audio_and_update(&location_href, v5);
+
     // Start the URL router.
-    use rust_wasm_dodrio_router::router_mod::RouterTrait;
-    let router = router_impl_mod::Router::new();
-    router.start_router(vdom.clone());
+    let v4 = vdom.weak();
+    let router = routerimplmod::Router {};
+    router.start_router(v4);
 
     // Run the component forever. Forget to drop the memory.
-    vdom_object.forget();
+    vdom.forget();
 
     Ok(())
 }

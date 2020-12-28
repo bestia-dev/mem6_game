@@ -4,7 +4,7 @@
 #![doc(
     html_logo_url = "https://github.com/LucianoBestia/mem6_game/raw/master/webfolder/mem6/images/icons-192.png"
 )]
-// region: lmake_readme include "readme.md" //! A
+// region: lmake_readme insert "readme.md"
 //! # mem6_common
 //!
 //! version: 2020.221.1322  
@@ -14,7 +14,7 @@
 //! Here are just the structures, that are in common between frontend and backend.  
 //! Mostly because of the Messages.  
 
-// endregion: lmake_readme include "readme.md" //! A
+// endregion: lmake_readme insert "readme.md"
 
 // region: Clippy
 #![warn(
@@ -84,7 +84,7 @@ pub enum WsMessageFromServer {
 }
 
 // The struct WsMessageForReceivers original is in the
-// wasm project game_data_mod.rs with all the fields.
+// wasm project gamedatamod.rs with all the fields.
 // A copy of this struct is also in the server project,
 // but without the msg_data field.
 // They are the same struct, but the declaration is different, because

@@ -1,8 +1,6 @@
 # unForGetTable  (development name: mem6)
 
-[comment]: # (lmake_readme cargo.toml data start)
-
-[comment]: # (lmake_readme cargo.toml data end)  
+[comment]: # (lmake_readme version)  
 
 mem6 is a simple drinking game to lose memory. It is made primarily for learning the Rust programming language and Wasm/WebAssembly with Virtual Dom Dodrio, WebSocket communication and PWA (Progressive Web App).  
 
@@ -248,15 +246,3 @@ Open <https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/>
 to test your STUN server:  
 `stun:stun.bestia.dev`  
 GoogleCloud has only ipv4. So there is no ipv6 at all.  
-
-## CodeTour
-
-CodeTour is an extension to VSCode. With it I can prepare a tour through the code step by step. In that way it is very easy to understand how the code works. Every step opens a file on a line number that is than described in the context of the tour step.  
-
-## cargo crev reviews and advisory
-
-It is recommended to always use [cargo-crev](https://github.com/crev-dev/cargo-crev)  
-to verify the trustworthiness of each of your dependencies.  
-Please, spread this info.  
-On the web use this url to read crate reviews. Example:  
-<https://web.crev.dev/rust-reviews/crate/num-traits/>  

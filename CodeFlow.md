@@ -39,22 +39,22 @@ All starts with `index.html`. It contains this parts:
 This is a "single page" app so the start of wasm is only one time here:
 
 - console_error_panic_hook
-- websocket_boiler_mod::setup_ws_connection - the main way of communication is ws
+- websocketmod::setup_ws_connection - the main way of communication is ws
 - RootRenderingComponent::new - all the data is here and the Render trait
 - dodrio::Vdom::new - the main object of dodrio virtual dom is always present everywhere
 - fetch data from server: game_config, videos, audio,
 - start_router - run immediately and on every hash_change
 
-## Router (router_mod + router_impl_mod)
+## Router (routermod + routerimplmod)
 
-- `start_router`: the Closure takes `location.hash`. This is a location_hash ex. `#p03`
-- `update_file_name_to_fetch` - updates the `rrc.file_name_to_fetch` with the filename ex. `p03_join_a_group.html`
-- `fetch_response` - fetch the html template
+- `start_router`: the Closure takes `location.hash`. This is a short_route ex. `#p03`
+- `update_rrc_local_route` - updates the `rrc.local_route` with the filename ex. `p03_join_a_group.html`
+- `async_spwloc_fetch_text` - fetch the html template
 - `between_body_tag()` - the html_template is a complete html file. It can be viewed correctly in the browser. It does not yet have any dynamic parts. This is great because the graphical designer can make changes on a true html file. The programmer after that adds comments that are actions for the templating engine. For the templating engine we need only the body part.
 - searches for "template" nodes, drains them and saves them in `rrc.html_sub_templates`for later use
-- `set_fetched_file_and_sub_templates` - updates `rrc.html_template`
+- `update_rrc_html_template` - updates `rrc.html_template`
 
-## Render (root_rendering_component_mod)
+## Render (rootrenderingcomponentmod)
 
 Only one function Render() in `impl Render for RootRenderingComponent`.  
 It is scheduled when the data changes.  
@@ -62,7 +62,7 @@ It is scheduled when the data changes.
 - takes `rrc.html_template` and start the templating to `render_template()`.
 - after that in a tick the dodrio vdom will make its magic: find the diffs and update the real dom.
 
-## HtmlTemplate (htmltemplatemod, html_template_impl_mod)
+## HtmlTemplate (htmltemplatemod, htmltemplateimplmod)
 
 - render_template() returns a complete single `dodrio::Node`
 - parses the html_template with `ReaderForMicroXml`

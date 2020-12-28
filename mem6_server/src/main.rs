@@ -1,11 +1,10 @@
-
 #![doc(
     html_favicon_url = "https://github.com/LucianoBestia/mem6_game/raw/master/webfolder/mem6/images/icons-16.png"
 )]
 #![doc(
     html_logo_url = "https://github.com/LucianoBestia/mem6_game/raw/master/webfolder/mem6/images/icons-192.png"
 )]
-// region: lmake_readme include "readme.md" //! A
+// region: lmake_readme insert "readme.md"
 //! # mem6_server
 //!
 //! version: 2020.221.1018  
@@ -29,7 +28,7 @@
 //!
 //! The new version looks nice, but I had the problem when a user disconnects the websocket without handshake. It happens only on Android Chrome.  
 
-// endregion: lmake_readme include "readme.md" //! A
+// endregion: lmake_readme insert "readme.md"
 
 // region: Clippy
 #![warn(
