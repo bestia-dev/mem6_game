@@ -99,5 +99,5 @@ args=["doc","--no-deps","--document-private-items"]
 clear = true
 private = true
 description = "in cargo.toml change version to today date"
-script= ["../../utils_linux/lmake_version_from_date"]
+script= ["lmake_version_from_date"]
 

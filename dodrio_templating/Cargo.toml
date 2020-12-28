@@ -13,8 +13,9 @@ publish = false
 
 [dependencies]
 unwrap = "1.2.1"
+dodrio = "0.2.0"
 #dodrio =  { git = "https://github.com/fitzgen/dodrio", branch = "master" }
-dodrio = {path = "../../dodrio"}
+#dodrio = {path = "../../dodrio"}
 wasm-bindgen = { version = "0.2.58", features = ["serde-serialize"] }
 #newer version of rand do not have smallring
 rand = { version = "0.7.3", features = ["wasm-bindgen","small_rng"] }

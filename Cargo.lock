@@ -257,7 +257,9 @@ dependencies = [
 
 [[package]]
 name = "dodrio"
-version = "0.1.0"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b7593dfc68e57dc1d058ada0f151ba07f4b05183c4da4c4df8ff651a81ef0fab"
 dependencies = [
  "bumpalo 2.6.0",
  "cfg-if",
@@ -653,7 +655,7 @@ checksum = "7ffc5c5338469d4d3ea17d269fa8ea3512ad247247c30bd2df69e68309ed0a08"
 
 [[package]]
 name = "mem6"
-version = "2020.415.1922"
+version = "2020.1228.1938"
 dependencies = [
  "console_error_panic_hook",
  "conv",
@@ -679,7 +681,7 @@ dependencies = [
 
 [[package]]
 name = "mem6_common"
-version = "2020.322.1223"
+version = "2020.1228.1936"
 dependencies = [
  "serde",
  "serde_derive",
@@ -688,7 +690,7 @@ dependencies = [
 
 [[package]]
 name = "mem6_server"
-version = "2020.322.1224"
+version = "2020.1228.1953"
 dependencies = [
  "ansi_term 0.12.1",
  "clap",
