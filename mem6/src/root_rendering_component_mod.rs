@@ -37,10 +37,9 @@ impl RootRenderingComponent {
         }
     }
 
-    /// start websocket and store in web_data and web_rtc_data
+    /// start websocket and store in web_data 
     pub fn start_websocket(&mut self, vdom: VdomWeak) {
         self.web_data.start_websocket(vdom);
-        self.web_data.web_rtc_data.rtc_ws = self.web_data.websocket_data.ws.clone();
     }
 }
 

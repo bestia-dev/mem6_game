@@ -21,8 +21,6 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             "is_first_player" => self.game_data.my_player_number == 1,
             "player_joined" => self.game_data.players.len() > 1,
             "sounds_and_labels" => self.game_data.sounds_and_labels,
-            "is_rtc_data_channel_open"=> self.web_data.is_rtc_data_channel_open,
-            "is_not_rtc_data_channel_open"=> !self.web_data.is_rtc_data_channel_open,
             _ => {
                 let x = format!("Error: Unrecognized call_fn_boolean: \"{}\"", fn_name);
                 websysmod::debug_write(&x);
@@ -44,7 +42,6 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             "blink_or_not_nickname" => storagemod::blink_or_not_nickname(self),
             "blink_or_not_group_id" => blink_or_not_group_id(self),
             "my_ws_uid" => format!("{}", self.web_data.my_ws_uid),
-            "receiver_ws_uid" => format!("{}", self.web_data.rtc_receiver_ws_uid),
             "players_count" => format!("{} ", self.game_data.players.len() - 1),
             "game_name" => self.game_data.game_name.to_string(),
             "group_id" => self.game_data.group_id.to_string(),
@@ -147,25 +144,6 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 }
                 "debug_log" => {
                     websysmod::open_new_tab("#p31");
-                }
-                "webrtc" => {
-                    open_new_local_page("#p41");
-                }
-                "web_rtc_receiver_ws_uid_onkeyup" => {
-                    let v2 = vdom.clone();
-                    webrtcmod::web_rtc_receiver_ws_uid_onkeyup(v2,rrc,event);
-                }
-                "web_rtc_start" => {
-                    let v2 = vdom.clone();
-                    webrtcmod::web_rtc_start(v2, rrc);
-                }
-                "web_rtc_chat_text_onkeyup" => {
-                    let v2 = vdom.clone();
-                    webrtcmod::web_rtc_chat_text_onkeyup(v2,rrc,event);
-                }
-                "web_rtc_send_chat" => {
-                    let v2 = vdom.clone();
-                    webrtcmod::web_rtc_send_chat(v2,rrc);
                 }
                 "start_a_group_onclick" => {
                     let v2 = vdom.clone();
@@ -303,9 +281,6 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
         match fn_name {
             "div_grid_all_items" => {
                 return divgridcontainermod::div_grid_all_items(self, cx);
-            }
-            "web_rtc_div_messages" => {
-                return webrtcmod::web_rtc_div_messages(self, cx);
             }
             _ => {
                 let node = ElementBuilder::new(bump, "h2")

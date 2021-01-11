@@ -26,8 +26,6 @@ pub struct MsgInQueue {
 pub struct WebData {
     /// websocket data
     pub websocket_data: websocket_boiler_mod::WebSocketData,
-    /// data for web rtc communication
-    pub web_rtc_data: webrtc_impl_mod::WebRtcData,
     /// downloaded html template for main page
     pub html_template: String,
     /// vector of named sub_templates <template name=xxx>...</template>
@@ -55,11 +53,9 @@ impl WebData {
     /// constructor
     pub fn new(my_ws_uid: usize, msg_receivers_json: String) -> Self {
         let websocket_data = websocket_boiler_mod::WebSocketData::new();
-        let web_rtc_data = webrtc_impl_mod::WebRtcData::new(my_ws_uid);
         // return from constructor
         WebData {
             websocket_data,
-            web_rtc_data,
             html_template: "".to_owned(),
             html_sub_templates: vec![],
             is_reconnect: false,

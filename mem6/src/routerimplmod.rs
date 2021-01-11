@@ -63,11 +63,6 @@ impl routermod::Routing for Router {
             rrc.web_data.local_route = "p21_menu.html".to_owned();
         } else if local_route == "#p31" {
             rrc.web_data.local_route = "p31_debug_text.html".to_owned();
-        } else if local_route == "#p41" {
-            // entry point for webrtc chat
-            let v2 = vdom.clone();
-            rrc.web_data.start_websocket(v2);
-            rrc.web_data.local_route = "p41_webrtc.html".to_owned();
         } else {
             // main entry point
             rrc.web_data.local_route = "p01_start.html".to_owned();

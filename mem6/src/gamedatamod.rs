@@ -249,14 +249,6 @@ pub enum WsMessageGameData {
         /// game status (isize is the enum variant datatype)
         game_status: String,
     },
-    /// webrtc offer msg
-    MsgWebrtcOffer { sdp: String },
-    /// webrtc answer msg
-    MsgWebrtcAnswer { sdp: String },
-    /// webrtc answer msg
-    MsgWebrtcIceCandidate { sdp: String },
-    // chat msg to send over webrtc
-    //MsgWebrtcChatMsg { text: String },
 }
 
 #[derive(Display, AsRefStr, Serialize, Deserialize, Clone)]

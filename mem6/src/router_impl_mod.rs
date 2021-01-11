@@ -79,10 +79,6 @@ impl RouterTrait for Router {
             self.file_name_to_fetch = "p21_menu.html".to_owned();
         } else if location_hash == "#p31" {
             self.file_name_to_fetch = "p31_debug_text.html".to_owned();
-        } else if location_hash == "#p41" {
-            // entry point for webrtc chat
-            rrc.start_websocket(vdom.clone());
-            self.file_name_to_fetch = "p41_webrtc.html".to_owned();
         } else {
             // unknown hash route
             self.file_name_to_fetch = "unknown_hash_route.html".to_owned();

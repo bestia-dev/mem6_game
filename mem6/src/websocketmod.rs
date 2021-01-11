@@ -304,24 +304,6 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: VdomWeak) {
                                             );
                                             vdom.schedule_render();
                                         }
-                                        WsMessageGameData::MsgWebrtcOffer{
-                                            sdp
-                                        }=>{
-                                            let v2=vdom.clone();
-                                            webrtcmod::web_rtc_receive_offer(v2,rrc,sdp, msg.msg_sender_ws_uid);
-                                        }
-                                        WsMessageGameData::MsgWebrtcAnswer{
-                                            sdp
-                                        }=>{
-                                            let v2=vdom.clone();
-                                            webrtcmod::web_rtc_receive_answer(v2,rrc,sdp);
-                                        }
-                                        WsMessageGameData::MsgWebrtcIceCandidate{
-                                            sdp
-                                        }=>{
-                                            let v2=vdom.clone();
-                                            webrtcmod::web_rtc_receive_ice_candidate(v2,rrc,sdp);
-                                        }
                                     }
                                 }
                             })

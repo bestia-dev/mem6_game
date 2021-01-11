@@ -71,8 +71,8 @@ This is very similar to a message queue...
 ## gRPC, WebRTC datachannel
 
 The new shiny protocol gRPC for web communication is great for server-to-server communication. But it is still very limited inside the browser. When it eventually becomes stable I would like to change WebSockets for gRPC.  
-The WebRTC datachannel sounds great for peer-to-peer communication. Very probably the players will be all on the same wifi network, this solves all latency issues.  
-TODO: try to add this to version 6.  
+The WebRTC data_channel sounds great for peer-to-peer communication. Very probably the players will be all on the same wifi network, this solves all latency issues.  
+I will add this to version 7.  
 
 ## The game flow
 
@@ -221,28 +221,3 @@ The downloaded file has the name "synthesize" with no extension. I think it is i
 I open the file in Audacity. Ctrl+A to select the track. Then Analyze - Silence Finder. Tweak a little with the settings.  
 When I'm happy with the result then File - Export -Export Multiple as mp3.  
 Finally I rename the files to match the names in the game_config.json file.  
-
-## TURN and STUN server
-
-WebRtc needs somewhere a STUN and TURN server.  
-STUN is the older server, that replies the external ip and port of the request.  
-So the WebRtc client can produce another IceCandidate to test the connectivity.  
-TURN server is a more advanced STUN server that is also able to relay all the message traffic
-through the server instead of peer-to-peer. Not something that anybody wants, but sometimes
-there is no possible to make a peer-to-peer connection.  
-Here is the description of installation on my server:  
-<https://stackoverflow.com/questions/22233980/implementing-our-own-stun-turn-server-for-webrtc-application>  
-
-```
-sudo apt-get update
-sudo apt-get install stuntman-server
-screen -S stunserver
-sudo ifconfig
-  find the external address and use it in the next command
-sudo stunserver --mode full --primaryinterface 10.138.0.2
-```
-
-Open <https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/> 
-to test your STUN server:  
-`stun:stun.bestia.dev`  
-GoogleCloud has only ipv4. So there is no ipv6 at all.  

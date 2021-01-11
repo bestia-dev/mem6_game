@@ -153,7 +153,6 @@ From here we then call functions to render different UI depending on the data st
 ```rust
     pub fn start_websocket(&mut self, vdom: VdomWeak) {
         self.web_data.start_websocket(vdom);
-        self.web_data.web_rtc_data.rtc_ws = self.web_data.websocket_data.ws.clone();
     }
 }
 
@@ -180,7 +179,6 @@ rust_wasm_websys_utils = "0.4.2"
 rust_wasm_dodrio_router = { path = "../../rust_wasm_dodrio_router" }
 rust_wasm_dodrio_templating = { path = "../../rust_wasm_dodrio_templating" }
 rust_wasm_websocket = { path = "../../rust_wasm_websocket" }
-rust_wasm_webrtc = { path = "../../rust_wasm_webrtc" }
 #qrcode53bytes = { path = "../../qrcode53bytes" }
 qrcode53bytes ="1.0.0"
 # endregion: my dependencies
@@ -197,7 +195,6 @@ So we can follow the codeflow and change something if we need to.
 rust_wasm_dodrio_router = { path = "../../rust_wasm_dodrio_router" }
 rust_wasm_dodrio_templating = { path = "../../rust_wasm_dodrio_templating" }
 rust_wasm_websocket = { path = "../../rust_wasm_websocket" }
-rust_wasm_webrtc = { path = "../../rust_wasm_webrtc" }
 #qrcode53bytes = { path = "../../qrcode53bytes" }
 qrcode53bytes ="1.0.0"
 # endregion: my dependencies

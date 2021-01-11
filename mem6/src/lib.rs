@@ -278,7 +278,6 @@ mod statusreconnectmod;
 mod routerimplmod;
 mod htmltemplateimplmod;
 mod webdatamod;
-mod webrtcmod;
 // endregion
 
 // this are then used in all the mods if I have there use crate::*;

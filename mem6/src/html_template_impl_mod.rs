@@ -2,7 +2,6 @@
 
 use crate::*;
 use crate::htmltemplatemod::HtmlTemplating;
-use rust_wasm_webrtc::webrtcmod::WebRtcTrait;
 
 use unwrap::unwrap;
 //use wasm_bindgen::{JsCast};
@@ -22,8 +21,6 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             "is_first_player" => self.game_data.my_player_number == 1,
             "player_joined" => self.game_data.players.len() > 1,
             "sounds_and_labels" => self.game_data.sounds_and_labels,
-            "rtc_is_data_channel_open" => self.web_data.web_rtc_data.rtc_is_data_channel_open,
-            "is_not_rtc_data_channel_open" => !self.web_data.web_rtc_data.rtc_is_data_channel_open,
             _ => {
                 let x = format!("Error: Unrecognized call_fn_boolean: \"{}\"", fn_name);
                 websysmod::debug_write(&x);
@@ -45,7 +42,6 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
             "blink_or_not_nickname" => storage_mod::blink_or_not_nickname(self),
             "blink_or_not_group_id" => blink_or_not_group_id(self),
             "my_ws_uid" => format!("{}", self.web_data.my_ws_uid),
-            "receiver_ws_uid" => format!("{}", self.web_data.web_rtc_data.rtc_receiver_ws_uid),
             "players_count" => format!("{} ", self.game_data.players.len() - 1),
             "game_name" => self.game_data.game_name.to_string(),
             "group_id" => self.game_data.group_id.to_string(),
@@ -149,23 +145,6 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                 }
                 "debug_log" => {
                     websysmod::open_new_tab("#p31");
-                }
-                "webrtc" => {
-                    open_new_local_page("#p41");
-                }
-                "web_rtc_receiver_ws_uid_onkeyup" => {
-                    webrtc_impl_mod::web_rtc_receiver_ws_uid_onkeyup(vdom, rrc, event);
-                }
-                "web_rtc_start" => {
-                    rrc.web_data
-                        .web_rtc_data
-                        .web_rtc_start(vdom, unwrap!(rrc.web_data.websocket_data.ws.clone()));
-                }
-                "web_rtc_chat_text_onkeyup" => {
-                    webrtc_impl_mod::web_rtc_chat_text_onkeyup(vdom, rrc, event);
-                }
-                "web_rtc_send_chat" => {
-                    rrc.web_data.web_rtc_data.web_rtc_send_chat(vdom);
                 }
                 "start_a_group_onclick" => {
                     // entry point for the game
@@ -304,9 +283,6 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
         match fn_name {
             "div_grid_all_items" => {
                 return div_grid_container_mod::div_grid_all_items(self, cx);
-            }
-            "web_rtc_div_messages" => {
-                return webrtc_impl_mod::web_rtc_div_messages(self, cx);
             }
             _ => {
                 let node = ElementBuilder::new(bump, "h2")

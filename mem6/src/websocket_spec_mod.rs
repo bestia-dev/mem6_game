@@ -5,7 +5,6 @@
 
 // region: use
 use crate::*;
-use rust_wasm_webrtc::webrtcmod::{WebRtcTrait};
 
 //use unwrap::unwrap;
 use dodrio::{VdomWeak};
@@ -147,21 +146,6 @@ pub fn match_msg_and_call_function( vdom: VdomWeak,rrc:&mut RootRenderingCompone
                 game_status,
             );
             vdom.schedule_render();
-        }
-        WsMessageGameData::MsgWebrtcOffer{
-            sdp
-        }=>{
-            rrc.web_data.web_rtc_data.web_rtc_receive_offer(vdom.clone(),sdp, msg.msg_sender_ws_uid);
-        }
-        WsMessageGameData::MsgWebrtcAnswer{
-            sdp
-        }=>{
-            rrc.web_data.web_rtc_data.web_rtc_receive_answer(vdom.clone(),sdp);
-        }
-        WsMessageGameData::MsgWebrtcIceCandidate{
-            sdp
-        }=>{
-            rrc.web_data.web_rtc_data.web_rtc_receive_ice_candidate(vdom.clone(),sdp);
         }
     }
 }
