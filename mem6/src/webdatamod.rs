@@ -21,12 +21,6 @@ pub struct MsgInQueue {
     /// the content of the message if it needs to be resend
     pub msg: websocketmod::WsMessageForReceivers,
 }
-/// one chat message looks like this
-pub struct ChatMessage{
-    pub time:usize,
-    pub sender:usize,
-    pub msg:String,
-}
 /// game data
 pub struct WebData {
     /// web socket communication between players

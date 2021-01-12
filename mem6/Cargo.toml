@@ -1,6 +1,6 @@
 [package]
 name = "mem6"
-version = "2021.111.1829"
+version = "2021.112.1454"
 authors = ["Luciano Furlan <Luciano.Bestia@gmail.com>"]
 edition = "2018"
 description = "Learning Rust Wasm/WebAssembly with Virtual Dom Dodrio"
@@ -15,35 +15,41 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
-unwrap = "1.2.1"
+# dep from this workspace with path
 mem6_common = { path = "../mem6_common" }
 dodrio_templating = { path = "../dodrio_templating" }
-#qrcode53bytes = { path = "../../qrcode53bytes" }
-qrcode53bytes ="1.0.0"
+
+# dep to my lib from crates.io
+qrcode53bytes ="1.1.0"
+# later versions of reader_for_microxml have breaking changes
+reader_for_microxml = "1.0.4"
+
+wasm-bindgen = { version = "0.2.69", features = ["serde-serialize"] }
+wasm-bindgen-futures = "0.4.19"
+js-sys = "0.3"
+unwrap = "1.2.1"
 dodrio = "0.2.0"
+console_error_panic_hook = "0.1.6"
+getrandom = { version = "0.2.1", features = ["js"]}
+rand = { version = "0.8.1", features = ["small_rng"] }
+serde ="1.0.119"
+serde_derive = "1.0.119"
+serde_json = "1.0"
+strum = "0.20.0"
+strum_macros = "0.20.1"
+conv = "0.3.3"
+gloo-timers = {version="0.2.1", features=["futures"]}
+
+# temporary debugging dependencies
+#qrcode53bytes = { path = "../../qrcode53bytes" }
 #dodrio =  { git = "https://github.com/fitzgen/dodrio", branch = "master" }
 #dodrio = {path = "../../dodrio"}
-wasm-bindgen = { version = "0.2.58", features = ["serde-serialize"] }
-console_error_panic_hook = "0.1.6"
-#newer version of rand do not have smallring
-rand = { version = "0.7.3", features = ["wasm-bindgen","small_rng"] }
-js-sys = "0.3"
-serde ="1.0.104"
-serde_derive = "1.0.104"
-serde_json = "1.0"
-#udep futures = "0.3.1"
-# newer futures have unstable .await
-wasm-bindgen-futures = "0.4.8"
 #log = "0.4.8"
-strum = "0.17.1"
-strum_macros = "0.17.1"
-conv = "0.3.3"
-gloo-timers = {version="0.2.0", features=["futures"]}
-reader_for_microxml = "1.0.4"
 #udep mopa = "0.2.2"
+#udep futures = "0.3.1"
 
 [dependencies.web-sys]
-version = "0.3.33"
+version = "0.3.46"
 features = [
   "AbortController",
   "console",
@@ -87,7 +93,7 @@ features = [
 ]
 
 [dev-dependencies]
-wasm-bindgen-test = "0.3.8"
+wasm-bindgen-test = "0.3.19"
 
 [profile.release]
 panic = "abort"

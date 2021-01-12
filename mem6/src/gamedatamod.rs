@@ -343,7 +343,7 @@ impl GameData {
             // a do-while is written as a  loop-break
             loop {
                 // gen_range is lower inclusive, upper exclusive 26 + 1
-                num = rng.gen_range(1, unwrap!(item_count_minus_one.checked_add(1)));
+                num = rng.gen_range(1..=item_count_minus_one);
                 if !vec_of_random_numbers.contains(&num) {
                     break;
                 }
@@ -502,12 +502,4 @@ impl GameData {
     pub fn get_2nd_card_mut(&mut self) -> &mut Card {
         unwrap!(self.card_grid_data.get_mut(self.card_index_of_2nd_click))
     }
-}
-
-/// prepare json string for one ws receiver
-pub fn prepare_json_msg_receivers_for_one(receiver_ws_uid: usize) -> String {
-    let mut vec_msg_receivers = Vec::new();
-    vec_msg_receivers.push(receiver_ws_uid);
-    // return
-    unwrap!(serde_json::to_string(&vec_msg_receivers))
 }

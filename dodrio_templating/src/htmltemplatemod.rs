@@ -4,7 +4,6 @@
 //! implement the trait HtmlTemplating
 
 // region: use
-use reader_for_microxml::*;
 use dodrio::{
     Node, Listener, Attribute, RenderContext, RootRender,
     bumpalo::{self},
@@ -49,14 +48,15 @@ pub trait HtmlTemplating {
         html_template: &str,
         html_or_svg_parent: HtmlOrSvg,
     ) -> Result<Node<'a>, String> {
-        let mut reader_for_microxml = ReaderForMicroXml::new(html_template);
+        let mut reader_for_microxml = reader_for_microxml::ReaderForMicroXml::new(html_template);
         let mut dom_path = Vec::new();
         let mut root_element;
         let mut html_or_svg_local = html_or_svg_parent;
         let bump = cx.bump;
+        
         #[allow(clippy::single_match_else, clippy::wildcard_enum_match_arm)]
         match reader_for_microxml.read_event() {
-            Event::StartElement(name) => {
+            reader_for_microxml::Event::StartElement(name) => {
                 dom_path.push(name.to_owned());
                 let name = bumpalo::format!(in bump, "{}",name).into_bump_str();
                 root_element = ElementBuilder::new(bump, name);
@@ -97,7 +97,7 @@ pub trait HtmlTemplating {
     #[allow(clippy::too_many_lines, clippy::type_complexity)]
     fn fill_element_builder<'a>(
         &self,
-        reader_for_microxml: &mut ReaderForMicroXml,
+        reader_for_microxml: &mut reader_for_microxml::ReaderForMicroXml,
         mut element: ElementBuilder<
             'a,
             bumpalo::collections::Vec<'a, Listener<'a>>,
@@ -127,7 +127,7 @@ pub trait HtmlTemplating {
             // the children inherits html_or_svg from the parent, but cannot change the parent
             html_or_svg_local = html_or_svg_parent;
             match reader_for_microxml.read_event() {
-                Event::StartElement(name) => {
+                reader_for_microxml::Event::StartElement(name) => {
                     dom_path.push(name.to_owned());
                     // construct a child element and fill it (recursive)
                     let name = bumpalo::format!(in bump, "{}",name).into_bump_str();
@@ -170,7 +170,7 @@ pub trait HtmlTemplating {
                         replace_boolean = None;
                     }
                 }
-                Event::Attribute(name, value) => {
+                reader_for_microxml::Event::Attribute(name, value) => {
                     if name.starts_with("data-t-") {
                         // the rest of the name does not matter.
                         // The replace_string will always be applied to the next attribute.
@@ -203,7 +203,7 @@ pub trait HtmlTemplating {
                         element = element.attr(name, value2);
                     }
                 }
-                Event::TextNode(txt) => {
+                reader_for_microxml::Event::TextNode(txt) => {
                     let txt2;
                     if let Some(repl) = replace_string {
                         txt2 =
@@ -219,7 +219,7 @@ pub trait HtmlTemplating {
                     // only minimum html entities are decoded
                     element = element.child(text(txt2));
                 }
-                Event::Comment(txt) => {
+                reader_for_microxml::Event::Comment(txt) => {
                     // the main goal of comments is to change the value of the next text node
                     // with the result of a function
                     // it must look like <!--t=get_text-->
@@ -244,7 +244,7 @@ pub trait HtmlTemplating {
                         // nothing. it is really a comment
                     }
                 }
-                Event::EndElement(name) => {
+                reader_for_microxml::Event::EndElement(name) => {
                     let last_name = unwrap!(dom_path.pop());
                     // it can be also auto-closing element
                     if last_name == name || name == "" {
@@ -256,10 +256,10 @@ pub trait HtmlTemplating {
                         ));
                     }
                 }
-                Event::Error(error_msg) => {
+                reader_for_microxml::Event::Error(error_msg) => {
                     return Err(error_msg.to_string());
                 }
-                Event::Eof => {
+                reader_for_microxml::Event::Eof => {
                     return Ok(element);
                 }
             }
