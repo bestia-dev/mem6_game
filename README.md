@@ -1,12 +1,11 @@
 # unForGetTable (development name: mem6)
 
+**Learning Rust Wasm/WebAssembly, Virtual Dom Dodrio, WebSocket communication and PWA (Progressive Web Apps) - part six**  
+**A drinking game to lose memory...**  
+***version: 6.0  date: 2020-04-11 author: [Dev_Bestia](https://bestia.dev) repository: [GitHub](https://github.com/LucianoBestia/mem6)***  
+
 ![loc](https://img.shields.io/badge/lines_of_Rust_code-3129-success)
 ![loc](https://img.shields.io/badge/lines_of_docs/comments-1335-informational)
-
-a drinking game to lose memory  
-
-**Learning Rust Wasm/WebAssembly, Virtual Dom Dodrio, WebSocket communication and PWA (Progressive Web Apps) - part six**  
-*Things are changing fast. This is the situation on 2020-04-11.*
 
 ## Documentation
 
