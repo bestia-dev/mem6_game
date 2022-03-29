@@ -3,7 +3,7 @@
 
 The funny game unForGetTable (development name mem6)
 is a PWA - progressive web app.  
-<https://github.com/LucianoBestia/mem6_game>  
+<https://github.com/bestia-dev/mem6_game>  
 It works completely in the browser with wasm/webassembly.  
 The web server is not really important.  
 It is just a web file server and a simple websocket server

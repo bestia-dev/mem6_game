@@ -2,7 +2,7 @@
 
 **Learning Rust Wasm/WebAssembly, Virtual Dom Dodrio, WebSocket communication and PWA (Progressive Web Apps) - part six**  
 **A drinking game to lose memory...**  
-***version: 6.0  date: 2020-04-11 author: [Dev_Bestia](https://bestia.dev) repository: [GitHub](https://github.com/LucianoBestia/mem6)***  
+***version: 6.0  date: 2020-04-11 author: [bestia.dev](https://bestia.dev) repository: [GitHub](https://github.com/bestia-dev/mem6)***  
 
 ![loc](https://img.shields.io/badge/lines_of_Rust_code-3129-success)
 ![loc](https://img.shields.io/badge/lines_of_docs/comments-1335-informational)
@@ -10,7 +10,7 @@
 ## Documentation
 
 Documentation generated from source code:  
-<https://lucianobestia.github.io/mem6_game/mem6/index.html>  
+<https://bestia-dev.github.io/mem6_game/mem6/index.html>  
 The workspace mem6_game is made of projects:  
 
 1. Wasm/WebAssembly (for browsers) frontend - mem6  
@@ -21,12 +21,12 @@ The workspace mem6_game is made of projects:
 Every project has its own readme.md.  
 
 - [mem6/README.md](
-https://github.com/LucianoBestia/mem6_game/blob/master/mem6/README.md)  
-- [mem6_common/README.md](https://github.com/LucianoBestia/mem6_game/blob/master/mem6_common/README.md)  
-- [mem6_server/README.md](https://github.com/LucianoBestia/mem6_game/blob/master/mem6_server/README.md)  
+https://github.com/bestia-dev/mem6_game/blob/master/mem6/README.md)  
+- [mem6_common/README.md](https://github.com/bestia-dev/mem6_game/blob/master/mem6_common/README.md)  
+- [mem6_server/README.md](https://github.com/bestia-dev/mem6_game/blob/master/mem6_server/README.md)  
   
 Read also my `Previous projects` on Github:  
-<https://github.com/LucianoBestia/mem5_game>  
+<https://github.com/bestia-dev/mem5_game>  
 
 ## Working game server
 
@@ -51,4 +51,4 @@ I prepared some flows and tasks for Cargo make for the workspace.
 
 ## TODO and CHANGELOG
 
-Read files [TODO.md](https://github.com/LucianoBestia/mem6_game/blob/master/TODO.md) and [CHANGELOG.md](https://github.com/LucianoBestia/mem6_game/blob/master/CHANGELOG.md).  
+Read files [TODO.md](https://github.com/bestia-dev/mem6_game/blob/master/TODO.md) and [CHANGELOG.md](https://github.com/bestia-dev/mem6_game/blob/master/CHANGELOG.md).  

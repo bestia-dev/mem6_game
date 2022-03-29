@@ -7,7 +7,7 @@ A simple web file server is enough.
 Warning: the index.html cannot be served from local file without a server, because importing modules is not allowed then for security reasons.
 I will try to use only Rust+Wasm and avoid JavaScript as much as possible.
 
-##### step 1 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/webfolder/mem6/index.html#L82)
+##### step 1 of 18 [View code in GitHub](https://github.com/bestia-dev/mem6_game/blob/master/webfolder/mem6/index.html#L82)
 ```html
                   the game...<br>
                   This is <br>
@@ -28,7 +28,7 @@ Rust is a great language to compile to Wasm/WebAssembly.
 With the use of libraries wasm_bindgen, web_sys and js_sys Rust has access to the browser javascript environment. So it can do most of the things that JavaScript can do.  
 The imported Wasm module will automatically start the function with attribute `#[wasm_bindgen(start)]`. This function is called only once. 
 
-##### step 2 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/lib.rs#L299)
+##### step 2 of 18 [View code in GitHub](https://github.com/bestia-dev/mem6_game/blob/master/mem6/src/lib.rs#L299)
 ```rust
 use crate::root_rendering_component_mod::RootRenderingComponent;
 use crate::game_data_mod::*;
@@ -48,7 +48,7 @@ use wasm_bindgen::prelude::*;
 The Rust code will change just the content of the \<div id="div_for_virtual_dom"\>. 
 This is a "single page web app". For the browser the index.html is always the same, we only change the interior content of it's dom. 
 
-##### step 3 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/lib.rs#L306)
+##### step 3 of 18 [View code in GitHub](https://github.com/bestia-dev/mem6_game/blob/master/mem6/src/lib.rs#L306)
 ```rust
 #[wasm_bindgen(start)]
 #[allow(clippy::shadow_same)]
@@ -68,7 +68,7 @@ pub fn wasm_bindgen_start() -> Result<(), JsValue> {
 This div is the only part of the index.html that will be dynamically changed by the Rust code.  
 The download of a big wasm file can take some time on slow network. It is nice to warn the user about that.  
 
-##### step 4 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/webfolder/mem6/index.html#L77)
+##### step 4 of 18 [View code in GitHub](https://github.com/bestia-dev/mem6_game/blob/master/webfolder/mem6/index.html#L77)
 ```html
 #//---------------------- selection start ----------------------
       <!-- display a text while waiting for wasm download. It can take some time. -->
@@ -88,7 +88,7 @@ The download of a big wasm file can take some time on slow network. It is nice t
 Wasm is using the javascript engine deep inside.  
 If JavaScript is disabled, also wasm cannot run.  
 
-##### step 5 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/webfolder/mem6/index.html#L66)
+##### step 5 of 18 [View code in GitHub](https://github.com/bestia-dev/mem6_game/blob/master/webfolder/mem6/index.html#L66)
 ```html
       <script src="start_service_worker.js"></script>
 #//---------------------- selection start ----------------------
@@ -108,7 +108,7 @@ If JavaScript is disabled, also wasm cannot run.
  After preparing the environment (websocket, RootRenderingComponent, vdom, fetch config data) I start the router. It will listen to the event `hashchange`.  
  For example when the URL changes to index.html#p04.
 
-##### step 6 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/lib.rs#L325)
+##### step 6 of 18 [View code in GitHub](https://github.com/bestia-dev/mem6_game/blob/master/mem6/src/lib.rs#L325)
 ```rust
     // Mount the component to the `<div id="div_for_virtual_dom">`.
     let vdom_object = dodrio::Vdom::new(&div_for_virtual_dom, rrc);
@@ -128,7 +128,7 @@ If JavaScript is disabled, also wasm cannot run.
 The location_hash (url hash) `ex. #p04` defines a `file_name_to_fetch`. This is the name of the html template to fetch from the web server. Than it is prepared and saved in html_template sub_templates fields.
 The data in the struct is prepared, finally we call `vdom.schedule_render();`.
 
-##### step 7 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/router_impl_mod.rs#L45)
+##### step 7 of 18 [View code in GitHub](https://github.com/bestia-dev/mem6_game/blob/master/mem6/src/router_impl_mod.rs#L45)
 ```rust
         //return
         &self.file_name_to_fetch
@@ -149,7 +149,7 @@ This is the only method that is called when the rendering is scheduled.
 It is defined in the crate `dodrio: the vdom library`.   
 From here we then call functions to render different UI depending on the data state. 
 
-##### step 8 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/root_rendering_component_mod.rs#L51)
+##### step 8 of 18 [View code in GitHub](https://github.com/bestia-dev/mem6_game/blob/master/mem6/src/root_rendering_component_mod.rs#L51)
 ```rust
     pub fn start_websocket(&mut self, vdom: VdomWeak) {
         self.web_data.start_websocket(vdom);
@@ -171,7 +171,7 @@ It is easier to think about the dom as a "state machine". The virtual dom is ren
 Then the original dom is modified to resemble the vdom. Modifying the dom is slow. To make it efficient, there is some smart caching and diff-ing in the library, to make the number of changes as small and efficient as possible.  
 In this way we have a clear separation between data (RootRenderingComponent) and UI (code to render html virtual dom).  
 
-##### step 9 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/Cargo.toml#L29)
+##### step 9 of 18 [View code in GitHub](https://github.com/bestia-dev/mem6_game/blob/master/mem6/Cargo.toml#L29)
 ```toml
 # region: my dependencies
 rust_wasm_websys_utils = "0.4.2"
@@ -189,7 +189,7 @@ If the newest version of dodrio on crates.io is not actual enought,
 in cargo.toml we can depend on github or local path also.  
 So we can follow the codeflow and change something if we need to.  
 
-##### step 10 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/Cargo.toml#L31)
+##### step 10 of 18 [View code in GitHub](https://github.com/bestia-dev/mem6_game/blob/master/mem6/Cargo.toml#L31)
 ```toml
 # rust_wasm_websys_utils = { path = "../../rust_wasm_websys_utils" }
 rust_wasm_dodrio_router = { path = "../../rust_wasm_dodrio_router" }
@@ -211,7 +211,7 @@ Inside the event code we don't bother about the dom change !
 We have a clear separation between data and User-Interface because of that.  
 
 
-##### step 11 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/root_rendering_component_mod.rs#L22)
+##### step 11 of 18 [View code in GitHub](https://github.com/bestia-dev/mem6_game/blob/master/mem6/src/root_rendering_component_mod.rs#L22)
 ```rust
 
 #//---------------------- selection start ----------------------
@@ -232,7 +232,7 @@ The function `render_template` will read the html of the template and create dod
 The result is the `dodrio:Node` that represents the vdom.  
 The vdom library then diffs and modify the real dom.  
 
-##### step 12 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/root_rendering_component_mod.rs#L64)
+##### step 12 of 18 [View code in GitHub](https://github.com/bestia-dev/mem6_game/blob/master/mem6/src/root_rendering_component_mod.rs#L64)
 ```rust
         // html fragment from html_template defined in # file_name_to_fetch
         if self.web_data.html_template.is_empty() {
@@ -251,7 +251,7 @@ The vdom library then diffs and modify the real dom.
 ### templating variables
 Here we can see a html template with the replace `comments` ex. \<!--t=game_name--\> and `data- attributes` ex. `data-on-click="game_type_left_onclick"`.
 
-##### step 13 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/webfolder/mem6/p05_choose_game.html#L23)
+##### step 13 of 18 [View code in GitHub](https://github.com/bestia-dev/mem6_game/blob/master/webfolder/mem6/p05_choose_game.html#L23)
 ```html
   <link rel="stylesheet" href="css/mem6.css">
 </head>
@@ -270,7 +270,7 @@ Here we can see a html template with the replace `comments` ex. \<!--t=game_name
 ### call_fn_string
 This fn will replace the next text element after \<!--t=fn_name--\> or the next attribute value after `data-t-style="fn_name"` with a string.
 
-##### step 14 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/html_template_impl_mod.rs#L41)
+##### step 14 of 18 [View code in GitHub](https://github.com/bestia-dev/mem6_game/blob/master/mem6/src/html_template_impl_mod.rs#L41)
 ```rust
             }
         }
@@ -289,7 +289,7 @@ This fn will replace the next text element after \<!--t=fn_name--\> or the next 
 ### call_fn_node
 This fn will replace the next element after \<!--n=fn_name--\> with a Node.
 
-##### step 15 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/html_template_impl_mod.rs#L261)
+##### step 15 of 18 [View code in GitHub](https://github.com/bestia-dev/mem6_game/blob/master/mem6/src/html_template_impl_mod.rs#L261)
 ```rust
                 _ => {
                     let x = format!("Error: Unrecognized call_fn_listener: \"{}\"", fn_name);
@@ -308,7 +308,7 @@ This fn will replace the next element after \<!--n=fn_name--\> with a Node.
 ### call_fn_vec_nodes
 This fn will replace the next element after \<!--vn=fn_name--\> with a Vector of Nodes.
 
-##### step 16 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/html_template_impl_mod.rs#L296)
+##### step 16 of 18 [View code in GitHub](https://github.com/bestia-dev/mem6_game/blob/master/mem6/src/html_template_impl_mod.rs#L296)
 ```rust
                     )])
                     .finish();
@@ -327,7 +327,7 @@ This fn will replace the next element after \<!--vn=fn_name--\> with a Vector of
 ### call_fn_boolean
 This fn will remove the next element after \<!--b=fn_name--\> if the result is `false`.
 
-##### step 17 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/html_template_impl_mod.rs#L19)
+##### step 17 of 18 [View code in GitHub](https://github.com/bestia-dev/mem6_game/blob/master/mem6/src/html_template_impl_mod.rs#L19)
 ```rust
 use dodrio::{
     Node, RenderContext, RootRender,
@@ -346,7 +346,7 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
 ### call_fn_listener
 This fn will add a listener to the element after `data-on-click="fn_name"`.
 
-##### step 18 of 18 [View code in GitHub](https://github.com/LucianoBestia/mem6_game/blob/master/mem6/src/html_template_impl_mod.rs#L98)
+##### step 18 of 18 [View code in GitHub](https://github.com/bestia-dev/mem6_game/blob/master/mem6/src/html_template_impl_mod.rs#L98)
 ```rust
             _ => {
                 let x = format!("Error: Unrecognized call_fn_string: \"{}\"", fn_name);

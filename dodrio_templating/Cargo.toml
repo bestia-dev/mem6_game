@@ -1,10 +1,10 @@
 [package]
 name = "dodrio_templating"
 version = "2020.218.1306"
-authors = ["Luciano Furlan <Luciano.Bestia@gmail.com>"]
+authors = ["Luciano Furlan <info@bestia.dev>"]
 edition = "2018"
 description = "html templating for dodrio"
-repository = "https://github.com/LucianoBestia/dodrio_templating"
+repository = "https://github.com/bestia-dev/dodrio_templating"
 readme = "README.md"
 license = "MIT"
 keywords = ["wasm","dodrio","virtual dom"]
