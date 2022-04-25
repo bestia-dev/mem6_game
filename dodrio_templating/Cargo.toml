@@ -1,7 +1,7 @@
 [package]
 name = "dodrio_templating"
 version = "2020.218.1306"
-authors = ["Luciano Furlan <info@bestia.dev>"]
+authors = ["bestia.dev"]
 edition = "2018"
 description = "html templating for dodrio"
 repository = "https://github.com/bestia-dev/dodrio_templating"
