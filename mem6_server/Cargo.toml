@@ -3,6 +3,7 @@ name = "mem6_server"
 version = "2020.1228.1953" #no need for semver if it is not a library
 description = "server for the game mem6 http + WebSocket on the same port"
 authors = ["bestia.dev"]
+homepage = "https://bestia.dev"
 edition = "2018"
 license = "MIT"
 readme = "README.md"
