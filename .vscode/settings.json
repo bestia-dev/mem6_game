@@ -8,8 +8,8 @@
         "plaintext"
     ],
     "cSpell.words": [
-        "Seedable",
         "ackmsgmod",
+        "bestia",
         "cardfacedown",
         "columnsdelimiter",
         "conv",
@@ -22,6 +22,7 @@
         "divplayeractionsmod",
         "divplayersandscoresmod",
         "divrulesanddescriptionmod",
+        "Dodrio",
         "endindex",
         "errormod",
         "fetchmod",
@@ -51,6 +52,8 @@
         "rootrenderingcomponentmod",
         "routerimplmod",
         "routermod",
+        "rustlang",
+        "Seedable",
         "smallring",
         "spwloc",
         "startindex",
@@ -73,6 +76,7 @@
         "utilsmod",
         "vdomweak",
         "webdatamod",
+        "webfolder",
         "websocketcommunication",
         "websocketmod",
         "websysmod"
