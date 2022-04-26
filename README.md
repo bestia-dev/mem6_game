@@ -2,18 +2,11 @@
 
 **Learning Rust Wasm/WebAssembly, Virtual Dom Dodrio, WebSocket communication and PWA (Progressive Web Apps) - part six**  
 **A drinking game to lose memory...**  
-<<<<<<< HEAD
-<<<<<<< HEAD
 ***version: 6.0  date: 2020-04-11 author: [bestia.dev](https://bestia.dev) repository: [GitHub](https://github.com/bestia-dev/mem6)***  
-=======
-***version: 6.0  date: 2020-04-11 author: [Dev_Bestia](https://bestia.dev) repository: [GitHub](https://github.com/LucianoBestia/mem6_game)***  
->>>>>>> a7a7e54a633b59e8a5deeaa947d7da1dee520ffc
-=======
-***version: 6.0  date: 2020-04-11 author: [Dev_Bestia](https://bestia.dev) repository: [GitHub](https://github.com/LucianoBestia/mem6_game)***  
->>>>>>> a7a7e54a633b59e8a5deeaa947d7da1dee520ffc
 
 ![loc](https://img.shields.io/badge/lines_of_Rust_code-3129-success)
 ![loc](https://img.shields.io/badge/lines_of_docs/comments-1335-informational)
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fbestia-dev%2Fmem6_game&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
 
 ## Documentation
 
