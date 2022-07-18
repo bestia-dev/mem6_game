@@ -1,6 +1,6 @@
 # unForGetTable (development name: mem6_game)
 
-**Learning Rust Wasm/WebAssembly, Virtual Dom Dodrio, WebSocket communication and PWA (Progressive Web Apps) - part six**
+**Learning Rust Wasm/WebAssembly, Virtual Dom Dodrio, WebSocket communication and PWA (Progressive Web Apps) - part six**  
 ***version: 6.0  date: 2020-04-11 author: [bestia.dev](https://bestia.dev) repository: [GitHub](https://github.com/bestia-dev/mem6)***  
 
 ![loc](https://img.shields.io/badge/lines_of_Rust_code-3129-success)
