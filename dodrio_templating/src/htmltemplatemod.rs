@@ -5,10 +5,9 @@
 
 // region: use
 use dodrio::{
-    Node, Listener, Attribute, RenderContext, RootRender,
+    builder::{text, ElementBuilder},
     bumpalo::{self},
-    builder::{ElementBuilder, text},
-    VdomWeak,
+    Attribute, Listener, Node, RenderContext, RootRender, VdomWeak,
 };
 // use crate::*;
 use unwrap::unwrap;

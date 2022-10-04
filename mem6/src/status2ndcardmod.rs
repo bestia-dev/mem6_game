@@ -6,10 +6,10 @@
 // region: use
 use crate::*;
 
-use unwrap::unwrap;
-use dodrio::{RenderContext, Node, VdomWeak};
-use wasm_bindgen::JsCast;
 use crate::htmltemplatemod::HtmlTemplating;
+use dodrio::{Node, RenderContext, VdomWeak};
+use unwrap::unwrap;
+use wasm_bindgen::JsCast;
 // endregion
 
 /// on second click
@@ -31,6 +31,15 @@ pub fn on_click_2nd_card(
     let is_point = is_point(rrc);
     if is_point {
         update_click_2nd_card_flip_permanently(rrc, is_point);
+        // play_sound_for_drink()
+        // music must play here, because it must be initialized by a user interaction (click)
+        // randomly choose a link from rrc.audio
+        let num = websysmod::get_random(0, rrc.game_data.audio.len());
+        // prepare the audio element with src filename of mp3
+        #[allow(clippy::indexing_slicing)]
+        // indexing cannot panic if the random num is created from 0..len()
+        let src_mp3 = format!("audio/{}", rrc.game_data.audio[num]);
+        websysmod::play_music_player(&src_mp3);
     }
     let msg_id = ackmsgmod::prepare_for_ack_msg_waiting(rrc, vdom);
     let msg = websocketmod::WsMessageForReceivers {

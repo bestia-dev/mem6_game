@@ -3,8 +3,8 @@
 //! session_storage for ws_uid and debug_text
 
 use crate::*;
-use wasm_bindgen::JsCast; // don't remove this. It is needed for dyn_into.
 use unwrap::unwrap;
+use wasm_bindgen::JsCast; // don't remove this. It is needed for dyn_into.
 
 // region: my_ws_uid
 /// save my_ws_uid to session storage so we can restart the game and preserve the ws_uid

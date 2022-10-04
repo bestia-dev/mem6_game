@@ -4,10 +4,10 @@
 // region: use
 use crate::*;
 
-use serde_derive::{Serialize, Deserialize};
+use rand::{rngs::SmallRng, seq::SliceRandom, Rng, SeedableRng};
+use serde_derive::{Deserialize, Serialize};
+use strum_macros::{AsRefStr, Display, EnumString};
 use unwrap::unwrap;
-use rand::{rngs::SmallRng, seq::SliceRandom, SeedableRng, Rng};
-use strum_macros::{Display, AsRefStr, EnumString};
 //use strum::{EnumString};
 // endregion: use
 

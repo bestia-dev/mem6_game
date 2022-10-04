@@ -5,16 +5,15 @@
 #![allow(clippy::panic)]
 
 // region: use, const
-use crate::*;
 use crate::htmltemplatemod::HtmlTemplating;
+use crate::*;
 
-use unwrap::unwrap;
-use conv::{ConvUtil, ConvAsUtil};
+use conv::{ConvAsUtil, ConvUtil};
 use dodrio::{
-    RenderContext,
     bumpalo::{self},
-    Node,
+    Node, RenderContext,
 };
+use unwrap::unwrap;
 // use wasm_bindgen::prelude::*;
 // use web_sys::console;
 
@@ -86,7 +85,7 @@ pub fn div_grid_all_items<'a>(
             let index: usize = x;
             // region: prepare variables and closures for inserting into vdom
             let img_src = match unwrap!(game_data.card_grid_data.get(index)).status {
-                CardStatusCardFace::Down => bumpalo::format!(in bump, 
+                CardStatusCardFace::Down => bumpalo::format!(in bump,
                 "content/{}/{}",
                 game_data.game_name,
                 SRC_FOR_CARD_FACE_DOWN)

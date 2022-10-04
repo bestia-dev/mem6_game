@@ -4,7 +4,6 @@
 #![doc(
     html_logo_url = "https://github.com/bestia-dev/mem6_game/raw/master/webfolder/mem6/images/icons-192.png"
 )]
-
 // region: auto_md_to_doc_comments include README.md A //!
 //! # mem6_server
 //!
@@ -62,21 +61,21 @@
 // region: use statements
 use mem6_common::*;
 
-use unwrap::unwrap;
 use clap::{App, Arg};
 use env_logger::Env;
 use futures::{sync::mpsc, Future, Stream};
+use log::info;
+use serde_derive::{Deserialize, Serialize};
 use std::{
     collections::HashMap,
-    net::{SocketAddr, IpAddr, Ipv4Addr},
+    net::{IpAddr, Ipv4Addr, SocketAddr},
     sync::{Arc, Mutex},
 };
+use unwrap::unwrap;
 use warp::{
     ws::{Message, WebSocket},
     Filter,
 };
-use log::info;
-use serde_derive::{Serialize, Deserialize};
 // endregion
 
 // region: enum, structs, const,...

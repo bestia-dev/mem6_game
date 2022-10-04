@@ -3,9 +3,9 @@
 
 // region: use
 use crate::*;
+use dodrio::VdomWeak;
 use unwrap::unwrap;
 use wasm_bindgen_futures::spawn_local;
-use dodrio::VdomWeak;
 // endregion
 
 /// async fetch for gameconfig.json and update rrc

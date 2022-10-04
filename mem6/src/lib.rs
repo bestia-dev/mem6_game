@@ -4,7 +4,6 @@
 #![doc(
     html_logo_url = "https://github.com/bestia-dev/mem6_game/raw/master/webfolder/mem6/images/icons-192.png"
 )]
-
 // region: auto_md_to_doc_comments include README.md A //!
 //! # unForGetTable  (development name: mem6)
 //!
@@ -263,29 +262,29 @@ mod divgridcontainermod;
 mod divplayeractionsmod;
 mod fetchmod;
 mod gamedatamod;
+mod htmltemplateimplmod;
 mod rootrenderingcomponentmod;
-mod storagemod;
-mod statusgamedatainitmod;
-mod statusgameovermod;
-mod statusjoinedmod;
+mod routerimplmod;
 mod status1stcardmod;
 mod status2ndcardmod;
 mod statusdrinkmod;
+mod statusgamedatainitmod;
+mod statusgameovermod;
+mod statusjoinedmod;
+mod statusreconnectmod;
 mod statustaketurnmod;
 mod statuswaitingackmsgmod;
-mod websocketmod;
-mod statusreconnectmod;
-mod routerimplmod;
-mod htmltemplateimplmod;
+mod storagemod;
 mod webdatamod;
+mod websocketmod;
 // endregion
 
 // this are then used in all the mods if I have there use crate::*;
-use crate::rootrenderingcomponentmod::RootRenderingComponent;
 use crate::gamedatamod::*;
+use crate::rootrenderingcomponentmod::RootRenderingComponent;
 
-use dodrio_templating::*;
 use dodrio_templating::routermod::Routing;
+use dodrio_templating::*;
 
 // use unwrap::unwrap;
 use wasm_bindgen::prelude::*;

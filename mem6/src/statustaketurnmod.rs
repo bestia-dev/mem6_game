@@ -4,8 +4,8 @@
 // region: use
 use crate::*;
 
-use unwrap::unwrap;
 use dodrio::VdomWeak;
+use unwrap::unwrap;
 // endregion
 
 /// on click

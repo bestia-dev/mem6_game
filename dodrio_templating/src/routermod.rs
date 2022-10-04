@@ -5,8 +5,8 @@
 use crate::*;
 
 use dodrio::VdomWeak;
-use wasm_bindgen::{prelude::*, JsCast};
 use unwrap::unwrap;
+use wasm_bindgen::{prelude::*, JsCast};
 use wasm_bindgen_futures::spawn_local;
 
 /// trait intended to be added to VdomWeakWrapper

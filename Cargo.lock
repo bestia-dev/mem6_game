@@ -285,7 +285,7 @@ dependencies = [
 
 [[package]]
 name = "dodrio_templating"
-version = "2022.1004.1211"
+version = "2022.1004.1859"
 dependencies = [
  "dodrio",
  "js-sys",
@@ -715,7 +715,7 @@ checksum = "60302e4db3a61da70c0cb7991976248362f30319e88850c487b9b95bbf059e00"
 
 [[package]]
 name = "mem6"
-version = "2022.1004.1211"
+version = "2022.1004.1859"
 dependencies = [
  "console_error_panic_hook",
  "conv",
@@ -742,7 +742,7 @@ dependencies = [
 
 [[package]]
 name = "mem6_common"
-version = "2022.1004.1211"
+version = "2022.1004.1859"
 dependencies = [
  "serde",
  "serde_derive",
@@ -751,7 +751,7 @@ dependencies = [
 
 [[package]]
 name = "mem6_server"
-version = "2022.1004.1211"
+version = "2022.1004.1859"
 dependencies = [
  "ansi_term 0.12.1",
  "clap",

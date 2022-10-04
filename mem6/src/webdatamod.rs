@@ -4,10 +4,10 @@
 // region: use
 use crate::*;
 
-use web_sys::WebSocket;
-use serde_derive::{Serialize, Deserialize};
-use unwrap::unwrap;
 use dodrio::VdomWeak;
+use serde_derive::{Deserialize, Serialize};
+use unwrap::unwrap;
+use web_sys::WebSocket;
 // endregion
 
 // region: structs

@@ -4,7 +4,6 @@
 #![doc(
     html_logo_url = "https://github.com/bestia-dev/mem6_game/raw/master/webfolder/mem6/images/icons-192.png"
 )]
-
 // region: auto_md_to_doc_comments include README.md A //!
 //! # mem6_common
 //!
@@ -46,7 +45,7 @@
 // endregion
 
 // region: use statements
-use serde_derive::{Serialize, Deserialize};
+use serde_derive::{Deserialize, Serialize};
 // endregion
 
 /// WsMessageToServer enum for WebSocket

@@ -2,12 +2,12 @@
 //! helper functions for web_sys, window, document, dom, console, local_storage, session_storage
 
 // region: use
-use web_sys::console;
+use rand::{rngs::SmallRng, Rng, SeedableRng};
 use unwrap::unwrap;
-use rand::{Rng, rngs::SmallRng, SeedableRng};
-use wasm_bindgen::{JsValue, JsCast};
+use wasm_bindgen::{JsCast, JsValue};
+use wasm_bindgen_futures::JsFuture;
+use web_sys::console;
 use web_sys::{Request, RequestInit, Response};
-use wasm_bindgen_futures::{JsFuture};
 // endregion: use
 
 /// return window object
@@ -146,6 +146,42 @@ pub fn get_url_and_hash() -> (String, String) {
 pub fn play_sound(src: &str) {
     let audio_element = unwrap!(web_sys::HtmlAudioElement::new_with_src(src));
     let _x = unwrap!(audio_element.play());
+}
+
+pub fn play_music_player(src_mp3: &str) {
+    let music_player = unwrap!(web_sys::HtmlAudioElement::new_with_src(src_mp3));
+    let _x = unwrap!(music_player.play());
+    // store the audio element into the window object, so I can pause it later.
+    js_sys::Reflect::set(
+        &JsValue::from(web_sys::window().unwrap()),
+        &JsValue::from("music_player"),
+        &JsValue::from(music_player),
+    )
+    .unwrap();
+}
+
+pub fn pause_music_player() {
+    // audio element is stored into the window object
+    if js_sys::Reflect::has(
+        &JsValue::from(web_sys::window().unwrap()),
+        &JsValue::from("music_player"),
+    )
+    .unwrap()
+    {
+        // if exists, pause it
+        match js_sys::Reflect::get(
+            &JsValue::from(web_sys::window().unwrap()),
+            &JsValue::from("music_player"),
+        ) {
+            Err(_err) => {
+                debug_write("js_sys::Reflect::get err");
+            }
+            Ok(music_player) => {
+                let music_player = unwrap!(music_player.dyn_into::<web_sys::HtmlAudioElement>());
+                unwrap!(music_player.pause());
+            }
+        }
+    }
 }
 
 /// debug write into session_storage

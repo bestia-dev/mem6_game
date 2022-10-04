@@ -1,17 +1,16 @@
 //! htmltemplateimplmod  
 
-use crate::*;
 use crate::htmltemplatemod::HtmlTemplating;
+use crate::*;
 // use qrcode53bytes::*;
 
-use unwrap::unwrap;
-use wasm_bindgen::{JsCast};
 use dodrio::{
-    Node, RenderContext, RootRender,
+    builder::{text, ElementBuilder},
     bumpalo::{self},
-    builder::{ElementBuilder, text},
-    VdomWeak,
+    Node, RenderContext, RootRender, VdomWeak,
 };
+use unwrap::unwrap;
+use wasm_bindgen::JsCast;
 
 impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
     /// html_templating boolean id the next node is rendered or not
@@ -179,10 +178,8 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     open_new_local_page("#p04");
                 }
                 "drink_end" => {
+                    websysmod::pause_music_player();
                     // send a msg to end drinking to all players
-                    // let audio_element = unwrap!(web_sys::HtmlAudioElement::new_with_src(src));
-                    // unwrap!(audio_element.stop());
-
                     websysmod::debug_write(&format!("MsgDrinkEnd send{}", ""));
                     rrc.web_data
                         .send_ws_msg(&websocketmod::WsMessageForReceivers {
@@ -209,8 +206,9 @@ impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {
                     open_new_local_page("#p11");
                 }
                 "p06_load_image" => {
-                    //websysmod::debug_write("p06_load_image");
-                    statusdrinkmod::play_sound_for_drink(rrc);
+                    // websysmod::debug_write("p06_load_image");
+                    // iphone cannot play sound without user interaction
+                    // statusdrinkmod::play_sound_for_drink(rrc);
                 }
                 "play_again" => {
                     rrc.web_data
