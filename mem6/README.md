@@ -1,6 +1,14 @@
+[comment]: # (auto_md_to_doc_comments segment start A)
+
 # unForGetTable  (development name: mem6)
 
-[comment]: # (lmake_readme version)  
+[comment]: # (auto_cargo_toml_to_md start)
+
+[comment]: # (auto_cargo_toml_to_md end)
+
+[comment]: # (auto_lines_of_code start)
+
+[comment]: # (auto_lines_of_code end)
 
 mem6 is a simple drinking game to lose memory. It is made primarily for learning the Rust programming language and Wasm/WebAssembly with Virtual Dom Dodrio, WebSocket communication and PWA (Progressive Web App).  
 
@@ -221,3 +229,5 @@ The downloaded file has the name "synthesize" with no extension. I think it is i
 I open the file in Audacity. Ctrl+A to select the track. Then Analyze - Silence Finder. Tweak a little with the settings.  
 When I'm happy with the result then File - Export -Export Multiple as mp3.  
 Finally I rename the files to match the names in the game_config.json file.  
+
+[comment]: # (auto_md_to_doc_comments segment end A)

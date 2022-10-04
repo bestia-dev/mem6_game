@@ -4,7 +4,8 @@
 #![doc(
     html_logo_url = "https://github.com/bestia-dev/mem6_game/raw/master/webfolder/mem6/images/icons-192.png"
 )]
-// region: lmake_readme insert "readme.md"
+
+// region: auto_md_to_doc_comments include README.md A //!
 //! # mem6_server
 //!
 //! version: 2020.221.1018  
@@ -26,9 +27,8 @@
 //!
 //! ## new version of Warp
 //!
-//! The new version looks nice, but I had the problem when a user disconnects the websocket without handshake. It happens only on Android Chrome.  
-
-// endregion: lmake_readme insert "readme.md"
+//! The new version looks nice, but I had the problem when a user disconnects the websocket without handshake. It happens only on Android Chrome.  s
+// endregion: auto_md_to_doc_comments include README.md A //!
 
 // region: Clippy
 #![warn(

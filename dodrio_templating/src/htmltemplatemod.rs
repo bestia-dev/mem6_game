@@ -8,7 +8,7 @@ use dodrio::{
     Node, Listener, Attribute, RenderContext, RootRender,
     bumpalo::{self},
     builder::{ElementBuilder, text},
-    VdomWeak
+    VdomWeak,
 };
 // use crate::*;
 use unwrap::unwrap;
@@ -53,7 +53,7 @@ pub trait HtmlTemplating {
         let mut root_element;
         let mut html_or_svg_local = html_or_svg_parent;
         let bump = cx.bump;
-        
+
         #[allow(clippy::single_match_else, clippy::wildcard_enum_match_arm)]
         match reader_for_microxml.read_event() {
             reader_for_microxml::Event::StartElement(name) => {

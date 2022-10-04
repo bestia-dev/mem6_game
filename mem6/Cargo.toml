@@ -1,6 +1,6 @@
 [package]
 name = "mem6"
-version = "2021.112.1454"
+version = "2022.1004.1211"
 authors = ["bestia.dev"]
 homepage = "https://bestia.dev"
 edition = "2018"
@@ -42,12 +42,12 @@ conv = "0.3.3"
 gloo-timers = {version="0.2.1", features=["futures"]}
 
 # temporary debugging dependencies
-#qrcode53bytes = { path = "../../qrcode53bytes" }
-#dodrio =  { git = "https://github.com/fitzgen/dodrio", branch = "master" }
-#dodrio = {path = "../../dodrio"}
-#log = "0.4.8"
-#udep mopa = "0.2.2"
-#udep futures = "0.3.1"
+# qrcode53bytes = { path = "../../qrcode53bytes" }
+# dodrio =  { git = "https://github.com/fitzgen/dodrio", branch = "master" }
+# dodrio = {path = "../../dodrio"}
+# log = "0.4.8"
+# udep mopa = "0.2.2"
+# udep futures = "0.3.1"
 
 [dependencies.web-sys]
 version = "0.3.46"
@@ -96,5 +96,6 @@ features = [
 [dev-dependencies]
 wasm-bindgen-test = "0.3.19"
 
-[profile.release]
-panic = "abort"
+# profiles must be configured in the workspace Cargo.toml
+# [profile.release]
+# panic = "abort"

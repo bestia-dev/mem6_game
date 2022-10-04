@@ -4,7 +4,8 @@
 #![doc(
     html_logo_url = "https://github.com/bestia-dev/mem6_game/raw/master/webfolder/mem6/images/icons-192.png"
 )]
-// region: lmake_readme insert "readme.md"
+
+// region: auto_md_to_doc_comments include README.md A //!
 //! # mem6_server
 //!
 //! version: 19.10.21-20.11  
@@ -23,8 +24,7 @@
 //! Nginx also redirects all http 80 to https 443.  
 //! You can play the game here (hosted on google cloud platform):  
 //! https://bestia.dev/mem6  
-
-// endregion: lmake_readme insert "readme.md"
+// endregion: auto_md_to_doc_comments include README.md A //!
 
 // region: Clippy
 #![warn(

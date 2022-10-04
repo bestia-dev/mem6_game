@@ -1,9 +1,18 @@
 [workspace]
 
+# a strange trick to put the WASM member in both members and exclude
+
 members = [
     "dodrio_templating",
-    "mem6_common",
-    "mem6",
+    "mem6_common",    
     "mem6_server",
+    "mem6",
 ]
 
+# I will exclude mem6, because it is WASM and needs different instructions and profile
+# and of course automation is not part of the workspace
+
+exclude = [
+    "mem6",
+    "automation_tasks_rs",
+]

@@ -1,6 +1,6 @@
 [package]
 name = "dodrio_templating"
-version = "2020.218.1306"
+version = "2022.1004.1211"
 authors = ["bestia.dev"]
 homepage = "https://bestia.dev"
 edition = "2018"

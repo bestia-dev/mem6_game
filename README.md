@@ -36,22 +36,6 @@ Read also my `Previous projects` on Github:
 You can play the game (mobile only) hosted on google cloud platform:  
 <https://bestia.dev/mem6>  
 
-## Cargo make
-
-I prepared some flows and tasks for Cargo make for the workspace.  
-`cargo make` - lists the possible available/public flows/tasks  
-`cargo make dev` - builds the development version and runs the server and the browser  
-`cargo make release` - builds the release version and runs the server and the browser  
-`cargo make audit` - cargo audit warnings about dependencies  
-`cargo make fmt` - format source code  
-`cargo make doc` - copies readme.md into lib.rs doc-comments, build the `/target/doc` folder and copy to the `/docs` folder  
-`cargo make sshadd` - adds identity to ssh-agent for git and publish operations  
-`cargo make gitpush` - push the commits to github, uses ssh agent  
-`cargo make publish` - publish the webfolder to google vm  
-`cargo make udeps` - lists unused dependencies  
-`cargo make loc` - Lines Of Rust Code and comments with tokei  
-`cargo make depver` - list of not latest dependencies  
-
 ## TODO and CHANGELOG
 
 Read files [TODO.md](https://github.com/bestia-dev/mem6_game/blob/master/TODO.md) and [CHANGELOG.md](https://github.com/bestia-dev/mem6_game/blob/master/CHANGELOG.md).  

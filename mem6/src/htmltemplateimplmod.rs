@@ -10,7 +10,7 @@ use dodrio::{
     Node, RenderContext, RootRender,
     bumpalo::{self},
     builder::{ElementBuilder, text},
-    VdomWeak
+    VdomWeak,
 };
 
 impl htmltemplatemod::HtmlTemplating for RootRenderingComponent {

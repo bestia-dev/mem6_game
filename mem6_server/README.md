@@ -1,8 +1,15 @@
 # mem6_server
 
-[comment]: # (lmake_readme version)  
+[comment]: # (auto_cargo_toml_to_md start)
+
+[comment]: # (auto_cargo_toml_to_md end)
+
+[comment]: # (auto_lines_of_code start)
+
+[comment]: # (auto_lines_of_code end)
 
 **Html and WebSocket server for the mem6 game**  
+
 Primarily made for learning to code Rust for a http + WebSocket server on the same port.  
 Using Warp for a simple memory game for kids - mem6.  
 On the IP address on port 8086 listens to http and WebSocket.  

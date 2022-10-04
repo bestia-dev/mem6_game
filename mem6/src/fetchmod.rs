@@ -9,10 +9,7 @@ use dodrio::VdomWeak;
 // endregion
 
 /// async fetch for gameconfig.json and update rrc
-pub fn async_fetch_game_config_and_update(
-    rrc: &mut RootRenderingComponent,
-    vdom: VdomWeak,
-) {
+pub fn async_fetch_game_config_and_update(rrc: &mut RootRenderingComponent, vdom: VdomWeak) {
     let url_config = format!(
         "{}/content/{}/game_config.json",
         rrc.web_data.href, rrc.game_data.game_name

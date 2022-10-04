@@ -174,7 +174,6 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: VdomWeak) {
                                             vdom.schedule_render();
                                         }
                                         WsMessageGameData::MsgStartGame {
-                                            
                                             card_grid_data,
                                             game_config,
                                             players,
@@ -194,7 +193,6 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: VdomWeak) {
                                             vdom.schedule_render();
                                         }
                                         WsMessageGameData::MsgClick1stCard {
-                                            
                                             card_index_of_1st_click,
                                             msg_id,
                                         } => {
@@ -208,7 +206,6 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: VdomWeak) {
                                             vdom.schedule_render();
                                         }
                                         WsMessageGameData::MsgClick2ndCard {
-                                          
                                             card_index_of_2nd_click,
                                             is_point,
                                             msg_id,
@@ -223,21 +220,17 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: VdomWeak) {
                                             vdom.schedule_render();
                                         }
                                         WsMessageGameData::MsgDrinkEnd {
-                                           
                                         } => {
                                             statusdrinkmod::on_msg_drink_end(rrc, msg.msg_sender_ws_uid, &vdom);
                                             vdom.schedule_render();
                                         }
                                         WsMessageGameData::MsgTakeTurn {
-                                            
-                                            
                                             msg_id,
                                         } => {
                                             statustaketurnmod::on_msg_take_turn(rrc, msg.msg_sender_ws_uid, msg_id);
                                             vdom.schedule_render();
                                         }
                                         WsMessageGameData::MsgGameOver {
-                                           
                                         } => {
                                             statusgameovermod::on_msg_game_over(rrc);
                                             vdom.schedule_render();
@@ -248,14 +241,11 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: VdomWeak) {
                                         }
                                         WsMessageGameData::MsgSoundsAndLabels {
                                             sounds_and_labels,
-                                        
-                                           
                                         } => {
                                             rrc.game_data.sounds_and_labels=sounds_and_labels;
                                             vdom.schedule_render();
                                         }
                                         WsMessageGameData::MsgAck {
-                                           
                                             msg_id,
                                             msg_ack_kind,
                                         } => {
@@ -279,13 +269,11 @@ pub fn setup_ws_msg_recv(ws: &WebSocket, vdom: VdomWeak) {
                                             vdom.schedule_render();
                                         }
                                         WsMessageGameData::MsgAskPlayer1ForResync {
-                                            
                                         } => {
                                             statusreconnectmod::send_msg_for_resync(rrc);
                                             vdom.schedule_render();
                                         }
                                         WsMessageGameData::MsgAllGameData {
-                                            
                                             players,
                                             card_grid_data,
                                             card_index_of_1st_click,
