@@ -1,6 +1,6 @@
 [package]
 name = "mem6"
-version = "2022.1004.1859"
+version = "2022.1005.1100"
 authors = ["bestia.dev"]
 homepage = "https://bestia.dev"
 edition = "2018"

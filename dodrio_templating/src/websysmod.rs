@@ -149,9 +149,12 @@ pub fn play_sound(src: &str) {
 }
 
 pub fn play_music_player(src_mp3: &str) {
+    debug_write("before HtmlAudioElement::new_with_src");
     let music_player = unwrap!(web_sys::HtmlAudioElement::new_with_src(src_mp3));
+    debug_write("before music_player.play()");
     let _x = unwrap!(music_player.play());
     // store the audio element into the window object, so I can pause it later.
+    debug_write("js_sys::Reflect::set");
     js_sys::Reflect::set(
         &JsValue::from(web_sys::window().unwrap()),
         &JsValue::from("music_player"),
@@ -162,6 +165,7 @@ pub fn play_music_player(src_mp3: &str) {
 
 pub fn pause_music_player() {
     // audio element is stored into the window object
+    debug_write("before js_sys::Reflect::has");
     if js_sys::Reflect::has(
         &JsValue::from(web_sys::window().unwrap()),
         &JsValue::from("music_player"),

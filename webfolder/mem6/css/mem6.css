@@ -87,6 +87,8 @@ table, caption, tbody, tfoot, thead, tr, th, td {
  font-family: 'Roboto', sans-serif;
  vertical-align: baseline;
  background: transparent;
+ user-drag: none;
+ -webkit-user-drag: none;
 }
 
 /*region: svg elements*/

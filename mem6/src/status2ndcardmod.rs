@@ -24,7 +24,6 @@ pub fn on_click_2nd_card(
     rrc.game_data.card_index_of_2nd_click = this_click_card_index;
     // flip the card up
     rrc.game_data.get_2nd_card_mut().status = CardStatusCardFace::UpTemporary;
-    divgridcontainermod::play_sound(rrc, this_click_card_index);
     // 2 possible outcomes: 1) Next Player 2) end game/play again
     // that changes: game status,CardStatusCardFace, points or/and player_turn
     // if the cards match, player get one point, but it is the next player turn.
@@ -40,6 +39,8 @@ pub fn on_click_2nd_card(
         // indexing cannot panic if the random num is created from 0..len()
         let src_mp3 = format!("audio/{}", rrc.game_data.audio[num]);
         websysmod::play_music_player(&src_mp3);
+    } else {
+        divgridcontainermod::play_sound(rrc, this_click_card_index);
     }
     let msg_id = ackmsgmod::prepare_for_ack_msg_waiting(rrc, vdom);
     let msg = websocketmod::WsMessageForReceivers {

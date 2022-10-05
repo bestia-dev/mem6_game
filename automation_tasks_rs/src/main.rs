@@ -222,6 +222,7 @@ fn task_publish_to_web() {
     After `cargo auto publish_to_web`, 
     connect to the google VM bash using SSH.
 ssh -i ~/.ssh/ssh_certificate username@domain -v
+ssh -i ~/.ssh/luciano_googlecloud luciano_bestia@bestia.dev -v
     There run the bash scripts to create the image and to create the pod.
 cd /var/www/transfer_folder/mem6_game
 sh mem6_game_pod_create.sh

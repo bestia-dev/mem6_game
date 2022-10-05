@@ -3,7 +3,7 @@
 [comment]: # (auto_cargo_toml_to_md start)
 
 **server for the game mem6 http + WebSocket on the same port**  
-***version: 2022.1004.1859 date: 2022-10-04 author: [bestia.dev](https://bestia.dev) repository: [Github](https://github.com/bestia-dev/mem6_game)***  
+***version: 2022.1005.1100 date: 2022-10-05 author: [bestia.dev](https://bestia.dev) repository: [Github](https://github.com/bestia-dev/mem6_game)***  
 
 [comment]: # (auto_cargo_toml_to_md end)
 
