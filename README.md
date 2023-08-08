@@ -3,6 +3,8 @@
 **Learning Rust Wasm/WebAssembly, Virtual Dom Dodrio, WebSocket communication and PWA (Progressive Web Apps) - part six**  
 ***version: 6.0  date: 2020-04-11 author: [bestia.dev](https://bestia.dev) repository: [GitHub](https://github.com/bestia-dev/mem6)***  
 
+![status](https://img.shields.io/badge/active_dev-green) 
+![status](https://img.shields.io/badge/in_use-green) 
 ![loc](https://img.shields.io/badge/lines_of_Rust_code-3129-success)
 ![loc](https://img.shields.io/badge/lines_of_docs/comments-1335-informational)
 ![Hits](https://bestia.dev/webpage_hit_counter/get_svg_image/607954316.svg)
