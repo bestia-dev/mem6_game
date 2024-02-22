@@ -141,7 +141,7 @@ fn task_release() {
 cd webfolder ; ./mem6_server; cd ..
     In the browser or in curl open 
 http://localhost:8086
-    if ok, then
+    If ok then
 cargo auto doc
 {RESET}"#,
     );
@@ -166,7 +166,7 @@ fn task_doc() {
     // message to help user with next task
     println!(
         r#"{YELLOW}
-    After `cargo auto doc`, check `docs/index.html`. If ok, then test the documentation code examples
+    After `cargo auto doc`, check `docs/index.html`. If ok then test the documentation code examples
 cargo auto test
 {RESET}"#
     );
@@ -177,7 +177,7 @@ fn task_test() {
     run_shell_command("cargo test");
     println!(
         r#"{YELLOW}
-    After `cargo auto test`. If ok, then 
+    After `cargo auto test`. If ok then 
 cargo auto commit_and_push "message"
     with mandatory commit message
 {RESET}"#
