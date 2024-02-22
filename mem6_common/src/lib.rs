@@ -4,16 +4,8 @@
 #![doc(
     html_logo_url = "https://github.com/bestia-dev/mem6_game/raw/master/webfolder/mem6/images/icons-192.png"
 )]
-// region: auto_md_to_doc_comments include README.md A //!
-//! # mem6_common
-//!
-//! version: 2020.221.1322  
-//!
-//! **commons for mem6 wasm and server**  
-//! Learning to code Rust for a http + WebSocket.  
-//! Here are just the structures, that are in common between frontend and backend.  
-//! Mostly because of the Messages.  
-// endregion: auto_md_to_doc_comments include README.md A //!
+
+#![doc=include_str!("../README.md")]
 
 // region: Clippy
 #![warn(

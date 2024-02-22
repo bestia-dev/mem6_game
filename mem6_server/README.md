@@ -1,20 +1,20 @@
 # mem6_server
 
-[comment]: # (auto_cargo_toml_to_md start)
+[//]: # (auto_cargo_toml_to_md start)
 
 **server for the game mem6 http + WebSocket on the same port**  
 ***version: 2022.1005.1100 date: 2022-10-05 author: [bestia.dev](https://bestia.dev) repository: [Github](https://github.com/bestia-dev/mem6_game)***  
 
-[comment]: # (auto_cargo_toml_to_md end)
+[//]: # (auto_cargo_toml_to_md end)
 
-[comment]: # (auto_lines_of_code start)
+[//]: # (auto_lines_of_code start)
 [![Lines in Rust code](https://img.shields.io/badge/Lines_in_Rust-271-green.svg)](https://github.com/bestia-dev/mem6_game/)
 [![Lines in Doc comments](https://img.shields.io/badge/Lines_in_Doc_comments-35-blue.svg)](https://github.com/bestia-dev/mem6_game/)
 [![Lines in Comments](https://img.shields.io/badge/Lines_in_comments-77-purple.svg)](https://github.com/bestia-dev/mem6_game/)
 [![Lines in examples](https://img.shields.io/badge/Lines_in_examples-0-yellow.svg)](https://github.com/bestia-dev/mem6_game/)
 [![Lines in tests](https://img.shields.io/badge/Lines_in_tests-0-orange.svg)](https://github.com/bestia-dev/mem6_game/)
 
-[comment]: # (auto_lines_of_code end)
+[//]: # (auto_lines_of_code end)
 
 **Html and WebSocket server for the mem6 game**  
 

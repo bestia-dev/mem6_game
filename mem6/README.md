@@ -1,22 +1,20 @@
-[comment]: # (auto_md_to_doc_comments segment start A)
-
 # unForGetTable  (development name: mem6)
 
-[comment]: # (auto_cargo_toml_to_md start)
+[//]: # (auto_cargo_toml_to_md start)
 
 **Learning Rust Wasm/WebAssembly with Virtual Dom Dodrio**  
 ***version: 2022.1005.1100 date: 2022-10-05 author: [bestia.dev](https://bestia.dev) repository: [Github](https://github.com/bestia-dev/mem6_game)***  
 
-[comment]: # (auto_cargo_toml_to_md end)
+[//]: # (auto_cargo_toml_to_md end)
 
-[comment]: # (auto_lines_of_code start)
+[//]: # (auto_lines_of_code start)
 [![Lines in Rust code](https://img.shields.io/badge/Lines_in_Rust-2518-green.svg)](https://github.com/bestia-dev/mem6_game/)
 [![Lines in Doc comments](https://img.shields.io/badge/Lines_in_Doc_comments-481-blue.svg)](https://github.com/bestia-dev/mem6_game/)
 [![Lines in Comments](https://img.shields.io/badge/Lines_in_comments-415-purple.svg)](https://github.com/bestia-dev/mem6_game/)
 [![Lines in examples](https://img.shields.io/badge/Lines_in_examples-0-yellow.svg)](https://github.com/bestia-dev/mem6_game/)
 [![Lines in tests](https://img.shields.io/badge/Lines_in_tests-0-orange.svg)](https://github.com/bestia-dev/mem6_game/)
 
-[comment]: # (auto_lines_of_code end)
+[//]: # (auto_lines_of_code end)
 
 mem6 is a simple drinking game to lose memory. It is made primarily for learning the Rust programming language and Wasm/WebAssembly with Virtual Dom Dodrio, WebSocket communication and PWA (Progressive Web App).  
 
@@ -237,5 +235,3 @@ The downloaded file has the name "synthesize" with no extension. I think it is i
 I open the file in Audacity. Ctrl+A to select the track. Then Analyze - Silence Finder. Tweak a little with the settings.  
 When I'm happy with the result then File - Export -Export Multiple as mp3.  
 Finally I rename the files to match the names in the game_config.json file.  
-
-[comment]: # (auto_md_to_doc_comments segment end A)
