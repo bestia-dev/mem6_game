@@ -1,5 +1,5 @@
-//! automation_tasks_rs for mem6_game workspace
-//! The workspace contains 4 members: dodrio_templating, mem6, mem6_common, mem6_server
+// automation_tasks_rs for mem6_game workspace
+// The workspace contains 4 members: dodrio_templating, mem6, mem6_common, mem6_server
 
 // Building on windows is just cumbersome. The result is only good for windows.
 // The web server will always be on linux. Wasm/Webassembly is OS agnostic.
@@ -10,22 +10,20 @@
 // Not good.
 // Decision: I will always build only for for Linux inside Linux subsystem for Windows !
 
-use cargo_auto_lib::*;
+// region: library with basic automation tasks
+use cargo_auto_lib as cl;
+// traits must be in scope (Rust strangeness)
+use cl::CargoTomlPublicApiMethods;
 
-// ANSI colors for Linux terminal
-// https://github.com/shiena/ansicolor/blob/master/README.md
-#[allow(dead_code)]
-pub const RED: &str = "\x1b[31m";
-#[allow(dead_code)]
-pub const YELLOW: &str = "\x1b[33m";
-#[allow(dead_code)]
-pub const GREEN: &str = "\x1b[32m";
-#[allow(dead_code)]
-pub const RESET: &str = "\x1b[0m";
+use cargo_auto_lib::GREEN;
+use cargo_auto_lib::RED;
+use cargo_auto_lib::RESET;
+use cargo_auto_lib::YELLOW;
 
+// region: library with basic automation tasks
 
 fn main() {
-    exit_if_not_run_in_rust_project_root_directory();
+    cl::exit_if_not_run_in_rust_project_root_directory();
 
     // get CLI arguments
     let mut args = std::env::args();
@@ -116,24 +114,24 @@ fn completion() {
 /// A little slower than only build.
 fn task_release() {
     // delete_old_js_snippets
-    // run_shell_command("rm -r pkg/snippets/*");
+    // cl::run_shell_command("rm -r pkg/snippets/*");
 
     // let cargo_toml = CargoToml::read();
     //auto_check_micro_xml("web_server_folder/mem6_game");
     auto_version_increment_semver_or_date_forced();
     // format and build all normal members
-    run_shell_command("cargo fmt");
-    run_shell_command("cargo build --release --workspace --exclude mem6");
-    run_shell_command("rsync -avz --info=progress2 --delete-after target/release/mem6_server webfolder/");
+    cl::run_shell_command("cargo fmt");
+    cl::run_shell_command("cargo build --release --workspace --exclude mem6");
+    cl::run_shell_command("rsync -avz --info=progress2 --delete-after target/release/mem6_server webfolder/");
 
     // mem6 is WASM and is excluded from workspace and needs separate commands
-    run_shell_command("cd mem6; cargo fmt; wasm-pack build --target web --release;cd ..");
+    cl::run_shell_command("cd mem6; cargo fmt; wasm-pack build --target web --release;cd ..");
     // copy to web_server_folder/pkg
-    run_shell_command("rsync -avz --info=progress2 --delete-after mem6/pkg/ webfolder/mem6/pkg/");    
+    cl::run_shell_command("rsync -avz --info=progress2 --delete-after mem6/pkg/ webfolder/mem6/pkg/");    
 
-    auto_cargo_toml_to_md();
-    auto_lines_of_code("");
-    // run_shell_command("strip target/release/mem6_game");
+    cl::auto_cargo_toml_to_md();
+    cl::auto_lines_of_code("");
+    // cl::run_shell_command("strip target/release/mem6_game");
     
     println!(
         r#"{YELLOW}
@@ -149,55 +147,68 @@ cargo auto doc
 
 /// cargo doc, then copies to /docs/ folder, because this is a github standard folder
 fn task_doc() {
-    let cargo_toml = CargoToml::read();
-    auto_md_to_doc_comments();
-    auto_plantuml(&cargo_toml.package_repository().unwrap());
+    let cargo_toml = cl::CargoToml::read();
+    cl::auto_cargo_toml_to_md();
+    cl::auto_lines_of_code("");
+    cl::auto_plantuml(&cargo_toml.package_repository().unwrap());
+    cl::auto_md_to_doc_comments();
 
-    #[rustfmt::skip]
-    let shell_commands = [
-        "cargo doc --no-deps --document-private-items",
-        // copy target/doc into docs/ because it is github standard
-        "rsync -a --info=progress2 --delete-after target/doc/ docs/",
-        "echo Create simple index.html file in docs directory",
-        &format!("echo \"<meta http-equiv=\\\"refresh\\\" content=\\\"0; url={}/index.html\\\" />\" > docs/index.html",cargo_toml.package_name().replace("-","_")) ,
-    ];
-    run_shell_commands(shell_commands.to_vec());
-    run_shell_command("cargo fmt");
-    // message to help user with next task
+    cl::run_shell_command("cargo doc --no-deps --document-private-items");
+    // copy target/doc into docs/ because it is github standard
+    cl::run_shell_command("rsync -a --info=progress2 --delete-after target/doc/ docs/");
+    // Create simple index.html file in docs directory
+    cl::run_shell_command(&format!(
+        r#"echo "<meta http-equiv=\"refresh\" content=\"0; url={}/index.html\" />" > docs/index.html"#,
+        cargo_toml.package_name().replace("-", "_")
+    ));
+    // pretty html
+    cl::auto_doc_tidy_html().unwrap();
+    cl::run_shell_command("cargo fmt");
+    // message to help user with next move
     println!(
-        r#"{YELLOW}
-    After `cargo auto doc`, check `docs/index.html`. If ok then test the documentation code examples
-cargo auto test
-{RESET}"#
+        r#"
+    {YELLOW}After `cargo auto doc`, check `docs/index.html`. If ok then test the documentation code examples{RESET}
+{GREEN}cargo auto test{RESET}
+"#
     );
 }
 
 /// cargo test
 fn task_test() {
-    run_shell_command("cargo test");
+    cl::run_shell_command("cargo test");
     println!(
-        r#"{YELLOW}
-    After `cargo auto test`. If ok then 
-cargo auto commit_and_push "message"
-    with mandatory commit message
-{RESET}"#
+r#"
+    {YELLOW}After `cargo auto test`. If ok then {RESET}
+{GREEN}cargo auto commit_and_push "message"{RESET}
+    {YELLOW}with mandatory commit message{RESET}
+"#
     );
 }
 
 /// commit and push
 fn task_commit_and_push(arg_2: Option<String>) {
-    match arg_2 {
-        None => println!("{RED}Error: Message for commit is mandatory.{RESET}"),
-        Some(message) => {
-            run_shell_command(&format!(r#"git add -A && git commit --allow-empty -m "{}""#, message));
-            run_shell_command("git push");
-            println!(
-                r#"{YELLOW}
-    After `cargo auto commit_and_push "message"`
-cargo auto publish_to_web
-{RESET}"#
-            );
+    let Some(message) = arg_2 else {
+        eprintln!("{RED}Error: Message for commit is mandatory. Exiting.{RESET}");
+        // early exit
+        return;
+    };
+
+    // init repository if needed. If it is not init then normal commit and push.
+    if !cl::init_repository_if_needed(&message) {
+        // separate commit for docs if they changed, to not make a lot of noise in the real commit
+        if std::path::Path::new("docs").exists() {
+            cl::run_shell_command(r#"git add docs && git diff --staged --quiet || git commit -m "update docs" "#);
         }
+        cl::add_message_to_unreleased(&message);
+        // the real commit of code
+        cl::run_shell_command(&format!( r#"git add -A && git diff --staged --quiet || git commit -m "{message}" "#));
+        cl::run_shell_command("git push");
+        println!(
+r#"
+    {YELLOW}After `cargo auto commit_and_push "message"`{RESET}
+{GREEN}cargo auto publish_to_crates_io{RESET}
+"#
+        );
     }
 }
 
@@ -210,12 +221,12 @@ fn task_publish_to_web() {
         "git tag -f -a v{version} -m version_{version}",
         version = cargo_toml.package_version()
     );
-    run_shell_command(&shell_command);
+    cl::run_shell_command(&shell_command);
 
     // rsync files
-    //run_shell_command("rsync -e ssh -a --info=progress2 ./target/release/mem6_game luciano_bestia@bestia.dev:/var/www/transfer_folder/mem6_game/");
-    //run_shell_command("rsync -e ssh -a --info=progress2 ./.env luciano_bestia@bestia.dev:/var/www/transfer_folder/mem6_game/");
-    //run_shell_command("rsync -e ssh -a --info=progress2 ./deploy/mem6_game_pod_create.sh luciano_bestia@bestia.dev:/var/www/transfer_folder/mem6_game/");
+    //cl::run_shell_command("rsync -e ssh -a --info=progress2 ./target/release/mem6_game luciano_bestia@bestia.dev:/var/www/transfer_folder/mem6_game/");
+    //cl::run_shell_command("rsync -e ssh -a --info=progress2 ./.env luciano_bestia@bestia.dev:/var/www/transfer_folder/mem6_game/");
+    //cl::run_shell_command("rsync -e ssh -a --info=progress2 ./deploy/mem6_game_pod_create.sh luciano_bestia@bestia.dev:/var/www/transfer_folder/mem6_game/");
 
     println!(
         r#"{YELLOW}
