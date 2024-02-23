@@ -116,7 +116,7 @@ fn task_release() {
     // delete_old_js_snippets
     // cl::run_shell_command("rm -r pkg/snippets/*");
 
-    // let cargo_toml = CargoToml::read();
+    // let cargo_toml = cl::CargoToml::read();
     //auto_check_micro_xml("web_server_folder/mem6_game");
     auto_version_increment_semver_or_date_forced();
     // format and build all normal members
@@ -215,7 +215,7 @@ r#"
 /// publish to web for podman container and git tag
 fn task_publish_to_web() {
     println!(r#"{YELLOW}Use ssh-agent and ssh-add to store the credentials.{RESET}"#);
-    let cargo_toml = CargoToml::read();
+    let cargo_toml = cl::CargoToml::read();
     // git tag
     let shell_command = format!(
         "git tag -f -a v{version} -m version_{version}",
