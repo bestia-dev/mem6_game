@@ -1,4 +1,10 @@
 {
+    "workbench.colorCustomizations": {
+        "titleBar.activeForeground": "#fff",
+        "titleBar.inactiveForeground": "#ffffffcc",
+        "titleBar.activeBackground": "#404040",
+        "titleBar.inactiveBackground": "#2d2d2dcc"
+    },
     "spellright.language": [
         "en"
     ],
@@ -7,6 +13,7 @@
         "latex",
         "plaintext"
     ],
+    "rust-analyzer.showUnlinkedFileNotification": false,
     "cSpell.words": [
         "ackmsgmod",
         "bestia",
