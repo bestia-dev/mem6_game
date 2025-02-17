@@ -19,6 +19,8 @@
 
 [//]: # (auto_lines_of_code end)
 
+ ![License](https://img.shields.io/badge/license-MIT-blue.svg)
+
 **Html and WebSocket server for the mem6 game**  
 
 Primarily made for learning to code Rust for a http + WebSocket server on the same port.  

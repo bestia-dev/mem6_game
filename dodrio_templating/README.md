@@ -3,6 +3,8 @@
 
 # dodrio_templating
 
+ ![License](https://img.shields.io/badge/license-MIT-blue.svg)
+
 ## Html templating
 
 In the past I wrote html inside Rust code with the macro `html!` from the `crate typed-html`  

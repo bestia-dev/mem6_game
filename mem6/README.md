@@ -19,6 +19,8 @@
 
 [//]: # (auto_lines_of_code end)
 
+ ![License](https://img.shields.io/badge/license-MIT-blue.svg)
+
 mem6 is a simple drinking game to lose memory. It is made primarily for learning the Rust programming language and Wasm/WebAssembly with Virtual Dom Dodrio, WebSocket communication and PWA (Progressive Web App).  
 
 ## Idea

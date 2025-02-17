@@ -10,6 +10,7 @@
  ![ready_for_use](https://img.shields.io/badge/ready_for_use-green)
  ![loc](https://img.shields.io/badge/lines_of_Rust_code-3129-success)
  ![loc](https://img.shields.io/badge/lines_of_docs/comments-1335-informational)
+ ![License](https://img.shields.io/badge/license-MIT-blue.svg)
  ![mem6_game](https://bestia.dev/webpage_hit_counter/get_svg_image/607954316.svg)
 
 Hashtags: #rustlang #game #tutorial  

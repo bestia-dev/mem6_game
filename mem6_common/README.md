@@ -3,6 +3,8 @@
 
 # mem6_common
 
+ ![License](https://img.shields.io/badge/license-MIT-blue.svg)
+
 [//]: # (auto_cargo_toml_to_md start)
 
 [//]: # (auto_cargo_toml_to_md end)
