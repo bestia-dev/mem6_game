@@ -8,6 +8,7 @@ description = "Learning Rust Wasm/WebAssembly with Virtual Dom Dodrio"
 repository = "https://github.com/bestia-dev/mem6_game"
 readme = "README.md"
 license = "MIT"
+# Keyword must be only one word: lowercase letters, hyphens(-) or numbers, less then 35 characters, at most 5 keywords per crate
 keywords = ["wasm","dodrio","virtual dom"]
 categories = ["game","learning"]
 publish = false
